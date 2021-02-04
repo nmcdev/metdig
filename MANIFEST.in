@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+recursive-include metdig/metdig_graphics/resource *
+recursive-exclude * __pycache__
+recursive-exclude * *.pyc
+recursive-exclude * *.pyo
+recursive-exclude * *.orig

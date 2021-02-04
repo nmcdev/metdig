@@ -1,0 +1,24 @@
+#,,,,,,,,
+# ,,,,,,,,
+# 注意事项,,,,,,,,
+#    1. ,,,,,,,,
+#    2. ,,,,,,,,
+#    3. ,,,,,,,,
+# ,,,,,,,,
+data_name,var_name,data_type,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_level_type,cmadaas_level,cmadaas_data_code
+grapes_gfs,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,u,high,m/s,WIU,东西风风速,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,v,high,m/s,WIV,南北风风速,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,vvel,high,10*Pa/s,VVM,垂直速度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,tmp,high,kelvin,TEM,气温,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,rh,high,percent,RHU,相对湿度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,td,high,kelvin,DPT,露点温度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,wvfl,high,g/(cm*hPa*s),MOFU,水汽通量,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,theta,high,kelvin,PPT,假相当位温,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,t2m,surface,kelvin,TEM,气温,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,psfc,surface,Pa,PRS,气压,1,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,tpe,surface,mm,TPE,总降水量,1,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,tcwv,surface,mm,TIWV,总柱状比湿（整层水汽含量）,10,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE

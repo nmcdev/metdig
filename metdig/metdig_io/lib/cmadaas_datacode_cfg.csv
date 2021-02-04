@@ -1,0 +1,10 @@
+#,,
+# ,,
+# ×¢ÒâÊÂÏî,,
+#    1. ,,
+#    2. ,,
+#    3. ,,
+# ,,
+data_name,fhour_flag,data_code
+grapes_gfs,0,NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,1,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE

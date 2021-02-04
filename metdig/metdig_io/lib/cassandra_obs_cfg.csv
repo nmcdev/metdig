@@ -1,0 +1,31 @@
+#,,,,,
+# cassandra数据路径单位配置,,,,,
+# 注意事项,,,,,
+#    1. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库）,,,,,
+#    2. 每行只能填写一类要素，如风速风向在cassandra中从同一路径中中获取的，请配置两行，以obs_type区分,,,,,
+# ,,,,,
+data_name,data_type,var_name,var_units,cassandra_discription,cassandra_path
+rain24_national_05-05,singlelevel,rain24,mm,,SURFACE/RAIN24_NATIONAL_05-05/
+rain24_national_08-08,singlelevel,rain24,mm,,SURFACE/RAIN24_NATIONAL_08-08/
+rain24_national_14-14,singlelevel,rain24,mm,,SURFACE/RAIN24_NATIONAL_14-14/
+rain24_national_20-20,singlelevel,rain24,mm,,SURFACE/RAIN24_NATIONAL_20-20/
+rain24_national,singlelevel,rain24,mm,,SURFACE/RAIN24_NATIONAL/
+rain12_national,singlelevel,rain12,mm,,SURFACE/RAIN12_NATIONAL/
+rain06_national,singlelevel,rain06,mm,,SURFACE/RAIN06_NATIONAL/
+rain03_national,singlelevel,rain03,mm,,SURFACE/RAIN03_NATIONAL/
+rain01_national,singlelevel,rain01,mm,,SURFACE/RAIN01_NATIONAL/
+wdir_average_10min_all_station,singlelevel,wdir,degree,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/
+wsp_average_10min_all_station,singlelevel,wsp,m/s,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/
+rh_national,singlelevel,rh,percent,,SURFACE/RH_NATIONAL/
+tmp_max_national,singlelevel,tmp,degC,,SURFACE/TMP_MAX_NATIONAL/
+tmp_min_national,singlelevel,tmp,degC,,SURFACE/TMP_MIN_NATIONAL/
+tmp_national,singlelevel,tmp,degC,,SURFACE/TMP_NATIONAL/
+#amdar_plot,multilevel,,,,UPPER_AIR/AMDAR/PLOT/
+#analysis_hgt,multilevel,,,,UPPER_AIR/ANALYSIS/HGT/
+#analysis_tmp,multilevel,,,,UPPER_AIR/ANALYSIS/TMP/
+#dh,multilevel,,,,UPPER_AIR/DH/
+#dt,multilevel,,,,UPPER_AIR/DT/
+#manual_analysis_hgt,multilevel,,,,UPPER_AIR/MANUAL_ANALYSIS/HGT/
+#manual_analysis_tmp,multilevel,,,,UPPER_AIR/MANUAL_ANALYSIS/TMP/
+#plot,multilevel,,,,UPPER_AIR/PLOT/
+#风廓线_填图,multilevel,,,,UPPER_AIR/WIND_PROFILER/PLOT/

@@ -1,0 +1,21 @@
+#,,,,,
+# era5数据路径单位配置,,,,,
+# 注意事项,,,,,
+#    1. var_units配置使用参考metpy.units（即pint库）,,,,,
+#    2. era5_name为cds上提供的下载接口的要素名,,,,,
+#,,,,,
+var_name,data_type,var_units,era5_var_name,era5_discription,era5_level
+hgt,high,1/9.8*gpm,geopotential,,any
+u,high,m/s,u_component_of_wind,,any
+v,high,m/s,v_component_of_wind,,any
+vvel,high,Pa/s,vertical_velocity,,any
+rh,high,percent,relative_humidity,,any
+tmp,high,K,temperature,,any
+pv,high,K*m**2/(s*kg),potential_vorticity,,any
+div,high,1/s,divergence,,any
+spfh,high,kg/kg,specific_humidity,,any
+u10m,surface,m/s,10m_u_component_of_wind,,10
+v10m,surface,m/s,10m_v_component_of_wind,,10
+psfc,surface,Pa,surface_pressure,,0
+tcwv,surface,mm,total_column_water_vapour,,0
+prmsl,surface,Pa,mean_sea_level_pressure,,0

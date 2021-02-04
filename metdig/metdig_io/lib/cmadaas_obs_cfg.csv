@@ -1,0 +1,17 @@
+#,,,,,
+# ,,,,,
+# ,,,,,
+#   ,,,,,
+#  ,,,,,
+# ,,,,,
+data_name,var_name,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_data_code
+rain24_national,rain24,mm,PRE_24h,过去24小时降水量,SURF_CHN_MUL_HOR_MAIN
+rain12_national,rain12,mm,PRE_12h,过去12小时降水量,SURF_CHN_MUL_HOR_MAIN
+rain6_national,rain06,mm,PRE_6h,过去6小时降水量,SURF_CHN_MUL_HOR_MAIN
+rain03_national,rain03,mm,PRE_3h,过去3小时降水量,SURF_CHN_MUL_HOR_MAIN
+rain01_national,rain01,mm,PRE_1h,过去1小时降水量,SURF_CHN_MUL_HOR_MAIN
+tmp_national,tmp,kelvin,TEM,温度/气温,SURF_CHN_MUL_HOR_MAIN
+td_national,td,kelvin,DPT,露点温度,SURF_CHN_MUL_HOR_MAIN
+rh_national,rh,percent,RHU,相对湿度,SURF_CHN_MUL_HOR_MAIN
+wsp_average_10min_national,wsp,m/s,WIN_S_Avg_10mi,10分钟平均风速,SURF_CHN_MUL_HOR_MAIN
+wdir_average_10min_national,wdir,degree,WIN_D_Avg_10mi,10分钟平均风向（角度）,SURF_CHN_MUL_HOR_MAIN
