@@ -12,15 +12,15 @@ Other required packages:
 ## Install
 Using the fellowing command to install packages:
 ```
-  pip install git+git://github.com/nmcdev/nmc_met_map.git
+  pip install git+git://github.com/nmcdev/metdig.git
 ```
 
 or download the package and install:
 ```
-  git clone --recursive https://github.com/nmcdev/nmc_met_map.git
+  git clone --recursive https://github.com/nmcdev/metdig.git
   cd met_dig
   python setup.py install
 ```
 
 ## 欢迎在Issues留言交流
-https://github.com/nmcdev/nmc_met_map/issues
+https://github.com/nmcdev/metdig/issues
