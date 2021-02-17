@@ -45,7 +45,7 @@ setup(
                       'nmc_met_graphics>=0.1.0',
                       'nmc_met_io>=0.1.0',
                       'metpy <= 0.12.2',
-                      'meteva == 1.3.*',
+                      'meteva > 1.3.*',
                       'cdsapi'],
     python_requires='>=3',
     zip_safe = False
