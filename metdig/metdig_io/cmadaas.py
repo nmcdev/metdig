@@ -57,7 +57,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     except Exception as e:
         raise CFGError(str(e))
 
-    timestr = '{:%Y%m%d%H}'.format(init_time)
+    timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))
     data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                              init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
@@ -72,7 +72,8 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     # 经纬度从小到大排序好
     data = data.sortby('lat')
     data = data.sortby('lon')
-
+    # time_BJT= [itime.values+np.timedelta64(8,'h') for itime in data.time]
+    # data.coords['time']=time_BJT
     stda_data = None
     if level:
         levels = [level]
