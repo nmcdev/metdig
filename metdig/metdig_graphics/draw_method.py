@@ -202,10 +202,8 @@ def pv_contour(ax, x, y, z, transform=ccrs.PlateCarree(), colors='black', linewi
     return img, levels
 
 
-def div_contourf(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, extend='both', **kwargs):
+def div_contourf(ax, x, y, z, levels=np.arange(-10, 11, 1),transform=ccrs.PlateCarree(),cmap = cm_collected.get_cmap('PuOr'), alpha=0.5, extend='both', **kwargs):
     # 颜色表预定义
-    levels = np.arange(-15, 16, 1)
-    cmap = cm_collected.get_cmap('PuOr')
     norm = None
 
     # 颜色表通用参数替换预定义颜色表
