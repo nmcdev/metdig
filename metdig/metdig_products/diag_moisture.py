@@ -180,7 +180,7 @@ def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
     data_name = hgt.attrs['data_name']
-    title = '[{}] {}hPa 位势高度场, {}hPa 风场, {}hPa 绝对湿度'.format(
+    title = '[{}] {}hPa 位势高度, {}hPa 风, {}hPa 绝对湿度'.format(
         data_name.upper(),
         hgt['level'].values[0],
         u['level'].values[0],
@@ -214,8 +214,8 @@ def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
     # add color bar
     l, b, w, h = ax.get_position().bounds
     cax = plt.axes([l, b - 0.04, w, .02])
-    cb = plt.colorbar(img_spfh, cax=cax, ticks=clev_spfh, orientation='horizontal')
-    cb.set_ticklabels(np.array(clev_spfh).astype(str))
+    cb = plt.colorbar(img_spfh, cax=cax, ticks=np.arange(2,24,2), orientation='horizontal')
+    # cb.set_ticklabels(np.arange(2,24,4).astype(str))
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label('Specific Humidity (g/kg)', size=20)
 
@@ -229,7 +229,7 @@ def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
     }
 
     # save
-    png_name = '{2}_位势高度场_风场_绝对湿度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
+    png_name = '{2}_位势高度_风_绝对湿度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     ret['png_name'] = png_name
     ret['output_dir'] = output_dir
     if output_dir:
@@ -260,7 +260,7 @@ def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55),
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
     data_name = hgt.attrs['data_name']
-    title = '[{}] {}hPa 位势高度场, {}hPa 风场, {}hPa 水汽通量'.format(
+    title = '[{}] {}hPa 位势高度, {}hPa 风, {}hPa 水汽通量'.format(
         data_name.upper(),
         hgt['level'].values[0],
         u['level'].values[0],
@@ -276,14 +276,14 @@ def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55),
 
     # fig initialization
     fig, ax = pallete_set.horizontal_pallete(
-        figsize=(18, 9), crs=crs, map_extent=map_extent, title=title, forcast_info=forcast_info,
+        figsize=(18, 9), crs=crs, map_extent=map_extent, title=title,title_fontsize=20, forcast_info=forcast_info,
         add_china=add_china, add_city=add_city, add_background=add_background, add_south_china_sea=add_south_china_sea,
     )
 
     # plot
     wvfl_pcolormesh_kwargs['zorder'] = 1
     _x, _y, _z = wvfl['lon'].values, wvfl['lat'].values, np.squeeze(wvfl.values)
-    _z = _z * 10 # g/(cm*hPa*s) => 0.1g/(cm*hPa*s)
+    _z = _z # g/(cm*hPa*s) => 0.1g/(cm*hPa*s)
     img_wvfl = draw_method.wvfl_pcolormesh(ax, _x, _y, _z, **wvfl_pcolormesh_kwargs)
 
     uv_barbs_kwargs['zorder'] = 2
@@ -300,7 +300,7 @@ def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55),
     cax = plt.axes([l, b - 0.04, w, .02])
     cb = plt.colorbar(img_wvfl, cax=cax, orientation='horizontal', extend='max', extendrect=False)
     cb.ax.tick_params(labelsize='x-large')
-    cb.set_label('Water Vapor Flux (0.1g/(cm*hPa*s)', size=20)
+    cb.set_label('Water Vapor Flux g/(cm*hPa*s)', size=20)
 
     ret = {
         'png_name': None,
