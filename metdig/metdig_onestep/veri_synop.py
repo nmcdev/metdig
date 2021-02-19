@@ -4,7 +4,7 @@ from metdig.metdig_io import get_model_grid
 
 from metdig.metdig_onestep.lib.utility import get_map_area
 from metdig.metdig_onestep.lib.utility import mask_terrian
-from metdig.metdig_products.diag_veri_synop import draw_compare_gh_uv
+from metdig.metdig_products.veri_synop import draw_compare_gh_uv
 
 import metdig.metdig_utl.utl_stda_grid as utl_stda_grid
 import datetime
