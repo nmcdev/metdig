@@ -21,7 +21,7 @@ import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
 import metdig.metdig_graphics.lib.utility as utl
 
 
-def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), title='', forcast_info='',
+def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), title='',title_fontsize=23, forcast_info='',
                        add_china=False, add_city=False, add_background=False, add_south_china_sea=False):
 
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
@@ -35,7 +35,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(projection=ccrs.PlateCarree())
 
-    ax.set_title(title, loc='left', fontsize=30)
+    ax.set_title(title, loc='left', fontsize=title_fontsize)
 
     # set_map_extent
     map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())

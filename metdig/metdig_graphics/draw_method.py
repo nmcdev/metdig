@@ -56,20 +56,20 @@ def vvel_pcolormesh(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, **kwar
     return img, levels
 
 
-def theta_pcolormesh(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+def theta_pcolormesh(ax, x, y, z, levels=np.arange(300,365,1),transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     # 颜色表预定义
     # cmap = dk_ctables.cm_theta()
     # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
     # levels = None
     # norm = None
 
-    cmap = cm_collected.get_cmap('met/theta')
-    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+    cmap,norm = cm_collected.get_cmap('met/theta', extend='both', levels=levels)
+    # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     # 颜色表通用参数替换预定义颜色表
     # cmap, norm, levels, kwargs = plt_kwargs_lcn_set(cmap, norm, levels, **kwargs)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    img = ax.pcolormesh(x, y, z, cmap=cmap,norm=norm, transform=transform, alpha=alpha, **kwargs)
     return img
 
 
@@ -155,27 +155,27 @@ def rh_pcolormesh(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs
     return img
 
 
-def spfh_pcolormesh(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+def spfh_pcolormesh(ax, x, y, z, levels = np.arange(2,24,0.5),
+                     transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     # 颜色表预定义
-    levels = [2, 4, 6, 8, 10, 12, 14, 16, 20, 22, 24]
     # cmap, levels = dk_ctables.cm_specific_humidity_nws(pos=levels)
     # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
     # norm = None
-    cmap = cm_collected.get_cmap('met/specific_humidity_nws')
-    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+    cmap,norm = cm_collected.get_cmap('met/specific_humidity_nws',extend='both',levels=levels)
+    # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     # 颜色表通用参数替换预定义颜色表
     # cmap, norm, levels, kwargs = plt_kwargs_lcn_set(cmap, norm, levels, **kwargs)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     return img, levels
 
 
-def wvfl_pcolormesh(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+def wvfl_pcolormesh(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
     # 颜色表预定义
     # cmap, norm, levels = dk_ctables.wvfl_ctable()
     # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
-    levels = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+    levels = np.arange(5,46).tolist()
     cmap, norm = cm_collected.get_cmap('met/wvfl_ctable', extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
