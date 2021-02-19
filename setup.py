@@ -5,11 +5,8 @@ from setuptools import setup, find_packages
 from codecs import open
 
 name = "metdig"
-# author = __import__(name).__author__
-# version = __import__(name).__version__
-
-author = 'nmcdev'
-version = '0.1.0'
+author = __import__(name).__author__
+version = __import__(name).__version__
 
 here = path.abspath(path.dirname(__file__))
 
