@@ -21,7 +21,7 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
                       hgt_contour_kwargs={}, uv_barbs_kwargs={}, prmsl_contourf_kwargs={}
                       ):
 
-    init_time = pd.to_datetime(hgt_ana.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    init_time = pd.to_datetime(hgt_fcst.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(u_fcst['dtime'].values[0])
     fcstTime = init_time + datetime.timedelta(hours=fhour)
     data_name = hgt_ana.attrs['data_name']
@@ -46,8 +46,7 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
     plt.clabel(img_hgt_ana, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
     uv_barbs_kwargs['zorder'] = 2
-    uv_barbs_kwargs['color'] = 'blue'
-    img_uv_fcst = draw_method.uv_barbs(ax, u_fcst['lon'].values, v_fcst['lat'].values, np.squeeze(u_fcst.values) * 2.5, np.squeeze(v_fcst.values) * 2.5, **uv_barbs_kwargs)
+    img_uv_fcst = draw_method.uv_barbs(ax, u_fcst['lon'].values, v_fcst['lat'].values, np.squeeze(u_fcst.values) * 2.5, np.squeeze(v_fcst.values) * 2.5,color='blue', **uv_barbs_kwargs)
 
     hgt_contour_kwargs['zorder'] = 3
     img_hgt_fcst, clevs_hgt_fcst = draw_method.hgt_contour(ax, hgt_fcst['lon'].values, hgt_fcst['lat'].values, np.squeeze(hgt_fcst.values),colors='blue', **hgt_contour_kwargs)
@@ -69,7 +68,7 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
     if output_dir:
         out_png = os.path.join(output_dir, png_name)
         ret['picpath'] = out_png
-        plt.savefig(out_png, idpi=200, bbox_inches='tight')
+        plt.savefig(out_png, dpi=150, bbox_inches='tight')
 
     if is_return_imgbuf:
         ret['img_buf'] = get_imgbuf_from_fig(fig)

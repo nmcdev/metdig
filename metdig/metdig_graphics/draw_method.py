@@ -19,11 +19,11 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
 
 
-def uv_barbs(ax, x, y, u, v,
+def uv_barbs(ax, x, y, u, v,color='black',
              transform=ccrs.PlateCarree(), length=6, regrid_shape=20, fill_empty=False, sizes=dict(emptybarb=0.05),
              **kwargs):
 
-    img = ax.barbs(x, y, u, v,
+    img = ax.barbs(x, y, u, v,color=color,
                    transform=transform, length=length, regrid_shape=regrid_shape, fill_empty=fill_empty, sizes=sizes,
                    **kwargs)
     return img
