@@ -261,7 +261,7 @@ def get_obs_stations(obs_time=None, data_name=None, level=None, id_selected=None
     '''
     # 从配置中获取相关信息
     try:
-        if level:
+        if level != None:
             data_type = 'multilevel'
             cassandra_dir = utl_cassandra.obs_cassandra_dir(data_type=data_type, data_name=data_name, level=level)  # cassandra数据路径
         else:
