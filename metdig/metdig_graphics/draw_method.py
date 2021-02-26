@@ -18,6 +18,17 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 
 import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
 
+def heatwave_contourf(ax, x, y, z, levels=[33,35,37,40,50],transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+    cmap,norm = cm_collected.get_cmap('YlOrBr', extend='max', levels=levels)
+    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+    img = ax.contourf(x, y, z,levels=levels, cmap=cmap,norm=norm, transform=transform, alpha=alpha, **kwargs)
+    return img,levels
+
+def heatwave_scatter(ax,x,y,z,levels=[33,35,37,40],alpha=0.5,transform=ccrs.PlateCarree(),**kwargs):
+    cmap, norm = cm_collected.get_cmap('YlOrBr', extend='max', levels=levels)
+    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+    img = ax.scatter(x,y,c=z,s=(z-33)*3+3,cmap=cmap,transform=transform, norm=norm,alpha=alpha,**kwargs)
+    return img
 
 def uv_barbs(ax, x, y, u, v,color='black',
              transform=ccrs.PlateCarree(), length=6, regrid_shape=20, fill_empty=False, sizes=dict(emptybarb=0.05),
