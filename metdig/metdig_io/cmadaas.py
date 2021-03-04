@@ -293,7 +293,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[cmadaas_var_name].values, levels, data['Datetime'].values, 0, data.index, data['lon'].values, data['lat'].values,
+        data[cmadaas_var_name].values, levels, data['Datetime'].values, 0, data.index,  data['lat'].values, data['lon'].values,
         np_input_units=cmadass_units, var_name=var_name, other_input={},
         data_source='cmadaas', data_name=data_name
     )
