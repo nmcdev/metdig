@@ -4,7 +4,7 @@
 #    1. var_units配置使用参考metpy.units（即pint库）,,,,,
 #    2. era5_name为cds上提供的下载接口的要素名,,,,,
 #,,,,,
-var_name,data_type,var_units,era5_var_name,era5_discription,era5_level
+var_name,level_type,var_units,era5_var_name,era5_discription,era5_level
 hgt,high,1/9.8*gpm,geopotential,,any
 u,high,m/s,u_component_of_wind,,any
 v,high,m/s,v_component_of_wind,,any

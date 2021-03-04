@@ -23,7 +23,7 @@ def draw_tmx(t, map_extent=(60, 145, 15, 55),
     fhour = int(t['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = t.attrs['data_name']
+    data_name = str(t['member'].values[0])
     var_cn_name = t.attrs['var_cn_name']
     title = '[{}] {}'.format(data_name.upper(), var_cn_name)
 
@@ -93,7 +93,7 @@ def draw_mslp_gust(gust, prmsl, map_extent=(60, 145, 15, 55),
     fhour = int(gust['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = gust.attrs['data_name']
+    data_name = str(gust['member'].values[0])
     var_cn_name = gust.attrs['var_cn_name']
     title = '[{}] 海平面气压 {}'.format(data_name.upper(), var_cn_name)
 
@@ -165,7 +165,7 @@ def draw_dt2m(dt2m, map_extent=(60, 145, 15, 55),
     fhour = int(dt2m['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = dt2m.attrs['data_name']
+    data_name = str(dt2m['member'].values[0])
     var_cn_name = dt2m.attrs['var_cn_name']
     title = '[{}] {}'.format(data_name.upper(), var_cn_name)
 

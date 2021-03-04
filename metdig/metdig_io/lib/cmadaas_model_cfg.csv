@@ -5,7 +5,7 @@
 #    2. ,,,,,,,,
 #    3. ,,,,,,,,
 # ,,,,,,,,
-data_name,var_name,data_type,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_level_type,cmadaas_level,cmadaas_data_code
+data_name,var_name,level_type,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_level_type,cmadaas_level,cmadaas_data_code
 grapes_gfs,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,u,high,m/s,WIU,东西风风速,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,v,high,m/s,WIV,南北风风速,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE

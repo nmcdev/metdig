@@ -21,7 +21,7 @@ def download_hourly_pressure_levels(init_time,
     cache_dir = download_dir if download_dir else CONFIG.get_cache_dir()
 
     for var_name in var_names:
-        era5_var = utl_era5.era5_variable(var_name=var_name, data_type='high')
+        era5_var = utl_era5.era5_variable(var_name=var_name, level_type='high')
         for level in levels:
             cache_file = os.path.join(cache_dir, '{0:%Y%m%d%H%M}/hourly/{1}/{2}/{0:%Y%m%d%H%M}_{3}_{4}_{5}_{6}.nc'.format(init_time, var_name, level, extent[0], extent[1], extent[2], extent[3]))
             ERA5DataService().download_hourly_pressure_levels(init_time, era5_var, level, cache_file, extent=extent)
@@ -35,7 +35,7 @@ def download_hourly_single_levels(init_time,
     cache_dir = download_dir if download_dir else CONFIG.get_cache_dir()
 
     for var_name in var_names:
-        era5_var = utl_era5.era5_variable(var_name, data_type='surface')
+        era5_var = utl_era5.era5_variable(var_name, level_type='surface')
         cache_file = os.path.join(cache_dir, '{0:%Y%m%d%H%M}/hourly/{1}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(init_time, var_name, extent[0], extent[1], extent[2], extent[3]))
         ERA5DataService().download_hourly_single_levels(init_time, era5_var, cache_file, extent=extent)
 

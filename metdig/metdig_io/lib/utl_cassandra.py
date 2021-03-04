@@ -26,37 +26,37 @@ __obs_cfg = __obs_cfg.fillna('')
 __obs_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
 
-def get_model_cfg(data_type=None, data_name=None, var_name=None):
+def get_model_cfg(level_type=None, data_name=None, var_name=None):
     this_cfg = __model_cfg[(__model_cfg['data_name'] == data_name) &
                            (__model_cfg['var_name'] == var_name) &
-                           (__model_cfg['data_type'] == data_type)].copy(deep=True).reset_index(drop=True)
+                           (__model_cfg['level_type'] == level_type)].copy(deep=True).reset_index(drop=True)
 
     if len(this_cfg) == 0:
-        raise Exception('can not get data_name={} data_type={} var_name={} in {}!'.format(data_name, data_type, var_name, __model_cfg_csv))
+        raise Exception('can not get data_name={} level_type={} var_name={} in {}!'.format(data_name, level_type, var_name, __model_cfg_csv))
 
     return this_cfg.to_dict('index')[0]
 
 
-def model_cassandra_dir(data_type=None, data_name=None, var_name=None, level=None):
-    path = get_model_cfg(data_type=data_type, data_name=data_name, var_name=var_name)['cassandra_path']
+def model_cassandra_dir(level_type=None, data_name=None, var_name=None, level=None):
+    path = get_model_cfg(level_type=level_type, data_name=data_name, var_name=var_name)['cassandra_path']
 
     if level is None:
         return path
 
-    if data_type == 'high':
+    if level_type == 'high':
         return path + str(level) + '/'
-    elif data_type == 'surface':
+    elif level_type == 'surface':
         return path
 
     return ''
 
 
-def model_cassandra_units(data_type=None, data_name=None, var_name=None):
-    return get_model_cfg(data_type=data_type, data_name=data_name, var_name=var_name)['var_units']
+def model_cassandra_units(level_type=None, data_name=None, var_name=None):
+    return get_model_cfg(level_type=level_type, data_name=data_name, var_name=var_name)['var_units']
 
 
-def model_cassandra_level(data_type=None, data_name=None, var_name=None, level=None):
-    models_level = get_model_cfg(data_type=data_type, data_name=data_name, var_name=var_name)['cassandra_level']
+def model_cassandra_level(level_type=None, data_name=None, var_name=None, level=None):
+    models_level = get_model_cfg(level_type=level_type, data_name=data_name, var_name=var_name)['cassandra_level']
 
     if models_level == 'any':
         return level
@@ -64,35 +64,31 @@ def model_cassandra_level(data_type=None, data_name=None, var_name=None, level=N
         return int(models_level)
 
 
-def obs_cassandra_dir(data_type=None, data_name=None, level=None):
+def obs_cassandra_dir(data_name=None, var_name=None):
     _obs_cfg = __obs_cfg[(__obs_cfg['data_name'] == data_name) &
-                         (__obs_cfg['data_type'] == data_type)].copy(deep=True)
+                         (__obs_cfg['var_name'] == var_name)].copy(deep=True)
 
     if len(_obs_cfg) == 0:
-        raise Exception('can not get data_name = {} data_type = {} in {}!'.format(modelobs_type_name, data_type, __obs_cfg_csv))
-
-    if data_type == 'multilevel':
-        return _obs_cfg['cassandra_path'].values[0] + str(level) + '/'
-    elif data_type == 'singlelevel':
-        return _obs_cfg['cassandra_path'].values[0]
-
-    return ''
+        raise Exception('can not get data_name = {} var_name={} in {}!'.format(data_name, var_name, __obs_cfg_csv))
+    
+    return _obs_cfg['cassandra_path'].values[0]
 
 
-def obs_cassandra_units(data_type=None, data_name=None):
+def obs_cassandra_units(data_name=None, var_name=None):
     _obs_cfg = __obs_cfg[(__obs_cfg['data_name'] == data_name) &
-                         (__obs_cfg['data_type'] == data_type)].copy(deep=True)
+                         (__obs_cfg['var_name'] == var_name)].copy(deep=True)
     if len(_obs_cfg) == 0:
         return ''
     return _obs_cfg['var_units'].values[0]
 
-def obs_var_name(data_type=None, data_name=None):
+'''
+def obs_var_name(level_type=None, data_name=None):
     _obs_cfg = __obs_cfg[(__obs_cfg['data_name'] == data_name) &
-                         (__obs_cfg['data_type'] == data_type)].copy(deep=True)
+                         (__obs_cfg['level_type'] == level_type)].copy(deep=True)
     if len(_obs_cfg) == 0:
         return ''
     return _obs_cfg['var_name'].values[0]
-
+'''
 
 def obs_rename_colname(data):
     # nmc_met_io.retrieve_micaps_server.get_station_data的返回值的要素名，和STDA的要素名的对应关系
@@ -180,12 +176,12 @@ def obs_rename_colname(data):
 
 
 if __name__ == '__main__':
-    print(model_cassandra_level(data_type='high', data_name='ecmwf', var_name='u', level=1))
-    print(model_cassandra_level(data_type='high', data_name='ecmwf', var_name='u', level=10))
-    print(model_cassandra_level(data_type='high', data_name='ecmwf', var_name='u', level=100))
-    print(model_cassandra_level(data_type='high', data_name='ecmwf', var_name='u', level=None))
+    print(model_cassandra_level(level_type='high', data_name='ecmwf', var_name='u', level=1))
+    print(model_cassandra_level(level_type='high', data_name='ecmwf', var_name='u', level=10))
+    print(model_cassandra_level(level_type='high', data_name='ecmwf', var_name='u', level=100))
+    print(model_cassandra_level(level_type='high', data_name='ecmwf', var_name='u', level=None))
 
-    print(model_cassandra_level(data_type='surface', data_name='ecmwf', var_name='t2m', level=1))
-    print(model_cassandra_level(data_type='surface', data_name='ecmwf', var_name='t2m', level=10))
-    print(model_cassandra_level(data_type='surface', data_name='ecmwf', var_name='t2m', level=100))
-    print(model_cassandra_level(data_type='surface', data_name='ecmwf', var_name='t2m', level=None))
+    print(model_cassandra_level(level_type='surface', data_name='ecmwf', var_name='t2m', level=1))
+    print(model_cassandra_level(level_type='surface', data_name='ecmwf', var_name='t2m', level=10))
+    print(model_cassandra_level(level_type='surface', data_name='ecmwf', var_name='t2m', level=100))
+    print(model_cassandra_level(level_type='surface', data_name='ecmwf', var_name='t2m', level=None))

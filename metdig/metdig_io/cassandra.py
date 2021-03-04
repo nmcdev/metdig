@@ -44,13 +44,13 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     # 从配置中获取相关信息
     try:
         if level:
-            data_type = 'high'
-            cassandra_dir = utl_cassandra.model_cassandra_dir(data_type=data_type, data_name=data_name, var_name=var_name, level=level)  # cassandra数据路径
+            level_type = 'high'
+            cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name, level=level)  # cassandra数据路径
         else:
-            data_type = 'surface'
-            cassandra_dir = utl_cassandra.model_cassandra_dir(data_type=data_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.model_cassandra_units(data_type=data_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
-        cassandra_level = utl_cassandra.model_cassandra_level(data_type=data_type, data_name=data_name, var_name=var_name, level=level)
+            level_type = 'surface'
+            cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = utl_cassandra.model_cassandra_units(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_level = utl_cassandra.model_cassandra_level(level_type=level_type, data_name=data_name, var_name=var_name, level=level)
     except Exception as e:
         raise CFGError(str(e))
     filename = utl.model_filename(init_time, fhour)
@@ -75,9 +75,9 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if 'data' in data.keys():
         np_data = np.squeeze(data['data'].values)
         np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        stda_data = mdgstda.numpy_to_gridstda(np_data, [0], levels, [init_time], [fhour], data.coords['lat'].values, data.coords['lon'].values,
+        stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], levels, [init_time], [fhour], data.coords['lat'].values, data.coords['lon'].values,
                                               var_name=var_name, np_input_units=cassandra_units,
-                                              data_source='cassandra', data_type=data_type, data_name=data_name)
+                                              data_source='cassandra', level_type=level_type)
 
         return stda_data
     else:
@@ -85,12 +85,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         angle = data['angle'].squeeze()
         speed = speed[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
         angle = angle[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        speed_stda = mdgstda.numpy_to_gridstda(speed, [0], levels, [init_time], [fhour], speed.coords['lat'].values, speed.coords['lon'].values,
+        speed_stda = mdgstda.numpy_to_gridstda(speed, [data_name], levels, [init_time], [fhour], speed.coords['lat'].values, speed.coords['lon'].values,
                                                var_name=var_name, np_input_units=cassandra_units,
-                                               data_source='cassandra', data_type=data_type, data_name=data_name)
-        angle_stda = mdgstda.numpy_to_gridstda(angle, [0], levels, [init_time], [fhour], angle.coords['lat'].values, angle.coords['lon'].values,
+                                               data_source='cassandra', level_type=level_type)
+        angle_stda = mdgstda.numpy_to_gridstda(angle, [data_name], levels, [init_time], [fhour], angle.coords['lat'].values, angle.coords['lon'].values,
                                                var_name=var_name, np_input_units=cassandra_units,
-                                               data_source='cassandra', data_type=data_type, data_name=data_name)
+                                               data_source='cassandra', level_type=level_type)
         if var_name == 'wsp':
             return speed_stda
         elif var_name == 'wdir':
@@ -237,7 +237,7 @@ def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None,
     return None
 
 
-def get_obs_stations(obs_time=None, data_name=None, level=None, id_selected=None,
+def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=None,
                      extent=None, x_percent=0.2, y_percent=0.1, is_save_other_info=False):
     '''
 
@@ -246,7 +246,7 @@ def get_obs_stations(obs_time=None, data_name=None, level=None, id_selected=None
     Keyword Arguments:
         obs_time {[datetime]} -- [观测时间]
         data_name {[str]} -- [观测类型]
-        level {[int32]} -- [层次，不传代表地面层] (default: {None})
+        var_name {[str]} -- [要素名]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
@@ -261,17 +261,12 @@ def get_obs_stations(obs_time=None, data_name=None, level=None, id_selected=None
     '''
     # 从配置中获取相关信息
     try:
-        if level:
-            data_type = 'multilevel'
-            cassandra_dir = utl_cassandra.obs_cassandra_dir(data_type=data_type, data_name=data_name, level=level)  # cassandra数据路径
-        else:
-            data_type = 'singlelevel'
-            cassandra_dir = utl_cassandra.obs_cassandra_dir(data_type=data_type, data_name=data_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.obs_cassandra_units(data_type=data_type, data_name=data_name)  # cassandra数据单位
-        var_name = utl_cassandra.obs_var_name(data_type=data_type, data_name=data_name)
-        stda_attrs = mdgstda.get_stda_attrs(data_source='cassandra', data_name=data_name, var_name=var_name, data_type=data_type)  # stda属性获取
+        cassandra_dir = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+        stda_attrs = mdgstda.get_stda_attrs(data_source='cassandra', data_name=data_name, var_name=var_name)  # stda属性获取
     except Exception as e:
         raise CFGError(str(e))
+    
 
     # 读取数据
     filename = utl.obs_filename(obs_time)
@@ -298,10 +293,7 @@ def get_obs_stations(obs_time=None, data_name=None, level=None, id_selected=None
     data = utl_cassandra.obs_rename_colname(data)
 
     # 层次初始化，如果为地面层次，初始化为0
-    if level:
-        levels = np.full((len(data)), level)
-    else:
-        levels = np.full((len(data)), 0)
+    levels = np.full((len(data)), 0)
 
     # 其它坐标信息列
     other_input = {}
@@ -314,13 +306,13 @@ def get_obs_stations(obs_time=None, data_name=None, level=None, id_selected=None
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, levels, data['time'].values, 0, data.index, data['lon'].values, data['lat'].values,
+        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lon'].values, data['lat'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
-        data_source='cassandra', data_type=data_type, data_name=data_name
+        data_source='cassandra', data_name=data_name
     )
 
 
-def get_obs_stations_multitime(obs_times=None, data_name=None, level=None, id_selected=None,
+def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
                                extent=None, x_percent=0.2, y_percent=0.1, is_save_other_info=False):
     '''
 
@@ -329,7 +321,7 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, level=None, id_se
     Keyword Arguments:
         obs_times {[list]} -- [观测时间列表]
         data_name {[str]} -- [观测类型]
-        level {[int32]} -- [层次，不传代表地面层] (default: {None})
+        var_name {[str]} -- [要素名]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
@@ -345,8 +337,8 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, level=None, id_se
     attrs = {}
     for obs_time in obs_times:
         try:
-            data = get_obs_stations(obs_time, data_name,
-                                    level=level, id_selected=id_selected, extent=extent, x_percent=x_percent, y_percent=y_percent, is_save_other_info=is_save_other_info)
+            data = get_obs_stations(obs_time, data_name, var_name,
+                                    id_selected=id_selected, extent=extent, x_percent=x_percent, y_percent=y_percent, is_save_other_info=is_save_other_info)
             
             if data is not None and len(data) > 0:
                 attrs = data.attrs
@@ -360,7 +352,7 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, level=None, id_se
         df.attrs = attrs
         return df
 
-    return df
+    return None
 
 
 '''

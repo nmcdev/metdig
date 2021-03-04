@@ -27,12 +27,12 @@ def get_stda_attrs(var_name='', **attrs_kwargv):
     [
         get stda attributes
         Example: attrs = get_stda_attrs(var_name='hgt')
-        Example: attrs = get_stda_attrs(var_name='hgt', data_source='cassandra', data_type='high', data_name='ecmwf')
+        Example: attrs = get_stda_attrs(var_name='hgt', data_source='cassandra', level_type='high', data_name='ecmwf')
     ]
 
     
     Arguments:
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', data_type='high', data_name='ecmwf']
+        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
     
     Keyword Arguments:
         var_name {str} -- [要素名] (default: {''})
@@ -48,8 +48,8 @@ def get_stda_attrs(var_name='', **attrs_kwargv):
     if len(this_attrs) == 0:
         attrs = {
             'data_source': 'undefined stda',
-            'data_type': 'undefined stda',
-            'data_name': 'undefined stda',
+            'level_type': 'undefined stda',
+            # 'data_name': 'undefined stda', # stda属性中去除data_name， data_name作为member维(网格数据)、data_start_columns起的列名(站点数据)
             'var_name': 'undefined stda',
             'var_cn_name': 'undefined stda',
             'var_units': 'undefined stda',
@@ -58,8 +58,8 @@ def get_stda_attrs(var_name='', **attrs_kwargv):
     else:
         attrs = {
             'data_source': '',
-            'data_type': '',
-            'data_name': '',
+            'level_type': '',
+            # 'data_name': '', # stda属性中去除data_name， data_name作为member维(网格数据)、data_start_columns起的列名(站点数据)
             'var_name': this_attrs['var_name'].values[0],
             'var_cn_name': this_attrs['var_cn_name'].values[0],
             'var_units': this_attrs['var_units'].values[0],

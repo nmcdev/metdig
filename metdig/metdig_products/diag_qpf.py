@@ -28,7 +28,7 @@ def draw_hgt_rain(hgt, rain, map_extent=(60, 145, 15, 55),
     level = hgt['level'].values[0]
 
     valid_time = rain.attrs['valid_time']
-    data_name = rain.attrs['data_name']
+    data_name = str(rain['member'].values[0])
     var_cn_name = rain.attrs['var_cn_name']
     title = '[{}] {}hPa 位势高度场，{}'.format(data_name.upper(), level, var_cn_name)
 
@@ -99,7 +99,7 @@ def draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=(60, 145, 15, 55),
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
     valid_time = rain.attrs['valid_time']
-    data_name = rain.attrs['data_name']
+    data_name = str(rain['member'].values[0])
     title = '[{}] 海平面气压 {}小时降水'.format(data_name.upper(), valid_time)
 
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
@@ -194,7 +194,7 @@ def draw_cumulated_precip(rain, map_extent=(60, 145, 15, 55),
     fcst_time_ed = init_time + datetime.timedelta(hours=fhour_ed)
 
     valid_time = rain.attrs['valid_time']
-    data_name = rain.attrs['data_name']
+    data_name = str(rain['member'].values[0])
     title = '[{}] {}-{}时效累积降水预报 '.format(data_name.upper(), fhour_st, fhour_ed)
 
     forcast_info = '起始时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n截止时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(fcst_time_st, fcst_time_ed, fhour_ed)

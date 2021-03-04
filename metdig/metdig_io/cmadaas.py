@@ -44,20 +44,20 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     '''
     try:
         if level:
-            data_type = 'high'
+            level_type = 'high'
         else:
-            data_type = 'surface'
+            level_type = 'surface'
         cmadaas_data_code = utl_cmadaas.model_cmadaas_data_code(data_name=data_name, fhour=fhour)
-        cmadaas_var_name = utl_cmadaas.model_cmadaas_var_name(data_name=data_name, var_name=var_name, data_type=data_type, data_code=cmadaas_data_code)
-        cmadaas_level_type = utl_cmadaas.model_cmadaas_level_type(data_name=data_name, var_name=var_name, data_type=data_type, data_code=cmadaas_data_code)
-        cmadaas_level = utl_cmadaas.model_cmadaas_level(data_type=data_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code, level=level)
-        cmadaas_units = utl_cmadaas.model_cmadaas_units(data_type=data_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code)
+        cmadaas_var_name = utl_cmadaas.model_cmadaas_var_name(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
+        cmadaas_level_type = utl_cmadaas.model_cmadaas_level_type(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
+        cmadaas_level = utl_cmadaas.model_cmadaas_level(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code, level=level)
+        cmadaas_units = utl_cmadaas.model_cmadaas_units(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code)
         # print('cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, fhour={}'.format(
         # cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, fhour))
     except Exception as e:
         raise CFGError(str(e))
 
-    timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))
+    timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8)) # 数据都是世界时，需要转换为北京时
     data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                              init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
@@ -84,9 +84,9 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if 'data' in data.keys():
         np_data = np.squeeze(data['data'].values)
         np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        stda_data = mdgstda.numpy_to_gridstda(np_data, [0], levels, [init_time], [fhour], data.coords['lat'].values, data.coords['lon'].values,
+        stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], levels, [init_time], [fhour], data.coords['lat'].values, data.coords['lon'].values,
                                               var_name=var_name, np_input_units=cmadaas_units,
-                                              data_source='cmadaas', data_type=data_type, data_name=data_name)
+                                              data_source='cmadaas', level_type=level_type)
 
         return stda_data
     else:
@@ -237,7 +237,7 @@ def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None,
     return None
 
 
-def get_obs_stations(obs_time=None, data_name=None, id_selected=None,
+def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=None,
                      extent=None, x_percent=0.2, y_percent=0.1):
     '''
 
@@ -246,6 +246,7 @@ def get_obs_stations(obs_time=None, data_name=None, id_selected=None,
     Keyword Arguments:
         obs_time {[datetime]} -- [观测时间]
         data_name {[str]} -- [观测类型]
+        var_name {[str]} -- [要素名]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
@@ -259,17 +260,17 @@ def get_obs_stations(obs_time=None, data_name=None, id_selected=None,
     '''
     # 从配置中获取相关信息
     try:
-        cmadaas_data_code = utl_cmadaas.obs_cmadaas_data_code(data_name=data_name)
-        cmadass_units = utl_cmadaas.obs_cmadaas_units(data_name=data_name)  # cassandra数据单位
-        cmadaas_var_name = utl_cmadaas.obs_cmadaas_var_name(data_name=data_name)
-        var_name = utl_cmadaas.obs_var_name(data_name=data_name)
+        cmadaas_data_code = utl_cmadaas.obs_cmadaas_data_code(data_name=data_name, var_name=var_name)
+        cmadass_units = utl_cmadaas.obs_cmadaas_units(data_name=data_name, var_name=var_name)  # cmadass数据单位
+        cmadaas_var_name = utl_cmadaas.obs_cmadaas_var_name(data_name=data_name, var_name=var_name)
+        # var_name = utl_cmadaas.obs_var_name(data_name=data_name)
         stda_attrs = mdgstda.get_stda_attrs(data_source='cmadaas', data_name=data_name, var_name=var_name)  # stda属性获取
         # print('cmadaas_data_code={}, cmadaas_var_name={} '.format(cmadaas_data_code, cmadaas_var_name))
     except Exception as e:
         raise CFGError(str(e))
 
     # 读取数据
-    timestr = '{:%Y%m%d%H%M%S}'.format(obs_time)
+    timestr = '{:%Y%m%d%H%M%S}'.format(obs_time - datetime.timedelta(hours=8)) # 数据都是世界时，需要转换为北京时
     data = nmc_cmadaas_io.cmadaas_obs_by_time(timestr, data_code=cmadaas_data_code,
                                               elements="Station_Id_C,Station_Id_d,lat,lon,Datetime," + cmadaas_var_name)
 
@@ -298,7 +299,7 @@ def get_obs_stations(obs_time=None, data_name=None, id_selected=None,
     )
 
 
-def get_obs_stations_multitime(obs_times=None, data_name=None, id_selected=None,
+def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
                                extent=None, x_percent=0.2, y_percent=0.1, ):
     '''
 
@@ -307,6 +308,7 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, id_selected=None,
     Keyword Arguments:
         obs_times {[list]} -- [观测时间列表]
         data_name {[str]} -- [观测类型]
+        var_name {[str]} -- [要素名]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
@@ -322,7 +324,7 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, id_selected=None,
     attrs = {}
     for obs_time in obs_times:
         try:
-            data = get_obs_stations(obs_time, data_name,
+            data = get_obs_stations(obs_time, data_name, var_name=var_name, 
                                 id_selected=id_selected, extent=extent, x_percent=x_percent, y_percent=y_percent)
             if data is not None and len(data) > 0:
                 attrs = data.attrs

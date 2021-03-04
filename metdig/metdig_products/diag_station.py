@@ -18,7 +18,8 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
     init_time = pd.to_datetime(t2m['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     hourstep = int(rain['dtime'].values[1] - rain['dtime'].values[0])
 
-    title_left = '{}预报 {} [{},{}]'.format(t2m.attrs['data_name'].upper(), t2m['id'].values[0], t2m['lon'].values[0], t2m['lat'].values[0])
+    data_name = t2m.stda.member_name[0]
+    title_left = '{}预报 {} [{},{}]'.format(data_name.upper(), t2m['id'].values[0], t2m['lon'].values[0], t2m['lat'].values[0])
     title_right = '起报时间：{0:%Y}年{0:%m}月{0:%m}日{0:%H}时'.format(init_time)
 
     t2m_ylabel = '2米温度($^\circ$C) \n 10米风(m s$^-$$^1$) \n 逐{}小时降水(mm)'.format(hourstep)

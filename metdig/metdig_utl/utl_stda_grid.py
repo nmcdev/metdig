@@ -10,7 +10,9 @@ from metpy.units import units
 import metdig.metdig_utl as mdgstda
 
 
-def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons, np_input_units='', var_name='', **attrs_kwargv):
+def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons, 
+                      np_input_units='', var_name='', 
+                      **attrs_kwargv):
     '''
     
     [numpy数组转stda网格标准格式]
@@ -23,7 +25,7 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons, np_i
         dtimes {[list or ndarray]} -- [预报失效列表]
         lats {[list or ndarray]} -- [纬度列表]
         lons {[list or ndarray]} -- [经度列表]
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', data_type='high', data_name='ecmwf']
+        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
     
     Keyword Arguments:
         np_input_units {[str]} -- [np_input数据对应的单位，自动转换为能查询到的stda单位]
@@ -83,7 +85,7 @@ def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargv):
     Arguments:
         a {[stda]} -- [description]
         fill_value {[scalar]} -- [Value to fill the new object with before returning it]
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', data_type='high', data_name='ecmwf']
+        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
 
     Keyword Arguments:
         dtype {[dtype, optional]} -- [dtype of the new array. If omitted, it defaults to other.dtype] (default: {None})
@@ -105,7 +107,7 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
     Arguments:
         a {[type]} -- [description]
         levels {[type]} -- [description]
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', data_type='high', data_name='ecmwf']
+        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
 
     Keyword Arguments:
         dtype {[dtype, optional]} -- [dtype of the new array. If omitted, it defaults to other.dtype] (default: {None})

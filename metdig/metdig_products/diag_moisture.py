@@ -22,7 +22,7 @@ def draw_hgt_uv_tcwv(hgt, u, v, tcwv, map_extent=(60, 145, 15, 55),
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = hgt.attrs['data_name']
+    data_name = str(hgt['member'].values[0])
     title = '[{}] {}hPa 位势高度场, {}hPa 风场, 整层可降水量'.format(
         data_name.upper(),
         hgt['level'].values[0],
@@ -100,7 +100,7 @@ def draw_hgt_uv_rh(hgt, u, v, rh, map_extent=(60, 145, 15, 55),
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = hgt.attrs['data_name']
+    data_name = str(hgt['member'].values[0])
     title = '[{}] {}hPa 位势高度场, {}hPa 风场, {}hPa 相对湿度'.format(
         data_name.upper(),
         hgt['level'].values[0],
@@ -179,7 +179,7 @@ def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = hgt.attrs['data_name']
+    data_name = str(hgt['member'].values[0])
     title = '[{}] {}hPa 位势高度, {}hPa 风, {}hPa 绝对湿度'.format(
         data_name.upper(),
         hgt['level'].values[0],
@@ -259,7 +259,7 @@ def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55),
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = hgt.attrs['data_name']
+    data_name = str(hgt['member'].values[0])
     title = '[{}] {}hPa 位势高度, {}hPa 风, {}hPa 水汽通量'.format(
         data_name.upper(),
         hgt['level'].values[0],

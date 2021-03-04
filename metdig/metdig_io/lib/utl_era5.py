@@ -15,27 +15,27 @@ __model_cfg = pd.read_csv(__model_cfg_csv, encoding='gbk', comment='#')
 __model_cfg = __model_cfg.fillna('')
 __model_cfg.apply(lambda row: __check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
-def get_model_cfg(var_name=None, data_type=None):
+def get_model_cfg(var_name=None, level_type=None):
     this_cfg = __model_cfg[(__model_cfg['var_name'] == var_name) &
-                         (__model_cfg['data_type'] == data_type)].copy(deep=True).reset_index(drop=True)
+                         (__model_cfg['level_type'] == level_type)].copy(deep=True).reset_index(drop=True)
 
     if len(this_cfg) == 0:
-        raise Exception('can not get data_type = {} var_name = {} in {}!'.format(data_type, var_name, __model_cfg_csv))
+        raise Exception('can not get level_type = {} var_name = {} in {}!'.format(level_type, var_name, __model_cfg_csv))
 
     return this_cfg.to_dict('index')[0]
 
 
-def era5_variable(var_name=None, data_type=None):
+def era5_variable(var_name=None, level_type=None):
     '''
     stda数据集名称和era5数据集名称对应关系表
     '''
-    return get_model_cfg(var_name=var_name, data_type=data_type)['era5_var_name']
+    return get_model_cfg(var_name=var_name, level_type=level_type)['era5_var_name']
 
-def era5_units(var_name=None, data_type=None):
-    return get_model_cfg(var_name=var_name, data_type=data_type)['var_units']
+def era5_units(var_name=None, level_type=None):
+    return get_model_cfg(var_name=var_name, level_type=level_type)['var_units']
 
-def era5_level(var_name=None, data_type=None, level=None):
-    models_level = get_model_cfg(var_name=var_name, data_type=data_type)['era5_level']
+def era5_level(var_name=None, level_type=None, level=None):
+    models_level = get_model_cfg(var_name=var_name, level_type=level_type)['era5_level']
 
     if models_level == 'any':
         return level
@@ -44,25 +44,25 @@ def era5_level(var_name=None, data_type=None, level=None):
 
 
 if __name__ == '__main__':
-    # x = era5_variable(data_type='surface', var_name='u10m',)
+    # x = era5_variable(level_type='surface', var_name='u10m',)
     # print(x)
-    # x = era5_units(data_type='surface', var_name='u10m',)
+    # x = era5_units(level_type='surface', var_name='u10m',)
     # print(x)
 
-    x = era5_level(data_type='high', var_name='u', level=None)
+    x = era5_level(level_type='high', var_name='u', level=None)
     print(x)
 
-    x = era5_level(data_type='high', var_name='u', level=100)
+    x = era5_level(level_type='high', var_name='u', level=100)
     print(x)
 
-    x = era5_level(data_type='high', var_name='u', level=2)
+    x = era5_level(level_type='high', var_name='u', level=2)
     print(x)
 
-    x = era5_level(data_type='surface', var_name='u10m', level=None)
+    x = era5_level(level_type='surface', var_name='u10m', level=None)
     print(x)
 
-    x = era5_level(data_type='surface', var_name='u10m', level=10)
+    x = era5_level(level_type='surface', var_name='u10m', level=10)
     print(x)
 
-    x = era5_level(data_type='surface', var_name='u10m', level=2)
+    x = era5_level(level_type='surface', var_name='u10m', level=2)
     print(x)

@@ -24,7 +24,7 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
     init_time = pd.to_datetime(hgt_fcst.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(u_fcst['dtime'].values[0])
     fcstTime = init_time + datetime.timedelta(hours=fhour)
-    data_name = hgt_ana.attrs['data_name']
+    data_name = str(hgt_ana['member'].values[0])
     title = '[{}] {}hPa 位势高度, {}hPa 风 预报检验'.format(
         data_name.upper(),
         hgt_ana['level'].values[0],

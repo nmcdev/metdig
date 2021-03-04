@@ -5,7 +5,7 @@
 #    2. var_name为stda属性名,,,,,,
 #    3. 每行只能填写一类要素，如风速风向在cassandra中从同一路径中中获取的，请配置两行，以var_name区分,,,,,,
 # ,,,,,,
-data_name,var_name,data_type,var_units,cassandra_discription,cassandra_level,cassandra_path
+data_name,var_name,level_type,var_units,cassandra_discription,cassandra_level,cassandra_path
 ecmwf,hgt,high,dagpm,,any,ECMWF_HR/HGT/
 ecmwf,u,high,m/s,,any,ECMWF_HR/UGRD/
 ecmwf,v,high,m/s,,any,ECMWF_HR/VGRD/

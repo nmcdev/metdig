@@ -44,12 +44,11 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', obs_times=None,
     is_return_data=False, is_draw=True,**products_kwargs):
     ret = {}
 
-    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name='rain01_national',  id_selected=58131)
-    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name='tmp_national', id_selected=58131)
-    rh = get_obs_stations_multitime(obs_times=obs_times, data_name='rh_national',  id_selected=58131)
-    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name='wsp_average_10min_all_station', id_selected=58131)
-    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name='wdir_average_10min_all_station', id_selected=58131)
-
+    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='rain01', id_selected=58131)
+    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='tmp', id_selected=58131)
+    rh = get_obs_stations_multitime(obs_times=obs_times, data_name='national',  var_name='rh', id_selected=58131)
+    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wsp', id_selected=58131)
+    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wdir', id_selected=58131)
 
     # calcu
     u, v = mdgcal.wind_components(wsp, wdir)

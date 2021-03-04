@@ -22,7 +22,7 @@ def draw_hgt_uv_vvel(hgt, u, v, vvel, map_extent=(60, 145, 15, 55),
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = hgt.attrs['data_name']
+    data_name = str(hgt['member'].values[0])
     title = '[{}] {}hPa 位势高度场, {}hPa 风场和垂直气压速度'.format(
         data_name.upper(),
         hgt['level'].values[0],
@@ -110,7 +110,7 @@ def draw_hgt_uv_div(hgt, u, v, div, map_extent=(60, 145, 15, 55),
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
-    data_name = hgt.attrs['data_name']
+    data_name = str(hgt['member'].values[0])
     title = '[{}] {}hPa 位势高度场, {}hPa风,水平散度'.format(
         data_name.upper(),
         hgt['level'].values[0],

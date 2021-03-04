@@ -108,6 +108,8 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     Returns:
         [type] -- [description]
     '''
+    
+    init_time_utc = init_time- datetime.timedelta(hours=8) # 世界时
     if extent:
         # 数据预先扩大xy percent
         delt_x = (extent[1] - extent[0]) * x_percent
@@ -126,23 +128,23 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     # 从配置中获取相关信息
     try:
         if level:
-            data_type = 'high'
-            cache_file = CONFIG.get_cache_file('{:%Y%m%d%H%M}/hourly/{}/{}'.format(init_time, var_name, level), init_time, extent)
+            level_type = 'high'
+            cache_file = CONFIG.get_cache_file('{:%Y%m%d%H%M}/hourly/{}/{}'.format(init_time_utc, var_name, level), init_time_utc, extent)
         else:
-            data_type = 'surface'
-            cache_file = CONFIG.get_cache_file('{:%Y%m%d%H%M}/hourly/{}'.format(init_time, var_name), init_time, extent)
+            level_type = 'surface'
+            cache_file = CONFIG.get_cache_file('{:%Y%m%d%H%M}/hourly/{}'.format(init_time_utc, var_name), init_time_utc, extent)
 
-        era5_var = utl_era5.era5_variable(var_name=var_name, data_type=data_type)
-        era5_level = utl_era5.era5_level(var_name=var_name, data_type=data_type, level=level)
-        era5_units = utl_era5.era5_units(data_type=data_type, var_name=var_name)
+        era5_var = utl_era5.era5_variable(var_name=var_name, level_type=level_type)
+        era5_level = utl_era5.era5_level(var_name=var_name, level_type=level_type, level=level)
+        era5_units = utl_era5.era5_units(level_type=level_type, var_name=var_name)
     except Exception as e:
         raise CFGError(str(e))
 
     if not os.path.exists(cache_file):
         if level:
-            ERA5DataService().download_hourly_pressure_levels(init_time, era5_var, level, cache_file, extent=extent)
+            ERA5DataService().download_hourly_pressure_levels(init_time_utc, era5_var, level, cache_file, extent=extent)
         else:
-            ERA5DataService().download_hourly_single_levels(init_time, era5_var, cache_file, extent=extent)
+            ERA5DataService().download_hourly_single_levels(init_time_utc, era5_var, cache_file, extent=extent)
 
     # 此处读到的dataset应该只有一个数据集，维度=[time=1,latitude,longitude]，因为下载的时候均是单层次下载
     data = xr.open_dataset(cache_file)
@@ -165,9 +167,9 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
 
     np_data = data.values[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
     stda_data = mdgstda.numpy_to_gridstda(
-        np_data, [0], levels, [init_time], [0], data.coords['lat'].values, data.coords['lon'].values,
+        np_data, ['era5'], levels, [init_time], [0], data.coords['lat'].values, data.coords['lon'].values,
         var_name=var_name, np_input_units=era5_units,
-        data_source='era5', data_type=data_type, data_name='era5')
+        data_source='era5', level_type=level_type)
 
     return stda_data
 

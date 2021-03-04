@@ -10,20 +10,23 @@ from copy import deepcopy
 
 import metdig.metdig_utl as mdgstda
 
-def numpy_to_stastda(np_input, levels, times, dtimes, ids, lats, lons, np_input_units='', other_input={}, var_name='', **attrs_kwargv):
+def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons, 
+                     np_input_units='', var_name='', other_input={}, 
+                     **attrs_kwargv):
     '''
     
     [numpy数组转stda站点标准格式]
     
     Arguments:
         np_input {[list or ndarray]} -- [numpy或者list数据]
-        members {[list or ndarray or number]} -- [成员列表]
+        members {[list or ndarray]} -- [成员列表]
         levels {[list or ndarray or number]} -- [层次列表]
         times {[list] or ndarray or number} -- [起报时间列表]
         dtimes {[list or ndarray or number]} -- [预报失效列表]
+        ids {[list or ndarray or number]} -- [站点名列表]
         lats {[list or ndarray or number]} -- [纬度列表]
         lons {[list or ndarray or number]} -- [经度列表]
-        **attrs_kwargv {[type]} -- [description]
+        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
     
     Keyword Arguments:
         np_input_units {[str]} -- [np_input数据对应的单位，自动转换为能查询到的stda单位]
@@ -33,15 +36,23 @@ def numpy_to_stastda(np_input, levels, times, dtimes, ids, lats, lons, np_input_
     Returns:
         [STDA] -- [STDA网格数据]
     '''
+
     # get attrs
     stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
 
+    other_input_names = list(other_input.keys())
+
     # 初始化stda
-    df = pd.DataFrame(columns=['level', 'time', 'dtime', 'id', 'lon', 'lat'] + list(other_input.keys()) + [var_name])
+    df = pd.DataFrame(columns=['level', 'time', 'dtime', 'id', 'lon', 'lat'] + other_input_names + list(members))
     # 数据列 单位转换成stda标准单位
-    df[var_name], stda_attrs['var_units'] = mdgstda.numpy_units_to_stda(np_input, np_input_units, stda_attrs['var_units'])
+    _temp_data, stda_attrs['var_units'] = mdgstda.numpy_units_to_stda(np_input, np_input_units, stda_attrs['var_units'])
+    _member_len = len(list(members))
+    _temp_data = _temp_data.reshape((int(_temp_data.size/_member_len), _member_len))
+    for i,m in enumerate(members):
+        df[m] = _temp_data[:,i]
+
     # 7+N列：其它坐标信息列
-    for other_name in other_input.keys():
+    for other_name in other_input_names:
         df[other_name] = other_input[other_name]
     # 1-6列：基本列
     df['level'] = levels
@@ -93,7 +104,7 @@ def gridstda_to_stastda(grid_stda_data, points={}):
     attrs['data_start_columns'] = 6 + len(other)
 
     # points data to pd.DataFrame
-    columns = ['level', 'time', 'dtime', 'id', 'lon', 'lat'] + other + [grid_stda_data.attrs['data_name']]
+    columns = ['level', 'time', 'dtime', 'id', 'lon', 'lat'] + other + list(grid_stda_data['member'].values)
     lines = []
     for i_lv, _lv in enumerate(points_xr['level'].values):
         for i_t, _t in enumerate(points_xr['time'].values):
@@ -109,7 +120,6 @@ def gridstda_to_stastda(grid_stda_data, points={}):
 
     df = pd.DataFrame(lines, columns=columns)
     df.attrs = attrs
-    # print(df)
 
     return df
 
@@ -166,6 +176,13 @@ class __STDADataFrameAccessor(object):
         [获取数据（自data_start_columns起所有列），返回值类型为pd.dataframe]
         '''
         return self._df.iloc[:, self._df.attrs['data_start_columns']:]
+
+    @property
+    def member_name(self):
+        '''
+        [获取数据列名（自data_start_columns起所有列），返回值类型为list]
+        '''
+        return self._df.columns[self._df.attrs['data_start_columns']:]
 
     def to_grid(self):
 

@@ -71,7 +71,8 @@ def quantity_to_stda_byreference(var_name, data, reference_variables):
         stda_data = mdgstda.stastda_copy(reference_variables, iscopy_otherdim=True, iscopy_value=False)
         stda_data.attrs = mdgstda.get_stda_attrs(var_name=var_name)
         stda_data.attrs['data_start_columns'] = reference_variables.attrs['data_start_columns']
-        stda_data[var_name] = np.array(data)
+        member_name = reference_variables.stda.member_name[0]
+        stda_data[member_name] = np.array(data)
         return stda_data
 
     else:

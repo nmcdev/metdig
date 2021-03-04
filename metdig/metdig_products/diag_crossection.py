@@ -22,7 +22,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
-    data_name = hgt.attrs['data_name'].upper()
+    data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 绝对涡度, 沿剖面风'.format(data_name)
@@ -109,7 +109,7 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
-    data_name = hgt.attrs['data_name'].upper()
+    data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 相对湿度, 沿剖面风'.format(data_name)
@@ -196,7 +196,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
-    data_name = hgt.attrs['data_name'].upper()
+    data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
@@ -283,7 +283,7 @@ def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
-    data_name = hgt.attrs['data_name'].upper()
+    data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
     title = '[{}]温度, 相对湿度, 水平风场'.format(data_name)
@@ -368,7 +368,7 @@ def draw_time_rh_uv_theta(rh, u, v, theta, output_dir=None,
     fhours = rh['dtime'].values
     times = rh.stda.get_times()
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
-    data_name = rh.attrs['data_name'].upper()
+    data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
 
     title = '相当位温, 相对湿度, 水平风'
@@ -441,7 +441,7 @@ def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain, output_dir=None,
     fhours = rh['dtime'].values
     times = rh.stda.get_times()
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
-    data_name = rh.attrs['data_name'].upper()
+    data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
 
     title = '温度, 相对湿度, 水平风'

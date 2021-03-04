@@ -46,6 +46,8 @@ gust10m_6h,6小时10米阵风,m/s,6
 p_vapor,水汽压,Pa,0
 at,体感温度,degC,0
 absv,绝对涡度,1/s,0
+tmx,最高温度,degC,0
+tmn,最低温度,degC,0
 tmx3_2m,过去3小时2米最高温度,degC,3
 tmn3_2m,过去3小时2米最低温度,degC,3
 tmx24_2m,过去24小时2米最高温度,degC,24
