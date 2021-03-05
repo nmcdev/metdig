@@ -4,12 +4,13 @@ from metdig.metdig_io import get_model_grid
 
 from metdig.metdig_onestep.lib.utility import get_map_area
 from metdig.metdig_onestep.lib.utility import mask_terrian
+from metdig.metdig_onestep.lib.utility import date_init
 
 from metdig.metdig_products.diag_dynamic import draw_hgt_uv_vvel,draw_hgt_uv_div
 from metdig.metdig_onestep.complexgrid_var.div_uv import read_div_uv
 import metdig.metdig_cal as mdgcal
 
-
+@date_init('init_time')
 def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 hgt_lev=500, uv_lev=850, vvel_lev=850, is_mask_terrain=True,
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):

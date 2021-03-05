@@ -3,6 +3,7 @@
 import xarray as xr
 import numpy as np
 
+import inspect
 from functools import wraps
 import datetime
 
@@ -58,26 +59,59 @@ def mask_terrian(psfc, level, stda_input):
     return stda_input.where(psfc_new.values - level >= 0)  # 保留psfc-level>=0的，小于0的赋值成nan
 
 
+class date_init(object):
+    '''
+    针对时间参数为None的情况，利用初始化方法(默认为default_set)初始化时间
+    Example:
+        from metdig.metdig_onestep.lib.utility import date_init  
 
-def check_init_time(func):
-    @ wraps(func)
-    def wrapper(**kwargs):
-        init_time=kwargs.pop('init_time', None)
-
-        if init_time is None:
+        # 用默认方法初始化
+        @date_init('init_time')
+        def onestep_func(init_time):
+            pass  
+        
+        # 指定初始化
+        @date_init('init_time', method=yourmethod)
+        def onestep_func(init_time):
             pass
-        elif isinstance(init_time, str):
-            if len(init_time) == 10:
-                init_time=datetime.datetime.strptime(init_time, '%Y%m%d%H')
-            elif len(init_time) == 8:
-                init_time=datetime.datetime.strptime(init_time, '%y%m%d%H')
-            else:
-                raise Exception('init_time must be datetime or str like 2001010100 or str like 01010100')
+    '''
+    def default_set():
+        # 默认初始化函数
+        sys_time = datetime.datetime.now()
+        if sys_time.hour >= 14:
+            # 今天08时
+            dt = datetime.datetime(sys_time.year, sys_time.month, sys_time.day, 8)
+        elif sys_time.hour >= 2:
+            # 昨天20时
+            dt = datetime.datetime(sys_time.year, sys_time.month, sys_time.day, 20) - datetime.timedelta(days=1)
+        else:
+            # 昨天08时
+            dt = datetime.datetime(sys_time.year, sys_time.month, sys_time.day, 8) - datetime.timedelta(days=1)                   
+        return dt
 
-        kwargs['init_time']=init_time
-        ret=func(**kwargs)
-        return ret
-    return wrapper
 
-if __name__ == '__main__':
-    get_map_area('全国')
+    def __init__(self, *var_args, method=default_set):
+        self.var_args = var_args
+        self.method = method
+
+    def __call__(self, func):
+        func_args, func_varargs, func_keywords, func_defaults = inspect.getargspec(func)
+        @ wraps(func)
+        def wrapper(**kwargs):    
+            for var_name in self.var_args:
+                if var_name not in func_args:
+                    raise Exception('{} set error! please set correct parm on data_init!'.format(var_name))
+
+                dt = kwargs.pop(var_name, None)
+                if dt is None:
+                    dt = self.method()
+                if isinstance(dt, str):
+                    if len(dt) == 10:
+                        dt = datetime.datetime.strptime(dt, '%Y%m%d%H')
+                    elif len(dt) == 8:
+                        dt = datetime.datetime.strptime(dt, '%y%m%d%H')
+                    else:
+                        raise Exception('time must be datetime or str like 2001010100 or str like 01010100')
+                kwargs[var_name] = dt
+            return func(**kwargs)
+        return wrapper
