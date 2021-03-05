@@ -28,7 +28,7 @@ def draw_veri_heatwave(tmx24_2m_fcst,tmx24_2m_obs,
     init_time = pd.to_datetime(tmx24_2m_fcst.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(tmx24_2m_fcst['dtime'].values[0])
     fcstTime = init_time + datetime.timedelta(hours=fhour)
-    data_name = tmx24_2m_fcst.attrs['data_name']
+    data_name = tmx24_2m_fcst['member'].values[0]
     title = '[{}] 高温天气预报检验'.format(
         data_name.upper())
 
@@ -45,9 +45,10 @@ def draw_veri_heatwave(tmx24_2m_fcst,tmx24_2m_obs,
     _z = tmx24_2m_fcst.values.squeeze()
     img_heatwave_fcst,levels = draw_method.heatwave_contourf(ax, _x, _y, _z, **heatwave_contourf_kwargs)
 
-    _x = tmx24_2m_obs[tmx24_2m_obs['tmx24_2m'] >= 33]['lon'].values
-    _y = tmx24_2m_obs[tmx24_2m_obs['tmx24_2m'] >= 33]['lat'].values
-    _z = tmx24_2m_obs[tmx24_2m_obs['tmx24_2m'] >= 33]['tmx24_2m'].values
+    col_data=tmx24_2m_obs.attrs['data_start_columns']
+    _x = tmx24_2m_obs[tmx24_2m_obs.iloc[:,col_data] >= 33]['lon'].values
+    _y = tmx24_2m_obs[tmx24_2m_obs.iloc[:,col_data] >= 33]['lat'].values
+    _z = tmx24_2m_obs[tmx24_2m_obs.iloc[:,col_data] >= 33].iloc[:,col_data].values
     img_heatwave_obs = draw_method.heatwave_scatter(ax, _x, _y, _z, **heatwave_scatter_kwargs)
 
     # add color bar

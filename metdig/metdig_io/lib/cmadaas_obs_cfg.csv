@@ -15,3 +15,4 @@ sfc_chn_hor,td,kelvin,DPT,露点温度,SURF_CHN_MUL_HOR_MAIN
 sfc_chn_hor,rh,percent,RHU,相对湿度,SURF_CHN_MUL_HOR_MAIN
 sfc_chn_hor,wsp,m/s,WIN_S_Avg_10mi,10分钟平均风速,SURF_CHN_MUL_HOR_MAIN
 sfc_chn_hor,wdir,degree,WIN_D_Avg_10mi,10分钟平均风向（角度）,SURF_CHN_MUL_HOR_MAIN
+sfc_chn_hor,tmx24_2m,degC,TEM_Max_24h,过去24小时最高气温,SURF_CHN_MUL_HOR_MAIN

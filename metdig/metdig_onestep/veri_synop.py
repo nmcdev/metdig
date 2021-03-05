@@ -83,7 +83,7 @@ def veri_heatwave(data_source='cassandra',
         tmx24_2m_fcst.attrs['var_cn_name'] = '过去24小时最高温度'
         tmx24_2m_fcst.attrs['valid_time'] = 24
 
-    tmx24_2m_obs = get_obs_stations(obs_time=obs_time,data_name='tmx24_national',data_source=data_source,level=None,is_save_other_info=None).dropna()
+    tmx24_2m_obs = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='tmx24_2m',data_source=data_source,level=None,is_save_other_info=None).dropna()
 
     if is_return_data:
         dataret = {'tmx24_2m_fcst': tmx24_2m_fcst,
