@@ -98,7 +98,7 @@ def potential_vorticity_baroclinic(thta, pres, u, v):
     return pv
 
 
-def divergence(u, v, dim_order=None):
+def divergence(u, v):
     '''
 
     [Calculate the horizontal divergence of a vector.]
@@ -106,14 +106,6 @@ def divergence(u, v, dim_order=None):
     Arguments:
         u {[stda]} -- [x component of the vector]
         v {[stda]} -- [y component of the vector]
-
-    Keyword Arguments:
-        dim_order {[str or None, optional]} -- [The ordering of dimensions in passed in arrays. 
-            Can be one of None, 'xy', or 'yx'. 
-            'xy' indicates that the dimension corresponding to x is the leading dimension, followed by y. 
-            'yx' indicates that x is the last dimension, preceded by y. None indicates 
-            that the default ordering should be assumed, which is ‘yx’. 
-            Can only be passed as a keyword argument, i.e. func(…, dim_order=’xy’)] (default: {None})
 
     Returns:
         [stda] -- [The horizontal divergence]
@@ -129,7 +121,7 @@ def divergence(u, v, dim_order=None):
     dx = dx[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :, :]
     dy = dy[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :, :]
 
-    div_p = mpcalc.divergence(u_p, v_p, dx, dy, dim_order=dim_order)
+    div_p = mpcalc.divergence(u_p, v_p, dx=dx, dy=dy)
 
     div = utl.quantity_to_stda_byreference('div', div_p, u)
 

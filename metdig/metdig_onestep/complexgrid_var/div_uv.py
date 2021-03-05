@@ -22,7 +22,7 @@ def _by_uv(data_source=None, init_time=None, fhour=None, data_name=None, level=5
         return None, None, None
 
     # calcu
-    div = dynamic.divergence(u, v, dim_order='yx')
+    div = dynamic.divergence(u, v)
     return div, u, v
 
 def read_div_uv(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
