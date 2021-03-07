@@ -36,7 +36,8 @@ def cross_section(data, start, end, steps=101, interp_type='linear'):
             (see xarray.DataArray.interp() for details). Defaults to ‘linear’.] (default: {'linear'})
     '''
 
-    data.coords['crs'] = CFProjection({'grid_mapping_name': 'latitude_longitude'})
+    # data.coords['crs'] = CFProjection({'grid_mapping_name': 'latitude_longitude'})
+    data=data.metpy.assign_crs(grid_mapping_name='latitude_longitude') #metpy 1.0
 
     cross_data = mpinterp.cross_section(data, start, end, steps=steps, interp_type=interp_type)  
 
