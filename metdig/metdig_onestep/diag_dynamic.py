@@ -83,6 +83,5 @@ def hgt_uv_div(data_source='cassandra', data_name='grapes_gfs', init_time=None, 
 if __name__ == '__main__':
     import datetime
     import matplotlib.pyplot as plt
-    init_time=datetime.datetime(2020,7,20,20)
-    hgt_uv_div(init_time=init_time,data_source='cmadaas')
+    hgt_uv_vvel(add_city=False)
     plt.show()

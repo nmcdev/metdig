@@ -9,7 +9,9 @@ from metdig.metdig_io import get_model_3D_grids
 
 from metdig.metdig_onestep.lib.utility import get_map_area
 from metdig.metdig_onestep.lib.utility import mask_terrian
-
+from metdig.metdig_onestep.lib.utility import date_init
+from metdig.metdig_onestep.complexgrid_var.pv_div_uv import read_pv_div_uv
+from metdig.metdig_onestep.complexgrid_var.theta import read_theta3d
 
 from metdig.metdig_products.diag_crossection import draw_wind_tmp_rh
 from metdig.metdig_products.diag_crossection import draw_wind_theta_absv
@@ -17,11 +19,58 @@ from metdig.metdig_products.diag_crossection import draw_wind_theta_rh
 from metdig.metdig_products.diag_crossection import draw_wind_theta_spfh
 from metdig.metdig_products.diag_crossection import draw_time_rh_uv_tmp
 from metdig.metdig_products.diag_crossection import draw_time_rh_uv_theta
-from metdig.metdig_products.diag_crossection import draw_time_rh_uv_tmp
+from metdig.metdig_products.diag_crossection import draw_wind_theta_mpv
 
 import metdig.metdig_cal as mdgcal
 from metdig.metdig_utl import mdgstda
 
+@date_init('init_time')
+def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    theta= read_theta3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
+    mpv, _div, u, v=read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, lvl_ana=levels,levels=levels, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+
+    if is_return_data:
+        dataret = {'theta': theta, 'u': u, 'v': v, 'pv': mpv, 'hgt': hgt, 'psfc': psfc}
+        ret.update({'data': dataret})
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(theta, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    cross_theta=mdgcal.cross_section(theta, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_mpv = mdgcal.cross_section(mpv, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_theta, cross_theta['level'].values)
+    cross_terrain = pressure - cross_psfc
+
+    if is_draw:
+        drawret = draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+                                       st_point=st_point, ed_point=ed_point,
+                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                       map_extent=map_extent, h_pos=h_pos,
+                                       **products_kwargs)
+        ret.update(drawret)
+
+    return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_theta_mpv(data_source='cmadaas',data_name='grapes_gfs',init_time='2020070608')
+    plt.show()
 
 def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],

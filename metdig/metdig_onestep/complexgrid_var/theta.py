@@ -2,6 +2,7 @@
 
 
 import numpy as np
+import xarray as xr
 
 from metdig.metdig_io import get_model_grid
 
@@ -41,3 +42,10 @@ def read_theta(data_source=None, init_time=None, fhour=None, data_name=None, lev
         return data
 
     raise Exception('Can not get any data!')
+
+def read_theta3d(levels,**read_theta_kwargs):
+    data=[]
+    for ilevel in levels:
+        data.append(read_theta(level=ilevel,**read_theta_kwargs))
+    data=xr.concat(data,dim='level')
+    return data

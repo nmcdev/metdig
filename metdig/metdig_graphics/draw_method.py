@@ -388,6 +388,12 @@ def cross_rh_contourf(ax, x, y, z, levels=np.arange(0, 101, 0.5), cmap=None, **k
 
     return img
 
+def cross_mpv_contourf(ax, x, y, z, levels=np.arange(-50, 50, 1), cmap=None, **kwargs):
+    if cmap is None:
+        cmap = cm_collected.get_cmap('ncl/cmp_flux')
+
+    img = ax.contourf(x, y, z*1e6, levels=levels, cmap=cmap, **kwargs)
+    return img
 
 def cross_absv_contourf(ax, x, y, z, levels=np.arange(-60, 60, 1), cmap=None, **kwargs):
     if cmap is None:

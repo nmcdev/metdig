@@ -17,8 +17,6 @@ import metdig.metdig_utl.utl_stda_grid as utl_stda_grid
 
 import metdig.metdig_cal as mdgcal
 
-
-
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                  hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                  area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
@@ -50,8 +48,6 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
         ret.update(drawret)
 
     return ret
-
-
 
 def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,

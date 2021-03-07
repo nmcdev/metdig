@@ -2,6 +2,7 @@
 
 
 import numpy as np
+import xarray as xr
 
 from metdig.metdig_io import get_model_grid
 from metdig.metdig_io import get_model_3D_grid
@@ -12,10 +13,28 @@ import metdig.metdig_cal as mdgcal
 
 
 def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=250, extent=(50, 150, 0, 65)):
-    pv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
-    div = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='div', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+
+    if(isinstance(level,list) is False):
+        level=list(level)
+
+    pv=[]
+    div=[]
+    u=[]
+    v=[]
+    for ilevel in level:
+        pv.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
+        
+    if(list(set(pv))[0] is None):
+        return None, None, None, None
+
+    for ilevel in level:
+        div.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='div', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
+        u.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
+        v.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
+    pv=xr.concat(pv,dim='level')
+    div=xr.concat(div,dim='level')
+    u=xr.concat(u,dim='level')
+    v=xr.concat(v,dim='level')
     return pv, div, u, v
 
 
@@ -33,15 +52,13 @@ def _by_uv_tmp(data_source=None, init_time=None, fhour=None, data_name=None,
     pres = utl_stda_grid.gridstda_full_like_by_levels(u, levels)
     thta = mdgcal.potential_temperature(pres, tmp)
     pv = mdgcal.potential_vorticity_baroclinic(thta, pres, u, v)
-    div = mdgcal.divergence(u, v, dim_order='yx')
+    div = mdgcal.divergence(u, v)
 
     # get lvl_ana
     pv = pv.where(pv['level'] == lvl_ana, drop=True)
     div = div.where(div['level'] == lvl_ana, drop=True)
     u = u.where(u['level'] == lvl_ana, drop=True)
     v = v.where(v['level'] == lvl_ana, drop=True)
-
-
     return pv, div, u, v
 
 
