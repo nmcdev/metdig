@@ -97,6 +97,13 @@ def get_cmap(name, extend='neither', levels=None):
     name = 'met/ape_new'
     name = 'met/ncl/Blre'
     name = 'jet'
+
+    extend = both 
+    extend = max 
+    extend = min 
+    extend = neither
+
+    levels: list or numpy array
     '''
     if isinstance(name, str):
         if name.startswith('met/'):
@@ -110,7 +117,7 @@ def get_cmap(name, extend='neither', levels=None):
         else:
             colors = plt.get_cmap(name)(range(256))
     else:
-        colors = name
+        colors = np.array(name)
 
     # print(colors * 255)
     # print(colors.shape)
@@ -128,9 +135,10 @@ def get_cmap(name, extend='neither', levels=None):
     elif extend == 'neither':
         N = _levels.size - 1
 
+
     idx = np.linspace(0, colors.shape[0] - 1, N, dtype=np.int)
     # print(idx)
-    colors = colors[idx, :]
+    colors = colors[idx]
 
     if extend == 'min' and colors.shape[0] >= 2:
         cmap = ListedColormap(colors[1:], name=name)

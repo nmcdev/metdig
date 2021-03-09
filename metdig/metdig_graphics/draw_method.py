@@ -11,9 +11,9 @@ from matplotlib.colors import BoundaryNorm, ListedColormap
 import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
-# from metdig.metdig_graphics.lib.utility import plt_kwargs_lcn_set
+# from metdig.metdig_graphics.lib.utility import plt_kwargs_lcn_set # 弃用
 
-import metdig.metdig_graphics.cmap.ctables as dk_ctables
+# import metdig.metdig_graphics.cmap.ctables as dk_ctables # 弃用
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
 import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
