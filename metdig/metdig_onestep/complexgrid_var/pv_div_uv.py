@@ -15,7 +15,7 @@ import metdig.metdig_cal as mdgcal
 def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=250, extent=(50, 150, 0, 65)):
 
     if(isinstance(level,list) is False):
-        level=list(level)
+        level=list([level])
 
     pv=[]
     div=[]
