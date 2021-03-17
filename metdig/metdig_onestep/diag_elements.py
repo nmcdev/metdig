@@ -7,12 +7,14 @@ from metdig.metdig_io import get_model_grid
 from metdig.metdig_io import get_model_grids
 
 from metdig.metdig_onestep.lib.utility import get_map_area
+from metdig.metdig_onestep.lib.utility import date_init
 
 from metdig.metdig_products.diag_elements import draw_tmx
 from metdig.metdig_products.diag_elements import draw_mslp_gust
 from metdig.metdig_products.diag_elements import draw_dt2m
 
 
+@date_init('init_time')
 def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fhour=24, area='全国',
              is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -48,6 +50,7 @@ def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
     return ret
 
 
+@date_init('init_time')
 def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, t_gap=3, area='全国',
                  is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -79,6 +82,7 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     return ret
 
 
+@date_init('init_time')
 def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=48, area='全国',
               is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -132,6 +136,7 @@ def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
     return ret
 
 
+@date_init('init_time')
 def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=24, area='全国',
               is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -185,6 +190,7 @@ def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
     return ret
 
 
+@date_init('init_time')
 def dt2m_mean24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=24, area='全国',
                 is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}

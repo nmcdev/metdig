@@ -4,11 +4,14 @@ from metdig.metdig_io import get_model_grid,get_model_grids,get_obs_stations
 
 from metdig.metdig_onestep.lib.utility import get_map_area
 from metdig.metdig_onestep.lib.utility import mask_terrian
+from metdig.metdig_onestep.lib.utility import date_init
+
 from metdig.metdig_products.veri_synop import draw_compare_gh_uv,draw_veri_heatwave
 import metdig.metdig_utl.utl_stda_grid as utl_stda_grid
 import datetime
 import numpy as np
 
+@date_init('anl_time')
 def compare_gh_uv(data_source='cassandra',
                 anl_time=None,anamodel='grapes_gfs',
                 data_name='grapes_gfs',fhour=24,
@@ -54,6 +57,7 @@ def compare_gh_uv(data_source='cassandra',
                     map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
+@date_init('obs_time')
 def veri_heatwave(data_source='cassandra',
                 obs_time=None,anamodel='grapes_gfs',
                 data_name='grapes_gfs',fhour=24,

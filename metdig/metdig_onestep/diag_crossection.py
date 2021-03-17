@@ -72,6 +72,7 @@ if __name__ == '__main__':
     wind_theta_mpv(data_source='cmadaas',data_name='grapes_gfs',init_time='2020070608')
     plt.show()
 
+@date_init('init_time')
 def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
@@ -124,6 +125,7 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     return ret
 
 
+@date_init('init_time')
 def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
@@ -173,6 +175,7 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     return ret
 
 
+@date_init('init_time')
 def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
@@ -224,6 +227,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     return ret
 
 
+@date_init('init_time')
 def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                 st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
@@ -271,7 +275,7 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     return ret
 
-
+@date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                      levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                      points={'lon': [116.3833], 'lat': [39.9]},
@@ -303,6 +307,7 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
     return ret
 
 
+@date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                    points={'lon': [116.3833], 'lat': [39.9]},

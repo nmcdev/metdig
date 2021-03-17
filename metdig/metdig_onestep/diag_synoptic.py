@@ -4,6 +4,7 @@ from metdig.metdig_io import get_model_grid
 
 from metdig.metdig_onestep.lib.utility import get_map_area
 from metdig.metdig_onestep.lib.utility import mask_terrian
+from metdig.metdig_onestep.lib.utility import date_init
 
 from metdig.metdig_onestep.complexgrid_var.pv_div_uv import read_pv_div_uv
 from metdig.metdig_onestep.complexgrid_var.rain06 import read_rain06
@@ -17,6 +18,7 @@ import metdig.metdig_utl.utl_stda_grid as utl_stda_grid
 
 import metdig.metdig_cal as mdgcal
 
+@date_init('init_time')
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                  hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                  area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
@@ -49,6 +51,7 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     return ret
 
+@date_init('init_time')
 def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                   area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
@@ -83,7 +86,7 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     return ret
 
 
-
+@date_init('init_time')
 def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
@@ -121,6 +124,7 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
 
 
+@date_init('init_time')
 def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
               lvl_ana=250, levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 100], is_mask_terrain=True,
               area='全国',  is_return_data=False, is_draw=True, **products_kwargs):

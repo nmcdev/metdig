@@ -6,6 +6,7 @@ import math
 from metdig.metdig_io import get_model_points
 from metdig.metdig_io.cassandra import get_obs_stations_multitime
 
+from metdig.metdig_onestep.lib.utility import date_init
 
 from metdig.metdig_products.diag_station import draw_uv_tmp_rh_rain
 from metdig.metdig_products.diag_station import draw_obs_uv_tmp_rh_rain
@@ -15,6 +16,7 @@ import metdig.metdig_utl as mdgstda
 
 
 
+@date_init('init_time')
 def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=[], points={}, 
     is_return_data=False, is_draw=True,**products_kwargs):
     ret = {}
@@ -39,7 +41,7 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     return ret
 
-
+@date_init('obs_times', method=date_init.series_1_36_set)
 def obs_uv_tmp_rh_rain(data_source='cassandra', obs_times=None, 
     is_return_data=False, is_draw=True,**products_kwargs):
     ret = {}

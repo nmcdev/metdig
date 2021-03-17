@@ -8,7 +8,7 @@ from metdig.metdig_io import get_model_grid
 from metdig.metdig_io import get_model_grids
 
 from metdig.metdig_onestep.lib.utility import get_map_area
-
+from metdig.metdig_onestep.lib.utility import date_init
 
 from metdig.metdig_products.diag_qpf import draw_hgt_rain
 from metdig.metdig_products.diag_qpf import draw_mslp_rain_snow
@@ -18,6 +18,7 @@ from metdig.metdig_products.diag_qpf import draw_mslp_rain_snow
 import metdig.metdig_cal as mdgcal
 
 
+@date_init('init_time')
 def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',
              is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -45,6 +46,7 @@ def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=2
     return ret
 
 
+@date_init('init_time')
 def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, area='全国',
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
