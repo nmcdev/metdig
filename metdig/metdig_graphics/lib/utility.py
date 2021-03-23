@@ -230,3 +230,34 @@ def get_imgbuf_from_fig(fig, dpi=200):
     img_arr = img_trim(img_arr) 
     
     return img_arr
+
+def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax):
+    # 保存图片通用方法
+    ret = {
+        'png_name': None,
+        'output_dir': None,
+        'pic_path': None,
+        'img_buf': None,
+        'fig': None,
+        'ax': None,
+    }
+
+    # save
+    ret['png_name'] = png_name
+    ret['output_dir'] = output_dir
+    if output_dir:
+        out_png = os.path.join(output_dir, png_name)
+        ret['pic_path'] = out_png
+        plt.savefig(out_png, idpi=200, bbox_inches='tight')
+
+    if is_return_imgbuf:
+        ret['img_buf'] = get_imgbuf_from_fig(fig)
+
+    if is_clean_plt:
+        plt.close(fig)
+
+    if is_return_figax:
+        ret['fig'] = fig
+        ret['ax'] = ax
+
+    return ret
