@@ -23,8 +23,11 @@ def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level
     v=[]
     for ilevel in level:
         pv.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
-        
-    if(list(set(pv))[0] is None):
+
+    # modify by wenzhijun 2021.3.16    DataArray组成的list不能set
+    # if(list(set(pv))[0] is None):
+    #   return None, None, None, None
+    if len(pv) == 0:
         return None, None, None, None
 
     for ilevel in level:
