@@ -261,3 +261,21 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
         ret['ax'] = ax
 
     return ret
+
+def add_colorbar(ax, img, ticks=None, label='', pos='bottom', rect=None,  orientation='horizontal', **kwargs):
+    '''
+    ticks: colorbar刻度
+    label: colorbar标题
+    pos: bottom图片ax的正下方，该参数与rect互斥，如果rect填写，则pos不生效
+    rect: 4-tuple of floats *rect* = ``[left, bottom, width, height]``.
+    orientation: horizontal vertical
+    '''
+    if rect:
+        cax = plt.axes(rect)
+    else:
+        if pos == 'bottom':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l, b - h * 0.05, w, h * 0.02])
+    cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
+    cb.ax.tick_params(labelsize='x-large')
+    cb.set_label(label, size=20)

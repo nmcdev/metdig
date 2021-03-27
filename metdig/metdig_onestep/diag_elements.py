@@ -13,6 +13,7 @@ from metdig.metdig_products.diag_elements import draw_tmx
 from metdig.metdig_products.diag_elements import draw_mslp_gust
 from metdig.metdig_products.diag_elements import draw_dt2m
 
+import metdig.metdig_cal as mdgcal
 
 @date_init('init_time')
 def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fhour=24, area='全国',
@@ -74,6 +75,8 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     if is_return_data:
         dataret = {'tmx24_2m': gust10m, 'prmsl': prmsl}
         ret.update({'data': dataret})
+
+    prmsl = mdgcal.gaussian_filter(prmsl, 5)
 
     if is_draw:
         drawret = draw_mslp_gust(gust10m, prmsl, map_extent=map_extent, **products_kwargs)

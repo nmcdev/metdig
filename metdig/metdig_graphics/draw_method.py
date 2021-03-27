@@ -298,8 +298,8 @@ def dt2m_contour(ax, x, y, z, transform=ccrs.PlateCarree(), alpha=0.5, vmin=-16,
         clev_colors.append(np.squeeze(per_color[:]))
 
     cl = plt.clabel(img, inline=1, fontsize=15, fmt='%i', colors=clev_colors)
-    for t in cl:
-        t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
+    # for t in cl:
+    #     t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
     return img
 
 

@@ -92,7 +92,7 @@ def add_cartopy_background(ax, name='RD'):
     ax.background_img(name=name, resolution='high')
 
 
-def add_city_on_map(ax, map_extent=[70, 140, 15, 55], size=7, small_city=False, zorder=10, **kwargs):
+def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10, **kwargs):
     """
     :param ax: `matplotlib.figure`, The `figure` instance used for plotting
     :param x: x position padding in pixels
@@ -100,6 +100,9 @@ def add_city_on_map(ax, map_extent=[70, 140, 15, 55], size=7, small_city=False, 
     :return: `matplotlib.image.FigureImage`
              The `matplotlib.image.FigureImage` instance created.
     """
+    if map_extent is None:
+        map_extent = list(ax.get_xlim()) + list(ax.get_ylim())
+
     dlon = map_extent[1] - map_extent[0]
     dlat = map_extent[3] - map_extent[2]
 
@@ -186,8 +189,11 @@ def add_south_china_sea_png(pos=[0.1, 0.1, .2, .4], size='medium', **kwargs):
     ax.axis('off')
     return ax
 
-def add_city_values_on_map(ax, data, map_extent=[70, 140, 15, 55], size=13, zorder=10, cmap=None, transform=ccrs.PlateCarree(), **kwargs):
-
+def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=None, transform=ccrs.PlateCarree(), **kwargs):
+    
+    if map_extent is None:
+        map_extent = list(ax.get_xlim()) + list(ax.get_ylim())
+        
     dlon = map_extent[1] - map_extent[0]
     dlat = map_extent[3] - map_extent[2]
     # province city
