@@ -33,8 +33,10 @@ def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
     """
 
     # map name
-    names = {'nation': "NationalBorder", 'province': "Province",
-             'county': "County", 'river': "hyd1_4l",
+    names = {'nation': "NationalBorder", 
+             'province': "Province",
+            #  'county': "County",  # 无资源，暂时注释
+             'river': "hyd1_4l",
              'river_high': "hyd2_4l",
              'coastline': 'ne_10m_coastline'}
 
@@ -129,7 +131,7 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10, **
     # province city
     try:
         fname = 'city_province.000'
-        fpath = "resources/" + fname
+        fpath = "resources/stations/" + fname
     except KeyError:
         raise ValueError('can not find the file city_province.000 in the resources')
 
@@ -199,7 +201,7 @@ def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=N
     # province city
     try:
         fname = 'city_province.000'
-        fpath = "resources/" + fname
+        fpath = "resources/stations/" + fname
     except KeyError:
         raise ValueError('can not find the file city_province.000 in the resources')
 
