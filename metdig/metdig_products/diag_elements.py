@@ -20,6 +20,7 @@ from metdig.metdig_graphics.contour_method import *
 from metdig.metdig_graphics.contourf_method import *
 from metdig.metdig_graphics.pcolormesh_method import *
 from metdig.metdig_graphics.draw_compose import *
+from metdig.metdig_graphics.text_method import *
 
 import metdig.metdig_cal as mdgcal
 
@@ -37,7 +38,7 @@ def draw_tmx(t, map_extent=(60, 145, 15, 55), **products_kwargs):
     png_name = '{1}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时观测_分析的{2}.png'.format(init_time, data_name.upper(), var_cn_name)
 
     t_filter = mdgcal.gaussian_filter(t, 5)
-    draw_argv = [(t, tmx_pcolormesh, {'add_city': True}), (t_filter, tmx_contour), (t_filter, tmx_contour, {'levels': [0], 'colors': ['#232B99']})]
+    draw_argv = [(t, tmx_pcolormesh), (t, city_text), (t_filter, tmx_contour), (t_filter, tmx_contour, {'levels': [0], 'colors': ['#232B99']})]
     return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
 
 

@@ -48,7 +48,7 @@ def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linew
 
     img = ax.contour(x, y, z, levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+        plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors='black')
 
 
 def tmx_contour(ax, stda, add_clabel=True, levels=[35, 37, 40], colors=['#FF8F00', '#FF6200', '#FF0000'], transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
