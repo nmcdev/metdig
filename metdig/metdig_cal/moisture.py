@@ -57,7 +57,7 @@ def saturation_vapor_pressure(tmp):
     return es
 
 
-def specific_humidity_from_dewpoint(td, pres):
+def specific_humidity_from_dewpoint(pres, td):
     '''
 
     [Calculate the specific humidity from the dewpoint temperature and pressure.]
@@ -72,7 +72,7 @@ def specific_humidity_from_dewpoint(td, pres):
     td_p = utl.stda_to_quantity(td)  # degC
     pres_p = utl.stda_to_quantity(pres)  # hPa
 
-    spfh_p = mpcalc.specific_humidity_from_dewpoint(td_p, pres_p)  # kg/kg(dimensionless)
+    spfh_p = mpcalc.specific_humidity_from_dewpoint(pres_p, td_p)  # kg/kg(dimensionless) # modify by wenzhijun pres和td参数对调，适应于metpy1.0
 
     spfh = utl.quantity_to_stda_byreference('spfh', spfh_p, td)  # g/kg
     return spfh

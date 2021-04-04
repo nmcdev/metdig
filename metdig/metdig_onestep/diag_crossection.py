@@ -210,7 +210,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
 
-    cross_spfh = mdgcal.specific_humidity_from_dewpoint(cross_td, pressure)
+    cross_spfh = mdgcal.specific_humidity_from_dewpoint(pressure, cross_td)
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
