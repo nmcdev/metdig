@@ -25,7 +25,7 @@ def _by_tmp_rh(data_source=None, init_time=None, fhour=None, data_name=None, lev
     # calcu
     pres = utl_stda_grid.gridstda_full_like(tmp, level, var_name='pres')
     td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
-    spfh = mdgcal.specific_humidity_from_dewpoint(td, pres)
+    spfh = mdgcal.specific_humidity_from_dewpoint(pres, td) # modify by wenzhijun pres和td参数对调，适应于metpy1.0
 
     return spfh
 

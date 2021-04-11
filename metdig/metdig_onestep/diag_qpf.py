@@ -72,6 +72,8 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
         dataret = {'rain': rain, 'snow': snow, 'sleet': sleet, 'prmsl': prmsl}
         ret.update({'data': dataret})
 
+    prmsl = mdgcal.gaussian_filter(prmsl, 5)
+    
     if is_draw:
         drawret = draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)

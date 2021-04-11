@@ -95,6 +95,8 @@ def cross_section_components(cross_x, cross_y):
     data_y = data_y.rename({'lon': 'unknow_lon', 'lat': 'unknow_lat'})
     data_y = data_y.rename({'lon_cross': 'lon', 'lat_cross': 'lat'})
 
+    data_x = data_x.metpy.assign_crs(grid_mapping_name='latitude_longitude') # metpy 1.0
+    data_y = data_y.metpy.assign_crs(grid_mapping_name='latitude_longitude') # metpy 1.0
     cross_u_t, cross_v_n = mpcalc.cross_section_components(data_x, data_y, index='index')
 
     # 计算结束后转换为stda维度
