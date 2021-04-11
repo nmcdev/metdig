@@ -22,18 +22,26 @@ def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level
     u=[]
     v=[]
     for ilevel in level:
-        pv.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
-
-    # modify by wenzhijun 2021.3.16    DataArray组成的list不能set
-    # if(list(set(pv))[0] is None):
-    #   return None, None, None, None
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        if _ is not None:
+            pv.append(_)
     if len(pv) == 0:
         return None, None, None, None
 
     for ilevel in level:
-        div.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='div', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
-        u.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
-        v.append(get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False))
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='div', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        if _ is not None:
+            div.append(_)
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        if _ is not None:
+            u.append(_)
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        if _ is not None:
+            v.append(_)
+    if len(div) == 0 or len(u) == 0 or len(v) == 0:
+        return None, None, None, None
+
+    print(pv)
     pv=xr.concat(pv,dim='level')
     div=xr.concat(div,dim='level')
     u=xr.concat(u,dim='level')

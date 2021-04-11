@@ -425,7 +425,7 @@ def cross_tmp_contour(ax, x, y, z, levels=np.arange(-100, 100, 2), colors='#A052
     tmp_zero_contour.clabel([0], fontsize=22, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
 
 
-def cross_section_hgt(x, y, z, levels=np.arange(500, 600, 4), cmap='inferno',
+def cross_section_hgt(ax, x, y, z, levels=np.arange(500, 600, 4), cmap='inferno',
                       st_point=None, ed_point=None, lon_cross=None, lat_cross=None,
                       map_extent=(60, 145, 15, 55), h_pos=[0.125, 0.665, 0.25, 0.2]):
     crs = ccrs.PlateCarree()
