@@ -80,7 +80,7 @@ def apparent_temperature(tmp, wsp, p_vapor):
     tmp_p = np.array(tmp_p)
     wsp_p = np.array(wsp_p)
 
-    at_p = 1.07 * tmp_p + 0.2 * p_vapor_p - 0.65 * wsp_p - 2.7  # 体感温度
+    at_p = (1.07 * tmp_p + 0.2 * p_vapor_p - 0.65 * wsp_p - 2.7)*units('degC')  # 体感温度
 
     at = utl.quantity_to_stda_byreference('at', at_p, tmp)
 
