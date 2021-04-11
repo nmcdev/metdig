@@ -133,7 +133,7 @@ def cal_p_vapor(tmp, rh):
     tmp_p = np.array(tmp_p)
     rh_p = np.array(rh_p)
 
-    p_vapor_p = (rh_p / 100.) * 6.105 * (math.e**((17.27 * tmp_p / (237.7 + tmp_p))))  # 水汽压
+    p_vapor_p = (rh_p / 100.) * 6.105 * (math.e**((17.27 * tmp_p / (237.7 + tmp_p))))*units('Pa')  # 水汽压
 
     p_vapor = utl.quantity_to_stda_byreference('p_vapor', p_vapor_p, tmp)
 
