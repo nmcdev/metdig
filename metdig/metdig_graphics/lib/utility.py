@@ -262,7 +262,7 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
 
     return ret
 
-def add_colorbar(ax, img, ticks=None, label='', pos='bottom', rect=None,  orientation='horizontal', **kwargs):
+def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal',  **kwargs):
     '''
     ticks: colorbar刻度
     label: colorbar标题
@@ -276,6 +276,10 @@ def add_colorbar(ax, img, ticks=None, label='', pos='bottom', rect=None,  orient
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l, b - h * 0.05, w, h * 0.02])
+        elif pos == 'right':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l + 0.01 + w, b, 0.015, h])
+
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')
-    cb.set_label(label, size=20)
+    cb.set_label(label, size=label_size)
