@@ -123,8 +123,8 @@ def dt2m_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), alpha=
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
 
 
-def cross_theta_contour(ax, stda, xy=('lon', 'level'), add_clabel=True, linewidths=2, **kwargs):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_theta_contour(ax, stda, add_clabel=True, linewidths=2, **kwargs):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'kelvin')
 
     levels = np.arange(250, 450, 5)
@@ -134,8 +134,8 @@ def cross_theta_contour(ax, stda, xy=('lon', 'level'), add_clabel=True, linewidt
         plt.clabel(img, levels, fontsize=20, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
 
 
-def cross_tmp_contour(ax, stda, xy=('lon', 'level'), add_clabel=True):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_tmp_contour(ax, stda, add_clabel=True):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'degC')
 
     levels = np.arange(-100, 100, 2)

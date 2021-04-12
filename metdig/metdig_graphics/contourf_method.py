@@ -94,8 +94,8 @@ def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
         utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max')
 
 
-def cross_absv_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev', **kwargs):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_absv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev', **kwargs):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-5*1/s')
 
     cmap = cm_collected.get_cmap(cmap)
@@ -105,8 +105,8 @@ def cross_absv_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels
         utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='max', pos='right')
 
 
-def cross_rh_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(0, 101, 0.5), cmap=None, **kwargs):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_rh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 101, 0.5), cmap=None, **kwargs):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'percent')
 
     if cmap is None:
@@ -120,8 +120,8 @@ def cross_rh_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=n
         utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend='max', pos='right')
 
 
-def cross_spfh_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(0, 20, 2), cmap=None, **kwargs):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_spfh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 20, 2), cmap=None, **kwargs):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'g/kg')
 
     if cmap is None:
@@ -132,8 +132,8 @@ def cross_spfh_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend='max', pos='right')
 
 
-def cross_mpv_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(-50, 50, 1), cmap=None, **kwargs):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_mpv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-50, 50, 1), cmap=None, **kwargs):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-6*K*m**2/(s*kg)')
 
     if cmap is None:
@@ -145,8 +145,8 @@ def cross_mpv_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=
                          label_size=15, orientation='vertical', extend='max', pos='right')
 
 
-def cross_terrain_contourf(ax, stda, xy=('lon', 'level'), levels=np.arange(0, 500, 1), cmap=None, **kwargs):
-    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+def cross_terrain_contourf(ax, stda, levels=np.arange(0, 500, 1), cmap=None, **kwargs):
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '')
 
     if cmap is None:

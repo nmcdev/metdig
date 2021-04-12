@@ -129,9 +129,10 @@ class __STDADataArrayAccessor(object):
     def __init__(self, xr):
         self._xr = xr
 
-    def get_times(self):
+    @property
+    def fcst_time(self):
         '''
-        [获取时间（times=time*dtime)]
+        [获取预报时间（time*dtime)，返回值类型为list]
         '''
         times = []
         for time in self._xr['time'].values:

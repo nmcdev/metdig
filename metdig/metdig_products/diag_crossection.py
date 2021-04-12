@@ -33,7 +33,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     png_name = '{2}_相当位温_湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **products_kwargs)
-    cross_mpv_contourf(obj.ax, cross_mpv, xy=('lon', 'level'))
+    cross_mpv_contourf(obj.ax, cross_mpv)
     cross_theta_contour(obj.ax, cross_theta)
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
@@ -61,7 +61,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     png_name = '{2}_相当位温_绝对涡度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **products_kwargs)
-    cross_absv_contourf(obj.ax, cross_absv, xy=('lon', 'level'))
+    cross_absv_contourf(obj.ax, cross_absv)
     cross_theta_contour(obj.ax, cross_theta)
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
@@ -162,7 +162,7 @@ def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n
 def draw_time_rh_uv_theta(rh, u, v, theta, **products_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
-    times = rh.stda.get_times()
+    times = rh.stda.fcst_time
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
@@ -185,7 +185,7 @@ def draw_time_rh_uv_theta(rh, u, v, theta, **products_kwargs):
 def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  **products_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
-    times = rh.stda.get_times()
+    times = rh.stda.fcst_time
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
