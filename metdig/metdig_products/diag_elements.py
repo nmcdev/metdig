@@ -5,16 +5,6 @@ import datetime
 import numpy as np
 import pandas as pd
 
-import cartopy.crs as ccrs
-import matplotlib.pyplot as plt
-
-import metdig.metdig_graphics.pallete_set as pallete_set
-import metdig.metdig_graphics.draw_method as draw_method
-import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
-from metdig.metdig_graphics.lib.utility import get_imgbuf_from_fig
-
-from scipy.ndimage import gaussian_filter
-
 from metdig.metdig_graphics.barbs_method import *
 from metdig.metdig_graphics.contour_method import *
 from metdig.metdig_graphics.contourf_method import *

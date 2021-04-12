@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 import metdig.metdig_graphics.pallete_set as pallete_set
-import metdig.metdig_graphics.draw_method as draw_method
 
 
 def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,

@@ -3,19 +3,7 @@
 import os
 import datetime
 import numpy as np
-from numpy.lib.function_base import select
 import pandas as pd
-
-import cartopy.crs as ccrs
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.colors as col
-import matplotlib.patches as mpatches
-
-import metdig.metdig_graphics.pallete_set as pallete_set
-import metdig.metdig_graphics.draw_method as draw_method
-import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
-from metdig.metdig_graphics.lib.utility import get_imgbuf_from_fig
 
 from metdig.metdig_graphics.barbs_method import *
 from metdig.metdig_graphics.contour_method import *
