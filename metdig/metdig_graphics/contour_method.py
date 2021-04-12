@@ -9,14 +9,13 @@ from matplotlib.colors import BoundaryNorm, ListedColormap
 import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
-import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
 from metdig.metdig_utl import numpy_units_convert
 
 
 def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
-               add_clabel=True,
+               add_clabel=True, cb_fontsize=20, cb_fmt='%.0f', cb_colors='black',
                levels=None, colors='black', transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
     """[graphics层绘制contour平面图通用方法]
 
@@ -25,11 +24,14 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
         stda ([type]): [stda标准格式]
         xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
         ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
-        draw_units (str, optional): [绘图时单位]. Defaults to ''.
+        draw_units (str, optional): [绘图时单位，如果不传则不进行单位转换，默认用stda中的单位]. Defaults to ''.
         add_clabel (bool, optional): [是否调用plt.clabel]. Defaults to True.
-        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        cb_fontsize (int, optional): [clabel字体大小]. Defaults to None.
+        cb_fmt (str, optional): [clabel字体格式]. Defaults to None.
+        cb_colors (str, optional): [clabel字体颜色]. Defaults to None.
         levels (list, optional): [description]. Defaults to None.
         colors (str, optional): [description]. Defaults to 'black'.
+        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
         linewidths (int, optional): [description]. Defaults to 2.
     """
     x = stda[xdim].values
@@ -37,12 +39,10 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
     z = stda.squeeze().transpose(ydim, xdim).values
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], draw_units)
 
-    if levels:
-        img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
-    else:
-        img = ax.contour(x, y, z, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+    img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+        plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
 
 
 ############################################################################################################################

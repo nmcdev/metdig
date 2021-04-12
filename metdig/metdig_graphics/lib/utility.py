@@ -263,22 +263,29 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
     return ret
 
 def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal',  **kwargs):
-    '''
-    ticks: colorbar刻度
-    label: colorbar标题
-    pos: bottom图片ax的正下方，该参数与rect互斥，如果rect填写，则pos不生效
-    rect: 4-tuple of floats *rect* = ``[left, bottom, width, height]``.
-    orientation: horizontal vertical
-    '''
+    """[summary]
+
+    Args:
+        ax ([type]): [description]
+        img ([type]): [description]
+        ticks ([list], optional): [colorbar刻度]. Defaults to None.
+        label (str, optional): [colorbar标题]. Defaults to ''.
+        label_size (int, optional): [description]. Defaults to 20.
+        pos (str, optional): [bottom right; 如果rect填写，则pos不生效]. Defaults to 'bottom'.
+        rect ([type], optional): [4-tuple of floats *rect* = ``[left, bottom, width, height]``.]. Defaults to None.
+        orientation (str, optional): [horizontal vertical; 如果pos='bottom'，则强制为'horizontal'; 如果pos='right'，则强制为vertical; 如果rect填写，才根据参数设置]. Defaults to 'horizontal'.
+    """
     if rect:
         cax = plt.axes(rect)
     else:
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l, b - h * 0.05, w, h * 0.02])
+            orientation='horizontal'
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w, b, 0.015, h])
+            orientation='vertical'
 
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')

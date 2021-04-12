@@ -9,14 +9,13 @@ from matplotlib.colors import BoundaryNorm, ListedColormap
 import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
-import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
 from metdig.metdig_utl import numpy_units_convert
 
 
 def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
-                  add_colorbar=True, cb_pos='bottom', cb_ticks=None,
+                  add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                   levels=None, cmap='jet', extend='both', transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     """[graphics层绘制pcolormesh平面图通用方法]
 
@@ -25,16 +24,17 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
         stda ([type]): [stda标准格式]
         xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
         ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
-        draw_units (str, optional): [绘图时单位]. Defaults to ''.
+        draw_units (str, optional): [绘图时单位，如果不传则不进行单位转换，默认用stda中的单位]. Defaults to ''.
         add_colorbar (bool, optional): [是否绘制colorbar]. Defaults to True.
         cb_pos (str, optional): [colorbar的位置]. Defaults to 'bottom'.
         cb_ticks ([type], optional): [colorbar的刻度]. Defaults to None.
-        levels ([type], optional): [description]. Defaults to None.
+        cb_label ([type], optional): [colorbar的label，如果不传则自动进行var_cn_name和var_units拼接]. Defaults to None.
+        levels ([list], optional): [description]. Defaults to None.
         cmap (str, optional): [description]. Defaults to 'jet'.
         extend (str, optional): [description]. Defaults to 'both'.
         transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
         alpha (float, optional): [description]. Defaults to 0.5.
-    """    
+    """
     x = stda[xdim].values
     y = stda[ydim].values
     z = stda.squeeze().transpose(ydim, xdim).values
@@ -42,8 +42,12 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=cb_ticks, extend=extend, label='{}({})'.format(stda.attrs['var_name'], z_units))
+        cb_units = stda.attrs['var_units'] if not draw_units else draw_units
+        cb_name = stda.attrs['var_cn_name']
+        cb_label = '{}({})'.format(cb_name, cb_units) if not cb_label else cb_label
+        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
 
 
 ############################################################################################################################
