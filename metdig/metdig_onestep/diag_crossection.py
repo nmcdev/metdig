@@ -56,6 +56,7 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     pressure = mdgstda.gridstda_full_like_by_levels(cross_theta, cross_theta['level'].values)
     cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
         drawret = draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -113,6 +114,7 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
     cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
         drawret = draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -163,6 +165,7 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
     cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
         drawret = draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -215,6 +218,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
     cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
         drawret = draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -262,6 +266,7 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     _, pressure = xr.broadcast(cross_rh, cross_tmp['level'])
     cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
 
     cross_rh = cross_rh.where(cross_rh < 100, 100)  # 大于100的赋值成100
 
@@ -332,6 +337,7 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     _, pressure = xr.broadcast(v, v['level'])
     terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)
+    terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 

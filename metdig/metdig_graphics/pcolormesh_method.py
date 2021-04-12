@@ -15,6 +15,41 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 from metdig.metdig_utl import numpy_units_convert
 
 
+def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
+                  add_colorbar=True, cb_pos='bottom', cb_ticks=None,
+                  levels=None, cmap='jet', extend='both', transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+    """[graphics层绘制pcolormesh平面图通用方法]
+
+    Args:
+        ax ([type]): [description]
+        stda ([type]): [stda标准格式]
+        xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
+        ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
+        draw_units (str, optional): [绘图时单位]. Defaults to ''.
+        add_colorbar (bool, optional): [是否绘制colorbar]. Defaults to True.
+        cb_pos (str, optional): [colorbar的位置]. Defaults to 'bottom'.
+        cb_ticks ([type], optional): [colorbar的刻度]. Defaults to None.
+        levels ([type], optional): [description]. Defaults to None.
+        cmap (str, optional): [description]. Defaults to 'jet'.
+        extend (str, optional): [description]. Defaults to 'both'.
+        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        alpha (float, optional): [description]. Defaults to 0.5.
+    """    
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], draw_units)
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=cb_ticks, extend=extend, label='{}({})'.format(stda.attrs['var_name'], z_units))
+
+
+############################################################################################################################
+# 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
+############################################################################################################################
+
 def vvel_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '0.1*Pa/s')
@@ -185,6 +220,7 @@ def qpf_pcolormesh(ax, stda, add_colorbar=True, valid_time=24, transform=ccrs.Pl
     if add_colorbar:
         utl.add_colorbar(ax, img, label='{}h precipitation (mm)'.format(valid_time), extend='max')
 
+
 def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas, add_colorbar=True, valid_time=24, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     # 雨
     stda = rain_snow_sleet_stdas[0]
@@ -238,6 +274,7 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas, add_colorbar=True, val
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.25, .02], extend='max')
+
 
 '''
 def rain_pcolormesh(ax, stda, add_colorbar=False, valid_time=24, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):

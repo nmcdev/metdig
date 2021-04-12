@@ -5,7 +5,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from metdig.metdig_graphics.bars_method import *
+from metdig.metdig_graphics.barbs_method import *
 from metdig.metdig_graphics.contour_method import *
 from metdig.metdig_graphics.contourf_method import *
 from metdig.metdig_graphics.pcolormesh_method import *
@@ -23,8 +23,11 @@ def draw_hgt_uv_tcwv(hgt, u, v, tcwv, map_extent=(60, 145, 15, 55), **products_k
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
     png_name = '{2}_位势高度场_风场_整层可降水量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    draw_argv = [(tcwv, tcwv_pcolormesh), ((u, v), uv_barbs), (hgt, hgt_contour)]
-    return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    tcwv_pcolormesh(obj.ax, tcwv)
+    uv_barbs(obj.ax, u, v)
+    hgt_contour(obj.ax, hgt)
+    return obj.save()
 
 
 def draw_hgt_uv_rh(hgt, u, v, rh, map_extent=(60, 145, 15, 55), **products_kwargs):
@@ -38,8 +41,11 @@ def draw_hgt_uv_rh(hgt, u, v, rh, map_extent=(60, 145, 15, 55), **products_kwarg
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
     png_name = '{2}_位势高度场_风场_相对湿度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    draw_argv = [(rh, rh_pcolormesh), ((u, v), uv_barbs), (hgt, hgt_contour)]
-    return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    rh_pcolormesh(obj.ax, rh)
+    uv_barbs(obj.ax, u, v)
+    hgt_contour(obj.ax, hgt)
+    return obj.save()
 
 
 def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55), **products_kwargs):
@@ -53,8 +59,11 @@ def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55), **products_k
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
     png_name = '{2}_位势高度_风_绝对湿度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    draw_argv = [(spfh, spfh_pcolormesh), ((u, v), uv_barbs), (hgt, hgt_contour)]
-    return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    spfh_pcolormesh(obj.ax, spfh)
+    uv_barbs(obj.ax, u, v)
+    hgt_contour(obj.ax, hgt)
+    return obj.save()
 
 
 def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55), **products_kwargs):
@@ -68,5 +77,8 @@ def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55), **products_k
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
     png_name = '{2}_位势高度场_风场_水汽通量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    draw_argv = [(wvfl, wvfl_pcolormesh), ((u, v), uv_barbs), (hgt, hgt_contour)]
-    return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    wvfl_pcolormesh(obj.ax, wvfl)
+    uv_barbs(obj.ax, u, v)
+    hgt_contour(obj.ax, hgt)
+    return obj.save()

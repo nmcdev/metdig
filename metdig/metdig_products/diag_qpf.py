@@ -17,7 +17,7 @@ import metdig.metdig_graphics.draw_method as draw_method
 import metdig.metdig_graphics.lib.utl_plotmap as utl_plotmap
 from metdig.metdig_graphics.lib.utility import get_imgbuf_from_fig
 
-from metdig.metdig_graphics.bars_method import *
+from metdig.metdig_graphics.barbs_method import *
 from metdig.metdig_graphics.contour_method import *
 from metdig.metdig_graphics.contourf_method import *
 from metdig.metdig_graphics.pcolormesh_method import *
@@ -37,8 +37,10 @@ def draw_hgt_rain(hgt, rain, map_extent=(60, 145, 15, 55), **products_kwargs):
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时(降水{3}小时)\nwww.nmc.cn'.format(init_time, fcst_time, fhour, fhour + 12)
     png_name = '{2}_高度场_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
-    draw_argv = [(hgt, hgt_contour, ), (rain, qpf_pcolormesh,  {'valid_time': valid_time})]
-    return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    hgt_contour(obj.ax, hgt)
+    qpf_pcolormesh(obj.ax, rain, valid_time=valid_time)
+    return obj.save()
 
 def draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=(60, 145, 15, 55),  **products_kwargs):
     init_time = pd.to_datetime(rain.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -52,8 +54,10 @@ def draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=(60, 145, 15, 55), 
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
     png_name = '{2}_海平面气压_{3}小时降水_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), valid_time)
 
-    draw_argv = [((rain, snow, sleet), rain_snow_sleet_pcolormesh, {'valid_time': valid_time}), (prmsl, prmsl_contour)]
-    return horizontal_compose(draw_argv, title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **products_kwargs)
+    rain_snow_sleet_pcolormesh(obj.ax, (rain, snow, sleet), valid_time=valid_time)
+    prmsl_contour(obj.ax, prmsl)
+    return obj.save()
 
 
 '''

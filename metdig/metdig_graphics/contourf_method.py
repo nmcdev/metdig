@@ -15,7 +15,45 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 from metdig.metdig_utl import numpy_units_convert
 
 
-def div_contourf(ax, stda, add_colorbar=True, levels=np.arange(-10, -1), cmap='Blues_r', extend='both', transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+def contourf_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
+                add_colorbar=True, cb_pos='bottom', cb_ticks=None,
+                levels=None, cmap='jet', extend='both', transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+    """[graphics层绘制contourf平面图通用方法]
+
+    Args:
+        ax ([type]): [description]
+        stda ([type]): [stda标准格式]
+        xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
+        ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
+        draw_units (str, optional): [绘图时单位]. Defaults to ''.
+        add_colorbar (bool, optional): [是否绘制colorbar]. Defaults to True.
+        cb_pos (str, optional): [colorbar的位置]. Defaults to 'bottom'.
+        cb_ticks ([type], optional): [colorbar的刻度]. Defaults to None.
+        levels ([type], optional): [description]. Defaults to None.
+        cmap (str, optional): [description]. Defaults to 'jet'.
+        extend (str, optional): [description]. Defaults to 'both'.
+        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        alpha (float, optional): [description]. Defaults to 0.8.
+    """                
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], draw_units)
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+    img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=cb_ticks, extend=extend, label='{}({})'.format(stda.attrs['var_name'], z_units))
+
+############################################################################################################################
+# 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
+############################################################################################################################
+
+
+def div_contourf(
+        ax, stda, add_colorbar=True, levels=np.arange(-10, -1),
+        cmap='Blues_r', extend='both', transform=ccrs.PlateCarree(),
+        alpha=0.8, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-5/s')
 
@@ -26,7 +64,10 @@ def div_contourf(ax, stda, add_colorbar=True, levels=np.arange(-10, -1), cmap='B
         utl.add_colorbar(ax, img, ticks=levels, label='Divergence 10' + '$^{-5}$s$^{-1}$')
 
 
-def prmsl_contourf(ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5), cmap='guide/cs26', extend='neither', transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+def prmsl_contourf(
+        ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5),
+        cmap='guide/cs26', extend='neither', transform=ccrs.PlateCarree(),
+        alpha=0.8, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'hPa')
 
@@ -37,7 +78,10 @@ def prmsl_contourf(ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5), 
         utl.add_colorbar(ax, img, ticks=levels, label='Mean sea level pressure (hPa)', extend='max')
 
 
-def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120], cmap='met/rain', extend='max', transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+def rain_contourf(
+        ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
+        cmap='met/rain', extend='max', transform=ccrs.PlateCarree(),
+        alpha=0.8, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'mm')
 
@@ -47,3 +91,66 @@ def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
     img = ax.contourf(x, y, z, levels, colors=colors, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max')
+
+
+def cross_absv_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev', **kwargs):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-5*1/s')
+
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='max', pos='right')
+
+
+def cross_rh_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(0, 101, 0.5), cmap=None, **kwargs):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'percent')
+
+    if cmap is None:
+        startcolor = '#1E90FF'  # 蓝色
+        midcolor = '#F1F1F1'  # 白色
+        endcolor = '#696969'  # 灰色
+        cmap = col.LinearSegmentedColormap.from_list('own2', [startcolor, midcolor, endcolor])
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend='max', pos='right')
+
+
+def cross_spfh_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(0, 20, 2), cmap=None, **kwargs):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'g/kg')
+
+    if cmap is None:
+        cmap = 'YlGnBu'
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend='max', pos='right')
+
+
+def cross_mpv_contourf(ax, stda, xy=('lon', 'level'), add_colorbar=True, levels=np.arange(-50, 50, 1), cmap=None, **kwargs):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-6*K*m**2/(s*kg)')
+
+    if cmap is None:
+        cmap = cm_collected.get_cmap('ncl/cmp_flux')
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Moisture Potential Vorticity (10$^{-6}$ K*m**2/(s*kg))',
+                         label_size=15, orientation='vertical', extend='max', pos='right')
+
+
+def cross_terrain_contourf(ax, stda, xy=('lon', 'level'), levels=np.arange(0, 500, 1), cmap=None, **kwargs):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '')
+
+    if cmap is None:
+        startcolor = '#8B4513'  # 棕色
+        endcolor = '#DAC2AD'  # 绿
+        cmap = col.LinearSegmentedColormap.from_list('own3', [endcolor, startcolor])
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)

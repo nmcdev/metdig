@@ -15,6 +15,41 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 from metdig.metdig_utl import numpy_units_convert
 
 
+def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
+               add_clabel=True,
+               levels=None, colors='black', transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+    """[graphics层绘制contour平面图通用方法]
+
+    Args:
+        ax ([type]): [description]
+        stda ([type]): [stda标准格式]
+        xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
+        ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
+        draw_units (str, optional): [绘图时单位]. Defaults to ''.
+        add_clabel (bool, optional): [是否调用plt.clabel]. Defaults to True.
+        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        levels (list, optional): [description]. Defaults to None.
+        colors (str, optional): [description]. Defaults to 'black'.
+        linewidths (int, optional): [description]. Defaults to 2.
+    """
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], draw_units)
+
+    if levels:
+        img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+    else:
+        img = ax.contour(x, y, z, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+
+
+############################################################################################################################
+# 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
+############################################################################################################################
+
+
 def hgt_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'dagpm')
@@ -51,7 +86,11 @@ def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linew
         plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors='black')
 
 
-def tmx_contour(ax, stda, add_clabel=True, levels=[35, 37, 40], colors=['#FF8F00', '#FF6200', '#FF0000'], transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+def tmx_contour(
+        ax, stda, add_clabel=True, levels=[35, 37, 40],
+        colors=['#FF8F00', '#FF6200', '#FF0000'],
+        transform=ccrs.PlateCarree(),
+        linewidths=2, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'degC')
 
@@ -82,3 +121,29 @@ def dt2m_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), alpha=
         if cl is not None:
             for t in cl:
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
+
+
+def cross_theta_contour(ax, stda, xy=('lon', 'level'), add_clabel=True, linewidths=2, **kwargs):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'kelvin')
+
+    levels = np.arange(250, 450, 5)
+
+    img = ax.contour(x, y, z, levels=levels, colors='black', linewidths=linewidths)
+    if add_clabel:
+        plt.clabel(img, levels, fontsize=20, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+
+
+def cross_tmp_contour(ax, stda, xy=('lon', 'level'), add_clabel=True):
+    x, y, z = stda[xy[0]].values, stda[xy[1]].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'degC')
+
+    levels = np.arange(-100, 100, 2)
+
+    img = ax.contour(x, y, z, levels=levels, colors='#A0522D', linewidths=1)
+    if add_clabel:
+        plt.clabel(img, levels, fontsize=16, colors='#A0522D', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+
+    img = ax.contour(x, y, z, levels=[0], colors='k', linewidths=3)
+    if add_clabel:
+        plt.clabel(img, [0], fontsize=22, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
