@@ -11,10 +11,8 @@ import matplotlib.patheffects as mpatheffects
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
-from metdig.metdig_utl import numpy_units_convert
 
-
-def contourf_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
+def contourf_2d(ax, stda, xdim='lon', ydim='lat', 
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                 levels=None, cmap='jet', extend='both', transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
     """[graphics层绘制contourf平面图通用方法]
@@ -24,7 +22,6 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
         stda ([type]): [stda标准格式]
         xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
         ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
-        draw_units (str, optional): [绘图时单位，如果不传则不进行单位转换，默认用stda中的单位]. Defaults to ''.
         add_colorbar (bool, optional): [是否绘制colorbar]. Defaults to True.
         cb_pos (str, optional): [colorbar的位置]. Defaults to 'bottom'.
         cb_ticks ([type], optional): [colorbar的刻度]. Defaults to None.
@@ -38,13 +35,12 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
     x = stda[xdim].values
     y = stda[ydim].values
     z = stda.squeeze().transpose(ydim, xdim).values
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], draw_units)
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
     img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
 
     if add_colorbar:
-        cb_units = stda.attrs['var_units'] if not draw_units else draw_units
+        cb_units = stda.attrs['var_units']
         cb_name = stda.attrs['var_cn_name']
         cb_label = '{}({})'.format(cb_name, cb_units) if not cb_label else cb_label
         utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
@@ -57,8 +53,8 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
 def div_contourf(ax, stda, add_colorbar=True, levels=np.arange(-10, -1),
                  cmap='Blues_r', extend='both', transform=ccrs.PlateCarree(),
                  alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-5/s')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # 1/s
+    z = z * 1e5 # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -70,8 +66,7 @@ def div_contourf(ax, stda, add_colorbar=True, levels=np.arange(-10, -1),
 def prmsl_contourf(ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5),
                    cmap='guide/cs26', extend='neither', transform=ccrs.PlateCarree(),
                    alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'hPa')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # hPa
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -83,8 +78,7 @@ def prmsl_contourf(ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5),
 def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
                   cmap='met/rain', extend='max', transform=ccrs.PlateCarree(),
                   alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'mm')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
 
     cmap = cm_collected.get_cmap(cmap)
     colors = cmap.colors
@@ -95,8 +89,8 @@ def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
 
 
 def cross_absv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev', **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-5*1/s')
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # 1/s
+    z = z * 1e5 # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -106,8 +100,7 @@ def cross_absv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-60, 60, 1
 
 
 def cross_rh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 101, 0.5), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'percent')
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # percent
 
     if cmap is None:
         startcolor = '#1E90FF'  # 蓝色
@@ -121,8 +114,7 @@ def cross_rh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 101, 0.5)
 
 
 def cross_spfh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 20, 2), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'g/kg')
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # g/kg
 
     if cmap is None:
         cmap = 'YlGnBu'
@@ -133,8 +125,8 @@ def cross_spfh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 20, 2),
 
 
 def cross_mpv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-50, 50, 1), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-6*K*m**2/(s*kg)')
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # 1e-6*K*m**2/(s*kg)
+    z = z * 1e6 # 1e-6*K*m**2/(s*kg)
 
     if cmap is None:
         cmap = cm_collected.get_cmap('ncl/cmp_flux')
@@ -147,7 +139,6 @@ def cross_mpv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-50, 50, 1)
 
 def cross_terrain_contourf(ax, stda, levels=np.arange(0, 500, 1), cmap=None, **kwargs):
     x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '')
 
     if cmap is None:
         startcolor = '#8B4513'  # 棕色

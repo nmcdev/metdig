@@ -11,10 +11,8 @@ import matplotlib.patheffects as mpatheffects
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
-from metdig.metdig_utl import numpy_units_convert
 
-
-def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
+def contour_2d(ax, stda, xdim='lon', ydim='lat',
                add_clabel=True, cb_fontsize=20, cb_fmt='%.0f', cb_colors='black',
                levels=None, colors='black', transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
     """[graphics层绘制contour平面图通用方法]
@@ -24,7 +22,6 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
         stda ([type]): [stda标准格式]
         xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
         ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
-        draw_units (str, optional): [绘图时单位，如果不传则不进行单位转换，默认用stda中的单位]. Defaults to ''.
         add_clabel (bool, optional): [是否调用plt.clabel]. Defaults to True.
         cb_fontsize (int, optional): [clabel字体大小]. Defaults to None.
         cb_fmt (str, optional): [clabel字体格式]. Defaults to None.
@@ -37,7 +34,6 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
     x = stda[xdim].values
     y = stda[ydim].values
     z = stda.squeeze().transpose(ydim, xdim).values
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], draw_units)
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
 
@@ -51,8 +47,7 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat', draw_units='',
 
 
 def hgt_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'dagpm')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # dagpm
 
     levels = np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 584, 8), np.arange(580, 604, 4))), np.arange(604, 2000, 8))
     colors = 'black'
@@ -63,8 +58,8 @@ def hgt_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewid
 
 
 def pv_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '1e-6*K*m**2/(s*kg)')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # K*m**2/(s*kg)
+    z = z * 1e6 # 1e-6*K*m**2/(s*kg)
 
     levels = np.arange(0, 25, 1)
     colors = 'black'
@@ -75,8 +70,7 @@ def pv_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidt
 
 
 def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'hPa')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # 'hPa'
 
     levels = np.arange(900, 1100, 2.5)
     colors = 'black'
@@ -86,13 +80,11 @@ def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linew
         plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors='black')
 
 
-def tmx_contour(
-        ax, stda, add_clabel=True, levels=[35, 37, 40],
+def tmx_contour(ax, stda, add_clabel=True, levels=[35, 37, 40],
         colors=['#FF8F00', '#FF6200', '#FF0000'],
         transform=ccrs.PlateCarree(),
         linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'degC')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
 
     img = ax.contour(x, y, z, levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
@@ -103,8 +95,7 @@ def tmx_contour(
 
 
 def dt2m_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'degC')
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
 
     levels = [-16, -12, -10, -8, -6, 6, 8, 10, 12, 16]
     cmap = cm_collected.get_cmap('ncl/BlRe')
@@ -124,8 +115,7 @@ def dt2m_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), alpha=
 
 
 def cross_theta_contour(ax, stda, add_clabel=True, linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'kelvin')
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # kelvin
 
     levels = np.arange(250, 450, 5)
 
@@ -135,8 +125,7 @@ def cross_theta_contour(ax, stda, add_clabel=True, linewidths=2, **kwargs):
 
 
 def cross_tmp_contour(ax, stda, add_clabel=True):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
-    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'degC')
+    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # degC
 
     levels = np.arange(-100, 100, 2)
 

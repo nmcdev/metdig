@@ -11,10 +11,8 @@ import matplotlib.patheffects as mpatheffects
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
-from metdig.metdig_utl import numpy_units_convert
 
-
-def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat', draw_units='',
+def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat', 
              transform=ccrs.PlateCarree(), regrid_shape=20,
              color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),
              **kwargs):
@@ -26,7 +24,6 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat', draw_units='',
         vstda ([type]): [v矢量 stda标准格式]
         xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
         ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
-        draw_units (str, optional): [绘图时单位，如果不传则不进行单位转换，默认用stda中的单位]. Defaults to ''.
         transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
         regrid_shape (int, optional): [description]. Defaults to 20.
         color (str, optional): [description]. Defaults to 'black'.
@@ -38,8 +35,6 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat', draw_units='',
     y = ustda[ydim].values
     u = ustda.squeeze().transpose(ydim, xdim).values * 2.5
     v = vstda.squeeze().transpose(ydim, xdim).values * 2.5
-    u, u_units = numpy_units_convert(u, ustda.attrs['var_units'], draw_units)  # 转换成绘图所需单位
-    v, v_units = numpy_units_convert(v, vstda.attrs['var_units'], draw_units)  # 转换成绘图所需单位
 
     if regrid_shape is None or transform is None:
         # matplotlib
@@ -62,8 +57,6 @@ def uv_barbs(ax, ustda, vstda, color='black', transform=ccrs.PlateCarree(),
     y = ustda['lat'].values
     u = ustda.values.squeeze() * 2.5
     v = vstda.values.squeeze() * 2.5
-    u, u_units = numpy_units_convert(u, ustda.attrs['var_units'], 'm/s')  # 转换成绘图所需单位
-    v, v_units = numpy_units_convert(v, vstda.attrs['var_units'], 'm/s')  # 转换成绘图所需单位
 
     # 绘制
     img = ax.barbs(x, y, u, v, color=color, transform=transform, length=length,
