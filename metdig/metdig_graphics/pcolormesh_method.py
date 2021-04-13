@@ -10,8 +10,10 @@ import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
+from  metdig.metdig_graphics.lib.utility import kwargs_wrapper
 
 
+@kwargs_wrapper
 def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                   levels=None, cmap='jet', extend='both',
@@ -56,6 +58,7 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
 
+@kwargs_wrapper
 def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=[-30, -20, -10, -5, -2.5, -1, -0.5, 0.5, 1, 2.5, 5, 10, 20, 30], cmap='met/vertical_velocity_nws',
@@ -73,6 +76,7 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='Vertical Velocity (0.1*Pa/s)', extend='max')
 
 
+@kwargs_wrapper
 def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                      add_colorbar=True,
                      levels=np.arange(300, 365, 1), cmap='met/theta',
@@ -89,6 +93,7 @@ def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='Theta-E (K)')
 
 
+@kwargs_wrapper
 def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    cmap='met/temp',
@@ -106,6 +111,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='Temperature (°C)')
 
 
+@kwargs_wrapper
 def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=[12, 15, 18, 21, 24, 27, 30], cmap='met/wsp',
@@ -124,6 +130,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max')
 
 
+@kwargs_wrapper
 def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.concatenate((np.arange(25), np.arange(26, 84, 2))), cmap='met/precipitable_water_nws',
@@ -141,6 +148,7 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='(mm)', extend='max')
 
 
+@kwargs_wrapper
 def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',
@@ -158,6 +166,7 @@ def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='(%)', extend='max')
 
 
+@kwargs_wrapper
 def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(2, 24, 0.5), cmap='met/specific_humidity_nws',
@@ -174,6 +183,7 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)')
 
 
+@kwargs_wrapper
 def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(5, 46), cmap='met/wvfl_ctable',
@@ -195,6 +205,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='Water Vapor Flux g/(cm*hPa*s)', extend='max')
 
 
+@kwargs_wrapper
 def tmx_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    cmap='met/temp',
@@ -211,6 +222,7 @@ def tmx_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='°C', extend='both')
 
 
+@kwargs_wrapper
 def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     cmap='met/wind_speed_nws',
@@ -231,6 +243,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=ticks, label='风速 (m/s)', extend='max')
 
 
+@kwargs_wrapper
 def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     cmap='ncl/hotcold_18lev',
@@ -249,6 +262,7 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=ticks, label='°C', extend='both')
 
 
+@kwargs_wrapper
 def qpf_pcolormesh(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                    add_colorbar=True,
                    transform=ccrs.PlateCarree(), alpha=0.5,
@@ -281,6 +295,7 @@ def qpf_pcolormesh(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
         utl.add_colorbar(ax, img, label='{}h precipitation (mm)'.format(valid_time), extend='max')
 
 
+@kwargs_wrapper
 def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat', valid_time=24,
                                add_colorbar=True,
                                transform=ccrs.PlateCarree(), alpha=0.5,

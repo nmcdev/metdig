@@ -10,6 +10,7 @@ import pkg_resources
 import matplotlib.pyplot as plt
 import matplotlib.image as image
 import PIL
+from functools import wraps
 
 pkg_name = 'metdig.metdig_graphics'
 
@@ -290,3 +291,31 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label(label, size=label_size)
+
+
+def kwargs_wrapper(func):
+    '''
+    关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数
+    Example:
+        @kwargs_wrapper()
+        def func(a, b, c=3, d=4, **kwargs):
+            print('c =', c)
+            print('d =', d)
+            print('kwargs =', kwargs)
+
+        func(1, 2, c=-1, d=-1, e=5, kwargs={'c': 4})
+        output:
+        c = 4
+        d = -1
+        kwargs = {'e': 5}
+    '''
+    @wraps(func)
+    def inner(*args, **kwargs):
+        attrs = kwargs.pop('kwargs', None)
+        if attrs:
+            if isinstance(attrs, dict):
+                kwargs.update(**attrs)
+            else:
+                kwargs['kwargs'] = attrs
+        return func(*args, **kwargs)
+    return inner

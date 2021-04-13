@@ -10,8 +10,10 @@ import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
+from  metdig.metdig_graphics.lib.utility import kwargs_wrapper
 
 
+@kwargs_wrapper
 def contourf_2d(ax, stda, xdim='lon', ydim='lat',
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                 levels=None, cmap='jet', extend='both',
@@ -56,6 +58,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 
+@kwargs_wrapper
 def div_contourf(ax, stda, xdim='lon', ydim='lat',
                  add_colorbar=True,
                  levels=np.arange(-10, -1), cmap='Blues_r', extend='both',
@@ -72,6 +75,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='Divergence 10' + '$^{-5}$s$^{-1}$')
 
 
+@kwargs_wrapper
 def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=np.arange(960, 1065, 5), cmap='guide/cs26', extend='neither',
@@ -87,6 +91,7 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='Mean sea level pressure (hPa)', extend='max')
 
 
+@kwargs_wrapper
 def rain_contourf(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels=[0.1, 4, 13, 25, 60, 120], cmap='met/rain', extend='max',
@@ -103,6 +108,7 @@ def rain_contourf(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max')
 
 
+@kwargs_wrapper
 def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
                         levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev',
@@ -119,6 +125,7 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
         utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='max', pos='right')
 
 
+@kwargs_wrapper
 def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
                       add_colorbar=True,
                       levels=np.arange(0, 101, 0.5), cmap=None,
@@ -138,6 +145,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
         utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend='max', pos='right')
 
 
+@kwargs_wrapper
 def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
                         levels=np.arange(0, 20, 2), cmap='YlGnBu',
@@ -153,6 +161,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend='max', pos='right')
 
 
+@kwargs_wrapper
 def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        add_colorbar=True,
                        levels=np.arange(-50, 50, 1), cmap='ncl/cmp_flux',
@@ -170,6 +179,7 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                          label_size=15, orientation='vertical', extend='max', pos='right')
 
 
+@kwargs_wrapper
 def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
                            levels=np.arange(0, 500, 1), cmap=None,
                            **kwargs):

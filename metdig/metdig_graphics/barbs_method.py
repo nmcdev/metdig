@@ -10,8 +10,9 @@ import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
+from  metdig.metdig_graphics.lib.utility import kwargs_wrapper
 
-
+@kwargs_wrapper
 def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
              transform=ccrs.PlateCarree(), regrid_shape=20,
              color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),
@@ -48,7 +49,7 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
 
-
+@kwargs_wrapper
 def uv_barbs(ax, ustda, vstda, color='black', transform=ccrs.PlateCarree(),
              length=6, regrid_shape=20, fill_empty=False, sizes=dict(emptybarb=0.05),
              **kwargs):

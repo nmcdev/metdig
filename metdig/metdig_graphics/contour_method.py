@@ -10,8 +10,10 @@ import matplotlib.patheffects as mpatheffects
 
 import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
+from  metdig.metdig_graphics.lib.utility import kwargs_wrapper
 
 
+@kwargs_wrapper
 def contour_2d(ax, stda, xdim='lon', ydim='lat',
                add_clabel=True, cb_fontsize=20, cb_fmt='%.0f', cb_colors='black',
                levels=None, colors='black',
@@ -51,6 +53,7 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 
+@kwargs_wrapper
 def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=True,
                 levels=np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 584, 8), np.arange(580, 604, 4))), np.arange(604, 2000, 8)),
@@ -66,6 +69,7 @@ def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
 
+@kwargs_wrapper
 def pv_contour(ax, stda, xdim='lon', ydim='lat',
                add_clabel=True,
                levels=np.arange(0, 25, 1), colors='black',
@@ -80,6 +84,7 @@ def pv_contour(ax, stda, xdim='lon', ydim='lat',
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
 
+@kwargs_wrapper
 def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
                   add_clabel=True,
                   levels=np.arange(900, 1100, 2.5), colors='black',
@@ -93,6 +98,7 @@ def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
         plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors='black')
 
 
+@kwargs_wrapper
 def tmx_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=True,
                 levels=[35, 37, 40], colors=['#FF8F00', '#FF6200', '#FF0000'],
@@ -109,6 +115,7 @@ def tmx_contour(ax, stda,  xdim='lon', ydim='lat',
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='white'), mpatheffects.Normal()])
 
 
+@kwargs_wrapper
 def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
                  add_clabel=True,
                  levels=[-16, -12, -10, -8, -6, 6, 8, 10, 12, 16], cmap='ncl/BlRe',
@@ -133,6 +140,7 @@ def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
 
 
+@kwargs_wrapper
 def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
                         add_clabel=True,
                         levels=np.arange(250, 450, 5), colors='black',
@@ -146,6 +154,7 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
         plt.clabel(img, levels, fontsize=20, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
 
 
+@kwargs_wrapper
 def cross_tmp_contour(ax, stda, xdim='lon', ydim='level', add_clabel=True,):
     x = stda[xdim].values
     y = stda[ydim].values
