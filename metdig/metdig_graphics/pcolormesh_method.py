@@ -12,9 +12,11 @@ import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
 
-def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat', 
+def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
-                  levels=None, cmap='jet', extend='both', transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+                  levels=None, cmap='jet', extend='both',
+                  transform=ccrs.PlateCarree(), alpha=0.5,
+                  **kwargs):
     """[graphics层绘制pcolormesh平面图通用方法]
 
     Args:
@@ -37,7 +39,11 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
     z = stda.squeeze().transpose(ydim, xdim).values
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
-    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+
+    if transform is None:
+        img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, alpha=alpha, **kwargs)
+    else:
+        img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
 
     if add_colorbar:
         cb_units = stda.attrs['var_units']
@@ -50,33 +56,49 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
 
-def vvel_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # Pa/s
+def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    levels=[-30, -20, -10, -5, -2.5, -1, -0.5, 0.5, 1, 2.5, 5, 10, 20, 30], cmap='met/vertical_velocity_nws',
+                    transform=ccrs.PlateCarree(), alpha=0.5,
+                    **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # Pa/s
     z = z * 10  # 0.1*Pa/s
 
-    levels = [-30, -20, -10, -5, -2.5, -1, -0.5, 0.5, 1, 2.5, 5, 10, 20, 30]
-    cmap, norm = cm_collected.get_cmap('met/vertical_velocity_nws', extend='both', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='Vertical Velocity (0.1*Pa/s)', extend='max')
 
 
-def theta_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # K
+def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                     add_colorbar=True,
+                     levels=np.arange(300, 365, 1), cmap='met/theta',
+                     transform=ccrs.PlateCarree(), alpha=0.5,
+                     **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # K
 
-    levels = np.arange(300, 365, 1)
-    cmap, norm = cm_collected.get_cmap('met/theta', extend='both', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Theta-E (K)')
 
 
-def tmp_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
+def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,
+                   cmap='met/temp',
+                   transform=ccrs.PlateCarree(), alpha=0.5,
+                   **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # degC
 
-    cmap = cm_collected.get_cmap('met/temp')
+    cmap = cm_collected.get_cmap(cmap)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
@@ -84,11 +106,16 @@ def tmp_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), al
         utl.add_colorbar(ax, img, label='Temperature (°C)')
 
 
-def wsp_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # m/s
+def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,
+                   levels=[12, 15, 18, 21, 24, 27, 30], cmap='met/wsp',
+                   transform=ccrs.PlateCarree(), alpha=0.5,
+                   **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # m/s
 
-    levels = [12, 15, 18, 21, 24, 27, 30]
-    cmap, norm = cm_collected.get_cmap('met/wsp', extend='neither', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels)
     if levels:
         z = np.where(z >= levels[0], z, np.nan)
 
@@ -97,11 +124,16 @@ def wsp_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), al
         utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max')
 
 
-def tcwv_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
+def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    levels=np.concatenate((np.arange(25), np.arange(26, 84, 2))), cmap='met/precipitable_water_nws',
+                    transform=ccrs.PlateCarree(), alpha=0.5,
+                    **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # mm
 
-    levels = np.concatenate((np.arange(25), np.arange(26, 84, 2)))
-    cmap, norm = cm_collected.get_cmap('met/precipitable_water_nws', extend='both', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
@@ -109,11 +141,16 @@ def tcwv_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), a
         utl.add_colorbar(ax, img, label='(mm)', extend='max')
 
 
-def rh_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # percent
+def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',
+                  transform=ccrs.PlateCarree(), alpha=0.5,
+                  **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # percent
 
-    levels = [0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99]
-    cmap, norm = cm_collected.get_cmap('met/relative_humidity_nws', extend='max', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
@@ -121,22 +158,33 @@ def rh_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alp
         utl.add_colorbar(ax, img, label='(%)', extend='max')
 
 
-def spfh_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # g/kg
+def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    levels=np.arange(2, 24, 0.5), cmap='met/specific_humidity_nws',
+                    transform=ccrs.PlateCarree(), alpha=0.8,
+                    **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # g/kg
 
-    levels = np.arange(2, 24, 0.5)
-    cmap, norm = cm_collected.get_cmap('met/specific_humidity_nws', extend='both', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)')
 
 
-def wvfl_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # g/(cm*hPa*s)
+def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    levels=np.arange(5, 46), cmap='met/wvfl_ctable',
+                    transform=ccrs.PlateCarree(), alpha=0.8,
+                    **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # g/(cm*hPa*s)
 
     levels = np.arange(5, 46).tolist()
-    cmap, norm = cm_collected.get_cmap('met/wvfl_ctable', extend='max', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     if levels:
@@ -147,21 +195,33 @@ def wvfl_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), a
         utl.add_colorbar(ax, img, label='Water Vapor Flux g/(cm*hPa*s)', extend='max')
 
 
-def tmx_pcolormesh(ax, stda, add_colorbar=True, add_city=False, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
+def tmx_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,
+                   cmap='met/temp',
+                   transform=ccrs.PlateCarree(), alpha=0.5,
+                   **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # degC
 
-    cmap = cm_collected.get_cmap('met/temp')
+    cmap = cm_collected.get_cmap(cmap)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, vmin=-45, vmax=45, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='°C', extend='both')
 
 
-def gust_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=1, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # m/s
+def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    cmap='met/wind_speed_nws',
+                    transform=ccrs.PlateCarree(), alpha=1,
+                    **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # m/s
 
     # levels = [0, 3.6, 3.6, 10.8, 10.8, 17.2, 17.2, 24.5, 24.5, 32.7, 32.7, 42] # 未用到？
-    cmap = cm_collected.get_cmap('met/wind_speed_nws')
+    cmap = cm_collected.get_cmap(cmap)
 
     z = np.where(z < 7.9, np.nan, z)
 
@@ -171,10 +231,16 @@ def gust_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), a
         utl.add_colorbar(ax, img, ticks=ticks, label='风速 (m/s)', extend='max')
 
 
-def dt2m_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=1, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
+def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    cmap='ncl/hotcold_18lev',
+                    transform=ccrs.PlateCarree(), alpha=1,
+                    **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # degC
 
-    cmap = cm_collected.get_cmap('ncl/hotcold_18lev')
+    cmap = cm_collected.get_cmap(cmap)
     cmap = cm_collected.linearized_cmap(cmap)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, vmin=-16, vmax=16, **kwargs)
@@ -183,8 +249,13 @@ def dt2m_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), a
         utl.add_colorbar(ax, img, ticks=ticks, label='°C', extend='both')
 
 
-def qpf_pcolormesh(ax, stda, add_colorbar=True, valid_time=24, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
+def qpf_pcolormesh(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
+                   add_colorbar=True,
+                   transform=ccrs.PlateCarree(), alpha=0.5,
+                   **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # mm
 
     if valid_time == 24:
         levels = np.concatenate((
@@ -210,10 +281,15 @@ def qpf_pcolormesh(ax, stda, add_colorbar=True, valid_time=24, transform=ccrs.Pl
         utl.add_colorbar(ax, img, label='{}h precipitation (mm)'.format(valid_time), extend='max')
 
 
-def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas, add_colorbar=True, valid_time=24, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat', valid_time=24,
+                               add_colorbar=True,
+                               transform=ccrs.PlateCarree(), alpha=0.5,
+                               **kwargs):
     # 雨
     stda = rain_snow_sleet_stdas[0]
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # mm
 
     if valid_time == 24:
         levels = [0.1, 10, 25, 50, 100, 250, 800]
@@ -230,7 +306,9 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas, add_colorbar=True, val
 
     # 雪
     stda = rain_snow_sleet_stdas[1]
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # mm
 
     if valid_time == 24:
         levels = [0.1, 2.5, 5, 10, 20, 30]
@@ -247,7 +325,9 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas, add_colorbar=True, val
 
     # 雨夹雪
     stda = rain_snow_sleet_stdas[2]
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # mm
 
     if valid_time == 24:
         levels = [0.1, 10, 25, 50, 100, 250]
@@ -260,4 +340,3 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas, add_colorbar=True, val
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.25, .02], extend='max')
-

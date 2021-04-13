@@ -12,7 +12,7 @@ import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
 
-def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat', 
+def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
              transform=ccrs.PlateCarree(), regrid_shape=20,
              color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),
              **kwargs):
@@ -25,7 +25,7 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
         xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
         ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
         transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
-        regrid_shape (int, optional): [description]. Defaults to 20.
+        regrid_shape (int, optional): [cartopy下独有的参数，仅在ax的transform存在的情况下生效]. Defaults to 20.
         color (str, optional): [description]. Defaults to 'black'.
         length (int, optional): [description]. Defaults to 6.
         fill_empty (bool, optional): [description]. Defaults to False.

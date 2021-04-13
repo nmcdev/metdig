@@ -14,7 +14,9 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 
 def contour_2d(ax, stda, xdim='lon', ydim='lat',
                add_clabel=True, cb_fontsize=20, cb_fmt='%.0f', cb_colors='black',
-               levels=None, colors='black', transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+               levels=None, colors='black',
+               transform=ccrs.PlateCarree(), linewidths=2,
+               **kwargs):
     """[graphics层绘制contour平面图通用方法]
 
     Args:
@@ -35,7 +37,10 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
     y = stda[ydim].values
     z = stda.squeeze().transpose(ydim, xdim).values
 
-    img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+    if transform is None:
+        img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
+    else:
+        img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
 
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
@@ -46,45 +51,55 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 
-def hgt_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # dagpm
-
-    levels = np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 584, 8), np.arange(580, 604, 4))), np.arange(604, 2000, 8))
-    colors = 'black'
+def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
+                add_clabel=True,
+                levels=np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 584, 8), np.arange(580, 604, 4))), np.arange(604, 2000, 8)),
+                colors='black',
+                transform=ccrs.PlateCarree(), linewidths=2,
+                **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # dagpm
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
 
-def pv_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # K*m**2/(s*kg)
-    z = z * 1e6 # 1e-6*K*m**2/(s*kg)
-
-    levels = np.arange(0, 25, 1)
-    colors = 'black'
+def pv_contour(ax, stda, xdim='lon', ydim='lat',
+               add_clabel=True,
+               levels=np.arange(0, 25, 1), colors='black',
+               transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # K*m**2/(s*kg)
+    z = z * 1e6  # 1e-6*K*m**2/(s*kg)
 
     img = ax.contour(x, y, z, levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
 
-def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # 'hPa'
-
-    levels = np.arange(900, 1100, 2.5)
-    colors = 'black'
+def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
+                  add_clabel=True,
+                  levels=np.arange(900, 1100, 2.5), colors='black',
+                  transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # 'hPa'
 
     img = ax.contour(x, y, z, levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors='black')
 
 
-def tmx_contour(ax, stda, add_clabel=True, levels=[35, 37, 40],
-        colors=['#FF8F00', '#FF6200', '#FF0000'],
-        transform=ccrs.PlateCarree(),
-        linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
+def tmx_contour(ax, stda,  xdim='lon', ydim='lat',
+                add_clabel=True,
+                levels=[35, 37, 40], colors=['#FF8F00', '#FF6200', '#FF0000'],
+                transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # degC
 
     img = ax.contour(x, y, z, levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
@@ -94,11 +109,15 @@ def tmx_contour(ax, stda, add_clabel=True, levels=[35, 37, 40],
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='white'), mpatheffects.Normal()])
 
 
-def dt2m_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # degC
+def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
+                 add_clabel=True,
+                 levels=[-16, -12, -10, -8, -6, 6, 8, 10, 12, 16], cmap='ncl/BlRe',
+                 transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # degC
 
-    levels = [-16, -12, -10, -8, -6, 6, 8, 10, 12, 16]
-    cmap = cm_collected.get_cmap('ncl/BlRe')
+    cmap = cm_collected.get_cmap(cmap)
     cmap = cm_collected.linearized_cmap(cmap)
 
     img = ax.contour(x, y, z, levels=levels, cmap=cmap, transform=transform, alpha=alpha, vmin=-16, vmax=16, **kwargs)
@@ -114,18 +133,23 @@ def dt2m_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), alpha=
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
 
 
-def cross_theta_contour(ax, stda, add_clabel=True, linewidths=2, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # kelvin
+def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
+                        add_clabel=True,
+                        levels=np.arange(250, 450, 5), colors='black',
+                        linewidths=2, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # kelvin
 
-    levels = np.arange(250, 450, 5)
-
-    img = ax.contour(x, y, z, levels=levels, colors='black', linewidths=linewidths)
+    img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths)
     if add_clabel:
         plt.clabel(img, levels, fontsize=20, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
 
 
-def cross_tmp_contour(ax, stda, add_clabel=True):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # degC
+def cross_tmp_contour(ax, stda, xdim='lon', ydim='level', add_clabel=True,):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # degC
 
     levels = np.arange(-100, 100, 2)
 

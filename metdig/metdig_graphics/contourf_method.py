@@ -12,9 +12,11 @@ import metdig.metdig_graphics.lib.utility as utl
 import metdig.metdig_graphics.cmap.cm as cm_collected
 
 
-def contourf_2d(ax, stda, xdim='lon', ydim='lat', 
+def contourf_2d(ax, stda, xdim='lon', ydim='lat',
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
-                levels=None, cmap='jet', extend='both', transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+                levels=None, cmap='jet', extend='both',
+                transform=ccrs.PlateCarree(), alpha=0.8,
+                **kwargs):
     """[graphics层绘制contourf平面图通用方法]
 
     Args:
@@ -37,7 +39,11 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
     z = stda.squeeze().transpose(ydim, xdim).values
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
-    img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
+
+    if transform is None:
+        img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, alpha=alpha, extend=extend, **kwargs)
+    else:
+        img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
 
     if add_colorbar:
         cb_units = stda.attrs['var_units']
@@ -50,11 +56,14 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 
-def div_contourf(ax, stda, add_colorbar=True, levels=np.arange(-10, -1),
-                 cmap='Blues_r', extend='both', transform=ccrs.PlateCarree(),
-                 alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # 1/s
-    z = z * 1e5 # 1e-5/s
+def div_contourf(ax, stda, xdim='lon', ydim='lat',
+                 add_colorbar=True,
+                 levels=np.arange(-10, -1), cmap='Blues_r', extend='both',
+                 transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # 1/s
+    z = z * 1e5  # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -63,10 +72,13 @@ def div_contourf(ax, stda, add_colorbar=True, levels=np.arange(-10, -1),
         utl.add_colorbar(ax, img, ticks=levels, label='Divergence 10' + '$^{-5}$s$^{-1}$')
 
 
-def prmsl_contourf(ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5),
-                   cmap='guide/cs26', extend='neither', transform=ccrs.PlateCarree(),
-                   alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # hPa
+def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,
+                   levels=np.arange(960, 1065, 5), cmap='guide/cs26', extend='neither',
+                   transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # hPa
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -75,10 +87,13 @@ def prmsl_contourf(ax, stda, add_colorbar=True, levels=np.arange(960, 1065, 5),
         utl.add_colorbar(ax, img, ticks=levels, label='Mean sea level pressure (hPa)', extend='max')
 
 
-def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
-                  cmap='met/rain', extend='max', transform=ccrs.PlateCarree(),
-                  alpha=0.8, **kwargs):
-    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze() # mm
+def rain_contourf(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  levels=[0.1, 4, 13, 25, 60, 120], cmap='met/rain', extend='max',
+                  transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # mm
 
     cmap = cm_collected.get_cmap(cmap)
     colors = cmap.colors
@@ -88,9 +103,14 @@ def rain_contourf(ax, stda, add_colorbar=True, levels=[0.1, 4, 13, 25, 60, 120],
         utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max')
 
 
-def cross_absv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev', **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # 1/s
-    z = z * 1e5 # 1e-5/s
+def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
+                        add_colorbar=True,
+                        levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev',
+                        **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # 1/s
+    z = z * 1e5  # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -99,8 +119,13 @@ def cross_absv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-60, 60, 1
         utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='max', pos='right')
 
 
-def cross_rh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 101, 0.5), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # percent
+def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
+                      add_colorbar=True,
+                      levels=np.arange(0, 101, 0.5), cmap=None,
+                      **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # percent
 
     if cmap is None:
         startcolor = '#1E90FF'  # 蓝色
@@ -113,23 +138,31 @@ def cross_rh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 101, 0.5)
         utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend='max', pos='right')
 
 
-def cross_spfh_contourf(ax, stda, add_colorbar=True, levels=np.arange(0, 20, 2), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # g/kg
+def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
+                        add_colorbar=True,
+                        levels=np.arange(0, 20, 2), cmap='YlGnBu',
+                        **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # g/kg
 
-    if cmap is None:
-        cmap = 'YlGnBu'
+    cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend='max', pos='right')
 
 
-def cross_mpv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-50, 50, 1), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze() # 1e-6*K*m**2/(s*kg)
-    z = z * 1e6 # 1e-6*K*m**2/(s*kg)
+def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
+                       add_colorbar=True,
+                       levels=np.arange(-50, 50, 1), cmap='ncl/cmp_flux',
+                       **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values  # 1e-6*K*m**2/(s*kg)
+    z = z * 1e6  # 1e-6*K*m**2/(s*kg)
 
-    if cmap is None:
-        cmap = cm_collected.get_cmap('ncl/cmp_flux')
+    cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
     if add_colorbar:
@@ -137,8 +170,12 @@ def cross_mpv_contourf(ax, stda, add_colorbar=True, levels=np.arange(-50, 50, 1)
                          label_size=15, orientation='vertical', extend='max', pos='right')
 
 
-def cross_terrain_contourf(ax, stda, levels=np.arange(0, 500, 1), cmap=None, **kwargs):
-    x, y, z = stda['lon'].values, stda['level'].values, stda.values.squeeze()
+def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
+                           levels=np.arange(0, 500, 1), cmap=None,
+                           **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.squeeze().transpose(ydim, xdim).values
 
     if cmap is None:
         startcolor = '#8B4513'  # 棕色
