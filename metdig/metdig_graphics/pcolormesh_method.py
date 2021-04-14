@@ -1,4 +1,5 @@
 import numpy as np
+import xarray as xr
 
 import cartopy.crs as ccrs
 import matplotlib as mpl
@@ -23,9 +24,9 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
 
     Args:
         ax ([type]): [description]
-        stda ([type]): [stda标准格式]
-        xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
-        ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
+        stda ([type]): [u矢量 stda标准格式]
+        xdim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lon'.
+        ydim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lat'.
         add_colorbar (bool, optional): [是否绘制colorbar]. Defaults to True.
         cb_pos (str, optional): [colorbar的位置]. Defaults to 'bottom'.
         cb_ticks ([type], optional): [colorbar的刻度]. Defaults to None.
@@ -33,24 +34,22 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
         levels ([list], optional): [description]. Defaults to None.
         cmap (str, optional): [description]. Defaults to 'jet'.
         extend (str, optional): [description]. Defaults to 'both'.
-        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         alpha (float, optional): [description]. Defaults to 0.5.
     """
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
-    if transform is None:
+    if transform is None or (xdim != 'lon' and ydim != 'lat'):
         img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, alpha=alpha, **kwargs)
     else:
         img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
 
     if add_colorbar:
-        cb_units = stda.attrs['var_units']
-        cb_name = stda.attrs['var_cn_name']
-        cb_label = '{}({})'.format(cb_name, cb_units) if not cb_label else cb_label
+        cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
         utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
 
 
@@ -64,9 +63,9 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     levels=[-30, -20, -10, -5, -2.5, -1, -0.5, 0.5, 1, 2.5, 5, 10, 20, 30], cmap='met/vertical_velocity_nws',
                     transform=ccrs.PlateCarree(), alpha=0.5,
                     **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # Pa/s
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # Pa/s
     z = z * 10  # 0.1*Pa/s
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
@@ -82,9 +81,9 @@ def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                      levels=np.arange(300, 365, 1), cmap='met/theta',
                      transform=ccrs.PlateCarree(), alpha=0.5,
                      **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # K
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # K
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
@@ -99,9 +98,9 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    cmap='met/temp',
                    transform=ccrs.PlateCarree(), alpha=0.5,
                    **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # degC
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
@@ -117,9 +116,9 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    levels=[12, 15, 18, 21, 24, 27, 30], cmap='met/wsp',
                    transform=ccrs.PlateCarree(), alpha=0.5,
                    **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # m/s
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels)
     if levels:
@@ -136,9 +135,9 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     levels=np.concatenate((np.arange(25), np.arange(26, 84, 2))), cmap='met/precipitable_water_nws',
                     transform=ccrs.PlateCarree(), alpha=0.5,
                     **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
@@ -154,9 +153,9 @@ def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',
                   transform=ccrs.PlateCarree(), alpha=0.5,
                   **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # percent
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # percent
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
@@ -172,9 +171,9 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     levels=np.arange(2, 24, 0.5), cmap='met/specific_humidity_nws',
                     transform=ccrs.PlateCarree(), alpha=0.8,
                     **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # g/kg
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
@@ -189,9 +188,9 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     levels=np.arange(5, 46), cmap='met/wvfl_ctable',
                     transform=ccrs.PlateCarree(), alpha=0.8,
                     **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # g/(cm*hPa*s)
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # g/(cm*hPa*s)
 
     levels = np.arange(5, 46).tolist()
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
@@ -211,9 +210,9 @@ def tmx_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    cmap='met/temp',
                    transform=ccrs.PlateCarree(), alpha=0.5,
                    **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # degC
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -228,9 +227,9 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     cmap='met/wind_speed_nws',
                     transform=ccrs.PlateCarree(), alpha=1,
                     **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # m/s
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
 
     # levels = [0, 3.6, 3.6, 10.8, 10.8, 17.2, 17.2, 24.5, 24.5, 32.7, 32.7, 42] # 未用到？
     cmap = cm_collected.get_cmap(cmap)
@@ -249,9 +248,9 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     cmap='ncl/hotcold_18lev',
                     transform=ccrs.PlateCarree(), alpha=1,
                     **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # degC
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
     cmap = cm_collected.linearized_cmap(cmap)
@@ -267,9 +266,9 @@ def qpf_pcolormesh(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                    add_colorbar=True,
                    transform=ccrs.PlateCarree(), alpha=0.5,
                    **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = np.concatenate((
@@ -302,9 +301,9 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
                                **kwargs):
     # 雨
     stda = rain_snow_sleet_stdas[0]
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = [0.1, 10, 25, 50, 100, 250, 800]
@@ -321,9 +320,9 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
 
     # 雪
     stda = rain_snow_sleet_stdas[1]
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = [0.1, 2.5, 5, 10, 20, 30]
@@ -340,9 +339,9 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
 
     # 雨夹雪
     stda = rain_snow_sleet_stdas[2]
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = [0.1, 10, 25, 50, 100, 250]

@@ -1,4 +1,5 @@
 import numpy as np
+import xarray as xr
 
 import cartopy.crs as ccrs
 import matplotlib as mpl
@@ -23,21 +24,21 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
         ax ([type]): [description]
         ustda ([type]): [u矢量 stda标准格式]
         vstda ([type]): [v矢量 stda标准格式]
-        xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
-        ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
-        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        xdim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lon'.
+        ydim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lat'.
+        transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         regrid_shape (int, optional): [cartopy下独有的参数，仅在ax的transform存在的情况下生效]. Defaults to 20.
         color (str, optional): [description]. Defaults to 'black'.
         length (int, optional): [description]. Defaults to 6.
         fill_empty (bool, optional): [description]. Defaults to False.
         sizes ([type], optional): [description]. Defaults to dict(emptybarb=0.05).
     """
-    x = ustda[xdim].values
-    y = ustda[ydim].values
-    u = ustda.squeeze().transpose(ydim, xdim).values * 2.5
-    v = vstda.squeeze().transpose(ydim, xdim).values * 2.5
+    x = ustda.stda.get_dim_value(xdim)
+    y = ustda.stda.get_dim_value(ydim)
+    u = ustda.stda.get_2d_value(ydim, xdim) * 2.5
+    v = vstda.stda.get_2d_value(ydim, xdim) * 2.5
 
-    if regrid_shape is None or transform is None:
+    if regrid_shape is None or transform is None or (xdim != 'lon' and ydim != 'lat'):
         # matplotlib
         img = ax.barbs(x, y, u, v, color=color, length=length,  fill_empty=fill_empty, sizes=sizes, **kwargs)
     else:

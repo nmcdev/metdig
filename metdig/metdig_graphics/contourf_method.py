@@ -1,4 +1,5 @@
 import numpy as np
+import xarray as xr
 
 import cartopy.crs as ccrs
 import matplotlib as mpl
@@ -23,9 +24,9 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 
     Args:
         ax ([type]): [description]
-        stda ([type]): [stda标准格式]
-        xdim (str, optional): [绘图时x维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lon'.
-        ydim (str, optional): [绘图时y维度名称，从以下stda维度名称中选择一个填写: member, level, time dtime, lat, lon]. Defaults to 'lat'.
+        stda ([type]): [u矢量 stda标准格式]
+        xdim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lon'.
+        ydim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lat'.
         add_colorbar (bool, optional): [是否绘制colorbar]. Defaults to True.
         cb_pos (str, optional): [colorbar的位置]. Defaults to 'bottom'.
         cb_ticks ([type], optional): [colorbar的刻度]. Defaults to None.
@@ -33,24 +34,22 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
         levels ([list], optional): [description]. Defaults to None.
         cmap (str, optional): [description]. Defaults to 'jet'.
         extend (str, optional): [description]. Defaults to 'both'.
-        transform ([type], optional): [description]. Defaults to ccrs.PlateCarree().
+        transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         alpha (float, optional): [description]. Defaults to 0.8.
     """
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
-    if transform is None:
+    if transform is None or (xdim != 'lon' and ydim != 'lat'):
         img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, alpha=alpha, extend=extend, **kwargs)
     else:
         img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
 
     if add_colorbar:
-        cb_units = stda.attrs['var_units']
-        cb_name = stda.attrs['var_cn_name']
-        cb_label = '{}({})'.format(cb_name, cb_units) if not cb_label else cb_label
+        cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
         utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
 
 ############################################################################################################################
@@ -113,9 +112,9 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
                         levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev',
                         **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # 1/s
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim) # 1/s
     z = z * 1e5  # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
@@ -130,9 +129,9 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
                       add_colorbar=True,
                       levels=np.arange(0, 101, 0.5), cmap=None,
                       **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # percent
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim) # percent
 
     if cmap is None:
         startcolor = '#1E90FF'  # 蓝色
@@ -150,9 +149,9 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
                         levels=np.arange(0, 20, 2), cmap='YlGnBu',
                         **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # g/kg
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim) # g/kg
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -166,9 +165,9 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        add_colorbar=True,
                        levels=np.arange(-50, 50, 1), cmap='ncl/cmp_flux',
                        **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # 1e-6*K*m**2/(s*kg)
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim) # K*m**2/(s*kg)
     z = z * 1e6  # 1e-6*K*m**2/(s*kg)
 
     cmap = cm_collected.get_cmap(cmap)
@@ -183,9 +182,9 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
 def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
                            levels=np.arange(0, 500, 1), cmap=None,
                            **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)
 
     if cmap is None:
         startcolor = '#8B4513'  # 棕色
