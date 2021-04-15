@@ -1,16 +1,26 @@
 # 天气学诊断分析工具(Meteorological Diagnostic Tools, metdig)
 ## Dependencies
 Other required packages:
-- 请在anaconda环境下安装，并确保matplotlib、cartopy、meteva符合以下版本需求
-- matplotlib==3.2.*
-- cartopy<=0.17.0
-- metpy <=0.12.2
+- 请在anaconda环境下安装，并确保matplotlib、meteva符合以下版本需求
+- matplotlib!=3.3.*
+- cartopy
+- metpy >=1.0
 - meteva >=1.3.*
 - cdsapi
 - nmc_met_io
-- nmc_met_graphics
 ## Install
-Using the fellowing command to install packages:
+please install metdig under anaconda enviroment.
+since Cartopy is hard to install, 
+it is recommanded creating new env via conda and installing Cartopy first when the env is not complex yet.
+
+``` install via pip
+conda create –n metdig_aproach
+activate metdig_aproach
+conda install anaconda
+conda install -c conda-forge cartopy
+pip install metdig
+```
+Using the following command to install packages:
 ```
   pip install git+git://github.com/nmcdev/metdig.git
 ```
@@ -18,7 +28,7 @@ Using the fellowing command to install packages:
 or download the package and install:
 ```
   git clone --recursive https://github.com/nmcdev/metdig.git
-  cd met_dig
+  cd metdig
   python setup.py install
 ```
 
