@@ -279,6 +279,25 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w, b, 0.015, h])
+        elif pos == 'lower center':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l+w/3., b - h * 0.05, w/3, h * 0.02])
+        elif pos == 'lower left':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l, b - h * 0.05, w/3, h * 0.02])
+        elif pos == 'lower right':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l+w*2/3, b - h * 0.05, w/3, h * 0.02])
+        elif pos == 'right center':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l + 0.01 + w, b+h/3, 0.015, h/3])
+        elif pos == 'right top':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l + 0.01 + w, b+h*2/3, 0.015, h/3])
+        elif pos == 'right bottom':
+            l, b, w, h = ax.get_position().bounds
+            cax = plt.axes([l + 0.01 + w, b, 0.015, h/3])
+
 
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')

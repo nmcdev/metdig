@@ -15,6 +15,18 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 from metdig.metdig_utl import numpy_units_convert
 
 
+def ulj_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), levels = np.arange(40,120,10), alpha=0.5, colorbar_kwargs={}, **kwargs):
+    x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
+    z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'm/s')
+
+    cmap, norm = cm_collected.get_cmap(name=['#99E3FB', '#47B6FB','#0F77F7','#AC97F5','#A267F4','#9126F5','#E118F3'], extend='neither', levels=levels)
+    if list(levels):
+        z = np.where(z >= levels[0], z, np.nan)
+
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max',**colorbar_kwargs)
+
 def vvel_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], '0.1*Pa/s')
@@ -65,17 +77,19 @@ def wsp_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), al
         utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max')
 
 
-def tcwv_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
+def tcwv_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5,cmap='met/precipitable_water_nws',
+    levels = np.concatenate((np.arange(25), np.arange(26, 84, 2))),
+    colorbar_kwargs={}, **kwargs):
+
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'mm')
 
-    levels = np.concatenate((np.arange(25), np.arange(26, 84, 2)))
-    cmap, norm = cm_collected.get_cmap('met/precipitable_water_nws', extend='both', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(mm)', extend='max')
+        utl.add_colorbar(ax, img, label='total column water(mm)', extend='max',**colorbar_kwargs)
 
 
 def rh_pcolormesh(ax, stda, add_colorbar=True, transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):

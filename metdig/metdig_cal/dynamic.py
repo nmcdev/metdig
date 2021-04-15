@@ -13,11 +13,47 @@ from metpy.units import units
 from .lib import utility as utl
 
 
+def vorticity(u, v):
+    '''
+
+    [Calculate the vertical vorticity of the horizontal wind.]
+    [only for grid stda]
+    Arguments:
+        u {[stda]} -- [x component of the wind. ]
+        v {[stda]} -- [y component of the wind. ]
+    '''
+
+    x, y = np.meshgrid(u['lon'].values, u['lat'].values)
+    x = x * units('degrees')
+    y = y * units('degrees')
+
+    dx, dy = mpcalc.lat_lon_grid_deltas(u['lon'].values, u['lat'].values)
+
+    vort = v.copy(deep=True)
+    for ilvl in u['level'].values:
+        for it in u['time'].values:
+            for idt in u['dtime'].values:
+                for imdl in u['member'].values:
+                    u2d = u.sel(level=ilvl, time=it, dtime=idt, member=imdl).squeeze()
+                    v2d = v.sel(level=ilvl, time=it, dtime=idt, member=imdl).squeeze()
+
+                    u2d = utl.stda_to_quantity(u2d)  # m/s
+                    v2d = utl.stda_to_quantity(v2d)  # m/s
+
+                    vort2d = mpcalc.vorticity(u2d, v2d, dx=dx, dy=dy)  # 垂直涡度  '1 / second'
+
+                    vort.loc[dict(level=ilvl, time=it, dtime=idt, member=imdl)] = np.array(vort2d)
+                    vort.attrs['var_units'] = str(vort2d.units)
+
+    vort = utl.quantity_to_stda_byreference('vort', vort.values * units(vort.attrs['var_units']), u)
+
+    return vort
+
 def absolute_vorticity(u, v):
     '''
 
     [Calculate the absolute vorticity of the horizontal wind.]
-
+    [only for grid stda]
     Arguments:
         u {[stda]} -- [x component of the wind. ]
         v {[stda]} -- [y component of the wind. ]

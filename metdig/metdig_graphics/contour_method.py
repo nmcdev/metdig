@@ -15,12 +15,12 @@ import metdig.metdig_graphics.cmap.cm as cm_collected
 from metdig.metdig_utl import numpy_units_convert
 
 
-def hgt_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+def hgt_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(),colors = 'black', linewidths=2, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'dagpm')
 
     levels = np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 584, 8), np.arange(580, 604, 4))), np.arange(604, 2000, 8))
-    colors = 'black'
+    
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
@@ -39,16 +39,15 @@ def pv_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidt
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
 
-def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
+def prmsl_contour(ax, stda, add_clabel=True, transform=ccrs.PlateCarree(), colors = 'black', linewidths=1, **kwargs):
     x, y, z = stda['lon'].values, stda['lat'].values, stda.values.squeeze()
     z, z_units = numpy_units_convert(z, stda.attrs['var_units'], 'hPa')
 
     levels = np.arange(900, 1100, 2.5)
-    colors = 'black'
 
     img = ax.contour(x, y, z, levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors='black')
+        plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors=colors)
 
 
 def tmx_contour(ax, stda, add_clabel=True, levels=[35, 37, 40], colors=['#FF8F00', '#FF6200', '#FF0000'], transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
