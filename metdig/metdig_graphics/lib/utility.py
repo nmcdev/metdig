@@ -10,6 +10,7 @@ import pkg_resources
 import matplotlib.pyplot as plt
 import matplotlib.image as image
 import PIL
+from functools import wraps
 
 pkg_name = 'metdig.metdig_graphics'
 
@@ -263,22 +264,29 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
     return ret
 
 def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal',  **kwargs):
-    '''
-    ticks: colorbar刻度
-    label: colorbar标题
-    pos: bottom图片ax的正下方，该参数与rect互斥，如果rect填写，则pos不生效
-    rect: 4-tuple of floats *rect* = ``[left, bottom, width, height]``.
-    orientation: horizontal vertical
-    '''
+    """[summary]
+
+    Args:
+        ax ([type]): [description]
+        img ([type]): [description]
+        ticks ([list], optional): [colorbar刻度]. Defaults to None.
+        label (str, optional): [colorbar标题]. Defaults to ''.
+        label_size (int, optional): [description]. Defaults to 20.
+        pos (str, optional): [bottom right; 如果rect填写，则pos不生效]. Defaults to 'bottom'.
+        rect ([type], optional): [4-tuple of floats *rect* = ``[left, bottom, width, height]``.]. Defaults to None.
+        orientation (str, optional): [horizontal vertical; 如果pos='bottom'，则强制为'horizontal'; 如果pos='right'，则强制为vertical; 如果rect填写，才根据参数设置]. Defaults to 'horizontal'.
+    """
     if rect:
         cax = plt.axes(rect)
     else:
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l, b - h * 0.05, w, h * 0.02])
+            orientation='horizontal'
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w, b, 0.015, h])
+            orientation='vertical'
         elif pos == 'lower center':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l+w/3., b - h * 0.05, w/3, h * 0.02])
@@ -291,14 +299,44 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
         elif pos == 'right center':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w, b+h/3, 0.015, h/3])
+            orientation='vertical'
         elif pos == 'right top':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w, b+h*2/3, 0.015, h/3])
+            orientation='vertical'
         elif pos == 'right bottom':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w, b, 0.015, h/3])
-
+            orientation='vertical'
 
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label(label, size=label_size)
+
+
+def kwargs_wrapper(func):
+    '''
+    关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数
+    Example:
+        @kwargs_wrapper()
+        def func(a, b, c=3, d=4, **kwargs):
+            print('c =', c)
+            print('d =', d)
+            print('kwargs =', kwargs)
+
+        func(1, 2, c=-1, d=-1, e=5, kwargs={'c': 4})
+        output:
+        c = 4
+        d = -1
+        kwargs = {'e': 5}
+    '''
+    @wraps(func)
+    def inner(*args, **kwargs):
+        attrs = kwargs.pop('kwargs', None)
+        if attrs:
+            if isinstance(attrs, dict):
+                kwargs.update(**attrs)
+            else:
+                kwargs['kwargs'] = attrs
+        return func(*args, **kwargs)
+    return inner

@@ -129,9 +129,10 @@ class __STDADataArrayAccessor(object):
     def __init__(self, xr):
         self._xr = xr
 
-    def get_times(self):
+    @property
+    def fcst_time(self):
         '''
-        [获取时间（times=time*dtime)]
+        [获取预报时间（time*dtime)，返回值类型为list]
         '''
         times = []
         for time in self._xr['time'].values:
@@ -139,6 +140,31 @@ class __STDADataArrayAccessor(object):
                 _ = pd.to_datetime(time).replace(tzinfo=None).to_pydatetime() + datetime.timedelta(hours=int(dtime))
                 times.append(_)
         return times
+
+    def get_dim_value(self, dim_name):
+        '''
+        获取维度信息，如果dim_name=='fcst_time'情况下，特殊处理，范围time*dtime
+        '''
+        if dim_name == 'fcst_time':
+            return np.array(self.fcst_time)
+        return self._xr[dim_name].values
+    
+    def get_2d_value(self, ydim, xdim):
+        '''
+        获取二维数据，假如stda不是二维的数据，则报错
+        '''
+        if xdim == 'fcst_time':
+            if self._xr['time'].values.size == 0: # 因为是二维，假如time维长度为0，则有维度的肯定在dtime维
+                xdim = 'time'
+            else:
+                xdim = 'dtime'
+        if ydim == 'fcst_time':
+            if self._xr['time'].values.size == 0:
+                ydim = 'time'
+            else:
+                ydim = 'dtime'
+        return self._xr.squeeze().transpose(ydim, xdim).values
+
 
 
 if __name__ == '__main__':
