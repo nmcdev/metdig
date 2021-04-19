@@ -24,7 +24,7 @@ from metdig.metdig_products.diag_crossection import draw_time_rh_uv_tmp
 from metdig.metdig_products.diag_crossection import draw_time_rh_uv_theta
 from metdig.metdig_products.diag_crossection import draw_wind_theta_mpv
 from metdig.metdig_products.diag_crossection import draw_wind_vortadv_tmp
-from metdig.metdig_products.diag_crossection import draw_wind_tmpadv_tmp,draw_time_div_vort_rh_uv,draw_time_div_vort_spfh_uv,draw_time_wind_vortadv_tmp
+from metdig.metdig_products.diag_crossection import draw_wind_tmpadv_tmp,draw_time_div_vort_rh_uv,draw_time_div_vort_spfh_uv,draw_time_wind_vortadv_tmp,draw_time_wind_tmpadv_tmp
 
 import metdig.metdig_cal as mdgcal
 from metdig.metdig_utl import mdgstda
@@ -90,6 +90,42 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
         ret.update(drawret)
 
     return ret
+
+@date_init('init_time', method=date_init.special_series_set)
+def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
+                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                     points={'lon': [90], 'lat': [30]},mean_area=None,
+                     is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=mean_area)
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=mean_area)
+    tmpadv=mdgcal.var_advect(tmp,u,v)
+
+    if(mean_area == None):
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        tmpadv=tmpadv.interp(lon=points['lon'], lat=points['lat'])
+        tmp=tmp.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+
+    _, pressure = xr.broadcast(v, v['level'])
+    terrain = pressure - psfc.values.squeeze()
+    terrain.attrs['var_units'] = ''
+    if is_return_data:
+        dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv':tmpadv}
+        ret.update({'data': dataret})
+    if is_draw:
+        drawret = draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v,terrain, **products_kwargs)
+        ret.update(drawret)
+    return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    time_wind_tmpadv_tmp(data_source='cmadaas',data_name='grapes_gfs',mean_area=[100,101,30,31],init_time='2021010608')
+    plt.show()
 
 @date_init('init_time')
 def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -164,11 +200,6 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
         drawret = draw_time_wind_vortadv_tmp(vortadv, tmp, u, v,terrain, **products_kwargs)
         ret.update(drawret)
     return ret
-
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    time_wind_vortadv_tmp(data_source='cmadaas',data_name='grapes_gfs',mean_area=[100,101,30,31],init_time='2021010608')
-    plt.show()
 
 @date_init('init_time')
 def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,

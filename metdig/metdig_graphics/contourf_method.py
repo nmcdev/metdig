@@ -89,8 +89,8 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
                     levels=np.arange(-8, 8.1, 0.5), cmap='ncl/BlueWhiteOrangeRed', extend='both',
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
     z = z * 1e4  # 1e-5/s
     cmap = cm_collected.get_cmap(cmap)
