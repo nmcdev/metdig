@@ -62,7 +62,7 @@ def tcwv_contourf(ax, stda, xdim='lon', ydim='lat',
 
     x = stda[xdim].values
     y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
@@ -77,7 +77,7 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
 
     x = stda[xdim].values
     y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # m/s
+    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
 
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
@@ -85,13 +85,44 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='wind speed (m/s)', extend='max',**colorbar_kwargs)
 
 @kwargs_wrapper
+def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, 
+                    levels=np.arange(-8, 8.1, 0.5), cmap='ncl/BlueWhiteOrangeRed', extend='both',
+                    transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
+    x = stda[xdim].values
+    y = stda[ydim].values
+    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
+    z = z * 1e4  # 1e-5/s
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=levels, label='temperature advection (10' + '$^{-4}$K*s$^{-1}$)',**colorbar_kwargs)
+
+
+@kwargs_wrapper
+def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, 
+                    levels=np.arange(-10, 10.1, 0.5), cmap='ncl/BlueRed', extend='both',
+                    transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
+    z = z * 1e8  # 1e-5/s
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=levels, label='vorticity advection (10' + '$^{-8}$s$^{-1}$)',**colorbar_kwargs)
+
+@kwargs_wrapper
 def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
                     levels=np.arange(2, 18, 2), cmap='Wistia', extend='max',
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # 1/s
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
     z = z * 1e5  # 1e-5/s
     cmap = cm_collected.get_cmap(cmap)
 
@@ -104,9 +135,9 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
                  add_colorbar=True,
                  levels=np.arange(-10, -1), cmap='Blues_r', extend='both',
                  transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # 1/s
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
     z = z * 1e5  # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
@@ -121,9 +152,9 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=np.arange(960, 1065, 5), cmap='guide/cs26', extend='neither',
                    transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # hPa
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # hPa
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -137,9 +168,9 @@ def rain_contourf(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels=[0.1, 4, 13, 25, 60, 120], cmap='met/rain', extend='max',
                   transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
-    x = stda[xdim].values
-    y = stda[ydim].values
-    z = stda.squeeze().transpose(ydim, xdim).values  # mm
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
 
     cmap = cm_collected.get_cmap(cmap)
     colors = cmap.colors
@@ -176,10 +207,9 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
     z = stda.stda.get_2d_value(ydim, xdim) # percent
 
     if cmap is None:
-        startcolor = '#1E90FF'  # 蓝色
-        midcolor = '#F1F1F1'  # 白色
-        endcolor = '#696969'  # 灰色
-        cmap = col.LinearSegmentedColormap.from_list('own2', [startcolor, midcolor, endcolor])
+        cmap = col.LinearSegmentedColormap.from_list('own2', ['#1E90FF','#94D8F6','#F1F1F1','#BFBFBF','#696969'])
+    else:
+        cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
     if add_colorbar:
@@ -189,7 +219,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(0, 20, 2), cmap='YlGnBu',
+                        levels=np.arange(0, 20, 1), cmap='ncl/MPL_Greens',
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)

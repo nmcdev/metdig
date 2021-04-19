@@ -12,6 +12,35 @@ from metpy.units import units
 
 from .lib import utility as utl
 
+def var_advect(var,u, v):
+    '''
+
+    [Calculate the absolute vorticity of the horizontal wind.]
+
+    Arguments:
+        var {[stda]} -- [any variable.]
+        u {[stda]} -- [x component of the wind.]
+        v {[stda]} -- [y component of the wind. ]
+    '''
+
+    dx, dy = mpcalc.lat_lon_grid_deltas(u['lon'].values, u['lat'].values)
+    adv = v.copy(deep=True)
+    for ilvl in var['level'].values:
+        for it in var['time'].values:
+            for idt in var['dtime'].values:
+                for imdl in var['member'].values:
+                    u2d = u.sel(level=ilvl,time=it,dtime=idt,member=imdl).squeeze()
+                    v2d = v.sel(level=ilvl,time=it,dtime=idt,member=imdl).squeeze()
+                    var2d = var.sel(level=ilvl,time=it,dtime=idt,member=imdl).squeeze()
+                    u2d = utl.stda_to_quantity(u2d)
+                    v2d = utl.stda_to_quantity(v2d)
+                    var2d = utl.stda_to_quantity(var2d)
+                    adv2d=mpcalc.advection(var2d,u=u2d,v=v2d,dx=dx,dy=dy)
+                    adv.loc[dict(level=ilvl,time=it,dtime=idt,member=imdl)] = np.array(adv2d)
+                    adv.attrs['var_units'] = str(adv2d.units)
+    adv = utl.quantity_to_stda_byreference(var.attrs['var_name']+'adv', adv.values * units(adv.attrs['var_units']), u)
+    return adv
+
 
 def vorticity(u, v):
     '''

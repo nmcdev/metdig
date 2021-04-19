@@ -57,8 +57,6 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
-
-
 @kwargs_wrapper
 def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=True,
@@ -74,6 +72,33 @@ def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
 
+@kwargs_wrapper
+def vort_contour(ax, stda, xdim='lon', ydim='lat',
+               add_clabel=True,
+               levels=np.arange(2, 18, 2), colors='black',
+               transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)   # 1/s
+    z = z * 1e5  # 1e-5/s
+
+    img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
+
+@kwargs_wrapper
+def div_contour(ax, stda, xdim='lon', ydim='lat',
+               add_clabel=True,
+               levels=np.append(np.arange(-10, -4),np.arange(5,11)), colors='black',
+               transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)   # 1/s
+    z = z * 1e5  # 1e-5/s
+
+    img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
 
 @kwargs_wrapper
 def pv_contour(ax, stda, xdim='lon', ydim='lat',
