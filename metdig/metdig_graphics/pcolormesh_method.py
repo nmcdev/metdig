@@ -148,7 +148,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.concatenate((np.arange(25), np.arange(26, 84, 2))), cmap='met/precipitable_water_nws',
-                    transform=ccrs.PlateCarree(), alpha=0.5,
+                    transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)

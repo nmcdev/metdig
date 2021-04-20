@@ -97,17 +97,21 @@ def cross_section_components(cross_x, cross_y):
 
     data_x = data_x.metpy.assign_crs(grid_mapping_name='latitude_longitude') # metpy 1.0
     data_y = data_y.metpy.assign_crs(grid_mapping_name='latitude_longitude') # metpy 1.0
-    cross_u_t, cross_v_n = mpcalc.cross_section_components(data_x, data_y, index='index')
+    cross_t, cross_n = mpcalc.cross_section_components(data_x, data_y, index='index')
 
     # 计算结束后转换为stda维度
-    cross_u_t = cross_u_t.rename({'lon': 'lon_cross', 'lat': 'lat_cross'})
-    cross_u_t = cross_u_t.rename({'unknow_lon': 'lon', 'unknow_lat': 'lat'})
-    cross_u_t = cross_u_t.swap_dims({'index': 'lon'})
-    cross_u_t.attrs = cross_x.attrs
+    cross_t = cross_t.rename({'lon': 'lon_cross', 'lat': 'lat_cross'})
+    cross_t = cross_t.rename({'unknow_lon': 'lon', 'unknow_lat': 'lat'})
+    cross_t = cross_t.swap_dims({'index': 'lon'})
+    cross_t.attrs = cross_x.attrs
+    cross_t.attrs['var_name']='t_components'
+    cross_t.attrs['var_cn_name']='切向分量'
 
-    cross_v_n = cross_v_n.rename({'lon': 'lon_cross', 'lat': 'lat_cross'})
-    cross_v_n = cross_v_n.rename({'unknow_lon': 'lon', 'unknow_lat': 'lat'})
-    cross_v_n = cross_v_n.swap_dims({'index': 'lon'})
-    cross_v_n.attrs = cross_y.attrs
+    cross_n = cross_n.rename({'lon': 'lon_cross', 'lat': 'lat_cross'})
+    cross_n = cross_n.rename({'unknow_lon': 'lon', 'unknow_lat': 'lat'})
+    cross_n = cross_n.swap_dims({'index': 'lon'})
+    cross_n.attrs = cross_y.attrs
+    cross_n.attrs['var_name']='n_components'
+    cross_n.attrs['var_cn_name']='法向分量'
 
-    return cross_u_t, cross_v_n
+    return cross_t, cross_n

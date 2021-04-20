@@ -18,9 +18,12 @@ def uv_quiver(ax, ustda, vstda,xdim='lon', ydim='lat',
              transform=ccrs.PlateCarree(), regrid_shape=30, 
              **kwargs):
     # 数据准备
-    x = ustda['lon'].values
-    y = ustda['lat'].values
-    u = ustda.values.squeeze()
-    v = vstda.values.squeeze()
+    x = ustda.stda.get_dim_value(xdim)
+    y = ustda.stda.get_dim_value(ydim)
+    u = ustda.stda.get_2d_value(ydim, xdim)  # 1/s
+    v = vstda.stda.get_2d_value(ydim, xdim)  # 1/s
     # 绘制
-    img = ax.quiver(x, y, u, v, color=color, transform=transform,scale=scale,  regrid_shape=regrid_shape,  **kwargs)
+    if regrid_shape is None or transform is None or (xdim != 'lon' and ydim != 'lat'):
+        img = ax.quiver(x, y, u, v, color=color, scale=scale,  **kwargs)
+    else:
+        img = ax.quiver(x, y, u, v, color=color, transform=transform, scale=scale,  regrid_shape=regrid_shape,  **kwargs)

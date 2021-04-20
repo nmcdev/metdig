@@ -14,15 +14,17 @@ from metdig.metdig_graphics.pcolormesh_method import *
 from metdig.metdig_graphics.quiver_method import *
 from metdig.metdig_graphics.draw_compose import *
 
-def draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv,
-    map_extent=(60, 145, 15, 55), is_return_figax=True, 
-    tcwv_contourf_kwargs={'alpha':1,'cmap':'ncl/WhiteGreen','levels':np.arange(20,70,4),'colorbar_kwargs':{'pos':'right center','orientation':'vertical','label_size':15}},
-    uv_quiver_kwargs={'color':'#404040','label':'850hPa wind'},
-    ulj_contourf_kwargs={'alpha':0.6,'colorbar_kwargs':{'pos':'right top','orientation':'vertical','label_size':15}},
-    vort_contourf_kwargs={'alpha':0.4,'colorbar_kwargs':{'pos':'right bottom','orientation':'vertical','label_size':15}},
-    hgt_contour_kwargs={},
-    prmsl_contour_kwargs={'colors':'red','linewidths':0.7,'levels':np.arange(950,1100,4)},
-    **pallete_kwargs):
+
+def draw_syn_composite(
+        hgt500, vort500, u850, v850, wsp200, prmsl, tcwv, map_extent=(60, 145, 15, 55),
+        is_return_figax=True,
+        tcwv_contourf_kwargs={},
+        uv_quiver_kwargs={},
+        ulj_contourf_kwargs={},
+        vort_contourf_kwargs={},
+        hgt_contour_kwargs={},
+        prmsl_contour_kwargs={},
+        **pallete_kwargs):
     init_time = pd.to_datetime(hgt500.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt500['dtime'].values[0])
     fcst_time = init_time + datetime.timedelta(hours=fhour)
@@ -30,22 +32,27 @@ def draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv,
     data_name = str(hgt500['member'].values[0])
     title = '[{}] 天气尺度综合分析图'.format(data_name.upper())
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcst_time, fhour)
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
+        init_time, fcst_time, fhour)
     png_name = '{2}_天气尺度综合分析图_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
-    
+
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
-    tcwv_contourf(obj.ax, tcwv, kwargs=tcwv_contourf_kwargs)
-    uv_quiver(obj.ax, u850,v850,kwargs=uv_quiver_kwargs)
-    ulj_contourf(obj.ax, wsp200,kwargs=ulj_contourf_kwargs)
-    vort_contourf(obj.ax, vort500,kwargs=vort_contourf_kwargs)
+    tcwv_contourf(obj.ax, tcwv, alpha=1, cmap='ncl/WhiteGreen', levels=np.arange(20, 70, 4),
+                  colorbar_kwargs={'pos': 'right center', 'orientation': 'vertical', 'label_size': 15}, kwargs=tcwv_contourf_kwargs)
+    uv_quiver(obj.ax, u850, v850, color='#404040', label='850hPa wind', kwargs=uv_quiver_kwargs)
+    ulj_contourf(obj.ax, wsp200, alpha=0.6, colorbar_kwargs={'pos': 'right top',
+                                                             'orientation': 'vertical', 'label_size': 15}, kwargs=ulj_contourf_kwargs)
+    vort_contourf(obj.ax, vort500, alpha=0.4, colorbar_kwargs={'pos': 'right bottom',
+                                                               'orientation': 'vertical', 'label_size': 15}, kwargs=vort_contourf_kwargs)
     hgt_contour(obj.ax, hgt500, kwargs=hgt_contour_kwargs)
-    prmsl_contour(obj.ax, prmsl, kwargs=prmsl_contour_kwargs)
-    uv_lable= obj.ax.get_legend_handles_labels()
+    prmsl_contour(obj.ax, prmsl, colors='red', linewidths=0.7, levels=np.arange(950, 1100, 4), kwargs=prmsl_contour_kwargs)
+    uv_lable = obj.ax.get_legend_handles_labels()
     red_line = lines.Line2D([], [], color='red', label='mean sea leve pressure')
     black_line = lines.Line2D([], [], color='black', label='500hPa geopotential height')
-    leg = obj.ax.legend(handles=uv_lable[0]+[red_line,black_line], loc=3, title=None,framealpha=1)
+    leg = obj.ax.legend(handles=uv_lable[0]+[red_line, black_line], loc=3, title=None, framealpha=1)
     leg.set_zorder(100)
     return obj.save()
+
 
 def draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
                       prmsl_contourf_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},

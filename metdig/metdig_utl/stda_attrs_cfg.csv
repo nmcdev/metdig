@@ -8,6 +8,7 @@ var_name,var_cn_name,var_units,valid_time
 hgt,位势高度,dagpm,0
 u,u方向风速,m/s,0
 v,v方向风速,m/s,0
+w,垂直方向风速,m/s,0
 vvel,垂直气压速度,Pa/s,0
 rh,相对湿度,percent,0
 tmp,温度,degC,0

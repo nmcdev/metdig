@@ -11,6 +11,25 @@ import metpy.calc as mpcalc
 from metpy.units import units
 
 from .lib import utility as utl
+import metdig.metdig_utl.utl_stda_grid as utl_stda_grid
+
+def vertical_velocity(vvel,tmp,mir=0):
+    '''
+
+    [Calculate w from omega assuming hydrostatic conditions.]
+
+    Arguments:
+        vvel {[stda]} -- [omega.]
+        temperature {[stda]} -- [x component of the wind.]
+        mir {[stda]} -- [y component of the wind. ]
+    '''
+    omega = utl.stda_to_quantity(vvel)
+    temperature = utl.stda_to_quantity(tmp)
+    pressure=utl_stda_grid.gridstda_full_like_by_levels(tmp, tmp.level.values.tolist())
+    pressure=utl.stda_to_quantity(pressure)
+    w=mpcalc.vertical_velocity(omega,pressure,temperature,mir)
+    w = utl.quantity_to_stda_byreference('w', w, vvel)
+    return w
 
 def var_advect(var,u, v):
     '''
