@@ -60,3 +60,7 @@ sleet,雨夹雪,mm,0
 tpe,总降水量,mm,0
 dt24_2m,过去24小时2米变温,degC,24
 vort,垂直涡度,1/s,0
+qcld,云水混合比,g/kg,0
+qice,云冰混合比,g/kg,0
+qsn,雨水混合比,g/kg,0
+qrn,雪水混合比,g/kg,0

@@ -19,3 +19,7 @@ v10m,surface,m/s,10m_v_component_of_wind,,10
 psfc,surface,Pa,surface_pressure,,0
 tcwv,surface,mm,total_column_water_vapour,,0
 prmsl,surface,Pa,mean_sea_level_pressure,,0
+qice,high,kg/kg,specific_cloud_ice_water_content,,any
+qcld,high,kg/kg,specific_cloud_liquid_water_content,,any
+qsn,high,kg/kg,specific_snow_water_content,,any
+qrn,high,kg/kg,specific_rain_water_content,,any
