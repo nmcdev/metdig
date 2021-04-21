@@ -2,6 +2,7 @@
 
 import numpy as np
 import xarray as xr
+import datetime
 
 from metdig.metdig_io import get_model_grid
 from metdig.metdig_io import get_model_3D_grid
@@ -24,11 +25,130 @@ from metdig.metdig_products.diag_crossection import draw_time_rh_uv_tmp
 from metdig.metdig_products.diag_crossection import draw_time_rh_uv_theta
 from metdig.metdig_products.diag_crossection import draw_wind_theta_mpv
 from metdig.metdig_products.diag_crossection import draw_wind_vortadv_tmp
-from metdig.metdig_products.diag_crossection import draw_wind_tmpadv_tmp, draw_time_div_vort_rh_uv, draw_time_div_vort_spfh_uv, draw_time_wind_vortadv_tmp, draw_time_wind_tmpadv_tmp, draw_wind_w_tmpadv_tmp
+from metdig.metdig_products.diag_crossection import draw_wind_tmpadv_tmp, draw_time_div_vort_rh_uv, draw_time_div_vort_spfh_uv, draw_time_wind_vortadv_tmp, draw_time_wind_tmpadv_tmp, draw_wind_w_tmpadv_tmp,draw_time_wind_qcld_qice_tmp
 
 import metdig.metdig_cal as mdgcal
 from metdig.metdig_utl import mdgstda
 
+@date_init('init_time', method=date_init.special_series_set)
+def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhours=range(0, 48, 3),
+                         levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                         points={'lon': [118], 'lat': [34]}, mean_area=None,
+                         is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                           var_name='u', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                          var_name='v', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+    qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qcld', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+    qice = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qice', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
+                             data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
+
+    if(mean_area == None):
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        qice = qice.interp(lon=points['lon'], lat=points['lat'])
+        qcld = qcld.interp(lon=points['lon'], lat=points['lat'])
+        tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+
+    _, pressure = xr.broadcast(v, v['level'])
+    terrain = pressure - psfc.values.squeeze()
+    terrain.attrs['var_units'] = ''
+    if is_return_data:
+        dataret = {'u': u, 'v': v, 'qice' : 'qice', 'qcld':qcld,'tmp': tmp}
+        ret.update({'data': dataret})
+    if is_draw:
+        drawret = draw_time_wind_qcld_qice_tmp(qcld,qice, tmp, u, v, terrain, **products_kwargs)
+        ret.update(drawret)
+    return ret
+
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     init_times=[
+#                 datetime.datetime(2020, 11, 17, 2), # 8
+#                 datetime.datetime(2020, 11, 17, 5), # 11
+#                 datetime.datetime(2020, 11, 17, 8), # 14
+#                 datetime.datetime(2020, 11, 17, 11), # 17
+#                 datetime.datetime(2020, 11, 17, 14), # 20
+#                 datetime.datetime(2020, 11, 17, 17), # 23
+#                 ]
+#     time_wind_qcld_qice_tmp(init_time=init_times,data_source='era5',points={'lon':[125.1999],'lat':[43.9]},fhours=0)
+#     plt.show()
+
+@date_init('init_time')
+def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                           var_name='rh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='vvel', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='spfh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+
+    w = mdgcal.vertical_velocity(vvel, tmp, spfh)
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+
+    cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
+
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
+
+    cross_spfh = mdgcal.specific_humidity_from_dewpoint(pressure, cross_td)
+
+    cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
+
+    cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+                                       st_point=st_point, ed_point=ed_point,
+                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                       map_extent=map_extent, h_pos=h_pos,
+                                       **products_kwargs)
+        ret.update(drawret)
+
+    return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_w_theta_spfh()
+    plt.show()
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -60,7 +180,6 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
         ret.update(drawret)
 
     return ret
-
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -425,7 +544,6 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     return ret
 
-
 @date_init('init_time')
 def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
@@ -541,6 +659,10 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     return ret
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_theta_spfh()
+    plt.show()
 
 @date_init('init_time')
 def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,

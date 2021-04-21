@@ -71,11 +71,6 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    syn_composite(init_time='21041320')
-    plt.show()
-
 @date_init('init_time')
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                  hgt_lev=500, uv_lev=850, is_mask_terrain=True,

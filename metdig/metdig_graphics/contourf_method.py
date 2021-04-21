@@ -54,6 +54,36 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
+
+@kwargs_wrapper
+def qcld_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, 
+                    levels=np.arange(0.05,0.51,0.05), cmap='Greens', extend='max',
+                    transform=ccrs.PlateCarree(), alpha=0.7, colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=levels, label='QCLD (g kg$^{-1}$)',**colorbar_kwargs)
+
+@kwargs_wrapper
+def qice_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, 
+                    levels=np.arange(0.05,0.51,0.05), cmap='Blues', extend='max',
+                    transform=ccrs.PlateCarree(), alpha=0.7, colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=levels, label='QICE (g kg$^{-1}$)',**colorbar_kwargs)
+
+
 @kwargs_wrapper
 def tcwv_contourf(ax, stda, xdim='lon', ydim='lat',
     add_colorbar=True,

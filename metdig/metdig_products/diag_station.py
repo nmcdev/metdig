@@ -148,10 +148,11 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
     wsp_y = wsp.iloc[:, wsp.attrs['data_start_columns']]
     curve_wsp = ax_tmp.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='风')
 
-    # rain
-    rain_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rain['time'].values, rain['dtime'].values))
-    rain_y = rain.iloc[:, rain.attrs['data_start_columns']]
-    bars_rn = ax_tmp.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='降水')
+    if(rain is not None):
+        # rain
+        rain_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rain['time'].values, rain['dtime'].values))
+        rain_y = rain.iloc[:, rain.attrs['data_start_columns']]
+        bars_rn = ax_tmp.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='降水')
 
     def bars_autolabel(ax, rects):
         for rect in rects:
@@ -162,7 +163,9 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
                             xytext=(0, 3),  # 3 points vertical offset
                             textcoords="offset points",
                             ha='center', va='bottom')
-    bars_autolabel(ax_tmp, bars_rn)
+    if(rain is not None):
+        bars_autolabel(ax_tmp, bars_rn)
+        bars_autolabel(ax_tmp)
 
     # rh2m
     rh_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rh['time'].values, rh['dtime'].values))

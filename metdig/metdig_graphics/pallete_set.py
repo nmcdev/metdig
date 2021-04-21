@@ -119,7 +119,22 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
 
     return fig, ax
 
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info=''):
+def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='',reverse_time=True):
+    """[时间剖面画板初始化]
+
+    Args:
+        figsize (tuple, optional): [图形比例大小]. Defaults to (16, 9).
+        levels ([type], optional): [垂直层次坐标]. Defaults to None.
+        times ([type], optional): [时间坐标]. Defaults to None.
+        title (str, optional): [画板标题]. Defaults to ''.
+        forcast_info (str, optional): [时间信息标注]. Defaults to ''.
+        reverse_time (bool, optional): [时间轴是否反转]. Defaults to True.
+
+    Returns:
+        [type]: [description]
+    """
+    if(reverse_time):
+        times=times[::-1]
 
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）

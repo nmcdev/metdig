@@ -154,15 +154,15 @@ class __STDADataArrayAccessor(object):
         获取二维数据，假如stda不是二维的数据，则报错
         '''
         if xdim == 'fcst_time':
-            if self._xr['time'].values.size == 0: # 因为是二维，假如time维长度为0，则有维度的肯定在dtime维
-                xdim = 'time'
-            else:
+            if self._xr['time'].values.size == 1: # 因为是二维，假如time维长度为1，则有维度的肯定在dtime维
                 xdim = 'dtime'
-        if ydim == 'fcst_time':
-            if self._xr['time'].values.size == 0:
-                ydim = 'time'
             else:
+                xdim = 'time'
+        if ydim == 'fcst_time':
+            if self._xr['time'].values.size == 1:
                 ydim = 'dtime'
+            else:
+                ydim = 'time'
         return self._xr.squeeze().transpose(ydim, xdim).values
 
 
