@@ -20,7 +20,7 @@ from metdig.metdig_io.MDIException import NMCMetIOError
 
 
 def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, level=None,
-                   extent=None, x_percent=0.2, y_percent=0.1):
+                   extent=None, x_percent=0, y_percent=0):
     '''
 
     [读取单层单时次模式网格数据]
@@ -94,7 +94,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
 
 def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, level=None,
-                    extent=None, x_percent=0.2, y_percent=0.1):
+                    extent=None, x_percent=0, y_percent=0):
     '''
 
     [读取单层多时次模式网格数据]
@@ -132,7 +132,7 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
 
 
 def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None, levels=None,
-                      extent=None, x_percent=0.2, y_percent=0.1):
+                      extent=None, x_percent=0, y_percent=0):
     '''
 
     [读取多层单时次模式网格数据]
@@ -171,7 +171,7 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
 
 
 def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=None, levels=None,
-                       extent=None, x_percent=0.2, y_percent=0.1):
+                       extent=None, x_percent=0, y_percent=0):
     '''
 
     [读取多层多时次模式网格数据]
@@ -238,7 +238,7 @@ def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None,
 
 
 def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=None,
-                     extent=None, x_percent=0.2, y_percent=0.1):
+                     extent=None, x_percent=0, y_percent=0):
     '''
 
     [获取单层单时次观测站点数据]

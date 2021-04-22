@@ -60,10 +60,10 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     if t_gap == 3:
         gust10m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                                 var_name='gust10m_3h', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                                 var_name='gust10m_3h', extent=map_extent)
     elif t_gap == 6:
         gust10m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                                 var_name='gust10m_6h', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                                 var_name='gust10m_6h', extent=map_extent)
     else:
         raise Exception('t_gap must be 3 or 6')
 
@@ -216,9 +216,9 @@ def dt2m_mean24(data_source='cassandra', data_name='grapes_gfs', init_time=None,
         return
 
     t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name,
-                             var_name='t2m', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                             var_name='t2m', extent=map_extent)
     t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name,
-                             var_name='t2m', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                             var_name='t2m', extent=map_extent)
 
     dtmean_2m = t_2m_1.isel(dtime=[-1]).copy()
     dtmean_2m.values[:, :, :, 0, :, :] = t_2m_1.mean(dim='dtime').values - t_2m_2.mean(dim='dtime').values

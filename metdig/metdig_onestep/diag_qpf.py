@@ -30,10 +30,10 @@ def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=2
         fhour_gh = fhour
 
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour_gh, data_name=data_name, level=hgt_lev,
-                         var_name='hgt', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', extent=map_extent)
 
     rain = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='rain{:02d}'.format(atime), extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='rain{:02d}'.format(atime), extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt': hgt, 'rain': rain}
@@ -54,11 +54,11 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
     map_extent = get_map_area(area)
 
     rain_data = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                               var_name='rain{:02d}'.format(atime), extent=map_extent, x_percent=0.2, y_percent=0.1)
+                               var_name='rain{:02d}'.format(atime), extent=map_extent)
     snow_data = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                               var_name='snow{:02d}'.format(atime), extent=map_extent, x_percent=0.2, y_percent=0.1)
+                               var_name='snow{:02d}'.format(atime), extent=map_extent)
     prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='prmsl', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='prmsl', extent=map_extent)
 
     snow, sleet, rain = mdgcal.cal_snow_sleet_rain(rain_data, snow_data)
     snow.attrs['data_name'] = data_name
@@ -87,7 +87,7 @@ def cumulated_precip(data_source='cassandra', data_name='ecmwf', init_time=None,
 
     fhours = np.arange(t_range[0], t_range[1] + 1, t_gap)
     rain_data = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                                var_name='rain{:02d}'.format(t_gap), extent=map_extent, x_percent=0.2, y_percent=0.1)
+                                var_name='rain{:02d}'.format(t_gap), extent=map_extent)
 
     rain = rain_data.copy(deep=True)
     valid_time = []
@@ -107,7 +107,7 @@ def rain_evo(data_source='cassandra', data_name='ecmwf', init_time=None, t_gap=6
 
     fhours = np.arange(t_range[0], t_range[1] + 1, t_gap)
     rain = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='rain{:02d}'.format(t_gap), extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='rain{:02d}'.format(t_gap), extent=map_extent)
     
     ret = draw_rain_evo(rain, map_extent=map_extent, **products_kwargs)
 

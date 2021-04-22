@@ -24,14 +24,14 @@ def compare_gh_uv(data_source='cassandra',
     # get area
     map_extent = get_map_area(area)
 
-    hgt_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    u_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    v_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
 
     init_time_fcst=anl_time-datetime.timedelta(hours=fhour)
-    hgt_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    u_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    v_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt_ana': hgt_ana , 'u_ana': u_ana, 'v_ana': v_ana,
@@ -40,12 +40,12 @@ def compare_gh_uv(data_source='cassandra',
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+        psfc_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt_ana = mask_terrian(psfc_ana, hgt_lev, hgt_ana)
         u_ana = mask_terrian(psfc_ana, uv_lev, u_ana)
         v_ana = mask_terrian(psfc_ana, uv_lev, v_ana)
 
-        psfc_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+        psfc_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt_fcst = mask_terrian(psfc_fcst, hgt_lev, hgt_fcst)
         u_fcst = mask_terrian(psfc_fcst, uv_lev, u_fcst)
         v_fcst = mask_terrian(psfc_fcst, uv_lev, v_fcst)

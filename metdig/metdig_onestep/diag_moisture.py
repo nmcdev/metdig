@@ -25,10 +25,10 @@ def hgt_uv_tcwv(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    tcwv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tcwv', extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+    tcwv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tcwv', extent=map_extent)
     
     if is_return_data:
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'vvel': tcwv}
@@ -37,7 +37,7 @@ def hgt_uv_tcwv(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt_lev, hgt)
         u = mask_terrian(psfc, uv_lev, u)
         v = mask_terrian(psfc, uv_lev, v)
@@ -61,10 +61,10 @@ def hgt_uv_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', level=rh_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+    rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', level=rh_lev, extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'rh': rh}
@@ -72,7 +72,7 @@ def hgt_uv_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt_lev, hgt)
         u = mask_terrian(psfc, uv_lev, u)
         v = mask_terrian(psfc, uv_lev, v)
@@ -97,9 +97,9 @@ def hgt_uv_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
     spfh = read_spfh(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=spfh_lev, extent=map_extent)
 
     if is_return_data:
@@ -108,7 +108,7 @@ def hgt_uv_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt_lev, hgt)
         u = mask_terrian(psfc, uv_lev, u)
         v = mask_terrian(psfc, uv_lev, v)
@@ -133,14 +133,14 @@ def hgt_uv_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent, x_percent=0.2, y_percent=0.1)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
     wvfl = read_wvfl(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=wvfl_lev, extent=map_extent)
     
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt_lev, hgt)
         u = mask_terrian(psfc, uv_lev, u)
         v = mask_terrian(psfc, uv_lev, v)
