@@ -13,17 +13,17 @@ import metdig.metdig_cal as mdgcal
 
 def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
     wvfl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='wvfl', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                          var_name='wvfl', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return wvfl
 
 
 def _by_sphf_uv(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
     spfh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='spfh', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                          var_name='spfh', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                       var_name='u', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                       var_name='u', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                       var_name='v', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                       var_name='v', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
 
     if spfh is None or u is None or v is None:
         return None
@@ -37,13 +37,13 @@ def _by_sphf_uv(data_source=None, init_time=None, fhour=None, data_name=None, le
 
 def _by_tmp_rh_uv(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
     tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='tmp', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                         var_name='tmp', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                        var_name='rh', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                        var_name='rh', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                       var_name='u', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                       var_name='u', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                       var_name='v', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+                       var_name='v', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
 
     if tmp is None or rh is None or u is None or v is None:
         return None

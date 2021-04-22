@@ -69,14 +69,14 @@ def veri_heatwave(data_source='cassandra',
     # get area
     map_extent = get_map_area(area)
     init_time=obs_time-datetime.timedelta(hours=fhour)
-    tmx24_2m_fcst = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    tmx24_2m_fcst = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                               var_name='tmx24_2m', throwexp=False)
     if tmx24_2m_fcst is None:
         fhours = np.arange(fhour - 21, fhour + 1, 3)
-        t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+        t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                               var_name='tmx3_2m', throwexp=False)
         if t2m is None:
-            t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+            t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                                   var_name='t2m', throwexp=False)
             if t2m is None:
                 raise Exception('can not get any data')

@@ -12,13 +12,13 @@ import metdig.metdig_cal as mdgcal
 
 
 def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
-    theta = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='theta', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+    theta = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='theta', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return theta
 
 
 def _by_tmp_rh(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
-    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
-    rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', level=level, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
         
     if tmp is None or rh is None:
         return None

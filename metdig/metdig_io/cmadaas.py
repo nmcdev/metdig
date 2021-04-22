@@ -302,7 +302,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
 
 
 def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
-                               extent=None, x_percent=0.2, y_percent=0.1, ):
+                               extent=None, x_percent=0, y_percent=0, ):
     '''
 
     [获取单层多时次观测站点数据]

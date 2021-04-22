@@ -14,7 +14,7 @@ from metdig.metdig_onestep.lib.utility import date_init
 from metdig.metdig_onestep.complexgrid_var.pv_div_uv import read_pv_div_uv
 from metdig.metdig_onestep.complexgrid_var.div_uv import read_div_uv_4d
 from metdig.metdig_onestep.complexgrid_var.vort_uv import read_vort_uv_4d
-from metdig.metdig_onestep.complexgrid_var.spfh import read_spfh_4D
+from metdig.metdig_onestep.complexgrid_var.spfh import read_spfh_4D,read_spfh_3D
 from metdig.metdig_onestep.complexgrid_var.theta import read_theta3d
 
 from metdig.metdig_products.diag_crossection import draw_wind_tmp_rh
@@ -38,13 +38,13 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='grapes_gfs', ini
     ret = {}
 
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='u', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+                           var_name='u', levels=levels, extent=mean_area)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                          var_name='v', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=mean_area)
     qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                        var_name='qcld', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+                        var_name='qcld', levels=levels, extent=mean_area)
     qice = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                        var_name='qice', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+                        var_name='qice', levels=levels, extent=mean_area)
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
                              data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
@@ -58,28 +58,15 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='grapes_gfs', ini
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values.squeeze()
+    terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
-        dataret = {'u': u, 'v': v, 'qice' : 'qice', 'qcld':qcld,'tmp': tmp}
+        dataret = {'u': u, 'v': v, 'qice' : qice, 'qcld':qcld,'tmp': tmp}
         ret.update({'data': dataret})
     if is_draw:
         drawret = draw_time_wind_qcld_qice_tmp(qcld,qice, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
     return ret
-
-# if __name__ == '__main__':
-#     import matplotlib.pyplot as plt
-#     init_times=[
-#                 datetime.datetime(2020, 11, 17, 2), # 8
-#                 datetime.datetime(2020, 11, 17, 5), # 11
-#                 datetime.datetime(2020, 11, 17, 8), # 14
-#                 datetime.datetime(2020, 11, 17, 11), # 17
-#                 datetime.datetime(2020, 11, 17, 14), # 20
-#                 datetime.datetime(2020, 11, 17, 17), # 23
-#                 ]
-#     time_wind_qcld_qice_tmp(init_time=init_times,data_source='era5',points={'lon':[125.1999],'lat':[43.9]},fhours=0)
-#     plt.show()
 
 @date_init('init_time')
 def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -92,21 +79,21 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     map_extent = get_map_area(area)
 
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='rh', levels=levels, extent=map_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='vvel', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='vvel', levels=levels, extent=map_extent)
     spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='spfh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='spfh', levels=levels, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     w = mdgcal.vertical_velocity(vvel, tmp, spfh)
 
@@ -144,11 +131,6 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
         ret.update(drawret)
 
     return ret
-
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_w_theta_spfh()
-    plt.show()
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -221,9 +203,9 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
     ret = {}
 
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='u', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+                           var_name='u', levels=levels, extent=mean_area)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='v', levels=levels, extent=mean_area, x_percent=0.2, y_percent=0.1)
+                           var_name='v', levels=levels, extent=mean_area)
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
                              data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
@@ -237,7 +219,7 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values.squeeze()
+    terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv': tmpadv}
@@ -259,15 +241,15 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
     map_extent = get_map_area(area)
 
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
@@ -308,19 +290,19 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     map_extent = get_map_area(area)
 
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                             var_name='vvel', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
-    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                             var_name='spfh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                             var_name='vvel', levels=levels, extent=map_extent)
+    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels,extent=map_extent)
+
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
@@ -353,6 +335,9 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
         ret.update(drawret)
     return ret
 
+if __name__ == '__main__':
+    wind_w_tmpadv_tmp(init_time='2020111708',st_point=[20, 117.5], ed_point=[50, 117.6],
+                        fhour=0,data_source='era5')
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -375,7 +360,7 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values.squeeze()
+    terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'vortadv': vortadv}
@@ -384,7 +369,6 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
         drawret = draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
     return ret
-
 
 @date_init('init_time')
 def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -397,15 +381,15 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
     map_extent = get_map_area(area)
 
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
@@ -452,9 +436,9 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
                                      data_name=data_name, lvl_ana=levels, levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     if is_return_data:
         dataret = {'theta': theta, 'u': u, 'v': v, 'pv': mpv, 'hgt': hgt, 'psfc': psfc}
@@ -496,17 +480,17 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     map_extent = get_map_area(area)
 
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='rh', levels=levels, extent=map_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
@@ -555,17 +539,17 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     map_extent = get_map_area(area)
 
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='rh', levels=levels, extent=map_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
@@ -612,17 +596,17 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     map_extent = get_map_area(area)
 
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='rh', levels=levels, extent=map_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
@@ -659,11 +643,6 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_theta_spfh()
-    plt.show()
-
 @date_init('init_time')
 def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
@@ -675,17 +654,17 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     map_extent = get_map_area(area)
 
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                           var_name='rh', levels=levels, extent=map_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                            var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                         var_name='hgt', level=500, extent=map_extent, x_percent=0.2, y_percent=0.1)
+                         var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent, x_percent=0.2, y_percent=0.1)
+                          var_name='psfc', extent=map_extent)
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
@@ -755,25 +734,26 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
 @date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                   points={'lon': [116.3833], 'lat': [39.9]},
+                   points={'lon': [116.3833], 'lat': [39.9]},mean_area=None,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels)
-    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels)
-    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels)
-    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc')
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=mean_area)
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=mean_area)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=mean_area)
+    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=mean_area)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=mean_area)
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'psfc': psfc}
         ret.update({'data': dataret})
 
-    tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
-    u = u.interp(lon=points['lon'], lat=points['lat'])
-    v = v.interp(lon=points['lon'], lat=points['lat'])
-    rh = rh.interp(lon=points['lon'], lat=points['lat'])
-    psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    if (mean_area==None):
+        tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        rh = rh.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
     terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)

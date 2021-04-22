@@ -22,14 +22,14 @@ def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
 
     map_extent = get_map_area(area)
 
-    tmx24_2m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    tmx24_2m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                               var_name='tmx24_2m', throwexp=False)
     if tmx24_2m is None:
         fhours = np.arange(fhour - 21, fhour + 1, 3)
-        t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+        t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                               var_name='tmx3_2m', throwexp=False)
         if t2m is None:
-            t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+            t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                                   var_name='t2m', throwexp=False)
             if t2m is None:
                 raise Exception('can not get any data')
@@ -67,7 +67,7 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     else:
         raise Exception('t_gap must be 3 or 6')
 
-    prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                            var_name='prmsl')
 
     gust10m.attrs['var_cn_name'] = '逐{}小时最大阵风'.format(t_gap)
@@ -107,18 +107,18 @@ def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
         print('fhour should > 24')
         return
 
-    t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                              var_name='tmx3_2m')
     if t_2m_1 is None:
-        t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+        t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                                  var_name='t_2m')
         if t_2m_1 is None:
             raise Exception('can not get any data')
 
-    t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                              var_name='tmx3_2m')
     if t_2m_2 is None:
-        t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+        t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                                  var_name='t_2m')
         if t_2m_2 is None:
             raise Exception('can not get any data')
@@ -161,18 +161,18 @@ def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
         print('fhour should > 24')
         return
 
-    t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                              var_name='tmn3_2m')
     if t_2m_1 is None:
-        t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+        t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                                  var_name='t_2m')
         if t_2m_1 is None:
             raise Exception('can not get any data')
 
-    t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+    t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                              var_name='tmn3_2m')
     if t_2m_2 is None:
-        t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0.2, y_percent=0.1,
+        t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
                                  var_name='t_2m')
         if t_2m_2 is None:
             raise Exception('can not get any data')

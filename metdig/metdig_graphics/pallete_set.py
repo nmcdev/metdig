@@ -161,8 +161,8 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
             
     ax.set_yscale('symlog')
     ax.set_ylabel('高度 （hPa）', fontsize=15)
-    ax.set_yticklabels(np.arange(1000, 50, -100))
-    ax.set_yticks(np.arange(1000, 50, -100))
+    ax.set_yticklabels([100,925,850,700,600,500,400,300])
+    ax.set_yticks([100,925,850,700,600,500,400,300])
     ax.set_ylim(levels.max(), levels.min())
     ax.set_xlim(times[0], times[-1])
 

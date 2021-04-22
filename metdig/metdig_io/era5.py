@@ -92,7 +92,7 @@ class ERA5DataService(object):
             savefile)
 
 
-def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0.2, y_percent=0.1, **kwargs):
+def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''
 
     [获取era5再分析单层单时次数据]
@@ -174,7 +174,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     return stda_data
 
 
-def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_percent=0.2, y_percent=0.1, **kwargs):
+def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''
 
     [读取单层多时次模式网格数据]
@@ -210,7 +210,7 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     return None
 
 
-def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x_percent=0.2, y_percent=0.1, **kwargs):
+def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''
 
     [读取多层单时次模式网格数据]
@@ -246,7 +246,7 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     return None
 
 
-def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None, x_percent=0.2, y_percent=0.1, **kwargs):
+def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''
 
     [读取多层多时次模式网格数据]
@@ -281,7 +281,8 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
-                print(str(e))
+                # print(str(e))
+                continue
         if temp_data:
             temp_data = xr.concat(temp_data, dim='level')
             stda_data.append(temp_data)

@@ -22,26 +22,25 @@ def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level
     u=[]
     v=[]
     for ilevel in level:
-        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='pv', level=ilevel, extent=extent, x_percent=0, y_percent=0, throwexp=False)
         if _ is not None:
             pv.append(_)
     if len(pv) == 0:
         return None, None, None, None
 
     for ilevel in level:
-        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='div', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='div', level=ilevel, extent=extent, x_percent=0, y_percent=0, throwexp=False)
         if _ is not None:
             div.append(_)
-        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=ilevel, extent=extent, x_percent=0, y_percent=0, throwexp=False)
         if _ is not None:
             u.append(_)
-        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=ilevel, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+        _ = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=ilevel, extent=extent, x_percent=0, y_percent=0, throwexp=False)
         if _ is not None:
             v.append(_)
     if len(div) == 0 or len(u) == 0 or len(v) == 0:
         return None, None, None, None
 
-    print(pv)
     pv=xr.concat(pv,dim='level')
     div=xr.concat(div,dim='level')
     u=xr.concat(u,dim='level')
@@ -52,9 +51,9 @@ def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level
 def _by_uv_tmp(data_source=None, init_time=None, fhour=None, data_name=None,
                lvl_ana=250, levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 100],
                extent=(50, 150, 0, 65)):
-    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', levels=levels, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
-    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', levels=levels, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
-    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', levels=levels, extent=extent, x_percent=0.2, y_percent=0.1, throwexp=False)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
 
     if u is None or v is None or tmp is None:
         return None, None, None, None
