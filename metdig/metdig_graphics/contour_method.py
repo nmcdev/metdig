@@ -36,6 +36,9 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
         colors (str, optional): [description]. Defaults to 'black'.
         transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         linewidths (int, optional): [description]. Defaults to 2.
+
+    Returns:
+        [type]: [绘图对象]
     """
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -52,6 +55,8 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
             plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
         else:
             plt.clabel(img, cb_level, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
+    
+    return img
 
 
 ############################################################################################################################

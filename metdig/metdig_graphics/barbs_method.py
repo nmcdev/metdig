@@ -32,7 +32,10 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
         length (int, optional): [description]. Defaults to 6.
         fill_empty (bool, optional): [description]. Defaults to False.
         sizes ([type], optional): [description]. Defaults to dict(emptybarb=0.05).
-    """
+
+    Returns:
+        [type]: [绘图对象]
+    """    
     x = ustda.stda.get_dim_value(xdim)
     y = ustda.stda.get_dim_value(ydim)
     u = ustda.stda.get_2d_value(ydim, xdim) * 2.5
@@ -45,6 +48,8 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
         # cartopy 含transform，regrid_shape的两个参数
         img = ax.barbs(x, y, u, v, transform=transform, regrid_shape=regrid_shape,
                        color=color, length=length,  fill_empty=fill_empty, sizes=sizes, **kwargs)
+    
+    return img
 
 ############################################################################################################################
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
