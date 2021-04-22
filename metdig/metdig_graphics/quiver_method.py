@@ -27,3 +27,4 @@ def uv_quiver(ax, ustda, vstda,xdim='lon', ydim='lat',
         img = ax.quiver(x, y, u, v, color=color, scale=scale,  **kwargs)
     else:
         img = ax.quiver(x, y, u, v, color=color, transform=transform, scale=scale,  regrid_shape=regrid_shape,  **kwargs)
+    return img

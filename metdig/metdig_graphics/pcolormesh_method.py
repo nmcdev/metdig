@@ -36,6 +36,9 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
         extend (str, optional): [description]. Defaults to 'both'.
         transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         alpha (float, optional): [description]. Defaults to 0.5.
+
+    Returns:
+        [type]: [绘图对象]
     """
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -51,6 +54,8 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
     if add_colorbar:
         cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
         utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
+    
+    return img
 
 
 ############################################################################################################################
