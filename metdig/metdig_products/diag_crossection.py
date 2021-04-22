@@ -471,10 +471,18 @@ def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  rh_contourf_kwargs={}, uv_barbs
     levels = rh['level'].values
 
     title = '温度, 相对湿度, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}\nwww.nmc.cn'.format(
-        init_time, data_name, points['lon'], points['lat'])
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}\nwww.nmc.cn'.format(
+        init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_温度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
+
+    cenlon = u.lon.mean()
+    cenlat = u.lat.mean()
+    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    rh = rh.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
     cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 101, 0.5), extend='max', kwargs=rh_contourf_kwargs)
