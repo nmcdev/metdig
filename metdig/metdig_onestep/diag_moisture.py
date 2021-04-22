@@ -152,3 +152,9 @@ def hgt_uv_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
         ret.update(drawret)
 
     return ret
+
+if __name__ == '__main__':
+    import datetime
+    import matplotlib.pyplot as plt
+    hgt_uv_wvfl(init_time='2020110108',add_city=False,data_source='era5')
+    plt.show()

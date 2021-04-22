@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import matplotlib.pyplot as plt
 import math
-
+import numpy as np
 
 from metdig.metdig_io import get_model_points
 from metdig.metdig_io.cassandra import get_obs_stations_multitime
@@ -15,10 +16,9 @@ import metdig.metdig_cal as mdgcal
 import metdig.metdig_utl as mdgstda
 
 
-
 @date_init('init_time')
-def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=[], points={}, 
-    is_return_data=False, is_draw=True,**products_kwargs):
+def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20]},
+                   is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # get data
@@ -42,15 +42,15 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
     return ret
 
 @date_init('obs_times', method=date_init.series_1_36_set)
-def obs_uv_tmp_rh_rain(data_source='cassandra', obs_times=None, 
-    is_return_data=False, is_draw=True,**products_kwargs):
+def obs_uv_tmp_rh_rain(data_source='cassandra', obs_times=None,id_selected=54511,
+                       is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='rain01', id_selected=58131)
-    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='tmp', id_selected=58131)
-    rh = get_obs_stations_multitime(obs_times=obs_times, data_name='national',  var_name='rh', id_selected=58131)
-    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wsp', id_selected=58131)
-    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wdir', id_selected=58131)
+    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='rain01', id_selected=id_selected)
+    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='tmp', id_selected=id_selected)
+    rh = get_obs_stations_multitime(obs_times=obs_times, data_name='national',  var_name='rh', id_selected=id_selected)
+    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wsp', id_selected=id_selected)
+    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wdir', id_selected=id_selected)
 
     # calcu
     u, v = mdgcal.wind_components(wsp, wdir)
@@ -65,8 +65,11 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', obs_times=None,
 
     return ret
 
+if __name__ == '__main__':
+    obs_uv_tmp_rh_rain()
+    plt.show()
 
-def station_synthetical_forecast_from_cassandra(init_time=None, fhours=[], points={}, **products_kwargs):
+def station_synthetical_forecast_from_cassandra(init_time=None,  fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20]}, **products_kwargs):
 
     t2m = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours, data_name='ecmwf', var_name='t2m', points=points)
     rh2m = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours, data_name='ecmwf', var_name='rh2m', points=points)
@@ -90,8 +93,10 @@ def station_synthetical_forecast_from_cassandra(init_time=None, fhours=[], point
 
     vis = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours, data_name='ecmwf', var_name='vis', points=points)
 
-    gust10m_3h = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours, data_name='ecmwf', var_name='gust10m_3h', points=points)
-    gust10m_6h = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours, data_name='ecmwf', var_name='gust10m_6h', points=points)
+    gust10m_3h = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours,
+                                  data_name='ecmwf', var_name='gust10m_3h', points=points)
+    gust10m_6h = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours,
+                                  data_name='ecmwf', var_name='gust10m_6h', points=points)
 
     # draw_vis = True
     # drw_thr = True

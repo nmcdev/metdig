@@ -193,14 +193,14 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_tmp_contour(ax, stda, xdim='lon', ydim='level', 
                       add_clabel=True, 
-                      levels=np.arange(-100, 100, 2), colors='#A0522D', **kwargs):
+                      levels=np.arange(-100, 100, 2), colors='#0A1F5D', **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_2d_value(ydim, xdim) # degC
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=1, **kwargs)
     if add_clabel:
-        plt.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+        plt.clabel(img, fontsize=17, colors='red', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
 
     if z.min() < 0 and z.max() > 0:
         img = ax.contour(x, y, z, levels=[0], colors='k', linewidths=3)

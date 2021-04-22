@@ -84,5 +84,5 @@ def hgt_uv_div(data_source='cassandra', data_name='grapes_gfs', init_time=None, 
 if __name__ == '__main__':
     import datetime
     import matplotlib.pyplot as plt
-    hgt_uv_vvel(add_city=False)
+    hgt_uv_vvel(add_city=False,data_source='era5',init_time='2020111702')
     plt.show()

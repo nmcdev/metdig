@@ -46,10 +46,10 @@ def draw_syn_composite(
                                                                'orientation': 'vertical', 'label_size': 15}, kwargs=vort_contourf_kwargs)
     hgt_contour(obj.ax, hgt500, kwargs=hgt_contour_kwargs)
     prmsl_contour(obj.ax, prmsl, colors='red', linewidths=0.7, levels=np.arange(950, 1100, 4), kwargs=prmsl_contour_kwargs)
-    uv_lable = obj.ax.get_legend_handles_labels()
+    uv_label = obj.ax.get_legend_handles_labels()
     red_line = lines.Line2D([], [], color='red', label='mean sea leve pressure')
     black_line = lines.Line2D([], [], color='black', label='500hPa geopotential height')
-    leg = obj.ax.legend(handles=uv_lable[0]+[red_line, black_line], loc=3, title=None, framealpha=1)
+    leg = obj.ax.legend(handles=uv_label[0]+[red_line, black_line], loc=3, title=None, framealpha=1)
     leg.set_zorder(100)
     return obj.save()
 
