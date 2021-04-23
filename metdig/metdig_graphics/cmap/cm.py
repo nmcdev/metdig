@@ -90,41 +90,55 @@ def make_cmap(incolors, position=None, rgb=False, hex=False):
     return cmap
 
 
-def get_cmap(name, extend='neither', levels=None):
-    '''
-    name: color list or metdig colormap. such as:
-    name = ['#000000', '#ffffff']
-    name = 'met/ape_new'
-    name = 'met/ncl/Blre'
-    name = 'jet'
+def get_cmap(name, extend='neither', levels=None, isLinear=False):
+    """[获取颜色表，注意：如果levels传参了，则会返回cmap和norm，如果levels没传参，则只会返回cmap。]
 
-    extend = both 
-    extend = max 
-    extend = min 
-    extend = neither
+    Args:
+        name ([type]): [color or colorlist or metdig colormap or matplotlib colorcmap. 
+        such as:
+            name = '#000000'
+            name = 'black'
+            name = ['#000000', '#ffffff']
+            name = 'met/ape_new'
+            name = 'ncl/Blre'
+            name = ''
+            name = 'jet'
+        ]
+        extend (str, optional): [both max min neither，仅在填写levels时才生效]. Defaults to 'neither'.
+        levels ([list], optional): [长度必须大于等于2的颜色等级]. Defaults to None.
+        isLinear ([bool], optional): [是否对colors线性化]. Defaults to False.
 
-    levels: list or numpy array
-    '''
+    Returns:
+        [type]: [cmap [norm]]
+    """    
     if isinstance(name, str):
         if name.startswith('met/'):
             colors = met_cmaps(name[4:]).colors
         elif name.startswith('ncl/'):
             colors = ncl_cmaps(name[4:]).colors
-        # elif name.startswith('ndfd/'):
-            # colors = ndfd_cmaps(name[5:]).colors
         elif name.startswith('guide/'):
             colors = guide_cmaps(name[6:]).colors
         else:
-            colors = plt.get_cmap(name)(range(256))
+            if name in matplotlib.cm.cmap_d.keys():
+                colors = plt.get_cmap(name)(range(256))
+            else:
+                colors = np.array([name]) # 单个颜色
     else:
         colors = np.array(name)
 
+    if isLinear:
+        colors = mpl.colors.LinearSegmentedColormap.from_list("", colors, N=256)(range(256)) # 线性化colors，固定拿出线性化后的256个颜色
     # print(colors * 255)
     # print(colors.shape)
 
+    # 如果levels没有，则直接返回cmap
     if levels is None:
-        return  ListedColormap(colors, name=name)
+        return  ListedColormap(colors)
 
+    # 确定对应levels和extend的颜色个数
+    # 如levels=[1,2,3] extend='both' 则N=4
+    # 如levels=[1,2,3] extend='min/max' 则N=3
+    # 如levels=[1,2,3] extend='neither' 则N=2
     _levels = np.array(levels)
     if extend == 'both':
         N = _levels.size + 1
@@ -135,26 +149,33 @@ def get_cmap(name, extend='neither', levels=None):
     elif extend == 'neither':
         N = _levels.size - 1
 
-
+    # 确定对应levels和extend的颜色列表
+    # 如果颜色少于N则会拉伸颜色列表和N等长
+    # 如果颜色大于N则会等会自动跳跃
     idx = np.linspace(0, colors.shape[0] - 1, N, dtype=np.int)
-    # print(idx)
     colors = colors[idx]
+    # print(N, idx, colors)
 
+    # 根据extent，使用第一个或者最后一个颜色设置under over，剩余其它颜色生成colormap
     if extend == 'min' and colors.shape[0] >= 2:
-        cmap = ListedColormap(colors[1:], name=name)
+        cmap = ListedColormap(colors[1:])
         cmap.set_under(colors[0])
     elif extend == 'max' and colors.shape[0] >= 2:
-        cmap = ListedColormap(colors[:-1], name=name)
+        cmap = ListedColormap(colors[:-1])
         cmap.set_over(colors[-1])
     elif extend == 'both' and colors.shape[0] >= 3:
-        cmap = ListedColormap(colors[1:-1], name=name)
+        cmap = ListedColormap(colors[1:-1])
         cmap.set_under(colors[0])
         cmap.set_over(colors[-1])
     else:
-        cmap = ListedColormap(colors, name=name)
+        cmap = ListedColormap(colors)
 
     # print(N, cmap.N, extend)
-    norm = mpl.colors.BoundaryNorm(levels, cmap.N)
+    if isLinear and len(levels) < 256:
+        # len(levels) / 
+        norm = mpl.colors.BoundaryNorm(levels, cmap.N) # 是否需要自动加细levels？
+    else:
+        norm = mpl.colors.BoundaryNorm(levels, cmap.N)
     return cmap, norm
 
 
@@ -293,3 +314,31 @@ def get_part_clev_and_cmap(cmap=None, clev_range=[0, 4], color_all=None, clev_sl
         cmap = mpl.colors.LinearSegmentedColormap.from_list(" ", color_all)
     color_slt = np.array(cmap((clev_slt - clev_range[0]) / (clev_range[-1] - clev_range[0]))).reshape(1, 4)
     return color_slt
+
+def plotcmap_examples(cmap, levels=None, extend='neither', isLinear=False):
+    """
+    Helper function to plot data with get_cmap function.
+    """
+    data = np.random.randint(0, 100, 900).reshape(30, 30)
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    if levels is not None:
+        cmap, norm = get_cmap(cmap, levels=levels, extend=extend, isLinear=isLinear)
+        psm = ax.pcolormesh(data, cmap=cmap, norm=norm, rasterized=True)
+        fig.colorbar(psm, ax=ax, extend=extend)
+    else:
+        cmap = get_cmap(cmap, isLinear=isLinear)
+        psm = ax.pcolormesh(data, cmap=cmap, rasterized=True)
+        fig.colorbar(psm, ax=ax)
+    plt.show()
+
+
+
+if __name__ == '__main__':
+    colors = 'met/rain'
+    # levels = np.arange(0, 20, 0.2)
+    levels = [0, 2, 5, 10, 20]
+
+    plotcmap_examples(colors, levels, extend='both', isLinear=True)
