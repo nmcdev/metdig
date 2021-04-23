@@ -12,6 +12,8 @@ import matplotlib.image as image
 import PIL
 from functools import wraps
 
+from scipy.ndimage.filters import minimum_filter, maximum_filter
+
 pkg_name = 'metdig.metdig_graphics'
 
 
@@ -340,3 +342,8 @@ def kwargs_wrapper(func):
                 kwargs['kwargs'] = attrs
         return func(*args, **kwargs)
     return inner
+
+def extrema(mat,mode='wrap',window=50):
+    mn = minimum_filter(mat, size=window, mode=mode)
+    mx = maximum_filter(mat, size=window, mode=mode)
+    return np.nonzero(mat == mn), np.nonzero(mat == mx)

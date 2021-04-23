@@ -64,3 +64,4 @@ qcld,云水混合比,g/kg,0
 qice,云冰混合比,g/kg,0
 qsn,雨水混合比,g/kg,0
 qrn,雪水混合比,g/kg,0
+fg,锋生函数,kelvin/m/s,0

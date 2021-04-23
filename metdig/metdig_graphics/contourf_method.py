@@ -143,7 +143,7 @@ def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
-    z = z * 1e8  # 1e-5/s
+    z = z * 1e8  # 1e-8/s
     cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)

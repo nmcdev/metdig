@@ -97,6 +97,45 @@ def vorticity(u, v):
 
     return vort
 
+def frontogenesis(thta, u, v):
+    '''
+
+    [Calculate the 2D kinematic frontogenesis of a temperature field.]
+    [only for grid stda]
+    Arguments:
+        thta {[stda]} -- [Potential temperature. ]
+        u {[stda]} -- [x component of the wind. ]
+        v {[stda]} -- [y component of the wind. ]
+    '''
+    x, y = np.meshgrid(u['lon'].values, u['lat'].values)
+    x = x * units('degrees')
+    y = y * units('degrees')
+
+    dx, dy = mpcalc.lat_lon_grid_deltas(u['lon'].values, u['lat'].values)
+    
+    fg = v.copy(deep=True)
+    for ilvl in u['level'].values:
+        for it in u['time'].values:
+            for idt in u['dtime'].values:
+                for imdl in u['member'].values:
+                    thta2d = thta.sel(level=ilvl, time=it, dtime=idt, member=imdl).squeeze()
+                    u2d = u.sel(level=ilvl, time=it, dtime=idt, member=imdl).squeeze()
+                    v2d = v.sel(level=ilvl, time=it, dtime=idt, member=imdl).squeeze()
+                
+                    thta2d = utl.stda_to_quantity(thta2d)  # degC
+                    u2d = utl.stda_to_quantity(u2d)  # m/s
+                    v2d = utl.stda_to_quantity(v2d)  # m/s
+
+                    fg2d = mpcalc.frontogenesis(thta2d, u2d, v2d, dx=dx, dy=dy)  # kelvin / meter / second
+
+                    fg.loc[dict(level=ilvl, time=it, dtime=idt, member=imdl)] = np.array(fg2d)
+                    fg.attrs['var_units'] = str(fg2d.units)
+
+    fg = utl.quantity_to_stda_byreference('fg', fg.values * units(fg.attrs['var_units']), u)
+
+    return fg
+
+
 def absolute_vorticity(u, v):
     '''
 

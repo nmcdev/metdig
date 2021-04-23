@@ -319,16 +319,17 @@ def plotcmap_examples(cmap, levels=None, extend='neither', isLinear=False):
     """
     Helper function to plot data with get_cmap function.
     """
-    data = np.random.randint(0, 100, 900).reshape(30, 30)
 
     fig = plt.figure()
     ax = fig.add_subplot()
 
     if levels is not None:
+        data = np.random.randint(levels[0], levels[-1], 900).reshape(30, 30)
         cmap, norm = get_cmap(cmap, levels=levels, extend=extend, isLinear=isLinear)
         psm = ax.pcolormesh(data, cmap=cmap, norm=norm, rasterized=True)
         fig.colorbar(psm, ax=ax, extend=extend)
     else:
+        data = np.random.randint(0, 100, 900).reshape(30, 30)
         cmap = get_cmap(cmap, isLinear=isLinear)
         psm = ax.pcolormesh(data, cmap=cmap, rasterized=True)
         fig.colorbar(psm, ax=ax)
@@ -339,6 +340,7 @@ def plotcmap_examples(cmap, levels=None, extend='neither', isLinear=False):
 if __name__ == '__main__':
     colors = 'met/rain'
     # levels = np.arange(0, 20, 0.2)
-    levels = [0, 2, 5, 10, 20]
+    colors = 'yellow'
+    levels = [0, 2, 5, 10, 20, 30, 50, 100]
 
-    plotcmap_examples(colors, levels, extend='both', isLinear=True)
+    plotcmap_examples(colors, levels)

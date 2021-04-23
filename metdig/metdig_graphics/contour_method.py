@@ -135,7 +135,7 @@ def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
 
 
 @kwargs_wrapper
-def tmx_contour(ax, stda,  xdim='lon', ydim='lat',
+def tmp_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=True,
                 levels=[35, 37, 40], colors=['#FF8F00', '#FF6200', '#FF0000'],
                 transform=ccrs.PlateCarree(), linewidths=2, **kwargs):

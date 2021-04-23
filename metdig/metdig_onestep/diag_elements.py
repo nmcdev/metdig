@@ -9,9 +9,10 @@ from metdig.metdig_io import get_model_grids
 from metdig.metdig_onestep.lib.utility import get_map_area
 from metdig.metdig_onestep.lib.utility import date_init
 
-from metdig.metdig_products.diag_elements import draw_tmx
+from metdig.metdig_products.diag_elements import draw_tmp
 from metdig.metdig_products.diag_elements import draw_mslp_gust
 from metdig.metdig_products.diag_elements import draw_dt2m
+from metdig.metdig_products.diag_elements import draw_mslp_gust_uv10m
 
 import metdig.metdig_cal as mdgcal
 
@@ -37,7 +38,7 @@ def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
         tmx24_2m = t2m.isel(dtime=[-1]).copy()
         tmx24_2m.values[:, :, :, 0, :, :] = t2m.max(dim='dtime').values
         tmx24_2m.attrs['var_name'] = 'tmx24_2m'
-        tmx24_2m.attrs['var_cn_name'] = '过去24小时最高温度'
+        tmx24_2m.attrs['var_cn_name'] = '过去24小时2米最高温度'
         tmx24_2m.attrs['valid_time'] = 24
 
     if is_return_data:
@@ -45,7 +46,42 @@ def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_tmx(tmx24_2m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_tmp(tmx24_2m, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    return ret
+
+@date_init('init_time')
+def t2m_mn24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fhour=24, area='全国',
+             is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    map_extent = get_map_area(area)
+
+    tmn24_2m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
+                              var_name='tmn24_2m', throwexp=False)
+    if tmn24_2m is None:
+        fhours = np.arange(fhour - 21, fhour + 1, 3)
+        t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
+                              var_name='tmn3_2m', throwexp=False)
+        if t2m is None:
+            t2m = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
+                                  var_name='t2m', throwexp=False)
+            if t2m is None:
+                raise Exception('can not get any data')
+
+        tmn24_2m = t2m.isel(dtime=[-1]).copy()
+        tmn24_2m.values[:, :, :, 0, :, :] = t2m.min(dim='dtime').values
+        tmn24_2m.attrs['var_name'] = 'tmn24_2m'
+        tmn24_2m.attrs['var_cn_name'] = '过去24小时2米最低温度'
+        tmn24_2m.attrs['valid_time'] = 24
+
+    if is_return_data:
+        dataret = {'tmn24_2m': tmn24_2m}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_tmp(tmn24_2m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
     return ret
@@ -73,7 +109,7 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     gust10m.attrs['var_cn_name'] = '逐{}小时最大阵风'.format(t_gap)
 
     if is_return_data:
-        dataret = {'tmx24_2m': gust10m, 'prmsl': prmsl}
+        dataret = {'gust10m': gust10m, 'prmsl': prmsl}
         ret.update({'data': dataret})
 
     prmsl = mdgcal.gaussian_filter(prmsl, 5)
@@ -84,6 +120,42 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     return ret
 
+def mslp_gust10m_uv10m(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, t_gap=3, area='全国',
+                       is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    map_extent = get_map_area(area)
+
+    if t_gap == 3:
+        gust10m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                                 var_name='gust10m_3h', extent=map_extent)
+    elif t_gap == 6:
+        gust10m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                                 var_name='gust10m_6h', extent=map_extent)
+    else:
+        raise Exception('t_gap must be 3 or 6')
+    
+    prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
+                           var_name='prmsl')
+    u10m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
+                          var_name='u10m')
+    v10m = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent, x_percent=0, y_percent=0,
+                          var_name='v10m')
+
+    gust10m.attrs['var_cn_name'] = '逐{}小时最大阵风'.format(t_gap)
+
+    if is_return_data:
+        dataret = {'gust10m': gust10m, 'prmsl': prmsl}
+        ret.update({'data': dataret})
+
+    prmsl = mdgcal.gaussian_filter(prmsl, 5)
+    
+    if is_draw:
+        drawret = draw_mslp_gust_uv10m(gust10m, prmsl, u10m, v10m, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    return ret
+    
 
 @date_init('init_time')
 def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=48, area='全国',

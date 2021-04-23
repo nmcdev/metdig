@@ -203,6 +203,24 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
 
 @kwargs_wrapper
+def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  vmin=-4, vmax=4, cmap='ncl/hotcolr_19lev',
+                  transform=ccrs.PlateCarree(), alpha=0.8,
+                  **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # kelvin/m/s
+    z = z * 1e9  
+
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.pcolormesh(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)')
+            
+
+@kwargs_wrapper
 def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(5, 46), cmap='met/wvfl_ctable',
@@ -225,7 +243,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
 
 @kwargs_wrapper
-def tmx_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    cmap='met/temp',
                    transform=ccrs.PlateCarree(), alpha=0.5,
