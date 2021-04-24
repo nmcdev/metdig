@@ -22,7 +22,7 @@ from metdig.metdig_io.MDIException import NMCMetIOError
 class ERA5DataService(object):
     """
 
-    [era5 数据下载工具类。 一次只下载单时次单层次数据
+    [era5 数据下载工具类。 一次只下载单时次单层次数据, init_time为世界时
     备注：
     1.参数variable均为era5网站下的要素名，详细可以看各个函数下网址链接
     2.参数savefile为保存在本地的全路径
@@ -95,10 +95,10 @@ class ERA5DataService(object):
 def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''
 
-    [获取era5再分析单层单时次数据]
+    [获取era5再分析单层单时次数据，注意：缓存的目录为世界时]
 
     Keyword Arguments:
-        init_time {[datetime]} -- [再分析时间] (default: {None})
+        init_time {[datetime]} -- [再分析时间（北京时）] (default: {None})
         var_name {[str]} -- [数据要素名] (default: {None})
         level {[int32]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
