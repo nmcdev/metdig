@@ -1,0 +1,67 @@
+#,,,
+# stda标准属性配置文件,,,
+# 注意事项:,,,
+#    1. var_units配置使用参考metpy.units（即pint库）,,,
+#    2. var_units在stda中配置时不能带任何倍数关系,,,
+#,,,
+var_name,var_cn_name,var_units,valid_time
+hgt,位势高度,dagpm,0
+u,u方向风速,m/s,0
+v,v方向风速,m/s,0
+w,垂直方向风速,m/s,0
+vvel,垂直气压速度,Pa/s,0
+rh,相对湿度,percent,0
+tmp,温度,degC,0
+pres,气压,hPa,0
+theta,相当位温,kelvin,0
+td,露点温度,degC,0
+prmsl,海平面气压,hPa,0
+wsp,风速,m/s,0
+wdir,风向,degree,0
+tcwv,整层可降水量,mm,0
+spfh,绝对湿度,g/kg,0
+thta,位温,degC,0
+pv,位涡,K*m**2/(s*kg),0
+div,散度,1/s,0
+wvfl,水汽通量,g/(cm*hPa*s),0
+rain,降水量,mm,0
+rain01,1小时降水,mm,1
+rain03,3小时降水,mm,3
+rain06,6小时降水,mm,6
+rain12,12小时降水,mm,12
+rain24,24小时降水,mm,24
+es,饱和水汽压,hPa,0
+u10m,10mU风,m/s,0
+v10m,10mV风,m/s,0
+u100m,100mU风,m/s,0
+v100m,100mV风,m/s,0
+t2m,2m温度,degC,0
+rh2m,2m相对湿度,percent,0
+td2m,2m露点温度,degC,0
+psfc,地面气压,hPa,0
+tcdc,低云量,percent,0
+lcdc,总云量,percent,0
+vis,能见度,km ,0
+gust10m_3h,3小时10米阵风,m/s,3
+gust10m_6h,6小时10米阵风,m/s,6
+p_vapor,水汽压,Pa,0
+at,体感温度,degC,0
+absv,绝对涡度,1/s,0
+tmx,最高温度,degC,0
+tmn,最低温度,degC,0
+tmx3_2m,过去3小时2米最高温度,degC,3
+tmn3_2m,过去3小时2米最低温度,degC,3
+tmx24_2m,过去24小时2米最高温度,degC,24
+tmn24_2m,过去24小时2米最低温度,degC,24
+snow03,3小时降雪,mm,3
+snow06,6小时降雪,mm,6
+snow24,24小时降雪,mm,24
+sleet,雨夹雪,mm,0
+tpe,总降水量,mm,0
+dt24_2m,过去24小时2米变温,degC,24
+vort,垂直涡度,1/s,0
+qcld,云水混合比,g/kg,0
+qice,云冰混合比,g/kg,0
+qsn,雨水混合比,g/kg,0
+qrn,雪水混合比,g/kg,0
+fg,锋生函数,kelvin/m/s,0
