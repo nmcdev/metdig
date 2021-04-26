@@ -31,6 +31,45 @@ import metdig.cal as mdgcal
 from metdig.utl import mdgstda
 
 @date_init('init_time', method=date_init.special_series_set)
+def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhours=range(0, 48, 3),
+                         levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                         points={'lon': [118], 'lat': [34]}, mean_area=None,
+                         is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                           var_name='u', levels=levels, extent=mean_area)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                          var_name='v', levels=levels, extent=mean_area)
+    qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qcld', levels=levels, extent=mean_area)
+    qsn = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qsn', levels=levels, extent=mean_area)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
+                             data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
+
+    if(mean_area == None):
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        qsn = qsn.interp(lon=points['lon'], lat=points['lat'])
+        qcld = qcld.interp(lon=points['lon'], lat=points['lat'])
+        tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+
+    _, pressure = xr.broadcast(v, v['level'])
+    terrain = pressure - psfc.values
+    terrain.attrs['var_units'] = ''
+    if is_return_data:
+        dataret = {'u': u, 'v': v, 'qsn' : qsn, 'qcld':qcld,'tmp': tmp}
+        ret.update({'data': dataret})
+    if is_draw:
+        drawret = draw_time_wind_qcld_qsn_tmp(qcld,qsn, tmp, u, v, terrain, **products_kwargs)
+        ret.update(drawret)
+    return ret
+
+
+@date_init('init_time', method=date_init.special_series_set)
 def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                          points={'lon': [118], 'lat': [34]}, mean_area=None,

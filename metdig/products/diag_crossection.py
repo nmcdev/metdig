@@ -19,6 +19,43 @@ from metdig.graphics.quiver_method import *
 from metdig.graphics.other_method import *
 from metdig.graphics.draw_compose import *
 
+def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
+                                 qcld_contour_kwargs={},qice_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},
+                                 **pallete_kwargs):
+
+    init_time = pd.to_datetime(qcld['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhours = qcld['dtime'].values
+    times = qcld.stda.fcst_time
+    data_name = str(qcld['member'].values[0]).upper()
+    levels = qcld['level'].values
+
+    title = '云水比, 雪水比, 温度, 水平风'
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}\nwww.nmc.cn'.format(
+        init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
+    png_name = '{3}_云水比_雪水比_水平风_温度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
+        init_time, fhours[0], fhours[-1], data_name)
+
+    cenlon = u.lon.mean()
+    cenlat = u.lat.mean()
+    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    qcld = qcld.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    qsn = qsn.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
+
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    qcld_contourf(obj.ax, qcld, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right top'}, transform=None, kwargs=qcld_contour_kwargs)
+    qsn_contourf(obj.ax, qsn, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
+    barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
+    if terrain.values.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
+    brown_line = lines.Line2D([], [], color='brown', label='terrain')
+    leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
+    leg.set_zorder(100)
+    return obj.save()
 
 def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
                                  qcld_contour_kwargs={},qice_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},
