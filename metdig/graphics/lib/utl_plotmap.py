@@ -14,11 +14,23 @@ import cartopy.feature as cfeature
 from matplotlib.text import TextPath
 from matplotlib.patches import PathPatch
 import matplotlib.patheffects as mpatheffects
+from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 
 import metdig.graphics.lib.utility as utl
 
 pkg_name = 'metdig.graphics'
 
+def add_ticks(ax, xticks=None, yticks=None, crs=ccrs.PlateCarree(), **kwargs):
+    if xticks is not None:
+        ax.set_xticks(xticks, crs=crs)
+        lon_formatter = LongitudeFormatter(zero_direction_label=False)
+        ax.xaxis.set_major_formatter(lon_formatter)
+        ax.tick_params(axis='x', **kwargs)
+    if yticks is not None:
+        ax.set_yticks(yticks, crs=crs)
+        lat_formatter = LatitudeFormatter()
+        ax.yaxis.set_major_formatter(lat_formatter)
+        ax.tick_params(axis='y', **kwargs)
 
 def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
                                   edgecolor='c', lw=2, **kwargs):

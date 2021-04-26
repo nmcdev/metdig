@@ -9,6 +9,7 @@ import pandas as pd
 import pkg_resources
 import matplotlib.pyplot as plt
 import matplotlib.image as image
+import matplotlib.patches as patches
 import PIL
 from functools import wraps
 
@@ -265,7 +266,7 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
 
     return ret
 
-def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal',  **kwargs):
+def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal', pad=0, **kwargs):
     """[summary]
 
     Args:
@@ -277,44 +278,48 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
         pos (str, optional): [bottom right; 如果rect填写，则pos不生效]. Defaults to 'bottom'.
         rect ([type], optional): [4-tuple of floats *rect* = ``[left, bottom, width, height]``.]. Defaults to None.
         orientation (str, optional): [horizontal vertical; 如果pos='bottom'，则强制为'horizontal'; 如果pos='right'，则强制为vertical; 如果rect填写，才根据参数设置]. Defaults to 'horizontal'.
+        pad (float, optional): [colorbar和ax的偏移距离]. Defaults to 0.
     """
     if rect:
         cax = plt.axes(rect)
     else:
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l, b - h * 0.05, w, h * 0.02])
+            cax = plt.axes([l, b - h * 0.05 - pad, w, h * 0.02])
             orientation='horizontal'
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w, b, 0.015, h])
+            cax = plt.axes([l + 0.01 + w + pad, b, 0.015, h])
             orientation='vertical'
         elif pos == 'lower center':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l+w/3., b - h * 0.05, w/3, h * 0.02])
+            cax = plt.axes([l+w/3., b - h * 0.05 + pad, w/3, h * 0.02])
         elif pos == 'lower left':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l, b - h * 0.05, w/3, h * 0.02])
+            cax = plt.axes([l, b - h * 0.05 + pad, w/3, h * 0.02])
         elif pos == 'lower right':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l+w*2/3, b - h * 0.05, w/3, h * 0.02])
+            cax = plt.axes([l+w*2/3, b - h * 0.05 + pad, w/3, h * 0.02])
         elif pos == 'right center':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w, b+h/3, 0.015, h/3])
+            cax = plt.axes([l + 0.01 + w + pad, b+h/3, 0.015, h/3])
             orientation='vertical'
         elif pos == 'right top':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w, b+h*2/3, 0.015, h/3])
+            cax = plt.axes([l + 0.01 + w + pad, b+h*2/3, 0.015, h/3])
             orientation='vertical'
         elif pos == 'right bottom':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w, b, 0.015, h/3])
+            cax = plt.axes([l + 0.01 + w + pad, b, 0.015, h/3])
             orientation='vertical'
 
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label(label, size=label_size)
 
+def add_patchlegend(ax, labels, colors, **kwargs):
+    myp = list(map(lambda c: patches.Patch(color=c, alpha=1), colors))
+    ax.legend(handles=myp, labels=labels,  **kwargs)
 
 def kwargs_wrapper(func):
     '''
