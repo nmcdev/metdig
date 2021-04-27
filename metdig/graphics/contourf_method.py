@@ -137,7 +137,7 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
-                    levels=np.arange(-15, 15.1, 1), cmap='ncl/BlueWhiteOrangeRed', extend='both',
+                    levels=np.arange(-10, 10.1, 1), cmap='ncl/BlueWhiteOrangeRed', extend='both',
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)

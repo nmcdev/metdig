@@ -199,5 +199,5 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 if __name__ == '__main__':
     import datetime
     import matplotlib.pyplot as plt
-    hgt_uv_vvel(add_city=False, data_source='era5', init_time='2020111702')
+    hgt_uv_tmpadv(add_city=False, data_source='era5', tmp_lev=925 ,area='全国',init_time='2020111820')
     plt.show()

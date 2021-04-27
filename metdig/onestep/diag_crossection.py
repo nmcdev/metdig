@@ -26,6 +26,8 @@ from metdig.products.diag_crossection import draw_time_rh_uv_theta
 from metdig.products.diag_crossection import draw_wind_theta_mpv
 from metdig.products.diag_crossection import draw_wind_vortadv_tmp
 from metdig.products.diag_crossection import draw_wind_tmpadv_tmp, draw_time_div_vort_rh_uv, draw_time_div_vort_spfh_uv, draw_time_wind_vortadv_tmp, draw_time_wind_tmpadv_tmp, draw_wind_w_tmpadv_tmp,draw_time_wind_qcld_qice_tmp
+from metdig.products import diag_crossection
+
 
 import metdig.cal as mdgcal
 from metdig.utl import mdgstda
@@ -64,7 +66,7 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='grapes_gfs', init
         dataret = {'u': u, 'v': v, 'qsn' : qsn, 'qcld':qcld,'tmp': tmp}
         ret.update({'data': dataret})
     if is_draw:
-        drawret = draw_time_wind_qcld_qsn_tmp(qcld,qsn, tmp, u, v, terrain, **products_kwargs)
+        drawret = diag_crossection.draw_time_wind_qcld_qsn_tmp(qcld,qsn, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
     return ret
 
