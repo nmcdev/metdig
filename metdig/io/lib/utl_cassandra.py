@@ -25,6 +25,12 @@ __obs_cfg = pd.read_csv(__obs_cfg_csv, encoding='gbk', comment='#')
 __obs_cfg = __obs_cfg.fillna('')
 __obs_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
+__sata_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cassandra_sata_cfg.csv'
+__sata_cfg = pd.read_csv(__sata_cfg_csv, encoding='gbk', comment='#')
+__sata_cfg = __sata_cfg.fillna('')
+__sata_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
+__sata_cfg['channel'] = __sata_cfg.apply(lambda row: row['channel'].strip('/').split('/'), axis=1)
+
 
 def get_model_cfg(level_type=None, data_name=None, var_name=None):
     this_cfg = __model_cfg[(__model_cfg['data_name'] == data_name) &
@@ -35,6 +41,22 @@ def get_model_cfg(level_type=None, data_name=None, var_name=None):
         raise Exception('can not get data_name={} level_type={} var_name={} in {}!'.format(data_name, level_type, var_name, __model_cfg_csv))
 
     return this_cfg.to_dict('index')[0]
+
+def get_sata_cfg(data_name=None, var_name=None, channel=None):
+    this_cfg = __sata_cfg[(__sata_cfg['data_name'] == data_name) &
+                          (__sata_cfg['var_name'] == var_name)].copy(deep=True).reset_index(drop=True)
+
+    # channel 是list
+    index = -1
+    for idx, row in this_cfg.iterrows():
+        if 'any' in row['channel'] or str(channel) in row['channel']:
+            index = idx
+            break
+
+    if index < 0:
+        raise Exception('can not get data_name={} var_name={} channel={} in {}!'.format(data_name, var_name, channel, __sata_cfg_csv))
+
+    return this_cfg.to_dict('index')[index]
 
 
 def model_cassandra_dir(level_type=None, data_name=None, var_name=None, level=None):
@@ -62,6 +84,13 @@ def model_cassandra_level(level_type=None, data_name=None, var_name=None, level=
         return level
     else:
         return int(models_level)
+
+def sata_cassandra_dir(data_name=None, var_name=None, channel=None):
+    return get_sata_cfg(data_name=data_name, var_name=var_name, channel=channel)['cassandra_path']
+
+
+def sata_cassandra_units(data_name=None, var_name=None, channel=None):
+    return get_sata_cfg(data_name=data_name, var_name=var_name, channel=channel)['var_units']
 
 
 def obs_cassandra_dir(data_name=None, var_name=None):
@@ -170,6 +199,8 @@ def obs_rename_colname(data):
         'Surface_temp': '',
         'Surface_temp_max': '',
         'Surface_temp_min': '',
+        'Geopotential_hight': 'hgt',
+        'Dewpoint_depression': 't_td',
     }
 
     return data.rename(columns=name_dict)
