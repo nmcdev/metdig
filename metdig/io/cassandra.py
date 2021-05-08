@@ -248,6 +248,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
         obs_time {[datetime]} -- [观测时间]
         data_name {[str]} -- [观测类型]
         var_name {[str]} -- [要素名]
+        level {[int]} -- [层次，如果是地面观测站则不传，如果是探空层则传层次]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
@@ -312,7 +313,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lon'].values, data['lat'].values,
+        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values, 
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )
@@ -436,7 +437,7 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
             
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lon'].values, data['lat'].values,
+        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )

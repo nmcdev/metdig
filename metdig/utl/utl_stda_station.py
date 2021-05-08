@@ -160,8 +160,12 @@ def stastda_copy(data, iscopy_otherdim=True, iscopy_value=True):
 
 @pd.api.extensions.register_dataframe_accessor('stda')
 class __STDADataFrameAccessor(object):
+    """
+    stda 格式说明: 列定义为(level, time, dtime, id, lon, lat, member1, member2...)
+    """    
     def __init__(self, df):
         self._df = df
+
 
     @property
     def fcst_time(self):
@@ -169,13 +173,21 @@ class __STDADataFrameAccessor(object):
         [获取预报时间（time列+dtime列），返回值类型为pd.series]
         '''
         return pd.to_datetime(self._df['time']) + pd.to_timedelta(self._df['dtime'], unit='h')
+    
+    @property
+    def time(self):
+        '''
+        获取time列，返回值类型为pd.series
+        '''
+        return pd.to_datetime(self._df['time'])
 
     @property
     def data(self):
         '''
         [获取数据（自data_start_columns起所有列），返回值类型为pd.dataframe]
         '''
-        return self._df.iloc[:, self._df.attrs['data_start_columns']:]
+        return self._df.loc[:, self.member_name]
+    
 
     @property
     def member_name(self):
@@ -183,6 +195,13 @@ class __STDADataFrameAccessor(object):
         [获取数据列名（自data_start_columns起所有列），返回值类型为list]
         '''
         return self._df.columns[self._df.attrs['data_start_columns']:]
+
+    def where(self, conditon, other=np.nan):
+        '''
+        因data_start_columns列开始为数据，此处增加数据过滤方法，过滤data_start_columns列开始的数据，注意：直接修改原数据里的值
+        示例: 过滤小于100且大于200的值，mydf.stda.where((mydf.stda.data > 100) & (mydf.stda.data > 200), np.nan)
+        '''
+        self._df.loc[:, self.member_name] = self.data.where(conditon, other)
 
     def to_grid(self):
 
