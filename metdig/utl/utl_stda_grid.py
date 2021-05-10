@@ -126,6 +126,9 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
 
 @xr.register_dataarray_accessor('stda')
 class __STDADataArrayAccessor(object):
+    """
+    stda 格式说明: 维度定义为(member, level, time, dtime, lat, lon)
+    """    
     def __init__(self, xr):
         self._xr = xr
 
@@ -140,6 +143,17 @@ class __STDADataArrayAccessor(object):
                 _ = pd.to_datetime(time).replace(tzinfo=None).to_pydatetime() + datetime.timedelta(hours=int(dtime))
                 times.append(_)
         return times
+    
+    @property
+    def time(self):
+        '''
+        获取time列，返回值类型为list
+        '''
+        return pd.to_datetime(self._xr['time'].values)
+
+    @property
+    def level(self):
+        return self._xr['level'].values
 
     def get_dim_value(self, dim_name):
         '''

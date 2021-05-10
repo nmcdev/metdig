@@ -392,3 +392,20 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.25, .02], extend='max')
+
+
+@kwargs_wrapper
+def ir_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  levels=np.arange(160, 301), cmap='met/wv_enhancement',
+                  transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
+                  **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels, isLinear=True)
+
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='(K)', extend='neither', **colorbar_kwargs)

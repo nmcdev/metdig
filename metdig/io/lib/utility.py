@@ -108,3 +108,14 @@ def sta_select_id(df, id_selected):
         # print(str(e) + '|| PAMR:obs_time={}, data_name={}, var_name={}, level={}'.format(obs_time, data_name, var_name, level))
         data = df.drop(index=df.index)
     return data
+
+def cfgpath_format(cfgpath, time, **kwargs):
+    return cfgpath.format(Y='{:%Y}'.format(time),
+                          y='{:%y}'.format(time),
+                          m='{:%m}'.format(time),
+                          d='{:%d}'.format(time),
+                          H='{:%H}'.format(time),
+                          M='{:%M}'.format(time),
+                          S='{:%S}'.format(time),
+                          **kwargs,
+                          )

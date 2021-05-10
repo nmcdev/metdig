@@ -5,14 +5,24 @@
 #    2. 每行只能填写一类要素，如风速风向在cassandra中从同一路径中中获取的，请配置两行，以obs_type区分,,,,
 # ,,,,
 data_name,var_name,var_units,cassandra_discription,cassandra_path
-national,rain24,mm,,SURFACE/RAIN24_NATIONAL/
-national,rain12,mm,,SURFACE/RAIN12_NATIONAL/
-national,rain06,mm,,SURFACE/RAIN06_NATIONAL/
-national,rain03,mm,,SURFACE/RAIN03_NATIONAL/
-national,rain01,mm,,SURFACE/RAIN01_NATIONAL/
-all_station,wdir,degree,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/
-all_station,wsp,m/s,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/
-national,rh,percent,,SURFACE/RH_NATIONAL/
-national,tmx,degC,,SURFACE/TMP_MAX_NATIONAL/
-national,tmn,degC,,SURFACE/TMP_MIN_NATIONAL/
-national,tmp,degC,,SURFACE/TMP_NATIONAL/
+national,rain24,mm,,SURFACE/RAIN24_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,rain12,mm,,SURFACE/RAIN12_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,rain06,mm,,SURFACE/RAIN06_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,rain03,mm,,SURFACE/RAIN03_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,rain01,mm,,SURFACE/RAIN01_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+all_station,wdir,degree,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
+all_station,wsp,m/s,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
+national,rh,percent,,SURFACE/RH_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,tmx,degC,,SURFACE/TMP_MAX_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,tmn,degC,,SURFACE/TMP_MIN_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+national,tmp,degC,,SURFACE/TMP_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
+plot_high,hgt,dagpm,,UPPER_AIR/PLOT/{level}/{Y}{m}{d}{H}{M}{S}.000
+plot_high,wdir,degree,,UPPER_AIR/PLOT/{level}/{Y}{m}{d}{H}{M}{S}.000
+plot_high,wsp,m/s,,UPPER_AIR/PLOT/{level}/{Y}{m}{d}{H}{M}{S}.000
+plot_high,tmp,degC,,UPPER_AIR/PLOT/{level}/{Y}{m}{d}{H}{M}{S}.000
+plot_high,t_td,degC,,UPPER_AIR/PLOT/{level}/{Y}{m}{d}{H}{M}{S}.000
+tlogp,hgt,dagpm,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
+tlogp,wdir,degree,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
+tlogp,wsp,m/s,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
+tlogp,t,degC,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
+tlogp,td,degC,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000

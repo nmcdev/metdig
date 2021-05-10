@@ -4,6 +4,7 @@ import datetime
 import os
 import sys
 import math
+import multiprocessing
 
 import cdsapi
 import numpy as np
@@ -174,7 +175,8 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
         era5_var = utl_era5.era5_variable(var_name=var_name, level_type='high')
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
 
-        _era5_download_hourly_pressure_levels(savefile, years, months, days, pressure_level, era5_var, extent)
+        _era5_download_hourly_pressure_levels(savefile=savefile, year=years, month=months, day=days,
+                                              pressure_level=pressure_level, variable=era5_var, extent=extent)
 
         # 将下载后的数据拆分到cache目录下
         _split_psl(savefile, var_name, extent)
@@ -198,33 +200,47 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'ps
         era5_var = utl_era5.era5_variable(var_name, level_type='surface')
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
 
-        _era5_download_hourly_single_levels(savefile, years, months, days, era5_var, extent)
+        _era5_download_hourly_single_levels(savefile=savefile, year=years, month=months, day=days,
+                                            variable=era5_var, extent=extent)
 
         # 将下载后的数据拆分到cache目录下
         _split_sfc(savefile, var_name, extent)
 
 
-def test():
-    import time as timer
-    import multiprocessing as mp
-
-    print('pool')
-    pool = mp.Pool(processes=2)
-    dt_start = datetime.datetime(2020, 1, 2)
-    dt_end = datetime.datetime(2020, 1, 3)
-
-    pool.apply_async(era5_psl_download, (dt_start, dt_end, ['hgt']))
-    pool.apply_async(era5_sfc_download, (dt_start, dt_end, ['u10m']))
-
+def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div'],
+                              pressure_level=[200, 500, 700, 850, 925], extent=[50, 160, 0, 70], download_dir=None, max_pool=2):
+    '''
+    参数时间是北京时，不区分小时，默认24小时全下，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    var_names为stda要素名
+    采用多进程下载
+    '''
+    pool = multiprocessing.Pool(processes=max_pool)
+    for var_name in var_names:
+        pool.apply_async(era5_psl_download, (dt_start, dt_end, [var_name], pressure_level, extent, download_dir))
     pool.close()
     pool.join()
 
-    # era5_psl_download(dt_start=datetime.datetime(2020, 1, 2), dt_end=datetime.datetime(2020, 1, 3), var_names=['hgt'])
-    # era5_sfc_download(dt_start=datetime.datetime(2020, 1, 2), dt_end=datetime.datetime(2020, 1, 3), var_names=['u10m'])
 
-    # from metdig.io.era5 import get_model_grid
-    # data = get_model_grid(init_time=datetime.datetime(2020,1,1,8), var_name='hgt', level=200, extent=[50, 160, 0, 70],)
-    # print(data)
+def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl'],
+                              extent=[50, 160, 0, 70], download_dir=None, max_pool=2):
+    '''
+    参数时间是北京时，不区分小时，默认24小时全下，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    var_names为stda要素名
+    采用多进程下载
+    '''
+    pool = multiprocessing.Pool(processes=max_pool)
+    for var_name in var_names:
+        pool.apply_async(era5_sfc_download, (dt_start, dt_end, [var_name], extent, download_dir))
+    pool.close()
+    pool.join()
+
+
+def test():
+    dt_start = datetime.datetime(2020, 1, 2)
+    dt_end = datetime.datetime(2020, 1, 3)
+
+    era5_psl_download_usepool(dt_start, dt_end, ['hgt', 'u', 'v'])
+    era5_sfc_download_usepool(dt_start, dt_end, ['u10m', 'v10m'])
 
 
 if __name__ == '__main__':

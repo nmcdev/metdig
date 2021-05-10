@@ -1,0 +1,18 @@
+#,,,,,,
+# cassandra数据路径单位配置,,,,,,
+# 注意事项,,,,,,
+#    1. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库）,,,,,,
+#    2. var_name为stda属性名,,,,,,
+#    3. 每行只能填写一类要素,,,,,,
+# ,,,,,,
+data_name,var_name,channel,var_units,cassandra_discription,cassandra_path
+fy4al1,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4A/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
+fy4al1,tbb,7/8/9/10/11/12/13/14,kelvin,,SATELLITE/FY4A/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
+fy4al1_disk,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4A/L1/DISK/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
+fy4al1_disk,tbb,7/8/9/10/11/12/13/14,kelvin,,SATELLITE/FY4A/L1/DISK/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
+hmw8,ref,3,percent,,SATELLITE/HMW8/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
+hmw8,tbb,8/13,kelvin,,SATELLITE/HMW8/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
+hmw8_disk,ref,3,percent,,SATELLITE/HMW8/DISK/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
+hmw8_disk,tbb,8/13,kelvin,,SATELLITE/HMW8/DISK/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
+hmw8_marine,ref,3,percent,,SATELLITE/HMW8/MARINE/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
+hmw8_marine,tbb,8/13,kelvin,,SATELLITE/HMW8/MARINE/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
