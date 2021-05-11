@@ -38,8 +38,8 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
     """    
     x = ustda.stda.get_dim_value(xdim)
     y = ustda.stda.get_dim_value(ydim)
-    u = ustda.stda.get_2d_value(ydim, xdim) * 2.5
-    v = vstda.stda.get_2d_value(ydim, xdim) * 2.5
+    u = ustda.stda.get_value(ydim, xdim) * 2.5
+    v = vstda.stda.get_value(ydim, xdim) * 2.5
 
     if regrid_shape is None or transform is None or (xdim != 'lon' and ydim != 'lat'):
         # matplotlib

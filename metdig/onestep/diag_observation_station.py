@@ -9,8 +9,8 @@ from metdig.io.cassandra import get_obs_stations_multitime
 
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.diag_station import draw_uv_tmp_rh_rain
-from metdig.products.diag_station import draw_obs_uv_tmp_rh_rain
+from metdig.products.diag_observation_station import draw_uv_tmp_rh_rain
+from metdig.products.diag_observation_station import draw_obs_uv_tmp_rh_rain
 
 import metdig.cal as mdgcal
 import metdig.utl as mdgstda
@@ -42,15 +42,15 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
     return ret
 
 @date_init('obs_times', method=date_init.series_1_36_set)
-def obs_uv_tmp_rh_rain(data_source='cassandra', obs_times=None,id_selected=54511,
+def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='national', obs_times=None,id_selected=54511,
                        is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='rain01', id_selected=id_selected)
-    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name='national', var_name='tmp', id_selected=id_selected)
-    rh = get_obs_stations_multitime(obs_times=obs_times, data_name='national',  var_name='rh', id_selected=id_selected)
-    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wsp', id_selected=id_selected)
-    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name='all_station', var_name='wdir', id_selected=id_selected)
+    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='rain01', id_selected=id_selected)
+    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='tmp', id_selected=id_selected)
+    rh = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name,  var_name='rh', id_selected=id_selected)
+    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='wsp', id_selected=id_selected)
+    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='wdir', id_selected=id_selected)
 
     # calcu
     u, v = mdgcal.wind_components(wsp, wdir)

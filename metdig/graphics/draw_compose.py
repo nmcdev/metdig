@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+
 import cartopy.crs as ccrs
 
 from metdig.graphics import pallete_set
@@ -53,9 +55,8 @@ class cross_timepres_compose(object):
     def __init__(self, levels, times, title='', description='',
                  output_dir=None, png_name='', is_clean_plt=False, is_return_figax=False, is_return_imgbuf=False,
                  **kwargs):
-
         self.fig, self.ax = pallete_set.cross_timepres_pallete(
-            figsize=(16, 9), levels=levels, times=times, title=title, forcast_info=description, **kwargs)
+            figsize=(16, 9), levels=levels, times=np.array(times), title=title, forcast_info=description, **kwargs)
 
         self.png_name = png_name
         self.output_dir = output_dir

@@ -42,7 +42,7 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
     """
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)
+    z = stda.stda.get_value(ydim, xdim)
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
@@ -67,7 +67,7 @@ def ulj_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    transform=ccrs.PlateCarree(), alpha=0.5, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
+    z = stda.stda.get_value(ydim, xdim)  # m/s
 
     cmap, norm = cm_collected.get_cmap(name=cmap, extend='neither', levels=levels)
     if list(levels):
@@ -85,7 +85,7 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # Pa/s
+    z = stda.stda.get_value(ydim, xdim)  # Pa/s
     z = z * 10  # 0.1*Pa/s
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
@@ -103,7 +103,7 @@ def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                      **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # K
+    z = stda.stda.get_value(ydim, xdim)  # K
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
@@ -120,7 +120,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # degC
+    z = stda.stda.get_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
@@ -138,7 +138,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
+    z = stda.stda.get_value(ydim, xdim)  # m/s
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels)
     if levels:
@@ -157,7 +157,7 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
@@ -175,7 +175,7 @@ def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # percent
+    z = stda.stda.get_value(ydim, xdim)  # percent
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
@@ -193,7 +193,7 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
+    z = stda.stda.get_value(ydim, xdim)  # g/kg
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
@@ -210,7 +210,7 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # kelvin/m/s
+    z = stda.stda.get_value(ydim, xdim)  # kelvin/m/s
     z = z * 1e9  
 
     cmap = cm_collected.get_cmap(cmap)
@@ -228,7 +228,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # g/(cm*hPa*s)
+    z = stda.stda.get_value(ydim, xdim)  # g/(cm*hPa*s)
 
     levels = np.arange(5, 46).tolist()
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
@@ -250,7 +250,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # degC
+    z = stda.stda.get_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -267,7 +267,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
+    z = stda.stda.get_value(ydim, xdim)  # m/s
 
     # levels = [0, 3.6, 3.6, 10.8, 10.8, 17.2, 17.2, 24.5, 24.5, 32.7, 32.7, 42] # 未用到？
     cmap = cm_collected.get_cmap(cmap)
@@ -288,7 +288,7 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # degC
+    z = stda.stda.get_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
     cmap = cm_collected.linearized_cmap(cmap)
@@ -306,7 +306,7 @@ def qpf_pcolormesh(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = np.concatenate((
@@ -341,7 +341,7 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
     stda = rain_snow_sleet_stdas[0]
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = [0.1, 10, 25, 50, 100, 250, 800]
@@ -360,7 +360,7 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
     stda = rain_snow_sleet_stdas[1]
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = [0.1, 2.5, 5, 10, 20, 30]
@@ -379,7 +379,7 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
     stda = rain_snow_sleet_stdas[2]
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     if valid_time == 24:
         levels = [0.1, 10, 25, 50, 100, 250]
@@ -402,7 +402,7 @@ def ir_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels, isLinear=True)
 

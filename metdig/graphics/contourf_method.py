@@ -41,7 +41,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
     """
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)
+    z = stda.stda.get_value(ydim, xdim)
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
@@ -67,7 +67,7 @@ def qcld_contourf(ax, stda,  xdim='lon', ydim='lat',
                     transform=ccrs.PlateCarree(), alpha=0.7, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
+    z = stda.stda.get_value(ydim, xdim)  # g/kg
     cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
@@ -81,7 +81,7 @@ def qsn_contourf(ax, stda,  xdim='lon', ydim='lat',
                     transform=ccrs.PlateCarree(), alpha=0.7, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
+    z = stda.stda.get_value(ydim, xdim)  # g/kg
     cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
@@ -96,7 +96,7 @@ def qice_contourf(ax, stda,  xdim='lon', ydim='lat',
                     transform=ccrs.PlateCarree(), alpha=0.7, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # g/kg
+    z = stda.stda.get_value(ydim, xdim)  # g/kg
     cmap = cm_collected.get_cmap(cmap)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
@@ -112,7 +112,7 @@ def tcwv_contourf(ax, stda, xdim='lon', ydim='lat',
 
     x = stda[xdim].values
     y = stda[ydim].values
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
@@ -127,7 +127,7 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
 
     x = stda[xdim].values
     y = stda[ydim].values
-    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
+    z = stda.stda.get_value(ydim, xdim)  # m/s
 
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
@@ -141,7 +141,7 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
+    z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e4  # 1e-4/s
     cmap = cm_collected.get_cmap(cmap)
 
@@ -157,7 +157,7 @@ def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
+    z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e8  # 1e-8/s
     cmap = cm_collected.get_cmap(cmap)
 
@@ -172,7 +172,7 @@ def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
+    z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e5  # 1e-5/s
     cmap = cm_collected.get_cmap(cmap)
 
@@ -187,7 +187,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
                  transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # 1/s
+    z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e5  # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
@@ -204,7 +204,7 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
                    transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # hPa
+    z = stda.stda.get_value(ydim, xdim)  # hPa
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -220,7 +220,7 @@ def rain_contourf(ax, stda, xdim='lon', ydim='lat',
                   transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # mm
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
     cmap = cm_collected.get_cmap(cmap)
     colors = cmap.colors
@@ -237,7 +237,7 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # 1/s
+    z = stda.stda.get_value(ydim, xdim) # 1/s
     z = z * 1e5  # 1e-5/s
 
     cmap = cm_collected.get_cmap(cmap)
@@ -254,7 +254,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
                       **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # percent
+    z = stda.stda.get_value(ydim, xdim) # percent
 
     if cmap is None:
         cmap = col.LinearSegmentedColormap.from_list('own2', ['#1E90FF','#94D8F6','#F1F1F1','#BFBFBF','#696969'])
@@ -273,7 +273,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # g/kg
+    z = stda.stda.get_value(ydim, xdim) # g/kg
 
     cmap = cm_collected.get_cmap(cmap)
 
@@ -289,7 +289,7 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # K*m**2/(s*kg)
+    z = stda.stda.get_value(ydim, xdim) # K*m**2/(s*kg)
     z = z * 1e6  # 1e-6*K*m**2/(s*kg)
 
     cmap = cm_collected.get_cmap(cmap)
@@ -306,7 +306,7 @@ def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
                            **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)
+    z = stda.stda.get_value(ydim, xdim)
 
     if cmap is None:
         startcolor = '#8B4513'  # 棕色

@@ -21,7 +21,7 @@ def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 14
     ir_time = ir.stda.time[0]
     hgt_time = hgt.stda.fcst_time[0]
     sounding_time = sounding_u.stda.time[0]
-    ir_channel = ir.stda.level # 卫星数据level代表通道号
+    ir_channel = ir.stda.level[0] # 卫星数据level代表通道号
 
     if ir_channel == 9:
         ir_name = '水汽图像'

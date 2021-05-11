@@ -42,7 +42,7 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
     """
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)
+    z = stda.stda.get_value(ydim, xdim)
 
     if transform is None or (xdim != 'lon' and ydim != 'lat'):
         img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
@@ -71,7 +71,7 @@ def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
                 **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # dagpm
+    z = stda.stda.get_value(ydim, xdim) # dagpm
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
@@ -84,7 +84,7 @@ def vort_contour(ax, stda, xdim='lon', ydim='lat',
                transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)   # 1/s
+    z = stda.stda.get_value(ydim, xdim)   # 1/s
     z = z * 1e5  # 1e-5/s
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
@@ -98,7 +98,7 @@ def div_contour(ax, stda, xdim='lon', ydim='lat',
                transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)   # 1/s
+    z = stda.stda.get_value(ydim, xdim)   # 1/s
     z = z * 1e5  # 1e-5/s
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
@@ -112,7 +112,7 @@ def pv_contour(ax, stda, xdim='lon', ydim='lat',
                transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # K*m**2/(s*kg)
+    z = stda.stda.get_value(ydim, xdim) # K*m**2/(s*kg)
     z = z * 1e6  # 1e-6*K*m**2/(s*kg)
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
@@ -127,7 +127,7 @@ def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
                   transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # 'hPa'
+    z = stda.stda.get_value(ydim, xdim) # 'hPa'
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
@@ -141,7 +141,7 @@ def tmp_contour(ax, stda,  xdim='lon', ydim='lat',
                 transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # degC
+    z = stda.stda.get_value(ydim, xdim) # degC
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
@@ -158,7 +158,7 @@ def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
                  transform=ccrs.PlateCarree(), alpha=0.5, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # degC
+    z = stda.stda.get_value(ydim, xdim)  # degC
 
     cmap = cm_collected.get_cmap(cmap)
     cmap = cm_collected.linearized_cmap(cmap)
@@ -183,7 +183,7 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
                         linewidths=2, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # kelvin
+    z = stda.stda.get_value(ydim, xdim) # kelvin
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
@@ -196,7 +196,7 @@ def cross_tmp_contour(ax, stda, xdim='lon', ydim='level',
                       levels=np.arange(-100, 100, 2), colors='#0A1F5D', **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim) # degC
+    z = stda.stda.get_value(ydim, xdim) # degC
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=1, **kwargs)
     if add_clabel:
