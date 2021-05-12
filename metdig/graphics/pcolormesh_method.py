@@ -263,20 +263,20 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     cmap='met/wind_speed_nws',
+                    levels =[8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7, 37, 41.5, 46.2, 51.0, 56.1, 61.3],
                     transform=ccrs.PlateCarree(), alpha=1,
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_2d_value(ydim, xdim)  # m/s
-
-    # levels = [0, 3.6, 3.6, 10.8, 10.8, 17.2, 17.2, 24.5, 24.5, 32.7, 32.7, 42] # 未用到？
-    cmap = cm_collected.get_cmap(cmap)
+    
+    cmap,norm = cm_collected.get_cmap(cmap,extend='max', levels=levels)
 
     z = np.where(z < 7.9, np.nan, z)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    img = ax.pcolormesh(x, y, z, cmap=cmap,norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        ticks = [8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7, 37, 41.5, 46.2, 51.0, 56.1, 61.3]
+        ticks = levels
         utl.add_colorbar(ax, img, ticks=ticks, label='风速 (m/s)', extend='max')
 
 

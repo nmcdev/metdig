@@ -22,7 +22,7 @@ import metdig.graphics.lib.utility as utl
 
 
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), title='',title_fontsize=23, forcast_info='',
-                       add_china=False, add_city=False, add_background=False, add_south_china_sea=False):
+                       add_china=False, add_city=False, add_background=False, add_south_china_sea=False,add_grid=True):
 
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
@@ -41,9 +41,10 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
 
     # add grid lines
-    gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
-    gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 360, 15))
-    gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 15))
+    if add_grid:
+        gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+        gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 360, 15))
+        gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 15))
 
     if add_china:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.8, zorder=100, alpha=0.5)
