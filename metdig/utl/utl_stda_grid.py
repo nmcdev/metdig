@@ -10,13 +10,13 @@ from metpy.units import units
 import metdig.utl as mdgstda
 
 
-def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons, 
-                      np_input_units='', var_name='', 
+def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
+                      np_input_units='', var_name='',
                       **attrs_kwargv):
     '''
-    
+
     [numpy数组转stda网格标准格式]
-    
+
     Arguments:
         np_input {[ndarray]} -- [numpy数据,维度必须为('member', 'level', 'time', 'dtime', 'lat', 'lon')]
         members {[list or ndarray]} -- [成员列表]
@@ -26,11 +26,11 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
         lats {[list or ndarray]} -- [纬度列表]
         lons {[list or ndarray]} -- [经度列表]
         **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
-    
+
     Keyword Arguments:
         np_input_units {[str]} -- [np_input数据对应的单位，自动转换为能查询到的stda单位]
         var_name {str} -- [要素名] (default: {''})
-    
+
     Returns:
         [STDA] -- [STDA网格数据]
     '''
@@ -128,47 +128,84 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
 class __STDADataArrayAccessor(object):
     """
     stda 格式说明: 维度定义为(member, level, time, dtime, lat, lon)
-    """    
+    """
+
     def __init__(self, xr):
         self._xr = xr
 
     @property
+    def level(self):
+        '''
+        获取level, 返回值为pd.series
+        '''
+        return pd.Series(self._xr['level'].values)
+
+    @property
     def fcst_time(self):
         '''
-        [获取预报时间（time*dtime)，返回值类型为list]
+        [获取预报时间（time*dtime)，返回值类型为pd.series]
         '''
-        times = []
+        fcst_time = []
         for time in self._xr['time'].values:
             for dtime in self._xr['dtime'].values:
                 _ = pd.to_datetime(time).replace(tzinfo=None).to_pydatetime() + datetime.timedelta(hours=int(dtime))
-                times.append(_)
-        return times
-    
+                fcst_time.append(_)
+        return pd.Series(fcst_time)
+
     @property
     def time(self):
         '''
-        获取time列，返回值类型为list
+        获取time，返回值类型为pd.series
         '''
-        return pd.to_datetime(self._xr['time'].values)
+        time = pd.to_datetime(self._xr['time'].values)
+        return pd.Series(time)
 
     @property
-    def level(self):
-        return self._xr['level'].values
+    def dtime(self):
+        '''
+        获取dtime，返回值类型为pd.series
+        '''
+        return pd.Series(self._xr['dtime'].values)
+
+    @property
+    def lat(self):
+        '''
+        获取lat，返回值类型为pd.series
+        '''
+        return pd.Series(self._xr['lat'].values)
+
+    @property
+    def lon(self):
+        '''
+        获取lon，返回值类型为pd.series
+        '''
+        return pd.Series(self._xr['lon'].values)
+
+    @property
+    def member(self):
+        '''
+        获取member，返回值类型为pd.series
+        '''
+        return pd.Series(self._xr['member'].values)
 
     def get_dim_value(self, dim_name):
         '''
         获取维度信息，如果dim_name=='fcst_time'情况下，特殊处理，范围time*dtime
+        返回值为numpy
         '''
         if dim_name == 'fcst_time':
-            return np.array(self.fcst_time)
+            return self.fcst_time.values
+        if dim_name == 'time':
+            return self.time.values
         return self._xr[dim_name].values
-    
-    def get_2d_value(self, ydim, xdim):
+
+    def get_value(self, ydim='lat', xdim='lon', xunits=False):
         '''
         获取二维数据，假如stda不是二维的数据，则报错
+        返回值为numpy
         '''
         if xdim == 'fcst_time':
-            if self._xr['time'].values.size == 1: # 因为是二维，假如time维长度为1，则有维度的肯定在dtime维
+            if self._xr['time'].values.size == 1:  # 因为是二维，假如time维长度为1，则有维度的肯定在dtime维
                 xdim = 'dtime'
             else:
                 xdim = 'time'
@@ -177,8 +214,10 @@ class __STDADataArrayAccessor(object):
                 ydim = 'dtime'
             else:
                 ydim = 'time'
-        return self._xr.squeeze().transpose(ydim, xdim).values
-
+        data = self._xr.squeeze().transpose(ydim, xdim).values
+        if xunits == True:
+            data = data * units(self._xr.attrs['var_units'])
+        return data
 
 
 if __name__ == '__main__':

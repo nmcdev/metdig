@@ -254,7 +254,7 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
             os.makedirs(output_dir)
         out_png = os.path.join(output_dir, png_name)
         ret['pic_path'] = out_png
-        plt.savefig(out_png, idpi=200, bbox_inches='tight')
+        plt.savefig(out_png, dpi=200, bbox_inches='tight')
 
     if is_return_imgbuf:
         ret['img_buf'] = get_imgbuf_from_fig(fig)

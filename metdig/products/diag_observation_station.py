@@ -7,9 +7,16 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from pint import unit
 
 import metdig.graphics.pallete_set as pallete_set
+from metdig.graphics.lib.utility import save
 
+from metdig.graphics.draw_compose import skewt_compose
+
+import metdig.cal as mdgcal
+import metpy.calc as mpcalc
+from metpy.units import units
 
 def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
                         is_clean_plt=False, is_return_figax=False, is_return_imgbuf=False):
@@ -17,7 +24,7 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
     init_time = pd.to_datetime(t2m['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     hourstep = int(rain['dtime'].values[1] - rain['dtime'].values[0])
 
-    data_name = t2m.stda.member_name[0]
+    data_name = t2m.stda.member[0]
     title_left = '{}预报 {} [{},{}]'.format(data_name.upper(), t2m['id'].values[0], t2m['lon'].values[0], t2m['lat'].values[0])
     title_right = '起报时间：{0:%Y}年{0:%m}月{0:%m}日{0:%H}时'.format(init_time)
 
@@ -94,25 +101,7 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
     }
 
     png_name = '{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(t2m['id'].values[0], init_time)
-    ret['png_name'] = png_name
-    ret['output_dir'] = output_dir
-
-    if output_dir:
-        out_png = os.path.join(output_dir, png_name)
-        ret['pic_path'] = out_png
-        plt.savefig(out_png, idpi=200, bbox_inches='tight')
-
-    if is_return_imgbuf:
-        ret['img_buf'] = get_imgbuf_from_fig(fig)
-
-    if is_clean_plt:
-        plt.close(fig)
-
-    if is_return_figax:
-        ret['fig'] = fig
-        ret['ax'] = ax
-
-    return ret
+    return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax)
 
 
 def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
@@ -199,22 +188,48 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
     }
 
     png_name = '观测_{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(tmp['id'].values[0], init_time)
-    ret['png_name'] = png_name
-    ret['output_dir'] = output_dir
+    return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax)
 
-    if output_dir:
-        out_png = os.path.join(output_dir, png_name)
-        ret['pic_path'] = out_png
-        plt.savefig(out_png, idpi=200, bbox_inches='tight')
 
-    if is_return_imgbuf:
-        ret['img_buf'] = get_imgbuf_from_fig(fig)
+def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
+    init_time = tmp.stda.time[0]
+    fhour = tmp.stda.dtime[0]
+    point_lon = tmp.stda.lon[0]
+    point_lat = tmp.stda.lat[0]
+    data_name = tmp.stda.member[0].upper()
 
-    if is_clean_plt:
-        plt.close(fig)
+    title = ''
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报探空\n预报点: {3}, {4}\nwww.nmc.cn'.format(
+        init_time, data_name, fhour, point_lon, point_lat)
+    png_name = '{2}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
-    if is_return_figax:
-        ret['fig'] = fig
-        ret['ax'] = ax
+    # 获取带单位的数据
+    pres = pres.stda.get_value(xunits=True)
+    tmp = tmp.stda.get_value(xunits=True)
+    td = td.stda.get_value(xunits=True)
+    u = u.stda.get_value(xunits=True)
+    v = v.stda.get_value(xunits=True)
 
-    return ret
+    # draw
+    obj = skewt_compose(title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+
+    obj.skew.plot(pres, tmp, 'r')
+    obj.skew.plot(pres, td, 'g')
+    obj.skew.plot_barbs(pres, u, v)
+    
+    lcl_pres, lcl_tmp = mpcalc.lcl(pres, tmp[0], td[0])
+    obj.skew.plot(lcl_pres, lcl_tmp, 'ko', markerfacecolor='black')
+
+    prof = mpcalc.parcel_profile(pres, tmp[0], td[0])
+    obj.skew.plot(pres, prof, 'k', linewidth=2)
+    
+    obj.skew.shade_cin(pres, tmp, prof)
+    obj.skew.shade_cape(pres, tmp, prof)
+
+    obj.skew.ax.axvline(0, color='c', linestyle='--', linewidth=2)
+
+    obj.skew.plot_dry_adiabats()
+    obj.skew.plot_moist_adiabats()
+    obj.skew.plot_mixing_lines()
+
+    return obj.save()

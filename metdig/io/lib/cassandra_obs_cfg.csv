@@ -10,8 +10,8 @@ national,rain12,mm,,SURFACE/RAIN12_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 national,rain06,mm,,SURFACE/RAIN06_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 national,rain03,mm,,SURFACE/RAIN03_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 national,rain01,mm,,SURFACE/RAIN01_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
-all_station,wdir,degree,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
-all_station,wsp,m/s,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
+national,wdir,degree,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
+national,wsp,m/s,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
 national,rh,percent,,SURFACE/RH_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 national,tmx,degC,,SURFACE/TMP_MAX_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 national,tmn,degC,,SURFACE/TMP_MIN_NATIONAL/{Y}{m}{d}{H}{M}{S}.000

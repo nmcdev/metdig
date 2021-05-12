@@ -20,8 +20,8 @@ def uv_quiver(ax, ustda, vstda,xdim='lon', ydim='lat',
     # 数据准备
     x = ustda.stda.get_dim_value(xdim)
     y = ustda.stda.get_dim_value(ydim)
-    u = ustda.stda.get_2d_value(ydim, xdim)  # 1/s
-    v = vstda.stda.get_2d_value(ydim, xdim)  # 1/s
+    u = ustda.stda.get_value(ydim, xdim)  # 1/s
+    v = vstda.stda.get_value(ydim, xdim)  # 1/s
     # 绘制
     if regrid_shape is None or transform is None or (xdim != 'lon' and ydim != 'lat'):
         img = ax.quiver(x, y, u, v, color=color, scale=scale,  **kwargs)
