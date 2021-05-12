@@ -199,7 +199,7 @@ class __STDADataArrayAccessor(object):
             return self.time.values
         return self._xr[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon'):
+    def get_value(self, ydim='lat', xdim='lon', xunits=False):
         '''
         获取二维数据，假如stda不是二维的数据，则报错
         返回值为numpy
@@ -214,7 +214,10 @@ class __STDADataArrayAccessor(object):
                 ydim = 'dtime'
             else:
                 ydim = 'time'
-        return self._xr.squeeze().transpose(ydim, xdim).values
+        data = self._xr.squeeze().transpose(ydim, xdim).values
+        if xunits == True:
+            data = data * units(self._xr.attrs['var_units'])
+        return data
 
 
 if __name__ == '__main__':

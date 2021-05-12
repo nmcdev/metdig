@@ -17,6 +17,8 @@ from mpl_toolkits.axisartist.parasite_axes import HostAxes, ParasiteAxes
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
+from metpy.plots import  SkewT
+
 import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 
@@ -239,3 +241,34 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
     ax_bottom.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
 
     return fig, ax_left, ax_right, ax_bottom
+
+def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info=''):
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
+    plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
+
+    if(sys.platform[0:3] == 'lin'):
+        locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
+    if(sys.platform[0:3] == 'win'):
+        locale.setlocale(locale.LC_CTYPE, 'chinese')
+
+    fig = plt.figure(figsize=figsize)
+    
+    skew = SkewT(fig, rotation=45)
+
+    skew.ax.set_title(title, loc='left', fontsize=title_fontsize)
+
+    skew.ax.set_ylim(1000, 100)
+    skew.ax.set_xlim(-40, 60)
+    
+    if forcast_info:
+        l, b, w, h = skew.ax.get_position().bounds
+        bax = plt.axes([l, b + h - 0.08, .32, 0.08], facecolor='#FFFFFFCC')
+        bax.set_yticks([])
+        bax.set_xticks([])
+        bax.axis([0, 10, 0, 10])
+        bax.text(2.5, 9.8, forcast_info, size=11, va='top', ha='left',)
+
+    l, b, w, h = skew.ax.get_position().bounds
+    utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')
+
+    return fig, skew

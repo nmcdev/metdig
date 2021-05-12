@@ -11,6 +11,7 @@ from metdig.onestep.lib.utility import date_init
 
 from metdig.products.diag_observation_station import draw_uv_tmp_rh_rain
 from metdig.products.diag_observation_station import draw_obs_uv_tmp_rh_rain
+from metdig.products.diag_observation_station import draw_SkewT
 
 import metdig.cal as mdgcal
 import metdig.utl as mdgstda
@@ -66,9 +67,41 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='national', obs_times=
     return ret
 
 if __name__ == '__main__':
-    obs_uv_tmp_rh_rain()
-    plt.show()
+    # obs_uv_tmp_rh_rain()
+    # plt.show()
+    pass
 
+
+@date_init('init_time')
+def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, 
+              levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 150, 100],
+              points={'lon': [116.3833], 'lat': [39.9]},
+              is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+    
+    tmp = get_model_points(data_source=data_source, init_time=init_time, fhours=[fhour], data_name=data_name, var_name='tmp', levels=levels, points=points)
+    u = get_model_points(data_source=data_source, init_time=init_time, fhours=[fhour], data_name=data_name, var_name='u', levels=levels, points=points)
+    v = get_model_points(data_source=data_source, init_time=init_time, fhours=[fhour], data_name=data_name, var_name='v', levels=levels, points=points)
+    rh = get_model_points(data_source=data_source, init_time=init_time, fhours=[fhour], data_name=data_name, var_name='rh', levels=levels, points=points)
+    
+    td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
+
+    pres = tmp.copy(deep=True)
+    pres.stda.reset_value(levels, var_name='pres')
+
+    if is_return_data:
+        dataret = {'pres': pres, 'tmp': tmp, 'td': td, 'u': u, 'v': v, 'rh': rh}
+        ret.update({'data': dataret})
+
+
+    if is_draw:
+        drawret = draw_SkewT(pres, tmp, td, u, v, **products_kwargs)
+        ret.update(drawret)
+
+    return ret
+
+
+'''
 def station_synthetical_forecast_from_cassandra(init_time=None,  fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20]}, **products_kwargs):
 
     t2m = get_model_points(data_source='cassandra', init_time=init_time, fhours=fhours, data_name='ecmwf', var_name='t2m', points=points)
@@ -109,3 +142,4 @@ def station_synthetical_forecast_from_cassandra(init_time=None,  fhours=np.arang
 
 def station_snow_synthetical_forecast_from_cassandra():
     pass
+'''

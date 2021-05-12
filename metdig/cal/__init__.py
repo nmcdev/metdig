@@ -5,3 +5,4 @@ from .moisture import *
 from .other import *
 from .qpf import *
 from .thermal import *
+from .sounding import *

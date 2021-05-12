@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 
-
+from metpy.units import units
 import metdig.utl as mdgstda
 
 def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons, 
@@ -246,12 +246,15 @@ class __STDADataFrameAccessor(object):
             return self.time.values
         return self._df[dim_name].values
     
-    def get_value(self, ydim='lat', xdim='lon'):
+    def get_value(self, ydim='lat', xdim='lon', xunits=False):
         '''
         类似于网格stda获取数据，因为是pandas站点数据，直接data_start_columns那一列即可。忽略xdim ydim两个参数，不用传这两个参数
         返回值为numpy
         '''
-        return self._df.iloc[:, self._df.attrs['data_start_columns']].values
+        data = self._df.iloc[:, self._df.attrs['data_start_columns']].values
+        if xunits == True:
+            data = data * units(self._df.attrs['var_units'])
+        return data
 
     def where(self, conditon, other=np.nan):
         '''
@@ -259,6 +262,22 @@ class __STDADataFrameAccessor(object):
         示例: 过滤小于100且大于200的值，mydf.stda.where((mydf.stda.data > 100) & (mydf.stda.data > 200), np.nan)
         '''
         self._df.loc[:, self.member] = self.data.where(conditon, other)
+        
+    def reset_value(self, value, var_name=None, **attrs_kwargv):
+        '''
+        重新设置数值，如果给定var_name。则重新设置属性
+        '''
+        self._df.loc[:, self.member] = value
+        if var_name is not None:
+            attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+            attrs['data_start_columns'] = self._df.attrs['data_start_columns']
+            self._df.attrs = attrs
+
+    def get_firstline(self):
+        '''
+        获取第一行数据，因用iloc取第一行返回的是pd.series，此处单独给出方法，返回的依旧为pd.Dataframe
+        '''
+        return self._df[self._df.index == 0]
 
     def to_grid(self):
 
