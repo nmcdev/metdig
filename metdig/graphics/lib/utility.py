@@ -17,6 +17,32 @@ from scipy.ndimage.filters import minimum_filter, maximum_filter
 
 pkg_name = 'metdig.graphics'
 
+def kwargs_wrapper(func):
+    '''
+    关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数
+    Example:
+        @kwargs_wrapper()
+        def func(a, b, c=3, d=4, **kwargs):
+            print('c =', c)
+            print('d =', d)
+            print('kwargs =', kwargs)
+
+        func(1, 2, c=-1, d=-1, e=5, kwargs={'c': 4})
+        output:
+        c = 4
+        d = -1
+        kwargs = {'e': 5}
+    '''
+    @wraps(func)
+    def inner(*args, **kwargs):
+        attrs = kwargs.pop('kwargs', None)
+        if attrs:
+            if isinstance(attrs, dict):
+                kwargs.update(**attrs)
+            else:
+                kwargs['kwargs'] = attrs
+        return func(*args, **kwargs)
+    return inner
 
 def read_micaps_17(fname, limit=None):
     """
@@ -268,6 +294,7 @@ def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_retur
 
     return ret
 
+@kwargs_wrapper
 def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal', pad=0, **kwargs):
     """[summary]
 
@@ -318,37 +345,11 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label(label, size=label_size)
+    return cb
 
 def add_patchlegend(ax, labels, colors, **kwargs):
     myp = list(map(lambda c: patches.Patch(color=c, alpha=1), colors))
     ax.legend(handles=myp, labels=labels,  **kwargs)
-
-def kwargs_wrapper(func):
-    '''
-    关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数
-    Example:
-        @kwargs_wrapper()
-        def func(a, b, c=3, d=4, **kwargs):
-            print('c =', c)
-            print('d =', d)
-            print('kwargs =', kwargs)
-
-        func(1, 2, c=-1, d=-1, e=5, kwargs={'c': 4})
-        output:
-        c = 4
-        d = -1
-        kwargs = {'e': 5}
-    '''
-    @wraps(func)
-    def inner(*args, **kwargs):
-        attrs = kwargs.pop('kwargs', None)
-        if attrs:
-            if isinstance(attrs, dict):
-                kwargs.update(**attrs)
-            else:
-                kwargs['kwargs'] = attrs
-        return func(*args, **kwargs)
-    return inner
 
 def extrema(mat,mode='wrap',window=50):
     mn = minimum_filter(mat, size=window, mode=mode)

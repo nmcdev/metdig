@@ -133,7 +133,8 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='wind speed (m/s)', extend='max',**colorbar_kwargs)
-
+    return img
+    
 @kwargs_wrapper
 def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
