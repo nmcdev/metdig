@@ -23,7 +23,7 @@ import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 
 
-def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), title='',title_fontsize=23, forcast_info='',
+def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), title='',title_fontsize=23, forcast_info='',nmc_logo=True,
                        add_china=False, add_city=False, add_background=False, add_south_china_sea=False,add_grid=True):
 
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
@@ -80,7 +80,8 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         bax.text(2.5, 9.8, forcast_info, size=15, va='top', ha='left',)
 
     l, b, w, h = ax.get_position().bounds
-    utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')
+    if nmc_logo:
+        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')
 
     return fig, ax
 
