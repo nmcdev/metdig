@@ -39,8 +39,8 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
     )
 
     # t2m
-    t2m_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), t2m['time'].values, t2m['dtime'].values))
-    t2m_y = t2m.iloc[:, t2m.attrs['data_start_columns']]
+    t2m_x = t2m.stda.fcst_time.values
+    t2m_y = t2m.stda.get_value()
     curve_t2m = ax_t2m.plot(t2m_x, t2m_y, c='#FF6600', linewidth=3, label='气温')
     ax_t2m.set_xlim(t2m_x[0] - pd.Timedelta(hours=1), t2m_x[-1] + pd.Timedelta(hours=1))
     ax_t2m.set_ylim(
@@ -49,13 +49,13 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
     )
 
     # wsp
-    wsp_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), wsp['time'].values, wsp['dtime'].values))
-    wsp_y = wsp.iloc[:, wsp.attrs['data_start_columns']]
+    wsp_x = wsp.stda.fcst_time.values
+    wsp_y = wsp.stda.get_value()
     curve_wsp = ax_t2m.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='10米风')
 
     # rain
-    rain_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rain['time'].values, rain['dtime'].values))
-    rain_y = rain.iloc[:, rain.attrs['data_start_columns']]
+    rain_x = rain.stda.fcst_time.values
+    rain_y = rain.stda.get_value()
     bars_rn = ax_t2m.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='{}小时降水'.format(hourstep))
 
     def bars_autolabel(ax, rects):
@@ -70,20 +70,20 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, output_dir=None,
     bars_autolabel(ax_t2m, bars_rn)
 
     # rh2m
-    rh2m_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rh2m['time'].values, rh2m['dtime'].values))
-    rh2m_y = rh2m.iloc[:, rh2m.attrs['data_start_columns']]
+    rh2m_x = rh2m.stda.fcst_time.values
+    rh2m_y = rh2m.stda.get_value()
     curve_rh = ax_rh2m.plot(rh2m_x, rh2m_y, c='#067907', linewidth=3, label='相对湿度')
     ax_rh2m.set_ylim(0, 100)
 
     # 10米风
-    uv_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), u10m['time'].values, u10m['dtime'].values))
-    u_y = u10m.iloc[:, u10m.attrs['data_start_columns']]
-    v_y = v10m.iloc[:, v10m.attrs['data_start_columns']]
+    uv_x = u10m.stda.fcst_time.values
+    u_y = u10m.stda.get_value()
+    v_y = v10m.stda.get_value()
     ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
                 fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
                 length=5.8, linewidth=1.5, zorder=100)
     ax_uv.set_ylim(-1, 1)
-    ax_uv.set_xlim(uv_x[0] - datetime.timedelta(hours=1), uv_x[-1] + datetime.timedelta(hours=1))
+    ax_uv.set_xlim(uv_x[0] - pd.Timedelta(hours=1), uv_x[-1] + pd.Timedelta(hours=1))
     for label in ax_uv.get_xticklabels():
         label.set_rotation(30)
         label.set_horizontalalignment('center')
@@ -123,8 +123,8 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
     )
 
     # tmp
-    tmp_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), tmp['time'].values, tmp['dtime'].values))
-    tmp_y = tmp.iloc[:, tmp.attrs['data_start_columns']]
+    tmp_x = tmp.stda.fcst_time.values
+    tmp_y = tmp.stda.get_value()
     curve_t2m = ax_tmp.plot(tmp_x, tmp_y, c='#FF6600', linewidth=3, label='气温')
     ax_tmp.set_xlim(tmp_x[0] - pd.Timedelta(hours=1), tmp_x[-1] + pd.Timedelta(hours=1))
     ax_tmp.set_ylim(
@@ -133,14 +133,14 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
     )
 
     # wsp
-    wsp_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), wsp['time'].values, wsp['dtime'].values))
-    wsp_y = wsp.iloc[:, wsp.attrs['data_start_columns']]
+    wsp_x = wsp.stda.fcst_time.values
+    wsp_y = wsp.stda.get_value()
     curve_wsp = ax_tmp.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='风')
 
     if(rain is not None):
         # rain
-        rain_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rain['time'].values, rain['dtime'].values))
-        rain_y = rain.iloc[:, rain.attrs['data_start_columns']]
+        rain_x = rain.stda.fcst_time.values
+        rain_y = rain.stda.get_value()
         bars_rn = ax_tmp.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='降水')
 
     def bars_autolabel(ax, rects):
@@ -157,20 +157,20 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
         bars_autolabel(ax_tmp)
 
     # rh2m
-    rh_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), rh['time'].values, rh['dtime'].values))
-    rh_y = rh.iloc[:, rh.attrs['data_start_columns']]
+    rh_x = rh.stda.fcst_time.values
+    rh_y = rh.stda.get_value()
     curve_rh = ax_rh.plot(rh_x, rh_y, c='#067907', linewidth=3, label='相对湿度')
     ax_rh.set_ylim(0, 100)
 
     # 10米风
-    uv_x = list(map(lambda a, b: a + pd.Timedelta(hours=b), u['time'].values, u['dtime'].values))
-    u_y = u.iloc[:, u.attrs['data_start_columns']]
-    v_y = v.iloc[:, v.attrs['data_start_columns']]
+    uv_x = u.stda.fcst_time.values
+    u_y = u.stda.get_value()
+    v_y = v.stda.get_value()
     ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
                 fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
                 length=5.8, linewidth=1.5, zorder=100)
     ax_uv.set_ylim(-1, 1)
-    ax_uv.set_xlim(uv_x[0] - datetime.timedelta(hours=1), uv_x[-1] + datetime.timedelta(hours=1))
+    ax_uv.set_xlim(uv_x[0] - pd.Timedelta(hours=1), uv_x[-1] + pd.Timedelta(hours=1))
     for label in ax_uv.get_xticklabels():
         label.set_rotation(30)
         label.set_horizontalalignment('center')

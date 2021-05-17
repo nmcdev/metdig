@@ -19,8 +19,8 @@ def lcl(pres, tmp, td, max_iters=50, eps=1e-5):
 
     lcl_pres, lcl_tmp = mpcalc.lcl(pres_p, tmp_p, td_p, max_iters=max_iters, eps=eps)
 
-    lcl_pres = utl.quantity_to_stda_byreference('pres', lcl_pres, tmp)
-    lcl_tmp = utl.quantity_to_stda_byreference('tmp', lcl_tmp, tmp)
+    lcl_pres = utl.quantity_to_stda_byreference('pres', lcl_pres, pres)
+    lcl_tmp = utl.quantity_to_stda_byreference('tmp', lcl_tmp, pres)
 
     return lcl_pres, lcl_tmp
 
@@ -32,6 +32,6 @@ def parcel_profile(pres, tmp, td):
 
     profile = mpcalc.parcel_profile(pres_p, tmp_p, td_p)
 
-    profile = utl.quantity_to_stda_byreference('tmp', profile, tmp)
+    profile = utl.quantity_to_stda_byreference('tmp', profile, pres)
 
     return profile
