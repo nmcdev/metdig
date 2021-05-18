@@ -5,7 +5,4 @@
 #    2. 每行只能填写一类要素，如风速风向在cassandra中从同一路径中中获取的，请配置两行，以obs_type区分,,,,
 # ,,,,
 data_name,var_name,var_units,cassandra_discription,cassandra_path
-#cap00,ref,,,RADARMOSAIC/CAP/00/ACHN_CAP_{Y}{m}{d}_{H}{M}{S}_00.BIN
-#cap01,ref,,,RADARMOSAIC/CAP/01/ACHN_CAP_{Y}{m}{d}_{H}{M}{S}_01.BIN
-#cap02,ref,,,RADARMOSAIC/CAP/02/ACHN_CAP_{Y}{m}{d}_{H}{M}{S}_02.BIN
 achn,cref,,,RADARMOSAIC/CREF/ACHN_CREF_{Y}{m}{d}_{H}{M}{S}.BIN

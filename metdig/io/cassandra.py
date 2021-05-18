@@ -365,8 +365,8 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.sata_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel) # cassandra数据路径
-        cassandra_units = utl_cassandra.sata_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
+        cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel) # cassandra数据路径
+        cassandra_units = utl_cassandra.sate_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
     except Exception as e:
         raise CFGError(str(e))
 

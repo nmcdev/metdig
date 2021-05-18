@@ -68,4 +68,4 @@ fg,锋生函数,kelvin/m/s,0
 t_td,温度露点差,degC,0
 ref,反射率,percent,0
 tbb,亮温,kelvin,0
-cref,雷达回波强度,,0
+cref,雷达组合反射率,,0

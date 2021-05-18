@@ -203,9 +203,10 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
         init_time, data_name, fhour, point_lon, point_lat)
     png_name = '{2}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
+
     # 获取带单位的数据
     pres = pres.stda.get_value(xunits=True)
-    tmp = tmp.stda.get_value(xunits=True)
+    tmp = tmp.stda.get_value(xunits=True) 
     td = td.stda.get_value(xunits=True)
     u = u.stda.get_value(xunits=True)
     v = v.stda.get_value(xunits=True)
