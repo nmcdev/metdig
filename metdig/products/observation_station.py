@@ -7,6 +7,7 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import matplotlib.lines as lines
 from pint import unit
 
 import metdig.graphics.pallete_set as pallete_set
@@ -199,9 +200,15 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     data_name = tmp.stda.member[0].upper()
 
     title = ''
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报探空\n预报点: {3}, {4}\nwww.nmc.cn'.format(
-        init_time, data_name, fhour, point_lon, point_lat)
-    png_name = '{2}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    if(fhour != 0):
+        forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报探空\n预报点: {3}, {4}\nwww.nmc.cn'.format(
+            init_time, data_name, fhour, point_lon, point_lat)
+        png_name = '{2}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    else:
+        forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析探空\n分析点: {2}, {3}\nwww.nmc.cn'.format(
+            init_time, data_name, point_lon, point_lat)
+        png_name = '{1}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时分析.png'.format(init_time, data_name)
+
 
 
     # 获取带单位的数据
@@ -219,7 +226,7 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     obj.skew.plot_barbs(pres, u, v)
     
     lcl_pres, lcl_tmp = mpcalc.lcl(pres, tmp[0], td[0])
-    obj.skew.plot(lcl_pres, lcl_tmp, 'ko', markerfacecolor='black')
+    obj.skew.plot(lcl_pres[0], lcl_tmp[0], 'ko', markerfacecolor='black')
 
     prof = mpcalc.parcel_profile(pres, tmp[0], td[0])
     obj.skew.plot(pres, prof, 'k', linewidth=2)
@@ -232,5 +239,9 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     obj.skew.plot_dry_adiabats()
     obj.skew.plot_moist_adiabats()
     obj.skew.plot_mixing_lines()
+
+    td_line = lines.Line2D([], [], color='g', label='露点温度')
+    tmp_line = lines.Line2D([], [], color='r', label='温度')
+    leg = obj.skew.ax.legend(handles=[td_line, tmp_line], title=None, framealpha=1)
 
     return obj.save()

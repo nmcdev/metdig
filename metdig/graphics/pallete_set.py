@@ -244,7 +244,7 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
 
     return fig, ax_left, ax_right, ax_bottom
 
-def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info=''):
+def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='',add_logo=True):
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
 
@@ -261,16 +261,25 @@ def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info=''):
 
     skew.ax.set_ylim(1000, 100)
     skew.ax.set_xlim(-40, 60)
-    
-    if forcast_info:
-        l, b, w, h = skew.ax.get_position().bounds
-        bax = plt.axes([l, b + h - 0.08, .32, 0.08], facecolor='#FFFFFFCC')
-        bax.set_yticks([])
-        bax.set_xticks([])
-        bax.axis([0, 10, 0, 10])
-        bax.text(2.5, 9.8, forcast_info, size=11, va='top', ha='left',)
 
-    l, b, w, h = skew.ax.get_position().bounds
-    utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')
+    if add_logo:
+        l, b, w, h = skew.ax.get_position().bounds
+        utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')
+
+        if forcast_info:
+            l, b, w, h = skew.ax.get_position().bounds
+            bax = plt.axes([l, b + h - 0.08, .32, 0.08], facecolor='#FFFFFFCC')
+            bax.set_yticks([])
+            bax.set_xticks([])
+            bax.axis([0, 10, 0, 10])
+            bax.text(2.5, 9.8, forcast_info, size=11, va='top', ha='left',)
+    else:
+        if forcast_info:
+            l, b, w, h = skew.ax.get_position().bounds
+            bax = plt.axes([l, b + h - 0.08, .28, 0.08], facecolor='#FFFFFFCC')
+            bax.set_yticks([])
+            bax.set_xticks([])
+            bax.axis([0, 10, 0, 10])
+            bax.text(0.5, 9.8, forcast_info, size=11, va='top', ha='left',)
 
     return fig, skew
