@@ -268,7 +268,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_2d_value(ydim, xdim)  # m/s
+    z = stda.stda.get_value(ydim, xdim)  # m/s
     
     cmap,norm = cm_collected.get_cmap(cmap,extend='max', levels=levels)
 
@@ -409,3 +409,20 @@ def ir_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(K)', extend='neither', **colorbar_kwargs)
+        
+@kwargs_wrapper
+def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  levels=[10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70], 
+                  transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
+                  **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # mm
+
+    colors = ['#01A0F6', '#00ECEC', '#00D800', '#019000', '#FFFF00', '#E7C000', '#FF9000', '#FF0000', '#D60000', '#D60000', '#FF00F0', '#9600B4', '#AD90F0']
+    cmap, norm = cm_collected.get_cmap(colors, extend='max', levels=levels)
+
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='(dbz)', **colorbar_kwargs)

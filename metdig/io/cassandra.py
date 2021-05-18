@@ -365,8 +365,8 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.sata_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel) # cassandra数据路径
-        cassandra_units = utl_cassandra.sata_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
+        cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel) # cassandra数据路径
+        cassandra_units = utl_cassandra.sate_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
     except Exception as e:
         raise CFGError(str(e))
 
@@ -441,6 +441,40 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )
+
+
+def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, x_percent=0, y_percent=0):
+
+    # 从配置中获取相关信息
+    try:
+        cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name) # cassandra数据路径
+        cassandra_units = utl_cassandra.radar_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+    except Exception as e:
+        raise CFGError(str(e))
+
+    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'
+    filename = os.path.basename(cassandra_path)
+    # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
+    data = nmc_micaps_io.get_radar_mosaic(cassandra_dir, filename=filename)  
+    if data is None:
+        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+    
+    # 数据裁剪
+    data = utl.area_cut(data, extent, x_percent, y_percent)
+
+    # 经纬度从小到大排序好
+    data = data.sortby('lat')
+    data = data.sortby('lon')
+
+    # 转成stda
+    np_data = np.squeeze(data['data'].values)
+    np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
+    stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], [0], [obs_time], [0], data.coords['lat'].values, data.coords['lon'].values,
+                                          var_name=var_name, np_input_units=cassandra_units,
+                                          data_source='cassandra')
+
+    return stda_data
 
 '''
 def get_station_dataset(init_time, fhours, data_name, var_name):

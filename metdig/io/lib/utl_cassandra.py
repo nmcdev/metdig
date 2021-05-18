@@ -14,7 +14,6 @@ def check_units(var_units):
     except Exception as e:
         raise e
 
-
 __model_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cassandra_model_cfg.csv'
 __model_cfg = pd.read_csv(__model_cfg_csv, encoding='gbk', comment='#')
 __model_cfg = __model_cfg.fillna('')
@@ -25,12 +24,16 @@ __obs_cfg = pd.read_csv(__obs_cfg_csv, encoding='gbk', comment='#')
 __obs_cfg = __obs_cfg.fillna('')
 __obs_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
-__sata_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cassandra_sata_cfg.csv'
-__sata_cfg = pd.read_csv(__sata_cfg_csv, encoding='gbk', comment='#')
-__sata_cfg = __sata_cfg.fillna('')
-__sata_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
-__sata_cfg['channel'] = __sata_cfg.apply(lambda row: row['channel'].strip('/').split('/'), axis=1)
+_sate_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cassandra_sate_cfg.csv'
+_sate_cfg = pd.read_csv(_sate_cfg_csv, encoding='gbk', comment='#')
+_sate_cfg = _sate_cfg.fillna('')
+_sate_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
+_sate_cfg['channel'] = _sate_cfg.apply(lambda row: row['channel'].strip('/').split('/'), axis=1)
 
+__radar_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cassandra_radar_cfg.csv'
+__radar_cfg = pd.read_csv(__radar_cfg_csv, encoding='gbk', comment='#')
+__radar_cfg = __radar_cfg.fillna('')
+__radar_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
 def get_model_cfg(level_type=None, data_name=None, var_name=None):
     this_cfg = __model_cfg[(__model_cfg['data_name'] == data_name) &
@@ -42,9 +45,9 @@ def get_model_cfg(level_type=None, data_name=None, var_name=None):
 
     return this_cfg.to_dict('index')[0]
 
-def get_sata_cfg(data_name=None, var_name=None, channel=None):
-    this_cfg = __sata_cfg[(__sata_cfg['data_name'] == data_name) &
-                          (__sata_cfg['var_name'] == var_name)].copy(deep=True).reset_index(drop=True)
+def get_sate_cfg(data_name=None, var_name=None, channel=None):
+    this_cfg = _sate_cfg[(_sate_cfg['data_name'] == data_name) &
+                          (_sate_cfg['var_name'] == var_name)].copy(deep=True).reset_index(drop=True)
 
     # channel 是list
     index = -1
@@ -54,10 +57,18 @@ def get_sata_cfg(data_name=None, var_name=None, channel=None):
             break
 
     if index < 0:
-        raise Exception('can not get data_name={} var_name={} channel={} in {}!'.format(data_name, var_name, channel, __sata_cfg_csv))
+        raise Exception('can not get data_name={} var_name={} channel={} in {}!'.format(data_name, var_name, channel, _sate_cfg_csv))
 
     return this_cfg.to_dict('index')[index]
 
+def get_radar_cfg(data_name=None, var_name=None):
+    this_cfg = __radar_cfg[(__radar_cfg['data_name'] == data_name) &
+                           (__radar_cfg['var_name'] == var_name)].copy(deep=True).reset_index(drop=True)
+
+    if len(this_cfg) == 0:
+        raise Exception('can not get data_name={} var_name={} in {}!'.format(data_name, var_name, __radar_cfg_csv))
+
+    return this_cfg.to_dict('index')[0]
 
 def model_cassandra_dir(level_type=None, data_name=None, var_name=None, level=None):
     path = get_model_cfg(level_type=level_type, data_name=data_name, var_name=var_name)['cassandra_path']
@@ -85,12 +96,18 @@ def model_cassandra_level(level_type=None, data_name=None, var_name=None, level=
     else:
         return int(models_level)
 
-def sata_cassandra_dir(data_name=None, var_name=None, channel=None):
-    return get_sata_cfg(data_name=data_name, var_name=var_name, channel=channel)['cassandra_path']
+def sate_cassandra_dir(data_name=None, var_name=None, channel=None):
+    return get_sate_cfg(data_name=data_name, var_name=var_name, channel=channel)['cassandra_path']
 
 
-def sata_cassandra_units(data_name=None, var_name=None, channel=None):
-    return get_sata_cfg(data_name=data_name, var_name=var_name, channel=channel)['var_units']
+def sate_cassandra_units(data_name=None, var_name=None, channel=None):
+    return get_sate_cfg(data_name=data_name, var_name=var_name, channel=channel)['var_units']
+
+def radar_cassandra_dir(data_name=None, var_name=None):
+    return get_radar_cfg(data_name=data_name, var_name=var_name)['cassandra_path']
+
+def radar_cassandra_units(data_name=None, var_name=None):
+    return get_radar_cfg(data_name=data_name, var_name=var_name)['var_units']
 
 
 def obs_cassandra_dir(data_name=None, var_name=None):

@@ -9,9 +9,9 @@ from metdig.io.cassandra import get_obs_stations_multitime
 
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.diag_observation_station import draw_uv_tmp_rh_rain
-from metdig.products.diag_observation_station import draw_obs_uv_tmp_rh_rain
-from metdig.products.diag_observation_station import draw_SkewT
+from metdig.products.observation_station import draw_uv_tmp_rh_rain
+from metdig.products.observation_station import draw_obs_uv_tmp_rh_rain
+from metdig.products.observation_station import draw_SkewT
 
 import metdig.cal as mdgcal
 import metdig.utl as mdgstda

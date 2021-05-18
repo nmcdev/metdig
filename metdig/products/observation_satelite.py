@@ -15,13 +15,13 @@ from metdig.graphics.draw_compose import *
 
 
 def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 145, 15, 55),
-                             ir_pcolormesh_kwargs={},  hgt_contour_kwargs={},
+                             ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={},
                              **pallete_kwargs):
 
     ir_time = ir.stda.time[0]
     hgt_time = hgt.stda.fcst_time[0]
     sounding_time = sounding_u.stda.time[0]
-    ir_channel = ir.stda.level[0] # 卫星数据level代表通道号
+    ir_channel = ir.stda.level[0]  # 卫星数据level代表通道号
 
     if ir_channel == 9:
         ir_name = '水汽图像'
@@ -39,12 +39,7 @@ def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 14
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
     ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, kwargs=ir_pcolormesh_kwargs)
-    obj.ax.barbs(sounding_u.lon.values,
-                 sounding_u.lat.values,
-                 sounding_u.stda.data.values.squeeze() * 2.5,
-                 sounding_v.stda.data.values.squeeze() * 2.5,
-                 transform=ccrs.PlateCarree(), fill_empty=False,
-                 sizes=dict(emptybarb=0.0),
-                 zorder=2, color=uv_color, alpha=0.7, lw=1.5, length=7)
+    barbs_2d(obj.ax, sounding_u, sounding_v, length=7, lw=1.5, sizes=dict(emptybarb=0.0), regrid_shape=None, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    hgt_contour(obj.ax, hgt, levels=[588], linewidths=4, kwargs=hgt_contour_kwargs)
     return obj.save()

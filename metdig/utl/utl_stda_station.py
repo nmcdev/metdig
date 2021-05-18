@@ -246,12 +246,16 @@ class __STDADataFrameAccessor(object):
             return self.time.values
         return self._df[dim_name].values
     
-    def get_value(self, ydim='lat', xdim='lon', xunits=False):
+    def get_value(self, ydim='lat', xdim='lon', xunits=False, selonlyonecol=True):
         '''
         类似于网格stda获取数据，因为是pandas站点数据，直接data_start_columns那一列即可。忽略xdim ydim两个参数，不用传这两个参数
         返回值为numpy
         '''
         data = self._df.iloc[:, self._df.attrs['data_start_columns']].values
+        if selonlyonecol == True:
+            data = self._df.iloc[:, self._df.attrs['data_start_columns']].values # 仅获取一列
+        else:
+            data = self.data.values.squeeze() # 获取所有列，此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
         if xunits == True:
             data = data * units(self._df.attrs['var_units'])
         return data
