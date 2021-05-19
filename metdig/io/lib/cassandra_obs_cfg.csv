@@ -1,8 +1,10 @@
 #,,,,
-# cassandra数据路径单位配置,,,,
 # 注意事项,,,,
-#    1. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库）,,,,
-#    2. 每行只能填写一类要素，如风速风向在cassandra中从同一路径中中获取的，请配置两行，以obs_type区分,,,,
+#    1. var_name为stda要素名
+#    2. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
+#    3. cassandra_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
+#    4. cassandra_path填写的为全路径，大括号内的标记会自动格式化
+#    5. 以data_name,var_name列作为查询列，保证能确定唯一一行
 # ,,,,
 data_name,var_name,var_units,cassandra_discription,cassandra_path
 national,rain24,mm,,SURFACE/RAIN24_NATIONAL/{Y}{m}{d}{H}{M}{S}.000

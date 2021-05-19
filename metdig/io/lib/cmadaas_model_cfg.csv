@@ -1,9 +1,14 @@
 #,,,,,,,,
-# ,,,,,,,,
 # 注意事项,,,,,,,,
-#    1. ,,,,,,,,
-#    2. ,,,,,,,,
-#    3. ,,,,,,,,
+#    1. var_name为stda要素名
+#    2. var_units为当前数据的在cmadass中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
+#    3. cmadaas_var_name为cmadass上数据接口需要的要素名
+#    4. cmadaas_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
+#    5. cmadaas_level_type为cmadass上数据接口需要的层次类型
+#    6. cmadaas_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any
+#    7. cmadaas_data_code为cmadass上数据接口需要的data_code，因为存在多个来源，此处填写多个以/分割
+#    8. 此表还与cmadass_datacode_cfg.csv相关联，关联列为data_name,cmadaas_data_code
+#    9. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行
 # ,,,,,,,,
 data_name,var_name,level_type,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_level_type,cmadaas_level,cmadaas_data_code
 grapes_gfs,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE

@@ -1,9 +1,11 @@
 #,,,,,,
-# cassandra数据路径单位配置,,,,,,
 # 注意事项,,,,,,
-#    1. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库）,,,,,,
-#    2. var_name为stda属性名,,,,,,
-#    3. 每行只能填写一类要素,,,,,,
+#    1. var_name为stda要素名
+#    2. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
+#    3. channel为卫星通道，请详细填写通道号，多个以/分割
+#    4. cassandra_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
+#    5. cassandra_path填写的为全路径，大括号内的标记会自动格式化
+#    6. 以data_name,var_name,channel列作为查询列，保证能确定唯一一行
 # ,,,,,,
 data_name,var_name,channel,var_units,cassandra_discription,cassandra_path
 fy4al1,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4A/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX

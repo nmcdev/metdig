@@ -1,8 +1,12 @@
 #,,,,,
-# ,,,,,
-# ,,,,,
-#   ,,,,,
-#  ,,,,,
+# 注意事项,,,,,
+#    1. var_name为stda要素名
+#    2. var_units为当前数据的在cmadass中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
+#    3. cmadaas_var_name为cmadass上数据接口需要的要素名
+#    4. cmadaas_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
+#    5. cmadaas_data_code为cmadass上数据接口需要的data_code，因为存在多个来源，此处填写多个以/分割
+#    6. 此表还与cmadass_datacode_cfg.csv相关联，关联列为data_name,cmadaas_data_code
+#    7. 以data_name,var_name列作为查询列，保证能确定唯一一行
 # ,,,,,
 data_name,var_name,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_data_code
 sfc_chn_hor,rain24,mm,PRE_24h,过去24小时降水量,SURF_CHN_MUL_HOR_MAIN
