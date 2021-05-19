@@ -39,7 +39,6 @@ t2m,2m温度,degC,0
 rh2m,2m相对湿度,percent,0
 td2m,2m露点温度,degC,0
 psfc,地面气压,hPa,0
-tsfc,地面温度,degC,0
 tcdc,低云量,percent,0
 lcdc,总云量,percent,0
 vis,能见度,km ,0

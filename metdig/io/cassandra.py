@@ -32,8 +32,8 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         var_name {[str]} -- [数据要素名]
         level {[int32]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
@@ -108,13 +108,13 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
 
     Keyword Arguments:
         init_time {[datetime]} -- [起报时间]
-        fhour {[list]} -- [预报时效]
+        fhours {[list]} -- [预报时效]
         data_name {[str]} -- [模式名]
         var_name {[str]} -- [要素名]
         level {[int32]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
@@ -144,10 +144,10 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
         fhour {[int32]} -- [预报时效]
         data_name {[str]} -- [模式名]
         var_name {[str]} -- [要素名]
-        levels {[int32 or list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
@@ -182,10 +182,10 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
         fhours {[list]} -- [预报时效]
         data_name {[str]} -- [模式名]
         var_name {[str]} -- [要素名]
-        levels {[int32 or list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
@@ -251,8 +251,8 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
         level {[int]} -- [层次，如果是地面观测站则不传，如果是探空层则传层次]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
         is_save_other_info {bool} -- [是否保存从nmc_met_io中读取到的其它信息] (default: {False})
 
     Returns:
@@ -331,8 +331,8 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
         var_name {[str]} -- [要素名]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]

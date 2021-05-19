@@ -17,7 +17,6 @@ from .lib import utl_era5
 from .lib import config as CONFIG
 
 from metdig.io.MDIException import CFGError
-from metdig.io.MDIException import NMCMetIOError
 
 class ERA5DataService(object):
     """
@@ -102,8 +101,8 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
         var_name {[str]} -- [数据要素名] (default: {None})
         level {[int32]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [type] -- [description]
@@ -180,19 +179,15 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     [读取单层多时次模式网格数据]
 
     Keyword Arguments:
-        init_times {[list[datetime]]} -- [再分析时间列表] (default: {None})
+        init_times {[list]} -- [再分析时间列表] (default: {None})
         var_name {[str]} -- [要素名]
         level {[int32]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if not isinstance(init_times, list):
         init_times = [init_times]
@@ -218,17 +213,13 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     Keyword Arguments:
         init_time {[datetime]} -- [再分析时间]
         var_name {[str]} -- [要素名]
-        levels {[int32 or list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if levels is None:
         levels = [None]
@@ -252,19 +243,15 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
     [读取多层多时次模式网格数据]
 
     Keyword Arguments:
-        init_times {[list[datetime]]} -- [再分析时间列表] (default: {None})
+        init_times {[list]} -- [再分析时间列表] (default: {None})
         var_name {[str]} -- [要素名]
-        levels {[int32 or list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
-        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0.2})
-        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0.1})
+        x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
+        y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if levels is None:
         levels = [None]
@@ -297,7 +284,7 @@ def get_model_points(init_time=None, var_name=None, levels=None, points={}):
     [读取单层/多层，单时效/多时效 模式网格数据，插值到站点上]
 
     Keyword Arguments:
-        init_times {[list[datetime]]} -- [再分析时间] (default: {None})
+        init_times {[list]} -- [再分析时间] (default: {None})
         var_name {[str]} -- [要素名]
         levels {[list]} -- [层次，不传代表地面层] (default: {None})
         points {[dict]} -- [站点信息，字典中必须包含经纬度{'lon':[], 'lat':[]}]

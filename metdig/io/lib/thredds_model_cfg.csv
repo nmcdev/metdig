@@ -1,0 +1,18 @@
+#,,,,,
+# 注意事项,,,,,
+#    1. var_name为stda要素名
+#    2. var_units为当前数据的在thredds中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
+#    3. thredds_var_name为thredds上数据接口需要的要素名
+#    4. thredds_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
+#    5. thredds_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any
+#    6. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行
+#,,,,,
+data_name,var_name,level_type,var_units,thredds_var_name,thredds_discription,thredds_level,thredds_path
+cfsr,hgt,high,gpm,g,,any,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,u,high,m/s,u,,any,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,v,high,m/s,v,,any,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,vvel,high,Pa/s,w,,any,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,spfh,high,kg/kg,q,,any,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,tmp,high,K,t,,any,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,tcwv,surface,mm,pwat,,0,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
+cfsr,prmsl,surface,Pa,pmsl,,0,http://{ip}:{port}/thredds/dodsC/CFSR/{Y}/{thredds_var_name}.{Y}.0p5.anl.nc
