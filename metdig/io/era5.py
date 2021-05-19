@@ -14,7 +14,7 @@ import sys
 import metdig.utl as mdgstda
 
 from .lib import utl_era5
-from .lib import config_era5 as CONFIG
+from .lib import config as CONFIG
 
 from metdig.io.MDIException import CFGError
 from metdig.io.MDIException import NMCMetIOError
@@ -129,17 +129,17 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     try:
         if level:
             level_type = 'high'
-            cache_file = CONFIG.get_cache_file('{:%Y%m%d%H%M}/hourly/{}/{}'.format(init_time_utc, var_name, level), init_time_utc, extent)
+            cache_file = CONFIG.get_era5cache_file(init_time_utc, var_name, extent, level=level, find_area=True)
         else:
             level_type = 'surface'
-            cache_file = CONFIG.get_cache_file('{:%Y%m%d%H%M}/hourly/{}'.format(init_time_utc, var_name), init_time_utc, extent)
+            cache_file = CONFIG.get_era5cache_file(init_time_utc, var_name, extent, level=None, find_area=True)
 
         era5_var = utl_era5.era5_variable(var_name=var_name, level_type=level_type)
         era5_level = utl_era5.era5_level(var_name=var_name, level_type=level_type, level=level)
         era5_units = utl_era5.era5_units(level_type=level_type, var_name=var_name)
     except Exception as e:
         raise CFGError(str(e))
-
+    
     if not os.path.exists(cache_file):
         if level:
             ERA5DataService().download_hourly_pressure_levels(init_time_utc, era5_var, level, cache_file, extent=extent)

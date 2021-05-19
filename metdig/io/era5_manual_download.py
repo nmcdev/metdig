@@ -16,7 +16,7 @@ import sys
 import metdig.utl as mdgstda
 
 
-from metdig.io.lib import config_era5 as CONFIG
+from metdig.io.lib import config as CONFIG
 from metdig.io.lib import utl_era5
 
 
@@ -128,7 +128,7 @@ def _split_psl(savefile, var_name, extent):
                 # cache目录为世界时
                 cachefile = os.path.join(
                     os.path.join(CONFIG.get_cache_dir(),
-                                 '{0:%Y%m%d%H%M}/hourly/{1}/{6}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(dt_utc, var_name, extent[0], extent[1], extent[2], extent[3], lv)))
+                                 'ERA5_DATA/{0:%Y%m%d%H%M}/hourly/{1}/{6}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(dt_utc, var_name, extent[0], extent[1], extent[2], extent[3], lv)))
                 if os.path.exists(cachefile):
                     print('{} 存在 不重复拆分'.format(cachefile))
                 else:
@@ -147,7 +147,7 @@ def _split_sfc(savefile, var_name, extent):
             # cache目录为世界时
             cachefile = os.path.join(
                 os.path.join(CONFIG.get_cache_dir(),
-                             '{0:%Y%m%d%H%M}/hourly/{1}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(dt_utc, var_name, extent[0], extent[1], extent[2], extent[3])))
+                             'ERA5_DATA/{0:%Y%m%d%H%M}/hourly/{1}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(dt_utc, var_name, extent[0], extent[1], extent[2], extent[3])))
             if os.path.exists(cachefile):
                 print('{} 存在 不重复拆分'.format(cachefile))
             else:
@@ -166,7 +166,7 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
     dt_start_utc = dt_start - datetime.timedelta(hours=8)  # 世界时
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
     print('----------------------era5_psl_download--------------------------------')
-    savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'manual_download')
+    savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'ERA5_DATA/manual_download')
     for var_name in var_names:
         # 按要素一次下载一个要素数据
         savefile = os.path.join(savedir,
@@ -191,7 +191,7 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'ps
     dt_start_utc = dt_start - datetime.timedelta(hours=8)  # 世界时
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
     print('----------------------era5_psl_download--------------------------------')
-    savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'manual_download')
+    savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'ERA5_DATA/manual_download')
     for var_name in var_names:
         # 按要素一次下载一个要素数据
         savefile = os.path.join(savedir,
@@ -236,7 +236,7 @@ def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m', 'v1
 
 
 def test():
-    dt_start = datetime.datetime(2020, 1, 2)
+    dt_start = datetime.datetime(2020, 1, 2) # 北京时
     dt_end = datetime.datetime(2020, 1, 3)
 
     era5_psl_download_usepool(dt_start, dt_end, ['hgt', 'u', 'v'])
