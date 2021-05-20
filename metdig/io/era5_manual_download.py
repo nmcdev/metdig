@@ -25,17 +25,19 @@ def _era5_download_hourly_pressure_levels(
         year=[2020],
         month=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         day=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
-        time=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+        hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
         pressure_level=[200, 500, 700, 850, 925],
         variable='geopotential',
-        extent=[50, 160, 0, 70]):
+        extent=[50, 160, 0, 70],
+        is_overwrite=True):
     '''
     下载基本方法，一次下载要素多个时次多个层次到一个文件中
     参数时间均是世界时
     variable为era5下载要素名
+    is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
     # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=form
-    if os.path.exists(savefile):
+    if os.path.exists(savefile) and is_overwrite == False:
         print('{} 存在 不重复下载'.format(savefile))
         return
     else:
@@ -56,7 +58,7 @@ def _era5_download_hourly_pressure_levels(
             'year': list(map(lambda x: str(x), year)),
             'month': list(map(lambda x: '{:02d}'.format(x), month)),
             'day': list(map(lambda x: '{:02d}'.format(x), day)),
-            'time': list(map(lambda x: '{:02d}:00'.format(x), time)),
+            'time': list(map(lambda x: '{:02d}:00'.format(x), hour)),
             'area': [extent[3], extent[0], extent[2], extent[1]],
         },
         savefile)
@@ -67,14 +69,16 @@ def _era5_download_hourly_single_levels(
         year=[2020],
         month=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         day=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
-        time=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+        hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
         variable='10m_u_component_of_wind',
-        extent=[50, 160, 0, 70]):
+        extent=[50, 160, 0, 70],
+        is_overwrite=True):
     '''
     下载基本方法，一次下载要素多个时次到一个文件中，参数时间均是世界时
+    is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
     # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview
-    if os.path.exists(savefile):
+    if os.path.exists(savefile) and is_overwrite == False:
         print('{} 存在 不重复下载'.format(savefile))
         return
     else:
@@ -94,7 +98,7 @@ def _era5_download_hourly_single_levels(
             'year': list(map(lambda x: str(x), year)),
             'month': list(map(lambda x: '{:02d}'.format(x), month)),
             'day': list(map(lambda x: '{:02d}'.format(x), day)),
-            'time': list(map(lambda x: '{:02d}:00'.format(x), time)),
+            'time': list(map(lambda x: '{:02d}:00'.format(x), hour)),
             'area': [extent[3], extent[0], extent[2], extent[1]],
         },
         savefile)
@@ -158,10 +162,13 @@ def _split_sfc(savefile, var_name, extent):
 
 
 def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div'],
-                      pressure_level=[200, 500, 700, 850, 925], extent=[50, 160, 0, 70], download_dir=None):
+                      pressure_level=[200, 500, 700, 850, 925],
+                      hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+                      extent=[50, 160, 0, 70], download_dir=None, is_overwrite=True):
     '''
-    参数时间是北京时，不区分小时，默认24小时全下，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
     var_names为stda要素名
+    is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
     dt_start_utc = dt_start - datetime.timedelta(hours=8)  # 世界时
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
@@ -174,19 +181,20 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
                                     var_name, dt_start_utc, dt_end_utc, extent[0], extent[1], extent[2], extent[3]))
         era5_var = utl_era5.era5_variable(var_name=var_name, level_type='high')
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
-
-        _era5_download_hourly_pressure_levels(savefile=savefile, year=years, month=months, day=days,
-                                              pressure_level=pressure_level, variable=era5_var, extent=extent)
+        _era5_download_hourly_pressure_levels(savefile=savefile, year=years, month=months, day=days, hour=hour,
+                                              pressure_level=pressure_level, variable=era5_var, extent=extent, is_overwrite=is_overwrite)
 
         # 将下载后的数据拆分到cache目录下
         _split_psl(savefile, var_name, extent)
 
 
 def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl'],
-                      extent=[50, 160, 0, 70], download_dir=None):
+                      hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+                      extent=[50, 160, 0, 70], download_dir=None, is_overwrite=True):
     '''
-    参数时间是北京时，不区分小时，默认24小时全下，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
     var_names为stda要素名
+    is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
     dt_start_utc = dt_start - datetime.timedelta(hours=8)  # 世界时
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
@@ -200,47 +208,51 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'ps
         era5_var = utl_era5.era5_variable(var_name, level_type='surface')
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
 
-        _era5_download_hourly_single_levels(savefile=savefile, year=years, month=months, day=days,
-                                            variable=era5_var, extent=extent)
+        _era5_download_hourly_single_levels(savefile=savefile, year=years, month=months, day=days, hour=hour,
+                                            variable=era5_var, extent=extent, is_overwrite=is_overwrite)
 
         # 将下载后的数据拆分到cache目录下
         _split_sfc(savefile, var_name, extent)
 
 
 def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div'],
-                              pressure_level=[200, 500, 700, 850, 925], extent=[50, 160, 0, 70], download_dir=None, max_pool=2):
+                              pressure_level=[200, 500, 700, 850, 925],
+                              hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+                              extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite=True):
     '''
-    参数时间是北京时，不区分小时，默认24小时全下，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
     var_names为stda要素名
     采用多进程下载
     '''
     pool = multiprocessing.Pool(processes=max_pool)
     for var_name in var_names:
-        pool.apply_async(era5_psl_download, (dt_start, dt_end, [var_name], pressure_level, extent, download_dir))
+        pool.apply_async(era5_psl_download, (dt_start, dt_end, [var_name], pressure_level, hour, extent, download_dir, is_overwrite))
     pool.close()
     pool.join()
 
 
 def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl'],
-                              extent=[50, 160, 0, 70], download_dir=None, max_pool=2):
+                              hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+                              extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite = True):
     '''
-    参数时间是北京时，不区分小时，默认24小时全下，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
     var_names为stda要素名
     采用多进程下载
     '''
     pool = multiprocessing.Pool(processes=max_pool)
     for var_name in var_names:
-        pool.apply_async(era5_sfc_download, (dt_start, dt_end, [var_name], extent, download_dir))
+        pool.apply_async(era5_sfc_download, (dt_start, dt_end, [var_name], hour, extent, download_dir, is_overwrite))
     pool.close()
     pool.join()
 
 
 def test():
-    dt_start = datetime.datetime(2020, 1, 2) # 北京时
+    dt_start = datetime.datetime(2020, 1, 2)  # 北京时
     dt_end = datetime.datetime(2020, 1, 3)
+    hour = [0, 4, 6, 9, 12]
 
-    era5_psl_download_usepool(dt_start, dt_end, ['hgt', 'u', 'v'])
-    era5_sfc_download_usepool(dt_start, dt_end, ['u10m', 'v10m'])
+    era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=hour)
+    era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=hour)
 
 
 if __name__ == '__main__':

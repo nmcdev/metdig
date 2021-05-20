@@ -23,7 +23,10 @@ def get_model_grid(data_source,  throwexp=True, **kwargs):
     try:
         if data_source == 'cassandra':
             return cassandra_io.get_model_grid(**kwargs)
-        elif data_source == 'era5':
+        elif data_source == 'cds':
+            # era5 不存在fhour和data_name参数
+            kwargs.pop('fhour')
+            kwargs.pop('data_name')
             return era5_io.get_model_grid(**kwargs)
         elif data_source == 'cmadaas':
             return cmadaas_io.get_model_grid(**kwargs)
@@ -56,7 +59,12 @@ def get_model_grids(data_source, throwexp=True, **kwargs):
     try:
         if data_source == 'cassandra':
             return cassandra_io.get_model_grids(**kwargs)
-        elif data_source == 'era5':
+        elif data_source == 'cds':
+            # era5 不存在fhour和data_name参数，era5的init_times等效于其它的init_time+fhour
+            if 'init_time' in kwargs:
+                kwargs['init_times'] = kwargs['init_time']
+            kwargs.pop('fhours')
+            kwargs.pop('data_name')
             return era5_io.get_model_grids(**kwargs)
         elif data_source == 'cmadaas':
             return cmadaas_io.get_model_grids(**kwargs)
@@ -88,7 +96,10 @@ def get_model_3D_grid(data_source, throwexp=True, **kwargs):
     try:
         if data_source == 'cassandra':
             return cassandra_io.get_model_3D_grid(**kwargs)
-        elif data_source == 'era5':
+        elif data_source == 'cds':
+            # era5 不存在fhour和data_name参数
+            kwargs.pop('fhour')
+            kwargs.pop('data_name')
             return era5_io.get_model_3D_grid(**kwargs)
         elif data_source == 'cmadaas':
             return cmadaas_io.get_model_3D_grid(**kwargs)
@@ -120,9 +131,12 @@ def get_model_3D_grids(data_source, throwexp=True, **kwargs):
     try:
         if data_source == 'cassandra':
             return cassandra_io.get_model_3D_grids(**kwargs)
-        elif data_source == 'era5':
+        elif data_source == 'cds':
+            # era5 不存在fhour和data_name参数，era5的init_times等效于其它的init_time+fhour
             if 'init_time' in kwargs:
                 kwargs['init_times'] = kwargs['init_time']
+            kwargs.pop('fhours')
+            kwargs.pop('data_name')
             return era5_io.get_model_3D_grids(**kwargs)
         elif data_source == 'cmadaas':
             return cmadaas_io.get_model_3D_grids(**kwargs)
@@ -159,7 +173,8 @@ def get_model_points(data_source, throwexp=True, **kwargs):
             return cassandra_io.get_model_points(**kwargs)
         elif data_source == 'cmadaas':
             return cmadaas_io.get_model_points(**kwargs)
-        elif data_source == 'era5':
+        elif data_source == 'cds':
+            # era5 不存在fhour和data_name参数
             kwargs.pop('fhours')
             kwargs.pop('data_name')
             return era5_io.get_model_points(**kwargs)

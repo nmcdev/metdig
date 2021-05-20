@@ -168,7 +168,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     stda_data = mdgstda.numpy_to_gridstda(
         np_data, ['era5'], levels, [init_time], [0], data.coords['lat'].values, data.coords['lon'].values,
         var_name=var_name, np_input_units=era5_units,
-        data_source='era5', level_type=level_type)
+        data_source='cds', level_type=level_type)
 
     return stda_data
 
@@ -278,7 +278,7 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
     return None
 
 
-def get_model_points(init_time=None, var_name=None, levels=None, points={}):
+def get_model_points(init_time=None, var_name=None, levels=None, points={}, **kwargs):
     '''
 
     [读取单层/多层，单时效/多时效 模式网格数据，插值到站点上]

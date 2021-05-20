@@ -202,7 +202,7 @@ def get_model_3D_grids(init_times=None, data_name=None, var_name=None, levels=No
     return None
 
 
-def get_model_points(init_time=None, data_name=None, var_name=None, levels=None, points={}):
+def get_model_points(init_time=None, data_name=None, var_name=None, levels=None, points={}, **kwargs):
     '''
 
     [读取单层/多层，单时效/多时效 模式网格数据，插值到站点上]

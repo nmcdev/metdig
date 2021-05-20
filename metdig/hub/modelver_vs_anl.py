@@ -17,7 +17,8 @@ from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import mult_process
 
 
-def modelver_vs_anl(anl_time=None, anl_data_name='ecmwf', ninit=4, init_interval=12, data_name='ecmwf',
+def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='ecmwf',
+                    ninit=4, init_interval=12, data_source='cassandra', data_name='ecmwf',
                     func=None, func_other_args={}, max_workers=6,
                     output_dir=None, show='animation', tab_size=(30, 18), list_size=(16, 9),
                     is_clean_plt=False):
@@ -51,7 +52,7 @@ def modelver_vs_anl(anl_time=None, anl_data_name='ecmwf', ninit=4, init_interval
             print('era5为再分析数据，请给定anl_time')
             return
         # 获得最近的一次000时效预报数据
-        init_time = get_nearest_init_time(24, anl_data_name, func, func_other_args)
+        init_time = get_nearest_init_time(24, anl_data_source, anl_data_name, func, func_other_args)
         fhour = 0
     else:
         # fhour固定为0，此时对于如ecwmf只有anl_time=08/20时才会找得到
@@ -64,8 +65,10 @@ def modelver_vs_anl(anl_time=None, anl_data_name='ecmwf', ninit=4, init_interval
         func_args['init_time'] = init_time - datetime.timedelta(hours=init_interval * i)
         func_args['fhour'] = fhour + init_interval * i
         if i == 0:
+            func_args['data_source'] = anl_data_source
             func_args['data_name'] = anl_data_name
         else:
+            func_args['data_source'] = data_source
             func_args['data_name'] = data_name
         func_args['is_return_imgbuf'] = True
         print(func_args['init_time'], func_args['fhour'], func_args['data_name'])

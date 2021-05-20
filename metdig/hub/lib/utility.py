@@ -39,7 +39,7 @@ def get_labels_dist(num):
         return (5, 5)
 
 
-def get_nearest_init_time(fhour, data_name='', func=None, func_other_args={}):
+def get_nearest_init_time(fhour, data_source='', data_name='', func=None, func_other_args={}):
     '''
     以系统时间为起点， 获取最近fhour时预报的起报时间
     '''
@@ -52,6 +52,7 @@ def get_nearest_init_time(fhour, data_name='', func=None, func_other_args={}):
         func_args = copy.deepcopy(func_other_args)
         func_args['init_time'] = sys_time - datetime.timedelta(hours=i)
         func_args['fhour'] = 0
+        func_args['data_name'] = data_source
         func_args['data_name'] = data_name
         func_args['is_return_imgbuf'] = True
         func_args['is_draw'] = False # 由于one_step增加is_draw参数，此处仅读取数据不绘图增加效率
