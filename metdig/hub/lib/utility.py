@@ -54,18 +54,19 @@ def get_nearest_init_time(fhour, data_name='', func=None, func_other_args={}):
         func_args['fhour'] = 0
         func_args['data_name'] = data_name
         func_args['is_return_imgbuf'] = True
+        func_args['is_draw'] = False # 由于one_step增加is_draw参数，此处仅读取数据不绘图增加效率
         ret = mult_process(func=func, func_args_all=[func_args], max_workers=1, force_max_workers=True)
         if len(ret) > 0:
             tag = True
             break
         else:
-            print(func_args['init_time'], func_args['fhour'], 'find failed. next.')
+            print(func_args['init_time'], func_args['fhour'], data_name, 'find failed. next.')
     if tag == True:
         # 取到第一对init_time fhour
-        print(func_args['init_time'], func_args['fhour'], 'find success. end.')
+        print(func_args['init_time'], func_args['fhour'], data_name, 'find success. end.')
         return func_args['init_time']
     else:
-        print('can not get any data! init_time=[{:%Y%m%d%H}-{:%Y%m%d%H}] fhour=24'.format(tmp_time, tmp_time - datetime.timedelta(hours=23)))
+        print('can not get any data! init_time=[{:%Y%m%d%H}-{:%Y%m%d%H}] fhour=24'.format(sys_time, sys_time - datetime.timedelta(hours=23)))
         return None
 
     return None

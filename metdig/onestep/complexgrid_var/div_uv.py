@@ -64,3 +64,5 @@ def read_div_uv_4d(data_source=None, init_time=None, fhours=None, data_name=None
     div, u, v = _by_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     if div is not None and u is not None and v is not None:
         return div, u, v
+
+    raise Exception('Can not get any data!')
