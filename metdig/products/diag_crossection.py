@@ -108,8 +108,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_n, cross_w, cross_terr
     levels = cross_tmpadv['level'].values
 
     title = '[{}]温度, 温度平流, 沿剖垂直环流'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_温度_温度平流_沿剖垂直环流_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -138,8 +137,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     levels = cross_u['level'].values
 
     title = '[{}]温度, 温度平流, 沿剖面风'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_温度_温度平流_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -168,8 +166,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     levels = cross_u['level'].values
 
     title = '[{}]温度, 垂直涡度平流, 沿剖面风'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_温度_垂直涡度平流_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -199,8 +196,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 湿位涡, 沿剖面风'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_相当位温_湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -229,8 +225,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 绝对涡度, 沿剖面风'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_相当位温_绝对涡度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -261,8 +256,7 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 相对湿度, 沿剖面风'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_相当位温_相对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -291,8 +285,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     levels = cross_u['level'].values
 
     title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_相当位温_绝对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -321,8 +314,7 @@ def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n
     levels = cross_u['level'].values
 
     title = '[{}]温度, 相对湿度, 水平风场'.format(data_name)
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_温度_相对湿度_水平风场_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))

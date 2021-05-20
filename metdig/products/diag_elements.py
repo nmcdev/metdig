@@ -28,8 +28,7 @@ def draw_tmp(t, map_extent=(60, 145, 15, 55),
     var_cn_name = t.attrs['var_cn_name']
     title = '[{}] {}'.format(data_name.upper(), var_cn_name)
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = t.stda.description()
     png_name = '{1}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时观测_分析的{2}.png'.format(init_time, data_name.upper(), var_cn_name)
 
     t_filter = mdgcal.gaussian_filter(t, 5)
@@ -52,8 +51,7 @@ def draw_mslp_gust(gust, prmsl, map_extent=(60, 145, 15, 55),
     var_cn_name = gust.attrs['var_cn_name']
     title = '[{}] 海平面气压 {}'.format(data_name.upper(), var_cn_name)
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = gust.stda.description()
     png_name = '{2}_海平面气压_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
@@ -73,8 +71,7 @@ def draw_mslp_gust_uv10m(gust, prmsl, u10m, v10m, map_extent=(60, 145, 15, 55),
     var_cn_name = gust.attrs['var_cn_name']
     title = '[{}] 海平面气压 {}'.format(data_name.upper(), var_cn_name)
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = gust.stda.description()
     png_name = '{2}_海平面气压_{3}和10米平均风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)

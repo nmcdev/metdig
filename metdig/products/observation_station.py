@@ -199,17 +199,14 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     point_lat = tmp.stda.lat[0]
     data_name = tmp.stda.member[0].upper()
 
+
     title = ''
     if(fhour != 0):
-        forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报探空\n预报点: {3}, {4}\nwww.nmc.cn'.format(
-            init_time, data_name, fhour, point_lon, point_lat)
         png_name = '{2}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
     else:
-        forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析探空\n分析点: {2}, {3}\nwww.nmc.cn'.format(
-            init_time, data_name, point_lon, point_lat)
         png_name = '{1}_探空_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时分析.png'.format(init_time, data_name)
 
-
+    forcast_info = tmp.stda.description_point(describe='探空')
 
     # 获取带单位的数据
     pres = pres.stda.get_value(xunits=True)

@@ -233,7 +233,50 @@ class __STDADataFrameAccessor(object):
         [获取数据（自data_start_columns起所有列），返回值类型为pd.dataframe]
         '''
         return self._df.loc[:, self.member]
+    
+    def description(self):
+        '''
+        获取描述信息，格式如下:
+        起报时间: Y年m月d日H时
+        预报时间: Y年m月d日H时
+        预报时效: 小时
+        www.nmc.cn
+        '''
+        init_time = self.time[0]
+        fhour = self.dtime[0]
+        fcst_time = self.fcst_time[0]
 
+        description = '''起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时预报时效: {2}小时www.nmc.cn'''.format(
+                init_time, fcst_time, fhour)
+        return description
+    
+    def description_point(self, describe=''):
+        '''
+        获取描述信息，格式如下
+        起报时间: Y年m月d日H时
+        [data_name]N小时预报describe
+        预报点: lon, lat
+        www.nmc.cn
+
+        起报时间: Y年m月d日H时
+        [data_name]实况info
+        分析点: lon, lat
+        www.nmc.cn
+        '''
+        init_time = self.time[0]
+        fhour = self.dtime[0]
+        point_lon = self.lon[0]
+        point_lat = self.lat[0]
+        data_name = self.member[0].upper()
+
+        title = ''
+        if(fhour != 0):
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}\nwww.nmc.cn'.format(
+                init_time, data_name, fhour, point_lon, point_lat, describe)
+        else:
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}\nwww.nmc.cn'.format(
+                init_time, data_name, point_lon, point_lat, describe)
+        return description        
     
     def get_dim_value(self, dim_name):
         '''

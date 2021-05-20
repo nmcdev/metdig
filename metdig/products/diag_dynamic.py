@@ -21,8 +21,8 @@ def draw_hgt_uv_vvel(hgt, u, v, vvel, map_extent=(60, 145, 15, 55),
     data_name = str(hgt['member'].values[0])
 
     title = '[{}] {}hPa 位势高度场, {}hPa 风场和垂直气压速度'.format(data_name.upper(), hgt['level'].values[0], u['level'].values[0])
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    
+    forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_垂直气压速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
@@ -42,8 +42,7 @@ def draw_hgt_uv_div(hgt, u, v, div, map_extent=(60, 145, 15, 55),
 
     title = '[{}] {}hPa 位势高度场, {}hPa风,水平散度'.format(data_name.upper(), hgt['level'].values[0], u['level'].values[0])
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_水平散度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
@@ -62,8 +61,7 @@ def draw_hgt_uv_vortadv(hgt, u, v, vortadv, map_extent=(60, 145, 15, 55),
 
     title = '[{}] {}hPa 位势高度场, {}hPa风,涡度平流'.format(data_name.upper(), hgt['level'].values[0], u['level'].values[0])
     
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_涡度平流_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
@@ -82,8 +80,7 @@ def draw_hgt_uv_tmpadv(hgt, u, v, tmpadv, map_extent=(60, 145, 15, 55),
 
     title = '[{}] {}hPa 位势高度场, {}hPa风,温度平流'.format(data_name.upper(), hgt['level'].values[0], u['level'].values[0])
     
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_温度平流_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
@@ -102,8 +99,7 @@ def draw_uv_fg_thta(u, v, thta, fg, map_extent=(60, 145, 15, 55),
 
     title = '[{}] {}hPa 锋生函数, 风场和位温'.format(data_name.upper(), u['level'].values[0], u['level'].values[0])
     
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = u.stda.description()
     png_name = '{2}_锋生函数_风场_位温_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
     fg_pcolormesh(obj.ax, fg, kwargs=fg_pcolormesh_kwargs)
