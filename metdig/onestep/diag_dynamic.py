@@ -14,10 +14,9 @@ from metdig.onestep.complexgrid_var.theta import read_theta
 import metdig.cal as mdgcal
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
-
 @date_init('init_time')
 def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                hgt_lev=500, uv_lev=850, vvel_lev=850, is_mask_terrain=True,
+                hgt_lev=500, uv_lev=850, vvel_lev=850, smth_step=3, is_mask_terrain=True,
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -36,7 +35,7 @@ def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'vvel': vvel}
         ret.update({'data': dataret})
 
-    vvel = mdgcal.gaussian_filter(vvel, 5)
+    vvel = mdgcal.gaussian_filter(vvel, smth_step)
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
@@ -91,10 +90,9 @@ def hgt_uv_div(data_source='cassandra', data_name='grapes_gfs', init_time=None, 
 
     return ret
 
-
 @date_init('init_time')
 def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                   hgt_lev=500, vort_lev=850, is_mask_terrain=True,
+                   hgt_lev=500, vort_lev=850, smth_step=1, is_mask_terrain=True,
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -110,6 +108,8 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'vortadv': vortadv}
         ret.update({'data': dataret})
 
+    vortadv=mdgcal.gaussian_filter(vortadv,smth_step)
+
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
@@ -118,44 +118,10 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
         v = mask_terrian(psfc, vort_lev, v)
         vortadv = mask_terrian(psfc, vort_lev, vortadv)
 
+
     # plot
     if is_draw:
         drawret = draw_hgt_uv_vortadv(hgt, u, v, vortadv, map_extent=map_extent, **products_kwargs)
-        ret.update(drawret)
-
-    return ret
-
-
-@date_init('init_time')
-def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                  hgt_lev=500, tmp_lev=850, is_mask_terrain=True,
-                  area='全国', is_return_data=False, is_draw=True, **products_kwargs):
-    ret = {}
-
-    # get area
-    map_extent = get_map_area(area)
-
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=tmp_lev, extent=map_extent)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=tmp_lev, extent=map_extent)
-    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', level=tmp_lev, extent=map_extent)
-    tmpadv = mdgcal.var_advect(tmp, u, v)
-
-    if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'tmpadv': tmpadv}
-        ret.update({'data': dataret})
-
-    # 隐藏被地形遮挡地区
-    if is_mask_terrain:
-        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt = mask_terrian(psfc, hgt_lev, hgt)
-        u = mask_terrian(psfc, tmp_lev, u)
-        v = mask_terrian(psfc, tmp_lev, v)
-        tmpadv = mask_terrian(psfc, tmp_lev, tmpadv)
-
-    # plot
-    if is_draw:
-        drawret = draw_hgt_uv_tmpadv(hgt, u, v, tmpadv, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
     return ret
@@ -196,8 +162,3 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     return ret
 
-if __name__ == '__main__':
-    import datetime
-    import matplotlib.pyplot as plt
-    hgt_uv_tmpadv(add_city=False, data_source='era5', tmp_lev=925 ,area='全国',init_time='2020111820')
-    plt.show()
