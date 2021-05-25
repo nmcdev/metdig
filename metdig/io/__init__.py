@@ -6,17 +6,34 @@ import metdig.io.cmadaas as cmadaas_io
 import metdig.io.thredds as thredds_io
 import metdig.io.MDIException as MDIException
 
+from metdig.io.lib import config
+
+
+def config_init(CMADaaS_DNS=None, CMADaaS_PORT=None, CMADaaS_USER_ID=None, CMADaaS_PASSWORD=None, CMADaaS_serviceNodeId=None,
+                   MICAPS_GDS_IP=None, MICAPS_GDS_PORT=None,
+                   THREDDS_IP=None, THREDDS_PORT=None,
+                   CACHE_DIR=None,
+                   ):
+    '''
+    io数据接口参数初始化方法，不存在则创建，配置仅赋值传参的参数，未传参的配置保持不变
+    '''
+    config.init_nmcdev_cfg(
+        CMADaaS_DNS=CMADaaS_DNS, CMADaaS_PORT=CMADaaS_PORT, CMADaaS_USER_ID=CMADaaS_USER_ID, CMADaaS_PASSWORD=CMADaaS_PASSWORD,
+        CMADaaS_serviceNodeId=CMADaaS_serviceNodeId, MICAPS_GDS_IP=MICAPS_GDS_IP, MICAPS_GDS_PORT=MICAPS_GDS_PORT, CACHE_DIR=CACHE_DIR)
+    config.init_metdig_cfg(THREDDS_IP=THREDDS_IP, THREDDS_PORT=THREDDS_PORT, CACHE_DIR=CACHE_DIR)
+    pass
+
 
 def get_model_grid(data_source,  throwexp=True, **kwargs):
     '''
-    
+
     [读取单层单时次模式网格数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas, era5, thredds)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''
@@ -45,14 +62,14 @@ def get_model_grid(data_source,  throwexp=True, **kwargs):
 
 def get_model_grids(data_source, throwexp=True, **kwargs):
     '''
-    
+
     [读取单层多时次模式网格数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas, era5, thredds)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''
@@ -80,16 +97,17 @@ def get_model_grids(data_source, throwexp=True, **kwargs):
             return None
     return None
 
+
 def get_model_3D_grid(data_source, throwexp=True, **kwargs):
     '''
-    
+
     [读取多层单时次模式网格数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas, era5, thredds)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''
@@ -115,16 +133,17 @@ def get_model_3D_grid(data_source, throwexp=True, **kwargs):
             return None
     return None
 
+
 def get_model_3D_grids(data_source, throwexp=True, **kwargs):
     '''
-    
+
     [读取多层多时次模式网格数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas, era5, thredds)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''
@@ -157,14 +176,14 @@ def get_model_3D_grids(data_source, throwexp=True, **kwargs):
 
 def get_model_points(data_source, throwexp=True, **kwargs):
     '''
-    
+
     [获取单层/多层，单时效/多时效观测站点数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas, era5, thredds)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''
@@ -193,16 +212,15 @@ def get_model_points(data_source, throwexp=True, **kwargs):
 
 
 def get_obs_stations(data_source, throwexp=True, **kwargs):
-
     '''
-    
+
     [获取单时次站点数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''
@@ -225,16 +243,15 @@ def get_obs_stations(data_source, throwexp=True, **kwargs):
 
 
 def get_obs_stations_multitime(data_source, throwexp=True, **kwargs):
-
     '''
-    
+
     [获取多时次站点数据]
-    
+
     Arguments:
         data_source {[str]} -- [可选择填写如下数据源: cassandra, cmadaas)]
         **kwargs {[type]} -- [调用读取函数的kwargs]
         throwexp {bool} -- [是否抛出异常，（注意谨慎设置为False，不会抛出任何异常，无法定位为何出错）] (default: {True})
-    
+
     Returns:
         [stda] -- [description]
     '''

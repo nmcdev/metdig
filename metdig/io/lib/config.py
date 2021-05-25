@@ -78,7 +78,7 @@ def get_era5cache_file(init_time, var_name, extent, level=None, find_area=True):
 
     Returns:
         [type]: [description]
-    """    
+    """
 
     # get cache file directory
     if CONFIG.has_option('CACHE', 'CACHE_DIR'):
@@ -117,3 +117,115 @@ def get_era5cache_file(init_time, var_name, extent, level=None, find_area=True):
                         break
 
     return cache_file
+
+
+def init_nmcdev_cfg(CIMISS_DNS=None, CIMISS_USER_ID=None, CIMISS_PASSWORD=None,
+                    CMADaaS_DNS=None, CMADaaS_PORT=None, CMADaaS_USER_ID=None, CMADaaS_PASSWORD=None, CMADaaS_serviceNodeId=None,
+                    MICAPS_GDS_IP=None, MICAPS_GDS_PORT=None,
+                    MAPBOX_token=None,
+                    CACHE_DIR=None):
+    cfg_Path = Path.home() / ".nmcdev" / "config.ini"
+    if not os.path.exists(cfg_Path):
+        if not os.path.exists(os.path.dirname(cfg_Path)):
+            os.makedirs(os.path.dirname(cfg_Path))
+        content = '''
+[CIMISS]
+DNS = xx.xx.xx.xx
+USER_ID = xxxxxxxxx
+PASSWORD = xxxxxxxxx
+
+[CMADaaS]
+DNS = xx.xx.xx.xx
+PORT = xx
+USER_ID = xxxxxxxxx
+PASSWORD = xxxxxxxxx
+serviceNodeId = xxxxxxxxx
+
+[MICAPS]
+GDS_IP = xx.xx.xx.xx
+GDS_PORT = xx
+
+# Cached file directory, if not set,
+#   /home/USERNAME/.nmcdev/cache (linux) or C:/Users/USERNAME/.nmcdev/cache (windows) will be used.
+[CACHE]
+CACHE_DIR = ~
+
+[MAPBOX]
+token = pk.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        '''
+        with open(cfg_Path, 'w') as f:
+            f.write(content.strip())
+
+    config = configparser.ConfigParser()
+    config.read(cfg_Path)
+
+    if CIMISS_DNS:
+        config.set('CIMISS', 'DNS', CIMISS_DNS)
+    if CIMISS_USER_ID:
+        config.set('CIMISS', 'USER_ID', CIMISS_USER_ID)
+    if CIMISS_PASSWORD:
+        config.set('CIMISS', 'PASSWORD', CIMISS_PASSWORD)
+
+    if CMADaaS_DNS:
+        config.set('CMADaaS', 'DNS', CMADaaS_DNS)
+    if CMADaaS_PORT:
+        config.set('CMADaaS', 'PORT', CMADaaS_PORT)
+    if CMADaaS_USER_ID:
+        config.set('CMADaaS', 'USER_ID', CMADaaS_USER_ID)
+    if CMADaaS_PASSWORD:
+        config.set('CMADaaS', 'PASSWORD', CMADaaS_PASSWORD)
+    if CMADaaS_serviceNodeId:
+        config.set('CMADaaS', 'serviceNodeId', CMADaaS_serviceNodeId)
+
+    if MICAPS_GDS_IP:
+        config.set('MICAPS', 'GDS_IP', MICAPS_GDS_IP)
+    if MICAPS_GDS_PORT:
+        config.set('MICAPS', 'GDS_PORT', MICAPS_GDS_PORT)
+
+    if CACHE_DIR:
+        config.set('CACHE', 'CACHE_DIR', CACHE_DIR)
+
+    if MAPBOX_token:
+        config.set('MAPBOX', 'token', MAPBOX_token)
+
+    with open(cfg_Path, 'w') as f:
+        config.write(f)
+
+def init_metdig_cfg(THREDDS_IP=None, THREDDS_PORT=None, CACHE_DIR=None):
+    cfg_Path = Path.home() / ".metdig" / "config.ini"
+    if not os.path.exists(cfg_Path):
+        if not os.path.exists(os.path.dirname(cfg_Path)):
+            os.makedirs(os.path.dirname(cfg_Path))
+        content = '''
+[THREDDS]
+IP = xx.xx.xx.xx
+PORT = xx
+
+# Cached file directory, if not set,
+#   /home/USERNAME/.metdig/cache (linux) or C:/Users/USERNAME/.metdig/cache (windows) will be used.
+[CACHE]
+CACHE_DIR = ~
+        '''
+        with open(cfg_Path, 'w') as f:
+            f.write(content.strip())
+
+    config = configparser.ConfigParser()
+    config.read(cfg_Path)
+
+    if THREDDS_IP:
+        config.set('THREDDS', 'IP', THREDDS_IP)
+    if THREDDS_PORT:
+        config.set('THREDDS', 'PORT', THREDDS_PORT)
+
+    if CACHE_DIR:
+        config.set('CACHE', 'CACHE_DIR', CACHE_DIR)
+
+    with open(cfg_Path, 'w') as f:
+        config.write(f)
+
+
+
+if __name__ == '__main__':
+    init_nmcdev_cfg()
+    init_metdig_cfg()
+    pass
