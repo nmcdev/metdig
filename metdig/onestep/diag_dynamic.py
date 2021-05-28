@@ -7,7 +7,7 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.diag_dynamic import draw_hgt_uv_vvel, draw_hgt_uv_div, draw_hgt_uv_vortadv, draw_hgt_uv_tmpadv, draw_uv_fg_thta
+from metdig.products.diag_dynamic import draw_hgt_uv_vvel, draw_hgt_uv_div, draw_hgt_uv_vortadv, draw_uv_fg_thta
 from metdig.onestep.complexgrid_var.div_uv import read_div_uv
 from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv
 from metdig.onestep.complexgrid_var.theta import read_theta
@@ -142,7 +142,7 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
     pres = utl_stda_grid.gridstda_full_like(tmp, fg_lev, var_name='pres')
     thta = mdgcal.potential_temperature(pres, tmp)
     fg = mdgcal.frontogenesis(thta, u, v)
-
+    thta=mdgcal.gaussian_filter(thta,1)
     if is_return_data:
         dataret = {'u': u, 'v': v, 'thta': thta, 'fg': fg}
         ret.update({'data': dataret})

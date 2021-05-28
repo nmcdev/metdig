@@ -102,7 +102,7 @@ def veri_heatwave(data_source='cassandra',
 if __name__ == '__main__':
     import datetime
     import matplotlib.pyplot as plt
-    anl_time=datetime.datetime(2020,7,16,8)
+    # anl_time=datetime.datetime(2020,7,16,8)
     # output_dir = './test_output'
-    veri_heatwave(obs_time=anl_time,data_source='cmadaas',area='华南',add_city=False)
+    veri_heatwave(area='华南',add_city=False)
     plt.show()        

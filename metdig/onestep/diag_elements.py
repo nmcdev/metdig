@@ -120,6 +120,7 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     return ret
 
+@date_init('init_time')
 def mslp_gust10m_uv10m(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, t_gap=3, area='全国',
                        is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -156,6 +157,9 @@ def mslp_gust10m_uv10m(data_source='cassandra', data_name='ecmwf', init_time=Non
 
     return ret
     
+
+if __name__=='__main__':
+    mslp_gust10m_uv10m()
 
 @date_init('init_time')
 def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=48, area='全国',
