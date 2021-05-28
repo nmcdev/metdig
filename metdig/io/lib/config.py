@@ -223,9 +223,31 @@ CACHE_DIR = ~
     with open(cfg_Path, 'w') as f:
         config.write(f)
 
+def init_cds_cfg(CDS_UID=None, CDS_AIP_KEY=None):
+    cfg_Path = Path.home() / ".cdsapirc"
+    if not os.path.exists(cfg_Path):
+        if not os.path.exists(os.path.dirname(cfg_Path)):
+            os.makedirs(os.path.dirname(cfg_Path))
+        content = f'''
+url: https://cds.climate.copernicus.eu/api/v2
+key: xxxxx:xxxx
+    '''
+        with open(cfg_Path, 'w') as f:
+            f.write(content.strip())
+
+    if not CDS_UID or not CDS_AIP_KEY:
+        return
+    
+    content = f'''
+url: https://cds.climate.copernicus.eu/api/v2
+key: {CDS_UID}:{CDS_AIP_KEY}
+'''
+    with open(cfg_Path, 'w') as f:
+        f.write(content.strip())
 
 
 if __name__ == '__main__':
-    init_nmcdev_cfg()
-    init_metdig_cfg()
+    # init_nmcdev_cfg()
+    # init_metdig_cfg()
+    init_cds_cfg()
     pass

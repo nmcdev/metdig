@@ -198,7 +198,7 @@ def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=Tru
     png_path = None
     if output_dir:
         png_path = os.path.join(output_dir, png_name)
-        plt.savefig(png_path, idpi=200, bbox_inches='tight')
+        plt.savefig(png_path, dpi=200, bbox_inches='tight')
 
     if is_clean_plt:
         plt.close(fig)
@@ -221,7 +221,7 @@ def save_list(img_bufs, output_dir, png_names, list_size=(16, 9), is_clean_plt=T
         if output_dir:
             png_path = os.path.join(output_dir, png_name)
             png_path_list.append(png_path)
-            plt.savefig(png_path, idpi=200, bbox_inches='tight')
+            plt.savefig(png_path, dpi=200, bbox_inches='tight')
         if is_clean_plt:
             plt.close(fig)
     return png_path_list

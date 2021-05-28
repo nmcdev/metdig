@@ -261,7 +261,7 @@ def get_imgbuf_from_fig(fig, dpi=200):
     
     return img_arr
 
-def save(fig, ax, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax):
+def save(fig, ax, png_name, output_dir, is_return_imgbuf=False, is_clean_plt=True, is_return_figax=False):
     # 保存图片通用方法
     ret = {
         'png_name': None,
