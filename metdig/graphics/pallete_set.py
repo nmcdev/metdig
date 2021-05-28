@@ -23,7 +23,8 @@ import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 
 
-def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), title='',title_fontsize=23, forcast_info='',nmc_logo=True,
+def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55), 
+                       title='',title_fontsize=23, forcast_info='',nmc_logo=False,
                        add_china=False, add_city=False, add_background=False, add_south_china_sea=False,add_grid=True):
 
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
@@ -71,21 +72,30 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         # utl_plotmap.add_south_china_sea_plt(pos=[l + w - 0.094, b, 0.11, 0.211]) # 手动绘制上去
         utl_plotmap.add_south_china_sea_png(pos=[l + w - 0.094, b, 0.11, 0.211])  # 直接贴图
 
-    if forcast_info:
-        l, b, w, h = ax.get_position().bounds
-        bax = plt.axes([l, b + h - 0.1, .25, .1], facecolor='#FFFFFFCC')
-        bax.set_yticks([])
-        bax.set_xticks([])
-        bax.axis([0, 10, 0, 10])
-        bax.text(2.5, 9.8, forcast_info, size=15, va='top', ha='left',)
 
     l, b, w, h = ax.get_position().bounds
     if nmc_logo:
+        if forcast_info:
+            bax_h = 0.1
+            bax = plt.axes([l, b + h - bax_h, 0.25, bax_h], facecolor='#FFFFFFCC')
+            bax.set_yticks([])
+            bax.set_xticks([])
+            bax.axis([0, 10, 0, 10])
+            bax.text(2.5, 9.8, forcast_info, size=15, va='top', ha='left',)
+
         utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')
+    else:
+        if forcast_info:
+            bax_h = 0.025 * len(forcast_info.strip().split('\n'))
+            bax = plt.axes([l, b + h - bax_h, 0.2, bax_h], facecolor='#FFFFFFCC')
+            bax.set_yticks([])
+            bax.set_xticks([])
+            bax.axis([0, 10, 0, 10])
+            bax.text(0.5, 9.8, forcast_info, size=15, va='top', ha='left',)
 
     return fig, ax
 
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info=''):
+def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False):
 
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
@@ -118,12 +128,13 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
         bax.axis([0, 10, 0, 10])
         bax.text(1.5, 0.4, forcast_info, size=11)
 
-    l, b, w, h = ax.get_position().bounds
-    utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
+    if nmc_logo:
+        l, b, w, h = ax.get_position().bounds
+        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
 
     return fig, ax
 
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='',reverse_time=True):
+def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo= False, reverse_time=True):
     """[时间剖面画板初始化]
 
     Args:
@@ -180,8 +191,9 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
         bax.axis([0, 10, 0, 10])
         bax.text(1.5, 0.4, forcast_info, size=11)
 
-    l, b, w, h = ax.get_position().bounds
-    utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
+    if nmc_logo:
+        l, b, w, h = ax.get_position().bounds
+        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
 
     return fig, ax
 
@@ -244,7 +256,7 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
 
     return fig, ax_left, ax_right, ax_bottom
 
-def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='',add_logo=True):
+def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='',nmc_logo=False):
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
 
@@ -262,21 +274,23 @@ def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='',a
     skew.ax.set_ylim(1000, 100)
     skew.ax.set_xlim(-40, 60)
 
-    if add_logo:
-        l, b, w, h = skew.ax.get_position().bounds
-        utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')
-
+    if nmc_logo:
         if forcast_info:
+            bax_h = 0.08
             l, b, w, h = skew.ax.get_position().bounds
-            bax = plt.axes([l, b + h - 0.08, .32, 0.08], facecolor='#FFFFFFCC')
+            bax = plt.axes([l, b + h - bax_h, .32, bax_h], facecolor='#FFFFFFCC')
             bax.set_yticks([])
             bax.set_xticks([])
             bax.axis([0, 10, 0, 10])
             bax.text(2.5, 9.8, forcast_info, size=11, va='top', ha='left',)
+
+        l, b, w, h = skew.ax.get_position().bounds
+        utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')
     else:
         if forcast_info:
+            bax_h = 0.02 * len(forcast_info.strip().split('\n'))
             l, b, w, h = skew.ax.get_position().bounds
-            bax = plt.axes([l, b + h - 0.08, .28, 0.08], facecolor='#FFFFFFCC')
+            bax = plt.axes([l, b + h - bax_h, .28, bax_h], facecolor='#FFFFFFCC')
             bax.set_yticks([])
             bax.set_xticks([])
             bax.axis([0, 10, 0, 10])

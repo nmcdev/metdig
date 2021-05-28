@@ -246,8 +246,11 @@ class __STDADataFrameAccessor(object):
         fhour = self.dtime[0]
         fcst_time = self.fcst_time[0]
 
-        description = '''起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时预报时效: {2}小时www.nmc.cn'''.format(
+        if fhour != 0:
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
                 init_time, fcst_time, fhour)
+        else:
+            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析\nwww.nmc.cn'.format(init_time)
         return description
     
     def description_point(self, describe=''):
@@ -274,7 +277,7 @@ class __STDADataFrameAccessor(object):
             description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}\nwww.nmc.cn'.format(
                 init_time, data_name, fhour, point_lon, point_lat, describe)
         else:
-            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}\nwww.nmc.cn'.format(
+            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}\nwww.nmc.cn'.format(
                 init_time, data_name, point_lon, point_lat, describe)
         return description        
     
