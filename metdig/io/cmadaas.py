@@ -62,9 +62,10 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
                                              init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
 
-    if data is None:
-        raise NMCMetIOError('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, init_time={}, fhour={}'.format(
-            cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
+    #建议这里修改为warning
+    # if data is None:
+        # raise NMCMetIOError('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, init_time={}, fhour={}'.format(
+        #     cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
 
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)

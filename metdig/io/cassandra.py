@@ -56,8 +56,9 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         raise CFGError(str(e))
     filename = utl.model_filename(init_time, fhour)
     data = nmc_micaps_io.get_model_grid(cassandra_dir, filename=filename)
-    if data is None:
-        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+    # 此处建议修改为warnning
+    # if data is None:
+    #     raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
@@ -205,7 +206,9 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
-                print(e)
+                # 若需要,请修改为warning
+                continue
+                # print(e)
         if temp_data:
             temp_data = xr.concat(temp_data, dim='level')
             stda_data.append(temp_data)
