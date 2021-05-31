@@ -19,9 +19,13 @@ div,high,1/s,divergence,,any
 spfh,high,kg/kg,specific_humidity,,any
 u10m,surface,m/s,10m_u_component_of_wind,,10
 v10m,surface,m/s,10m_v_component_of_wind,,10
+u100m,surface,m/s,100m_u_component_of_wind,,100
+v100m,surface,m/s,100m_v_component_of_wind,,100
 psfc,surface,Pa,surface_pressure,,0
 tcwv,surface,mm,total_column_water_vapour,,0
 prmsl,surface,Pa,mean_sea_level_pressure,,0
+t2m,surface,K,2m temperature,,0
+td2m,surface,K,2m dewpoint temperature,,0
 qice,high,kg/kg,specific_cloud_ice_water_content,,any
 qcld,high,kg/kg,specific_cloud_liquid_water_content,,any
 qsn,high,kg/kg,specific_snow_water_content,,any
