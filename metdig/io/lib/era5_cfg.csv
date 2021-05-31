@@ -24,8 +24,8 @@ v100m,surface,m/s,100m_v_component_of_wind,,100
 psfc,surface,Pa,surface_pressure,,0
 tcwv,surface,mm,total_column_water_vapour,,0
 prmsl,surface,Pa,mean_sea_level_pressure,,0
-t2m,surface,K,2m temperature,,0
-td2m,surface,K,2m dewpoint temperature,,0
+t2m,surface,K,2m_temperature,,0
+td2m,surface,K,2m_dewpoint_temperature,,0
 qice,high,kg/kg,specific_cloud_ice_water_content,,any
 qcld,high,kg/kg,specific_cloud_liquid_water_content,,any
 qsn,high,kg/kg,specific_snow_water_content,,any
