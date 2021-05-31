@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from metdig.io import get_model_grid,get_model_3D_grids
+from metdig.io import get_model_grid,get_model_3D_grids,get_model_3D_grid
 
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
@@ -43,12 +43,12 @@ def read_spfh(data_source=None, init_time=None, fhour=None, data_name=None, leve
     raise Exception('Can not get any data!')
 
 def _by_self_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
-    spfh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='spfh', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='spfh', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return spfh
 
 def _by_tmp_rh_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
-    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
-    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
 
     if tmp is None or rh is None:
         return None

@@ -104,6 +104,9 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'tmpadv': tmpadv}
         ret.update({'data': dataret})
 
+    tmp = mdgcal.gaussian_filter(tmp, 1)
+    tmpadv = mdgcal.gaussian_filter(tmpadv, 1)
+
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
@@ -111,6 +114,7 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
         u = mask_terrian(psfc, tmp_lev, u)
         v = mask_terrian(psfc, tmp_lev, v)
         tmpadv = mask_terrian(psfc, tmp_lev, tmpadv)
+        tmp = mask_terrian(psfc, tmp_lev, tmp)
 
     # plot
     if is_draw:

@@ -108,8 +108,8 @@ def div_contour(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def pv_contour(ax, stda, xdim='lon', ydim='lat',
                add_clabel=True,
-               levels=np.arange(0, 25, 1), colors='black',
-               transform=ccrs.PlateCarree(), linewidths=2, **kwargs):
+               levels=np.arange(3, 25, 2), colors='black',
+               transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim) # K*m**2/(s*kg)
@@ -148,7 +148,7 @@ def tmp_contour(ax, stda,  xdim='lon', ydim='lat',
         cl = plt.clabel(img, inline=1, fontsize=15, fmt='%i', colors=colors)
         if cl is not None:
             for t in cl:
-                t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='white'), mpatheffects.Normal()])
+                t.set_path_effects([mpatheffects.Stroke(linewidth=2, foreground='white'), mpatheffects.Normal()])
 
 
 @kwargs_wrapper

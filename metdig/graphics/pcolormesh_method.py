@@ -87,7 +87,7 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # Pa/s
     z = z * 10  # 0.1*Pa/s
-
+    z[np.abs(z)<0.5]=np.nan
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
@@ -212,7 +212,7 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # kelvin/m/s
     z = z * 1e9  
-
+    z[np.abs(z)<0.5]=np.nan
     cmap = cm_collected.get_cmap(cmap)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax, transform=transform, alpha=alpha, **kwargs)
@@ -263,7 +263,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     cmap='met/wind_speed_nws',
-                    levels =[8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7, 37, 41.5, 46.2, 51.0, 56.1, 61.3],
+                    levels =[1.6,3.4,5.5,8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7, 37, 41.5, 46.2, 51.0, 56.1, 61.3],
                     transform=ccrs.PlateCarree(), alpha=1,
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
@@ -289,7 +289,7 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # degC
-
+    z[np.abs(z)<4]=np.nan
     cmap = cm_collected.get_cmap(cmap)
     cmap = cm_collected.linearized_cmap(cmap)
 

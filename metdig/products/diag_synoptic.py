@@ -12,7 +12,9 @@ from metdig.graphics.contour_method import *
 from metdig.graphics.contourf_method import *
 from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.quiver_method import *
+from metdig.graphics.text_method import *
 from metdig.graphics.draw_compose import *
+
 
 
 def draw_syn_composite(
@@ -73,6 +75,7 @@ def draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
     prmsl_contourf(obj.ax, prmsl, kwargs=prmsl_contourf_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    mslp_highlower_center_text(obj.ax, prmsl, map_extent)
     return obj.save()
 
 

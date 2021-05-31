@@ -46,7 +46,7 @@ def _era5_download_hourly_pressure_levels(
     if not os.path.exists(os.path.dirname(savefile)):
         os.makedirs(os.path.dirname(savefile))
 
-    c = cdsapi.Client()
+    c = cdsapi.Client(quiet=True)
 
     c.retrieve(
         'reanalysis-era5-pressure-levels',
@@ -87,7 +87,7 @@ def _era5_download_hourly_single_levels(
     if not os.path.exists(os.path.dirname(savefile)):
         os.makedirs(os.path.dirname(savefile))
 
-    c = cdsapi.Client()
+    c = cdsapi.Client(quiet=True)
 
     c.retrieve(
         'reanalysis-era5-single-levels',

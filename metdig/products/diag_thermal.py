@@ -60,7 +60,7 @@ def draw_hgt_uv_tmp(hgt, u, v, tmp, map_extent=(60, 145, 15, 55),
     return obj.save()
 
 def draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=(60, 145, 15, 55),
-                        tmpadv_contourf_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
+                        tmpadv_contourf_kwargs={},tmp_contourf_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
                         **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -73,8 +73,8 @@ def draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_温度平流_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
-    tmpadv_contourf(obj.ax, tmpadv, levels=np.arange(-10, 10.1, 1), kwargs=tmpadv_contourf_kwargs)
-    tmp_contour(obj.ax, tmp, levels=np.arange(-60,40,2),colors='red',linestyle='dashed', kwargs=tmpadv_contourf_kwargs)
+    tmpadv_contourf(obj.ax, tmpadv, kwargs=tmpadv_contourf_kwargs)
+    tmp_contour(obj.ax, tmp, levels=np.arange(-60,40,4),linewidths=2,colors='red',linestyle='dashed', kwargs=tmp_contourf_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     return obj.save()

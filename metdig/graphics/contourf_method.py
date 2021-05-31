@@ -144,7 +144,8 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e4  # 1e-4/s
-    cmap = cm_collected.get_cmap(cmap)
+    z[np.abs(z)<1]=np.nan
+    cmap = cm_collected.get_cmap(cmap,levels)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
@@ -154,17 +155,18 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
 @kwargs_wrapper
 def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
-                    levels=np.arange(-10, 10.1, 0.5), cmap='ncl/BlueRed', extend='both',
+                    levels=np.arange(-10, 10.1, 0.5), cmap='ncl/BlueRed', extend='both',if_mask=True,
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e8  # 1e-8/s
+    if if_mask:
+        z[np.abs(z)<0.01]=np.nan
     cmap = cm_collected.get_cmap(cmap)
-
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='vorticity advection (10' + '$^{-8}$s$^{-1}$)',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='vorticity advection (10' + '$^{-8}$s$^{-1}$)',extend=extend,**colorbar_kwargs)
 
 @kwargs_wrapper
 def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
