@@ -161,9 +161,9 @@ def _split_sfc(savefile, var_name, extent):
                 data.sel(time=dt_utc).to_netcdf(cachefile)
 
 
-def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div'],
+def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div','spfh'],
                       pressure_level=[200, 500, 700, 850, 925],
-                      hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+                      hour=np.arange(0,24,3).tolist(),
                       extent=[50, 160, 0, 70], download_dir=None, is_overwrite=True):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
@@ -188,8 +188,8 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
         _split_psl(savefile, var_name, extent)
 
 
-def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl'],
-                      hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v10m','v100m', 'psfc', 'tcwv', 'prmsl','t2m','td2m'],
+                      hour=np.arange(0,24,3).tolist(),
                       extent=[50, 160, 0, 70], download_dir=None, is_overwrite=True):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
@@ -215,9 +215,10 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'ps
         _split_sfc(savefile, var_name, extent)
 
 
-def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div'],
-                              pressure_level=[200, 500, 700, 850, 925],
-                              hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div','spfh'],
+                              pressure_level=[200,225,250,300,350,400,450,500,550,600,650,700,
+                              750,775,800,825,850,875,900,925,950,975,1000],
+                              hour=np.arange(0,24,3).tolist(),
                               extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite=True):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
@@ -231,8 +232,8 @@ def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u',
     pool.join()
 
 
-def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl'],
-                              hour=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v10m','v100m', 'psfc', 'tcwv', 'prmsl','t2m','td2m'],
+                              hour=np.arange(0,24,3).tolist(),
                               extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite = True):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下

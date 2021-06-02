@@ -280,7 +280,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
 
     cmap = cm_collected.get_cmap(cmap)
 
-    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='max', **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend='max', pos='right')
 

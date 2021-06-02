@@ -10,14 +10,14 @@ import copy
 import matplotlib.pyplot as plt
 
 from metdig.hub.lib.utility import save_list
-from metdig.hub.lib.utility import save_animation
+from metdig.hub.lib.utility import save_animation,save_tab
 from metdig.hub.lib.utility import mult_process
 
 
 
 def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmwf',
                    func=None, func_other_args={}, max_workers=6,
-                   output_dir=None, show='list', list_size=(16, 9), 
+                   output_dir=None, show='list',tab_size=(30, 18), list_size=(16, 9), 
                    is_clean_plt=False): 
     '''
     
@@ -33,6 +33,7 @@ def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmw
         output_dir {[type]} -- [输出目录] (default: {None})
         show {str} -- ['list', show all plots in one cell.
                        'animation', show gif animation.] (default: {'list'})
+        tab_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(30, 18)})
     
     Returns:
         [type] -- [description]
@@ -59,5 +60,10 @@ def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmw
         gif_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.gif'.format(func.__name__, data_name, init_time, fhours[0], fhours[-1])
         gif_path = save_animation(all_img_buf, output_dir, gif_name, is_clean_plt=is_clean_plt)
         return gif_path
+
+    elif show == 'tab':
+        png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}.png'.format(func.__name__, 'models', init_time, fhour)
+        png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        return png_path
         
     return None
