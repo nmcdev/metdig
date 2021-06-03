@@ -1,4 +1,6 @@
 # 天气学诊断分析工具(Meteorological Diagnostic Tools, metdig)
+## 详细使用说明请参考该网站内容：https://www.showdoc.com.cn/metdig
+
 ## Dependencies
 Other required packages:
 - 请在anaconda环境下安装，并确保matplotlib、meteva符合以下版本需求

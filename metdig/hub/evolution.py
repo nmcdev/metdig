@@ -62,7 +62,62 @@ def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmw
         return gif_path
 
     elif show == 'tab':
-        png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}.png'.format(func.__name__, 'models', init_time, fhour)
+        png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.png'.format(func.__name__, 'models', init_time, fhours[0], fhours[-1])
+        png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        return png_path
+        
+    return None
+
+
+def analysis_evolution(init_time=None, data_name='era5',data_source='cds',
+                   func=None, func_other_args={}, max_workers=6,
+                   output_dir=None, show='list',tab_size=(30, 18), list_size=(16, 9), 
+                   is_clean_plt=False): 
+    '''
+    
+    [演变]
+    
+    Keyword Arguments:
+        init_time {[list]} -- [分析时间,datetime] (default: {None})
+        data_name {[str]} -- [模式名] (default: {'era5'})
+        data_source {[str]} -- [数据服务名] (default: {'cds'})
+        func {[type]} -- [函数名] (default: {None})
+        func_other_args {function} -- [函数参数字典] (default: {{}})
+        max_workers {number} -- [最大进程数] (default: {6})
+        output_dir {[type]} -- [输出目录] (default: {None})
+        show {str} -- ['list', show all plots in one cell.
+                       'animation', show gif animation.] (default: {'list'})
+        tab_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(30, 18)})
+    
+    Returns:
+        [type] -- [description]
+    '''
+    # 参数准备
+    func_args_all = []
+    for iinit in init_time:
+        func_args =  copy.deepcopy(func_other_args)
+        func_args['init_time'] = iinit
+        func_args['fhour'] = 0
+        func_args['data_name'] = data_name
+        func_args['data_source'] = data_source
+        func_args['is_return_imgbuf'] = True
+        func_args_all.append(func_args)
+
+    # 多进程绘图
+    all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
+    all_img_buf = [ret['img_buf'] for ret in all_ret]
+    all_png_name= [ret['png_name'] for ret in all_ret]
+
+    if show == 'list':
+        all_pic = save_list(all_img_buf, output_dir, all_png_name, list_size=list_size, is_clean_plt=is_clean_plt)
+        return all_pic
+    elif show == 'animation':
+        gif_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:%Y%m%d%H}.gif'.format(func.__name__, data_name, init_time[0], init_time[-1])
+        gif_path = save_animation(all_img_buf, output_dir, gif_name, is_clean_plt=is_clean_plt)
+        return gif_path
+
+    elif show == 'tab':
+        png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:%Y%m%d%H}.png'.format(func.__name__, 'models', init_time[0], init_time[-1])
         png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
         return png_path
         
