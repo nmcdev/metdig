@@ -9,8 +9,8 @@ import pandas as pd
 
 import nmc_met_io.retrieve_cmadaas as nmc_cmadaas_io
 
-from .lib import utl_cmadaas
-from .lib import utility as utl
+from metdig.io.lib import utl_cmadaas
+from metdig.io.lib import utility as utl
 
 
 import metdig.utl as mdgstda
@@ -47,7 +47,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
             level_type = 'high'
         else:
             level_type = 'surface'
-        cmadaas_data_code = utl_cmadaas.model_cmadaas_data_code(data_name=data_name, fhour=fhour)
+        cmadaas_data_code = utl_cmadaas.model_cmadaas_data_code(data_name=data_name, var_name=var_name, level_type=level_type, fhour=fhour)
         cmadaas_var_name = utl_cmadaas.model_cmadaas_var_name(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
         cmadaas_level_type = utl_cmadaas.model_cmadaas_level_type(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
         cmadaas_level = utl_cmadaas.model_cmadaas_level(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code, level=level)
@@ -341,3 +341,12 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
         return df
 
     return None
+
+
+if __name__ == '__main__':
+    init_time = datetime.datetime(2021, 6, 1, 8)
+    fhour = 24
+    data_name = 'grapes_gfs'
+    var_name = 'hgt'
+    level = 500
+    get_model_grid(init_time=init_time, fhour=fhour, data_name=data_name, var_name=var_name, level=level)

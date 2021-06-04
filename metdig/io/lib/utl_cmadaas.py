@@ -30,7 +30,7 @@ __datacode_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cmadaas_dat
 __datacode_cfg = pd.read_csv(__datacode_cfg_csv, encoding='gbk', comment='#')
 __datacode_cfg = __datacode_cfg.fillna('')
 
-def model_cmadaas_data_code(data_name=None, fhour=0):
+def get_datacode_cfg(data_name=None, fhour=0):
 
     if fhour == 0:
         fhour_flag = 0
@@ -61,11 +61,17 @@ def get_model_cfg(data_name=None, var_name=None, level_type=None, data_code=None
 
     cmadaas_data_code = this_cfg['cmadaas_data_code'].values[0]
 
-    if data_code not in cmadaas_data_code:
-        raise Exception('error: {} not in cmadaas_data_code! data_name={} level_type={} var_name={} in {}!'.format(data_code, data_name, level_type, var_name, __model_cfg_csv))
-
+    if data_code.strip().lower() != 'any':
+        if data_code not in cmadaas_data_code:
+            raise Exception('error: {} not in cmadaas_data_code! data_name={} level_type={} var_name={} in {}!'.format(data_code, data_name, level_type, var_name, __model_cfg_csv))
+    
     return this_cfg.to_dict('index')[0]
 
+def model_cmadaas_data_code(data_name=None, var_name=None, level_type=None, fhour=0):
+    cmadaas_data_code = get_datacode_cfg(data_name=data_name, fhour=fhour)
+    if cmadaas_data_code.strip().lower() != 'any':
+        return cmadaas_data_code
+    return get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)['cmadaas_data_code'][0]
 
 def model_cmadaas_var_name(data_name=None, var_name=None, level_type=None, data_code=None):
     return get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=data_code)['cmadaas_var_name']
@@ -111,14 +117,14 @@ def obs_var_name(data_name=None):
 '''
 
 if __name__ == '__main__':
-    # data_code = model_cmadaas_data_code(data_name='grapes_gfs', fhour=3)
-    # print(data_code)
+    data_code = model_cmadaas_data_code(data_name='ecmwf', var_name='tmp', level_type='high', fhour=0)
+    print(data_code)
 
-    # cmadaas_var_name = model_cmadaas_var_name(data_name='grapes_gfs', var_name='tmp', level_type='high', data_code=data_code)
-    # print(cmadaas_var_name)
+    cmadaas_var_name = model_cmadaas_var_name(data_name='ecmwf', var_name='tmp', level_type='high', data_code=data_code)
+    print(cmadaas_var_name)
 
     # level = model_cmadaas_level(data_name='grapes_gfs', var_name='tmp', level_type='high', data_code=data_code, level=2)
     # print(level)
 
-    x = obs_cmadaas_var_name(data_name='national', var_name='rain24')
-    print(x)
+    # x = obs_cmadaas_var_name(data_name='national', var_name='rain24')
+    # print(x)

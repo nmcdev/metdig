@@ -9,9 +9,10 @@ import numpy as np
 import pandas as pd
 
 import nmc_met_io.retrieve_micaps_server as nmc_micaps_io
+import metdig.io.nmc_micaps_helper as nmc_micaps_helper
 
-from .lib import utl_cassandra
-from .lib import utility as utl
+from metdig.io.lib import utl_cassandra
+from metdig.io.lib import utility as utl
 
 import metdig.utl as mdgstda
 
@@ -365,7 +366,9 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
     return None
 
 def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, extent=None, x_percent=0, y_percent=0):
-
+    '''
+    卫星观测数据
+    '''
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel) # cassandra数据路径
@@ -400,6 +403,9 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
 def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
               extent=None, x_percent=0, y_percent=0, is_save_other_info=False):
+    '''
+    探空tlogp数据
+    '''
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -447,7 +453,9 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
 
 
 def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, x_percent=0, y_percent=0):
-
+    '''
+    雷达回波全国拼图数据
+    '''
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name) # cassandra数据路径
@@ -479,6 +487,46 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
 
     return stda_data
 
+
+def get_wind_profiler(obs_time=None, data_name=None, var_name=None):
+    '''
+    风廓线数据
+    '''
+    # 从配置中获取相关信息
+    try:
+        cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+    except Exception as e:
+        raise CFGError(str(e))
+
+    # 读取数据
+    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'
+    filename = os.path.basename(cassandra_path)
+    # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
+    data = nmc_micaps_helper.get_wind_profiler(cassandra_dir, filename=filename)  
+    if data is None:
+        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+
+    data = data.rename(columns={
+        'stationId': 'id',
+        'observationTime': 'time',
+        'longitude': 'lon',
+        'latitude': 'lat',
+        'samplingHeight': 'level',
+        'horizontalWindDirection': 'wdir',
+        'horizontalWindSpeed': 'wsp',
+        'verticalWindSpeed': 'w',
+    })
+
+    # 转成stda
+    return mdgstda.numpy_to_stastda(
+        data[var_name].values, [data_name], data['level'].values, data['time'].values, 0, data['id'].values, data['lat'].values, data['lon'].values, 
+        np_input_units=cassandra_units, var_name=var_name, other_input={},
+        data_source='cassandra', data_name=data_name
+    )
+
+
 '''
 def get_station_dataset(init_time, fhours, data_name, var_name):
     stda_data = []
@@ -491,11 +539,15 @@ def get_station_dataset(init_time, fhours, data_name, var_name):
 
 
 if __name__ == '__main__':
-    init_time = datetime.datetime(2020, 7, 25, 8)
-    x = get_model_grid(init_time=init_time, fhour=0, data_name='ecmwf', var_name='tmp', level=850)
+    # init_time = datetime.datetime(2020, 7, 25, 8)
+    # x = get_model_grid(init_time=init_time, fhour=0, data_name='ecmwf', var_name='tmp', level=850)
     # init_time = datetime.datetime(2020, 8 , 3, 8)
     # x = get_model_grid(init_time=init_time, fhour=6, data_name='grapes_gfs', var_name='theta', level=850)
     # init_time = datetime.datetime(2020, 8, 8, 8)
     # x = get_model_grid(init_time=init_time, fhour=0, data_name='ecmwf', var_name='td2m')
-    print(np.min(x.values), np.max(x.values), np.mean(x.values))
-    print(x)
+    # print(np.min(x.values), np.max(x.values), np.mean(x.values))
+    # print(x)
+
+    obs_time = datetime.datetime(2021,6,3,13,54,0)
+    df = get_wind_profiler(obs_time=obs_time, data_name='wind_profiler', var_name='wdir')
+    print(df)
