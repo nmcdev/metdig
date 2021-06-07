@@ -195,8 +195,7 @@ def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
         fhours2 = np.arange(fhour - 21 + 24 - 24, fhour + 1 + 24 - 24, 3)
         init_time2 = init_time - datetime.timedelta(hours=24)
     if(fhour < 24):
-        print('fhour should > 24')
-        return
+        raise Exception('fhour should > 24')
 
     t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name,
                              extent=map_extent, x_percent=0, y_percent=0, var_name='tmx3_2m')
@@ -250,8 +249,7 @@ def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
         fhours2 = np.arange(fhour - 21 + 24 - 24, fhour + 1 + 24 - 24, 3)
         init_time2 = init_time - datetime.timedelta(hours=24)
     if(fhour < 24):
-        print('fhour should > 24')
-        return
+        raise Exception('fhour should > 24')
 
     t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name,
                              extent=map_extent, x_percent=0, y_percent=0, var_name='tmn3_2m')
@@ -305,8 +303,7 @@ def dt2m_mean24(data_source='cassandra', data_name='grapes_gfs', init_time=None,
         fhours2 = np.arange(fhour - 21 + 24 - 24, fhour + 1 + 24 - 24, 3)
         init_time2 = init_time - datetime.timedelta(hours=24)
     if(fhour < 24):
-        print('fhour should > 24')
-        return
+        raise('fhour should > 24')
 
     t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1, data_name=data_name,
                              var_name='t2m', extent=map_extent)

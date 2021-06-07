@@ -16,6 +16,9 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+import logging
+_log = logging.getLogger(__name__)
+
 __all__ = [
     'modelver_vs_anl',
 ]
@@ -52,8 +55,7 @@ def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='e
     fhour = None
     if anl_time is None:
         if anl_data_name == 'era5':
-            print('era5为再分析数据，请给定anl_time')
-            return
+            raise Exception('era5为再分析数据，请给定anl_time')
         # 获得最近的一次000时效预报数据
         init_time = get_nearest_init_time(24, anl_data_source, anl_data_name, func, func_other_args)
         fhour = 0
@@ -75,7 +77,7 @@ def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='e
             func_args['data_name'] = data_name
         func_args['is_return_pngname'] = True
         func_args['is_return_imgbuf'] = True
-        print(func_args['init_time'], func_args['fhour'], func_args['data_name'])
+        _log.info(f'''{func_args['init_time']} {func_args['fhour']} {func_args['data_name']}''')
         func_args_all.append(func_args)
 
     # 多进程绘图

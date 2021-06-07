@@ -16,7 +16,8 @@ import metdig.utl as mdgstda
 from .lib import utl_era5
 from .lib import config as CONFIG
 
-from metdig.io.MDIException import CFGError
+import logging
+_log = logging.getLogger(__name__)
 
 class ERA5DataService(object):
     """
@@ -34,7 +35,7 @@ class ERA5DataService(object):
     def download_hourly_pressure_levels(self, init_time, variable, pressure_level, savefile, extent=[50, 160, 0, 70]):
         # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=form
         if os.path.exists(savefile):
-            print('{} exists 不重复下载'.format(savefile))
+            _log.info('{} exists 不重复下载'.format(savefile))
             return
         # 只能下载如下层次数据
         access_lvls = ['1', '2', '3', '5', '7', '10', '20', '30', '50', '70', '100', '125',
@@ -68,7 +69,7 @@ class ERA5DataService(object):
     def download_hourly_single_levels(self, init_time, variable, savefile, extent=[50, 160, 0, 70]):
         # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview
         if os.path.exists(savefile):
-            print('{} exists 不重复下载'.format(savefile))
+            _log.info('{} exists 不重复下载'.format(savefile))
             return
 
         if not os.path.exists(os.path.dirname(savefile)):
@@ -137,7 +138,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
         era5_level = utl_era5.era5_level(var_name=var_name, level_type=level_type, level=level)
         era5_units = utl_era5.era5_units(level_type=level_type, var_name=var_name)
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
     
     if not os.path.exists(cache_file):
         if level:
@@ -199,7 +200,7 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
     if stda_data:
         return xr.concat(stda_data, dim='time')
     return None
@@ -230,7 +231,7 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
 
     if stda_data:
         return xr.concat(stda_data, dim='level')
@@ -268,7 +269,7 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
-                # print(str(e))
+                _log.info(str(e))
                 continue
         if temp_data:
             temp_data = xr.concat(temp_data, dim='level')

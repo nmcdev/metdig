@@ -16,8 +16,8 @@ from metdig.io.lib import utility as utl
 
 import metdig.utl as mdgstda
 
-from metdig.io.MDIException import CFGError
-from metdig.io.MDIException import NMCMetIOError
+import logging
+_log = logging.getLogger(__name__)
 
 
 def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, level=None,
@@ -38,28 +38,25 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     # 从配置中获取相关信息
     try:
         if level:
             level_type = 'high'
-            cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name, level=level)  # cassandra数据路径
+            cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name,
+                                                              var_name=var_name, level=level)  # cassandra数据路径
         else:
             level_type = 'surface'
             cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
         cassandra_units = utl_cassandra.model_cassandra_units(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
         cassandra_level = utl_cassandra.model_cassandra_level(level_type=level_type, data_name=data_name, var_name=var_name, level=level)
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
     filename = utl.model_filename(init_time, fhour)
     data = nmc_micaps_io.get_model_grid(cassandra_dir, filename=filename)
     # 此处建议修改为warnning
-    # if data is None:
-    #     raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+    if data is None:
+        raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
@@ -78,9 +75,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if 'data' in data.keys():
         np_data = np.squeeze(data['data'].values)
         np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], levels, [init_time], [fhour], data.coords['lat'].values, data.coords['lon'].values,
-                                              var_name=var_name, np_input_units=cassandra_units,
-                                              data_source='cassandra', level_type=level_type)
+        stda_data = mdgstda.numpy_to_gridstda(
+            np_data, [data_name],
+            levels, [init_time],
+            [fhour],
+            data.coords['lat'].values, data.coords['lon'].values, var_name=var_name, np_input_units=cassandra_units, data_source='cassandra',
+            level_type=level_type)
 
         return stda_data
     else:
@@ -88,12 +88,16 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         angle = data['angle'].squeeze()
         speed = speed[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
         angle = angle[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        speed_stda = mdgstda.numpy_to_gridstda(speed, [data_name], levels, [init_time], [fhour], speed.coords['lat'].values, speed.coords['lon'].values,
-                                               var_name=var_name, np_input_units=cassandra_units,
-                                               data_source='cassandra', level_type=level_type)
-        angle_stda = mdgstda.numpy_to_gridstda(angle, [data_name], levels, [init_time], [fhour], angle.coords['lat'].values, angle.coords['lon'].values,
-                                               var_name=var_name, np_input_units=cassandra_units,
-                                               data_source='cassandra', level_type=level_type)
+        speed_stda = mdgstda.numpy_to_gridstda(speed, [data_name],
+                                               levels, [init_time],
+                                               [fhour],
+                                               speed.coords['lat'].values, speed.coords['lon'].values, var_name=var_name,
+                                               np_input_units=cassandra_units, data_source='cassandra', level_type=level_type)
+        angle_stda = mdgstda.numpy_to_gridstda(angle, [data_name],
+                                               levels, [init_time],
+                                               [fhour],
+                                               angle.coords['lat'].values, angle.coords['lon'].values, var_name=var_name,
+                                               np_input_units=cassandra_units, data_source='cassandra', level_type=level_type)
         if var_name == 'wsp':
             return speed_stda
         elif var_name == 'wdir':
@@ -120,10 +124,6 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     stda_data = []
     for fhour in fhours:
@@ -153,10 +153,6 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if levels is None:
         levels = [None]
@@ -167,7 +163,7 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
     if stda_data:
         return xr.concat(stda_data, dim='level')
     return None
@@ -191,10 +187,6 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if levels is None:
         levels = [None]
@@ -208,8 +200,8 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
                     temp_data.append(data)
             except Exception as e:
                 # 若需要,请修改为warning
+                _log.info(str(e))
                 continue
-                # print(e)
         if temp_data:
             temp_data = xr.concat(temp_data, dim='level')
             stda_data.append(temp_data)
@@ -261,29 +253,25 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        ValueError -- [description]
     '''
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
         cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
     
-
     # 读取数据
     cassandra_path = utl.cfgpath_format(cassandra_path, obs_time, level=level)
     cassandra_dir = os.path.dirname(cassandra_path) + '/'
     filename = os.path.basename(cassandra_path)
     # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
-    data = nmc_micaps_io.get_station_data(cassandra_dir, filename=filename)  
+    data = nmc_micaps_io.get_station_data(cassandra_dir, filename=filename)
     if data is None:
-        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+        raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
-    # 设置ID列为索引列# print(data)
-    data = data.set_index('ID')  
+    # 设置ID列为索引列
+    data = data.set_index('ID')
     # print(data.index.dtype)
     # print(data)
     # print(data.columns) # [lon', 'lat', 'Alt', 'Grade', 'Rain_1h', '1004', 'time']'
@@ -304,7 +292,6 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
         levels = np.full((len(data)), level)
     else:
         levels = np.full((len(data)), 0)
-    
 
     # 其它坐标信息列
     other_input = {}
@@ -317,7 +304,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values, 
+        data[var_name].values, [data_name], levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )
@@ -340,23 +327,20 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        ValueError -- [description]
     '''
     datas = []
     attrs = {}
     for obs_time in obs_times:
         try:
-            data = get_obs_stations(obs_time, data_name, var_name,
-                                    id_selected=id_selected, extent=extent, x_percent=x_percent, y_percent=y_percent, is_save_other_info=is_save_other_info)
-            
+            data = get_obs_stations(obs_time, data_name, var_name, id_selected=id_selected, extent=extent,
+                                    x_percent=x_percent, y_percent=y_percent, is_save_other_info=is_save_other_info)
+
             if data is not None and len(data) > 0:
                 attrs = data.attrs
                 datas.append(data)
 
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
 
     if datas:
         df = pd.concat(datas, ignore_index=True)
@@ -365,24 +349,25 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
 
     return None
 
+
 def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, extent=None, x_percent=0, y_percent=0):
     '''
     卫星观测数据
     '''
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel) # cassandra数据路径
+        cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据路径
         cassandra_units = utl_cassandra.sate_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
     cassandra_path = utl.cfgpath_format(cassandra_path, obs_time, channel=channel)
     cassandra_dir = os.path.dirname(cassandra_path) + '/'
     filename = os.path.basename(cassandra_path)
     # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
-    data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)  
+    data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)
     if data is None:
-        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+        raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
@@ -411,20 +396,19 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
         cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
     # 读取数据
     cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
     cassandra_dir = os.path.dirname(cassandra_path) + '/'
     filename = os.path.basename(cassandra_path)
     # ['ID', 'lon', 'lat', 'alt', 'time', 'p', 'h', 't', 'td', 'wd', 'ws]
-    data = nmc_micaps_io.get_tlogp(cassandra_dir, filename=filename)  
+    data = nmc_micaps_io.get_tlogp(cassandra_dir, filename=filename)
     if data is None:
-        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
-
+        raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
     # 设置ID列为索引列# print(data)
-    data = data.set_index('ID')  
+    data = data.set_index('ID')
 
     # 经纬度范围裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
@@ -443,10 +427,10 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
     if is_save_other_info:
         for other_name in ['alt']:  # 保存其它信息列:
             other_input[other_name] = data[other_name].values
-            
+
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name],levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values,
+        data[var_name].values, [data_name], levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )
@@ -458,19 +442,19 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
     '''
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name) # cassandra数据路径
+        cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
         cassandra_units = utl_cassandra.radar_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
     cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
     cassandra_dir = os.path.dirname(cassandra_path) + '/'
     filename = os.path.basename(cassandra_path)
     # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
-    data = nmc_micaps_io.get_radar_mosaic(cassandra_dir, filename=filename)  
+    data = nmc_micaps_io.get_radar_mosaic(cassandra_dir, filename=filename)
     if data is None:
-        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
-    
+        raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
 
@@ -497,16 +481,16 @@ def get_wind_profiler(obs_time=None, data_name=None, var_name=None):
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
         cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
     # 读取数据
     cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
     cassandra_dir = os.path.dirname(cassandra_path) + '/'
     filename = os.path.basename(cassandra_path)
     # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
-    data = nmc_micaps_helper.get_wind_profiler(cassandra_dir, filename=filename) 
+    data = nmc_micaps_helper.get_wind_profiler(cassandra_dir, filename=filename)
     if data is None:
-        raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
+        raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
     data = data.rename(columns={
         'stationId': 'id',
@@ -521,7 +505,7 @@ def get_wind_profiler(obs_time=None, data_name=None, var_name=None):
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name], data['level'].values, data['time'].values, 0, data['id'].values, data['lat'].values, data['lon'].values, 
+        data[var_name].values, [data_name], data['level'].values, data['time'].values, 0, data['id'].values, data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input={},
         data_source='cassandra', data_name=data_name
     )
@@ -548,6 +532,6 @@ if __name__ == '__main__':
     # print(np.min(x.values), np.max(x.values), np.mean(x.values))
     # print(x)
 
-    obs_time = datetime.datetime(2021,6,3,13,54,0)
+    obs_time = datetime.datetime(2021, 6, 3, 13, 54, 0)
     df = get_wind_profiler(obs_time=obs_time, data_name='wind_profiler', var_name='wdir')
     print(df)

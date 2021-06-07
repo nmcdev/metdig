@@ -15,6 +15,9 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+import logging
+_log = logging.getLogger(__name__)
+
 __all__ = [
     'model_basic_anl',
 ]
@@ -40,8 +43,7 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,
         is_clean_plt {bool} -- [description] (default: {True})
     '''
     if func is None or func_other_args is None:
-        print('error! func or func_other_args is None')
-        return
+        raise Exception('error! func or func_other_args is None')
 
     if not isinstance(func, list):
         func = [func]
@@ -49,15 +51,12 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,
         func_other_args = [func_other_args]
 
     if len(func) == 0:
-        print('error! len(func) == 0')
-        return
+        raise Exception('error! len(func) == 0')
     if len(func_other_args) == 0:
-        print('error! len(func_other_args) == 0')
-        return
+        raise Exception('error! len(func_other_args) == 0')
 
     if len(func) > 1 and len(func_other_args) > 1 and len(func) != len(func_other_args):
-        print('error! len(func) !=  len(func_other_args), can not match')
-        return
+        raise Exception('error! len(func) !=  len(func_other_args), can not match')
 
     for _ in func_other_args:
         _['is_return_pngname'] = True
@@ -86,7 +85,7 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,
             if exp is None:
                 all_ret.append(task.result())
             else:
-                print(exp)
+                _log.debug(exp)
                 pass
 
     all_img_bufs = get_onestep_ret_imgbufs(all_ret)

@@ -16,6 +16,9 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+import logging
+_log = logging.getLogger(__name__)
+
 __all__ = [
     'model_stability',
 ]
@@ -58,8 +61,7 @@ def model_stability(target_time=None, latest_init_time=None, ninit=4, init_inter
         target_time = latest_init_time + datetime.timedelta(hours=36) 
     target_time = datetime.datetime(target_time.year, target_time.month, target_time.day, target_time.hour)
     if target_time < latest_init_time:
-        print('target_time({:%Y%m%d%H}) < latest_init_time({:%Y%m%d%H})'.format(target_time, latest_init_time))
-        return
+        raise Exception('target_time({:%Y%m%d%H}) < latest_init_time({:%Y%m%d%H})'.format(target_time, latest_init_time))
 
     init_time = latest_init_time
     fhour = int((target_time - latest_init_time).total_seconds() / 60 / 60)
@@ -74,7 +76,7 @@ def model_stability(target_time=None, latest_init_time=None, ninit=4, init_inter
         func_args['is_return_imgbuf'] = True
         if func_args['fhour'] < 0:
             continue
-        print(func_args['init_time'], func_args['fhour'])
+        _log.info(f'''{func_args['init_time']} {func_args['fhour']}''')
         func_args_all.append(func_args)
 
 

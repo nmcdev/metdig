@@ -49,7 +49,7 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
 
 @date_init('obs_times', method=date_init.series_1_36_set)
-def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='national', obs_times=None, id_selected=54511,
+def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='sfc_chn_hor', obs_times=None, id_selected=54511,
                        is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 

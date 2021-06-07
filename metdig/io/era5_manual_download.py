@@ -19,6 +19,9 @@ import metdig.utl as mdgstda
 from metdig.io.lib import config as CONFIG
 from metdig.io.lib import utl_era5
 
+import logging
+_log = logging.getLogger(__name__)
+
 
 def _era5_download_hourly_pressure_levels(
         savefile,
@@ -38,10 +41,10 @@ def _era5_download_hourly_pressure_levels(
     '''
     # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=form
     if os.path.exists(savefile) and is_overwrite == False:
-        print('{} 存在 不重复下载'.format(savefile))
+        _log.info('{} 存在 不重复下载'.format(savefile))
         return
     else:
-        print('{} 下载...'.format(savefile))
+        _log.info('{} 下载...'.format(savefile))
 
     if not os.path.exists(os.path.dirname(savefile)):
         os.makedirs(os.path.dirname(savefile))
@@ -79,10 +82,10 @@ def _era5_download_hourly_single_levels(
     '''
     # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview
     if os.path.exists(savefile) and is_overwrite == False:
-        print('{} 存在 不重复下载'.format(savefile))
+        _log.info('{} 存在 不重复下载'.format(savefile))
         return
     else:
-        print('{} 下载...'.format(savefile))
+        _log.info('{} 下载...'.format(savefile))
 
     if not os.path.exists(os.path.dirname(savefile)):
         os.makedirs(os.path.dirname(savefile))
@@ -134,9 +137,9 @@ def _split_psl(savefile, var_name, extent):
                     os.path.join(CONFIG.get_cache_dir(),
                                  'ERA5_DATA/{0:%Y%m%d%H%M}/hourly/{1}/{6}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(dt_utc, var_name, extent[0], extent[1], extent[2], extent[3], lv)))
                 if os.path.exists(cachefile):
-                    print('{} 存在 不重复拆分'.format(cachefile))
+                    _log.info('{} 存在 不重复拆分'.format(cachefile))
                 else:
-                    print('{} 拆分...'.format(cachefile))
+                    _log.info('{} 拆分...'.format(cachefile))
                     if not os.path.exists(os.path.dirname(cachefile)):
                         os.makedirs(os.path.dirname(cachefile))
                     data.sel(time=dt_utc, level=lv).to_netcdf(cachefile)
@@ -153,9 +156,9 @@ def _split_sfc(savefile, var_name, extent):
                 os.path.join(CONFIG.get_cache_dir(),
                              'ERA5_DATA/{0:%Y%m%d%H%M}/hourly/{1}/{0:%Y%m%d%H%M}_{2}_{3}_{4}_{5}.nc'.format(dt_utc, var_name, extent[0], extent[1], extent[2], extent[3])))
             if os.path.exists(cachefile):
-                print('{} 存在 不重复拆分'.format(cachefile))
+                _log.info('{} 存在 不重复拆分'.format(cachefile))
             else:
-                print('{} 拆分...'.format(cachefile))
+                _log.info('{} 拆分...'.format(cachefile))
                 if not os.path.exists(os.path.dirname(cachefile)):
                     os.makedirs(os.path.dirname(cachefile))
                 data.sel(time=dt_utc).to_netcdf(cachefile)
@@ -172,7 +175,7 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
     '''
     dt_start_utc = dt_start - datetime.timedelta(hours=8)  # 世界时
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
-    print('----------------------era5_psl_download--------------------------------')
+    _log.info('----------------------era5_psl_download--------------------------------')
     savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'ERA5_DATA/manual_download')
     for var_name in var_names:
         # 按要素一次下载一个要素数据
@@ -198,7 +201,7 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v1
     '''
     dt_start_utc = dt_start - datetime.timedelta(hours=8)  # 世界时
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
-    print('----------------------era5_psl_download--------------------------------')
+    _log.info('----------------------era5_psl_download--------------------------------')
     savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'ERA5_DATA/manual_download')
     for var_name in var_names:
         # 按要素一次下载一个要素数据

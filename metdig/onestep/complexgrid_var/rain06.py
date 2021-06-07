@@ -7,6 +7,9 @@ from metdig.io import get_model_grid
 
 import metdig.utl as mdgstda
 
+import logging
+_log = logging.getLogger(__name__)
+
 
 def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, extent=(50, 150, 0, 65)):
     rain06 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -38,7 +41,7 @@ def read_rain06(data_source=None, init_time=None, fhour=None, data_name=None, ex
     if rain06 is not None:
         return rain06
 
-    print('cal _by_tpe')
+    _log.info('cal rain06 _by_tpe')
     rain06 = _by_tpe(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=extent)
     if rain06 is not None:
         return rain06

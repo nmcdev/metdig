@@ -15,7 +15,11 @@ from functools import wraps
 
 from scipy.ndimage.filters import minimum_filter, maximum_filter
 
+import logging
+_log = logging.getLogger(__name__)
+
 pkg_name = 'metdig.graphics'
+
 
 def kwargs_wrapper(func):
     '''
@@ -44,6 +48,7 @@ def kwargs_wrapper(func):
         return func(*args, **kwargs)
     return inner
 
+
 def read_micaps_17(fname, limit=None):
     """
     Read Micaps 17 type file (general scatter point)
@@ -65,7 +70,7 @@ def read_micaps_17(fname, limit=None):
             #txt = f.read().decode('GBK').replace('\n', ' ').split()
             txt = f.read().replace('\n', ' ').split()
     except IOError as err:
-        print("Micaps 17 file error: " + str(err))
+        _log.error("Micaps 17 file error: " + str(err))
         return None
 
     # head information
@@ -122,6 +127,7 @@ def add_logo_extra_in_axes(pos=[0.1, 0.1, .2, .4],
     ax.imshow(logo, alpha=1, zorder=0)
     ax.axis('off')
 
+
 '''
 弃用
 def plt_kwargs_lcn_set(cmap_def, norm_def, levels_def, **kwargs):
@@ -137,6 +143,7 @@ def plt_kwargs_lcn_set(cmap_def, norm_def, levels_def, **kwargs):
         norm = norm_def
     return cmap, norm, levels, kwargs
 '''
+
 
 @nb.jit()
 def img_trim(img):
@@ -194,56 +201,6 @@ def img_trim(img):
     new_img = img[tempr0:tempr1 + 1, tempc0:tempc1 + 1, :]
     return new_img
 
-'''
-# 弃用，该方法frombuff reshape 出错
-def get_imgbuf_from_fig(fig, dpi=200):
-    # define a function which returns an image as numpy array from figure
-    io_buf = io.BytesIO()
-    fig.savefig(io_buf, format='raw', dpi=dpi)  # save raw
-    io_buf.seek(0)
-
-
-    # raw to image array
-    img_arr = np.reshape(np.frombuffer(io_buf.getvalue(), dtype=np.uint8),
-                         newshape=(int(fig.bbox.bounds[3]), int(fig.bbox.bounds[2]), -1))
-    io_buf.close()
-
-    # import matplotlib
-    # print(matplotlib.get_backend())
-    # print(fig.bbox.bounds)
-    # print(fig.canvas.get_width_height())
-    # print(img_arr.shape)
-    # Qt5Agg
-    # (0.0, 0.0, 3600.0, 1800.0)
-    # (1800, 900)
-    # (1800, 3600, 4)
-
-    # TkAgg
-    # (0.0, 0.0, 1800.0, 900.0)
-    # (1800, 900)
-    # (900, 1800, 16)
-
-
-    # image 去除周围空白
-    print(img_arr.shape)
-    img_arr = img_trim(img_arr)
-
-    return img_arr
-
-def get_imgbuf_from_fig(fig):
-    # define a function which returns an image as numpy array from figure
-    # raw to image array
-    fig.canvas.draw()
-    pil_img = PIL.Image.frombytes('RGBA', fig.canvas.get_width_height(), fig.canvas.buffer_rgba().tobytes())
-    img_arr = np.array(pil_img)
-
-    # 去除周围空白
-    # print(img_arr.shape)
-    img_arr = img_trim(img_arr) 
-    
-    return img_arr
-'''
-
 
 def get_imgbuf_from_fig(fig, dpi=200):
     # define a function which returns an image as numpy array from figure
@@ -252,14 +209,15 @@ def get_imgbuf_from_fig(fig, dpi=200):
     fig.savefig(io_buf, format='png', dpi=dpi)  # save raw
     io_buf.seek(0)
 
-    pil_img =  PIL.Image.open(io_buf)
+    pil_img = PIL.Image.open(io_buf)
     img_arr = np.array(pil_img)
 
     # 去除周围空白
     # print(img_arr.shape)
-    img_arr = img_trim(img_arr) 
-    
+    img_arr = img_trim(img_arr)
+
     return img_arr
+
 
 def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_plt=False, is_return_figax=False, is_return_pngname=False):
     # 保存图片通用方法
@@ -295,6 +253,7 @@ def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_pl
 
     return ret
 
+
 @kwargs_wrapper
 def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal', pad=0, **kwargs):
     """[summary]
@@ -316,11 +275,11 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l, b - h * 0.05 - pad, w, h * 0.02])
-            orientation='horizontal'
+            orientation = 'horizontal'
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w + pad, b, 0.015, h])
-            orientation='vertical'
+            orientation = 'vertical'
         elif pos == 'lower center':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l+w/3., b - h * 0.05 + pad, w/3, h * 0.02])
@@ -333,26 +292,28 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
         elif pos == 'right center':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w + pad, b+h/3, 0.015, h/3])
-            orientation='vertical'
+            orientation = 'vertical'
         elif pos == 'right top':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w + pad, b+h*2/3, 0.015, h/3])
-            orientation='vertical'
+            orientation = 'vertical'
         elif pos == 'right bottom':
             l, b, w, h = ax.get_position().bounds
             cax = plt.axes([l + 0.01 + w + pad, b, 0.015, h/3])
-            orientation='vertical'
+            orientation = 'vertical'
 
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     cb.ax.tick_params(labelsize='x-large')
     cb.set_label(label, size=label_size)
     return cb
 
+
 def add_patchlegend(ax, labels, colors, **kwargs):
     myp = list(map(lambda c: patches.Patch(color=c, alpha=1), colors))
     ax.legend(handles=myp, labels=labels,  **kwargs)
 
-def extrema(mat,mode='wrap',window=50):
+
+def extrema(mat, mode='wrap', window=50):
     mn = minimum_filter(mat, size=window, mode=mode)
     mx = maximum_filter(mat, size=window, mode=mode)
     return np.nonzero(mat == mn), np.nonzero(mat == mx)

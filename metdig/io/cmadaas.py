@@ -15,8 +15,8 @@ from metdig.io.lib import utility as utl
 
 import metdig.utl as mdgstda
 
-from metdig.io.MDIException import CFGError
-from metdig.io.MDIException import NMCMetIOError
+import logging
+_log = logging.getLogger(__name__)
 
 
 def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, level=None,
@@ -37,10 +37,6 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     try:
         if level:
@@ -48,24 +44,26 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         else:
             level_type = 'surface'
         cmadaas_data_code = utl_cmadaas.model_cmadaas_data_code(data_name=data_name, var_name=var_name, level_type=level_type, fhour=fhour)
-        cmadaas_var_name = utl_cmadaas.model_cmadaas_var_name(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
-        cmadaas_level_type = utl_cmadaas.model_cmadaas_level_type(data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
-        cmadaas_level = utl_cmadaas.model_cmadaas_level(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code, level=level)
+        cmadaas_var_name = utl_cmadaas.model_cmadaas_var_name(
+            data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
+        cmadaas_level_type = utl_cmadaas.model_cmadaas_level_type(
+            data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
+        cmadaas_level = utl_cmadaas.model_cmadaas_level(level_type=level_type, var_name=var_name,
+                                                        data_name=data_name, data_code=cmadaas_data_code, level=level)
         cmadaas_units = utl_cmadaas.model_cmadaas_units(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code)
-        # print('cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, fhour={}'.format(
-        # cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, fhour))
+        _log.debug('cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, fhour={}'.format(cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, fhour))
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
-    timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8)) # 数据都是世界时，需要转换为北京时
+    timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
     data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                              init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
 
-    #建议这里修改为warning
-    # if data is None:
-        # raise NMCMetIOError('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, init_time={}, fhour={}'.format(
-        #     cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
+    # 建议这里修改为warning
+    if data is None:
+        raise Exception('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, init_time={}, fhour={}'.format(
+            cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
 
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
@@ -85,9 +83,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if 'data' in data.keys():
         np_data = np.squeeze(data['data'].values)
         np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], levels, [init_time], [fhour], data.coords['lat'].values, data.coords['lon'].values,
-                                              var_name=var_name, np_input_units=cmadaas_units,
-                                              data_source='cmadaas', level_type=level_type)
+        stda_data = mdgstda.numpy_to_gridstda(
+            np_data, [data_name],
+            levels, [init_time],
+            [fhour],
+            data.coords['lat'].values, data.coords['lon'].values, var_name=var_name, np_input_units=cmadaas_units, data_source='cmadaas',
+            level_type=level_type)
 
         return stda_data
     else:
@@ -112,10 +113,6 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     stda_data = []
     for fhour in fhours:
@@ -124,7 +121,7 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
 
     if stda_data:
         return xr.concat(stda_data, dim='dtime')
@@ -150,10 +147,6 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if levels is None:
         levels = [None]
@@ -164,7 +157,7 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
     if stda_data:
         return xr.concat(stda_data, dim='level')
     else:
@@ -189,10 +182,6 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        CFGError -- [数据路径配置错误]
-        NMCMetIOError -- [调用nmc_met_io从数据库中读取数据错误]
     '''
     if levels is None:
         levels = [None]
@@ -205,7 +194,7 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
-                print(e)
+                _log.info(str(e))
         if temp_data:
             temp_data = xr.concat(temp_data, dim='level')
             stda_data.append(temp_data)
@@ -255,28 +244,24 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        ValueError -- [description]
     '''
     # 从配置中获取相关信息
     try:
         cmadaas_data_code = utl_cmadaas.obs_cmadaas_data_code(data_name=data_name, var_name=var_name)
         cmadass_units = utl_cmadaas.obs_cmadaas_units(data_name=data_name, var_name=var_name)  # cmadass数据单位
         cmadaas_var_name = utl_cmadaas.obs_cmadaas_var_name(data_name=data_name, var_name=var_name)
-        # var_name = utl_cmadaas.obs_var_name(data_name=data_name)
         stda_attrs = mdgstda.get_stda_attrs(data_source='cmadaas', data_name=data_name, var_name=var_name)  # stda属性获取
-        # print('cmadaas_data_code={}, cmadaas_var_name={} '.format(cmadaas_data_code, cmadaas_var_name))
+        _log.debug('cmadaas_data_code={}, cmadaas_var_name={} '.format(cmadaas_data_code, cmadaas_var_name))
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
     # 读取数据
-    timestr = '{:%Y%m%d%H%M%S}'.format(obs_time - datetime.timedelta(hours=8)) # 数据都是世界时，需要转换为北京时
+    timestr = '{:%Y%m%d%H%M%S}'.format(obs_time - datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
     data = nmc_cmadaas_io.cmadaas_obs_by_time(timestr, data_code=cmadaas_data_code,
                                               elements="Station_Id_C,Station_Id_d,lat,lon,Datetime," + cmadaas_var_name)
 
     if data is None:
-        raise NMCMetIOError('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_var_name={}, obs_time={}'.format(
+        raise Exception('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_var_name={}, obs_time={}'.format(
             cmadaas_data_code, cmadaas_var_name, timestr))
 
     data = data.set_index('Station_Id_C')  # 设置ID列为索引列
@@ -293,8 +278,8 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
     levels = np.full((len(data)), 0)
 
     # 转成stda
-    if isinstance(data_name,list) is True:
-        data_name=str(data_name)
+    if isinstance(data_name, list) is True:
+        data_name = str(data_name)
     return mdgstda.numpy_to_stastda(
         data[cmadaas_var_name].values, [data_name], levels, data['Datetime'].values, 0, data.index,  data['lat'].values, data['lon'].values,
         np_input_units=cmadass_units, var_name=var_name, other_input={},
@@ -319,21 +304,18 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
 
     Returns:
         [stda] -- [stda格式数据]
-
-    Raises:
-        ValueError -- [description]
     '''
     datas = []
     attrs = {}
     for obs_time in obs_times:
         try:
-            data = get_obs_stations(obs_time, data_name, var_name=var_name, 
-                                id_selected=id_selected, extent=extent, x_percent=x_percent, y_percent=y_percent)
+            data = get_obs_stations(obs_time, data_name, var_name=var_name,
+                                    id_selected=id_selected, extent=extent, x_percent=x_percent, y_percent=y_percent)
             if data is not None and len(data) > 0:
                 attrs = data.attrs
                 datas.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
 
     if datas:
         df = pd.concat(datas, ignore_index=True)

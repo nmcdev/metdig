@@ -25,6 +25,8 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from matplotlib.colorbar import ColorbarBase
 
+import logging
+_log = logging.getLogger(__name__)
 
 def cmap_xmap(function, cmap, name=None):
     """
@@ -346,7 +348,7 @@ def cmap_from_geo_uoregon(
     ext = '.txt'
 
     url = urljoin(baseurl, cname+ext)
-    print(url)
+    _log.info(url)
 
     # process file directly from online source
     req = Request(url)

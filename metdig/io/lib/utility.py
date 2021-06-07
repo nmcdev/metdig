@@ -6,6 +6,9 @@ import xarray as xr
 import numpy as np
 import pandas as pd
 
+import logging
+_log = logging.getLogger(__name__)
+
 
 def model_filename(initTime, fhour, UTC=False):
     """
@@ -105,7 +108,8 @@ def sta_select_id(df, id_selected):
     try:
         data = df.loc[id_selected]
     except Exception as e:
-        # print(str(e) + '|| PAMR:obs_time={}, data_name={}, var_name={}, level={}'.format(obs_time, data_name, var_name, level))
+        _log.debug('id_selected failed: id={} is not in data!'.format(id_selected))
+        return None
         data = df.drop(index=df.index)
     return data
 

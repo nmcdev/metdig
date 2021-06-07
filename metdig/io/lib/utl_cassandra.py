@@ -41,8 +41,8 @@ def get_model_cfg(level_type=None, data_name=None, var_name=None):
                            (__model_cfg['level_type'] == level_type)].copy(deep=True).reset_index(drop=True)
 
     # 此处建议修改为warning
-    # if len(this_cfg) == 0:
-    #     raise Exception('can not get data_name={} level_type={} var_name={} in {}!'.format(data_name, level_type, var_name, __model_cfg_csv))
+    if len(this_cfg) == 0:
+        raise Exception('can not get data_name={} level_type={} var_name={} in {}!'.format(data_name, level_type, var_name, __model_cfg_csv))
 
     return this_cfg.to_dict('index')[0]
 

@@ -17,6 +17,9 @@ from concurrent import futures
 from IPython.display import Image, display
 from io import BytesIO
 
+import logging
+_log = logging.getLogger(__name__)
+
 
 def get_labels_dist(num):
     '''
@@ -61,13 +64,13 @@ def get_nearest_init_time(fhour, data_source='', data_name='', func=None, func_o
             tag = True
             break
         else:
-            print(func_args['init_time'], func_args['fhour'], data_name, 'find failed. next.')
+            _log.info(f'''{func_args['init_time']} {func_args['fhour']} {data_name} find failed. next.''')
     if tag == True:
         # 取到第一对init_time fhour
-        print(func_args['init_time'], func_args['fhour'], data_name, 'find success. end.')
+        _log.info(f'''{func_args['init_time']} {func_args['fhour']} {data_name} find success. end.''')
         return func_args['init_time']
     else:
-        print('can not get any data! init_time=[{:%Y%m%d%H}-{:%Y%m%d%H}] fhour=24'.format(sys_time, sys_time - datetime.timedelta(hours=23)))
+        raise Exception('can not get any data! init_time=[{:%Y%m%d%H}-{:%Y%m%d%H}] fhour=24'.format(sys_time, sys_time - datetime.timedelta(hours=23)))
         return None
 
     return None
@@ -94,7 +97,7 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=F
     if force_max_workers == False:
         use_sys_cpu = max(1, os.cpu_count() - 2)  # 可使用的cpu核心数为cpu核心数-2
         max_workers = min(max_workers, use_sys_cpu)  # 最大进程数
-    # print('cpu_count={}, use max_workers={}'.format(os.cpu_count(), max_workers))
+    _log.debug('cpu_count={}, use max_workers={}'.format(os.cpu_count(), max_workers))
 
     all_ret = []
 
@@ -111,7 +114,7 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=F
             if exp is None:
                 all_ret.append(task.result())
             else:
-                print(exp)
+                _log.debug(exp)
                 pass
     return all_ret
 
@@ -140,43 +143,6 @@ def save_animation(img_bufs, output_dir, gif_name, is_clean_plt=True):
     return gif_path
 
 
-'''
-def save_animation_bak(img_bufs, output_dir, gif_name):
-    # 
-    # 保存成gif
-    # 
-    if len(img_bufs) == 0:
-        return None
-        
-    gif_path = None
-    if output_dir:
-        gif_path = os.path.join(output_dir, gif_name)
-        print(gif_name)
-        # with imageio.get_writer(gif_path, mode='I', fps=1, loop=0) as writer:
-        #     for imgbuf in img_bufs:
-        #         writer.append_data(imgbuf)
-
-        import matplotlib.animation as animation
-        fig = plt.figure(figsize=(16, 9))
-        ax = fig.add_subplot(111)
-        ax.axis('off')
-        ims = []
-        for i, imgbuf in enumerate(img_bufs):
-            im = ax.imshow(imgbuf, animated=True)
-            if i == 0:
-                ax.imshow(imgbuf)  # show an initial one first
-            ims.append([im])
-        ani = animation.ArtistAnimation(fig, ims, interval=1000, repeat_delay=1000, repeat=True, blit=True)
-        print(gif_name)
-        ani.save(gif_path, writer='pillow')
-        # plt.show()
-
-        # plt.close(fig)
-
-    return gif_path
-'''
-
-
 def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=True):
     '''
     保存成tab，多图叠加
@@ -187,7 +153,6 @@ def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=Tru
     fig = plt.figure(figsize=tab_size)
     nrows, ncols = get_labels_dist(len(img_bufs))
     for i, imgbuf in enumerate(img_bufs):
-        # print(imgbuf.shape)
         ax = fig.add_subplot(nrows, ncols, i + 1)
         ax.axis('off')
         ax.imshow(imgbuf)

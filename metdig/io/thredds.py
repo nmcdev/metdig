@@ -15,7 +15,8 @@ from .lib import utility as utl
 
 from .lib import config as CONFIG
 
-from metdig.io.MDIException import CFGError
+import logging
+_log = logging.getLogger(__name__)
 
 
 def get_model_grid(init_time=None, data_name=None,  var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
@@ -51,7 +52,7 @@ def get_model_grid(init_time=None, data_name=None,  var_name=None, level=None, e
         thredds_level = utl_thredds.model_thredds_level(data_name=data_name, var_name=var_name, level_type=level_type, level=level)
         thredds_units = utl_thredds.model_thredds_units(data_name=data_name, level_type=level_type, var_name=var_name)
     except Exception as e:
-        raise CFGError(str(e))
+        raise Exception(str(e))
 
     thredds_path = utl.cfgpath_format(thredds_path, init_time_utc, thredds_var_name=thredds_var_name, ip=ip, port=port)
 
@@ -121,7 +122,7 @@ def get_model_grids(init_times=None, data_name=None, var_name=None, level=None, 
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
     if stda_data:
         return xr.concat(stda_data, dim='time')
     return None
@@ -153,7 +154,7 @@ def get_model_3D_grid(init_time=None, data_name=None, var_name=None, levels=None
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
-            print(str(e))
+            _log.info(str(e))
 
     if stda_data:
         return xr.concat(stda_data, dim='level')
@@ -192,7 +193,7 @@ def get_model_3D_grids(init_times=None, data_name=None, var_name=None, levels=No
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
-                # print(str(e))
+                _log.info(str(e))
                 continue
         if temp_data:
             temp_data = xr.concat(temp_data, dim='level')

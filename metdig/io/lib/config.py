@@ -15,6 +15,9 @@ from pathlib import Path
 import fnmatch
 import re
 
+import logging
+_log = logging.getLogger(__name__)
+
 
 def _get_config_dir():
     """
@@ -93,7 +96,7 @@ def get_era5cache_file(init_time, var_name, extent, level=None, find_area=True):
     if warn_era5tag:
         warn_era5tag = False
         warn_msg = '当前ERA5_DATA缓存目录为：{}， 请用户自行注意磁盘使用空间，必要时请手动清理或更改缓存目录！'.format(cache_dir)
-        print(warn_msg)
+        _log.info(warn_msg)
 
     if level:
         cache_dir = cache_dir / '{:%Y%m%d%H%M}/hourly/{}/{}'.format(init_time, var_name, level)
@@ -191,6 +194,7 @@ token = pk.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     with open(cfg_Path, 'w') as f:
         config.write(f)
 
+
 def init_metdig_cfg(THREDDS_IP=None, THREDDS_PORT=None, CACHE_DIR=None):
     cfg_Path = Path.home() / ".metdig" / "config.ini"
     if not os.path.exists(cfg_Path):
@@ -223,6 +227,7 @@ CACHE_DIR = ~
     with open(cfg_Path, 'w') as f:
         config.write(f)
 
+
 def init_cds_cfg(CDS_UID=None, CDS_AIP_KEY=None):
     cfg_Path = Path.home() / ".cdsapirc"
     if not os.path.exists(cfg_Path):
@@ -237,7 +242,7 @@ key: xxxxx:xxxx
 
     if not CDS_UID or not CDS_AIP_KEY:
         return
-    
+
     content = f'''
 url: https://cds.climate.copernicus.eu/api/v2
 key: {CDS_UID}:{CDS_AIP_KEY}

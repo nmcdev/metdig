@@ -112,9 +112,6 @@ def cal_ivt_singlelevel(spfh, wsp):
 
     iq = np.array(wsp_p) * np.array(spfh_p) / 9.8
     iq = iq * units('g/(cm*hPa*s)')
-    # print(iq.min(), iq.max())
-
-    # exit()
 
     iq = utl.quantity_to_stda_byreference('wvfl', iq, spfh)  # g/(cm*hPa*s)
 

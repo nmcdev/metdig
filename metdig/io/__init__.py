@@ -8,9 +8,11 @@ from . import era5
 from . import nmc_micaps_helper
 from . import thredds
 
-import metdig.io.MDIException as MDIException
 
 from metdig.io.lib import config
+
+import logging
+_log = logging.getLogger(__name__)
 
 
 def config_init(CMADaaS_DNS=None, CMADaaS_PORT=None, CMADaaS_USER_ID=None, CMADaaS_PASSWORD=None, CMADaaS_serviceNodeId=None,
@@ -74,7 +76,7 @@ def get_model_grid(data_source,  throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None
 
@@ -112,7 +114,7 @@ def get_model_grids(data_source, throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None
 
@@ -148,7 +150,7 @@ def get_model_3D_grid(data_source, throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None
 
@@ -188,7 +190,7 @@ def get_model_3D_grids(data_source, throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None
 
@@ -225,7 +227,7 @@ def get_model_points(data_source, throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None
 
@@ -256,7 +258,7 @@ def get_obs_stations(data_source, throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None
 
@@ -287,6 +289,6 @@ def get_obs_stations_multitime(data_source, throwexp=True, **kwargs):
         if throwexp == True:
             raise e
         else:
-            print(str(e))
+            _log.info(str(e))
             return None
     return None

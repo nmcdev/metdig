@@ -10,16 +10,22 @@ import metdig.utl.utl_stda_grid as utl_stda_grid
 
 import metdig.cal as mdgcal
 
+import logging
+_log = logging.getLogger(__name__)
+
 
 def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
-    theta = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='theta', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    theta = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                           var_name='theta', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return theta
 
 
 def _by_tmp_rh(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
-    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
-    rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rh', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
-        
+    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='tmp', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                        var_name='rh', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+
     if tmp is None or rh is None:
         return None
 
@@ -36,16 +42,17 @@ def read_theta(data_source=None, init_time=None, fhour=None, data_name=None, lev
     if data is not None:
         return data
 
-    print('cal _by_tmp_rh')
+    _log.info('cal theta _by_tmp_rh')
     data = _by_tmp_rh(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=level, extent=extent)
     if data is not None:
         return data
 
     raise Exception('Can not get any data!')
 
-def read_theta3d(levels,**read_theta_kwargs):
-    data=[]
+
+def read_theta3d(levels, **read_theta_kwargs):
+    data = []
     for ilevel in levels:
-        data.append(read_theta(level=ilevel,**read_theta_kwargs))
-    data=xr.concat(data,dim='level')
+        data.append(read_theta(level=ilevel, **read_theta_kwargs))
+    data = xr.concat(data, dim='level')
     return data
