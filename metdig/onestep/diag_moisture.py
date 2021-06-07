@@ -9,11 +9,7 @@ from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.spfh import read_spfh
 from metdig.onestep.complexgrid_var.wvfl import read_wvfl
 
-from metdig.products.diag_moisture import draw_hgt_uv_tcwv
-from metdig.products.diag_moisture import draw_hgt_uv_rh
-from metdig.products.diag_moisture import draw_hgt_uv_spfh
-from metdig.products.diag_moisture import draw_hgt_uv_wvfl
-
+from metdig.products import diag_moisture as draw_moisture
 
 @date_init('init_time')
 def hgt_uv_tcwv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -44,10 +40,11 @@ def hgt_uv_tcwv(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_tcwv(hgt, u, v, tcwv, map_extent=map_extent, **products_kwargs)
+        drawret = draw_moisture.draw_hgt_uv_tcwv(hgt, u, v, tcwv, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 
@@ -80,10 +77,11 @@ def hgt_uv_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_rh(hgt, u, v, rh, map_extent=map_extent, **products_kwargs)
+        drawret = draw_moisture.draw_hgt_uv_rh(hgt, u, v, rh, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 
@@ -116,10 +114,11 @@ def hgt_uv_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=map_extent, **products_kwargs)
+        drawret = draw_moisture.draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 
@@ -148,10 +147,11 @@ def hgt_uv_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=map_extent, **products_kwargs)
+        drawret = draw_moisture.draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 if __name__ == '__main__':
     import datetime

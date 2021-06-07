@@ -6,8 +6,6 @@
 import os
 import datetime
 import copy
-import imageio
-import matplotlib.pyplot as plt
 
 from metdig.hub.lib.utility import get_nearest_init_time
 
@@ -15,6 +13,8 @@ from metdig.hub.lib.utility import save_animation
 from metdig.hub.lib.utility import save_tab
 from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import mult_process
+from metdig.hub.lib.utility import get_onestep_ret_imgbufs
+from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
 
 def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='ecmwf',
@@ -70,26 +70,26 @@ def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='e
         else:
             func_args['data_source'] = data_source
             func_args['data_name'] = data_name
+        func_args['is_return_pngname'] = True
         func_args['is_return_imgbuf'] = True
         print(func_args['init_time'], func_args['fhour'], func_args['data_name'])
         func_args_all.append(func_args)
 
     # 多进程绘图
     all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
-    all_img_buf = [ret['img_buf'] for ret in all_ret]
-    all_png_name = [ret['png_name'] for ret in all_ret]
+    all_img_bufs = get_onestep_ret_imgbufs(all_ret)
+    all_png_names = get_onestep_ret_pngnames(all_ret)
 
     # 输出
+    ret = None
     if show == 'list':
-        all_pic = save_list(all_img_buf, output_dir, all_png_name, list_size=list_size, is_clean_plt=is_clean_plt)
-        return all_pic
+        ret = save_list(all_img_bufs, output_dir, all_png_names, list_size=list_size, is_clean_plt=is_clean_plt)
     elif show == 'animation':
         gif_name = 'modelver_vs_anl_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.gif'.format(func.__name__, data_name, init_time, ninit, init_interval)
-        gif_path = save_animation(all_img_buf, output_dir, gif_name, is_clean_plt=is_clean_plt)
-        return gif_path
+        ret = save_animation(all_img_bufs, output_dir, gif_name, is_clean_plt=is_clean_plt)
     elif show == 'tab':
         png_name = 'modelver_vs_anl_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.png'.format(func.__name__, data_name, init_time, ninit, init_interval)
-        png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
-        return png_path
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
 
-    return None
+    if ret:
+        return ret

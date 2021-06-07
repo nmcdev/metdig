@@ -6,7 +6,8 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.veri_synop import draw_compare_gh_uv,draw_veri_heatwave
+from metdig.products import veri_synop as draw_veri_synop
+
 import metdig.utl.utl_stda_grid as utl_stda_grid
 import datetime
 import numpy as np
@@ -51,12 +52,15 @@ def compare_gh_uv(data_source='cassandra',
         v_fcst = mask_terrian(psfc_fcst, uv_lev, v_fcst)
 
     if is_draw:
-        drawret = draw_compare_gh_uv(
+        drawret = draw_veri_synop.draw_compare_gh_uv(
                     hgt_ana, u_ana, v_ana,
                     hgt_fcst, u_fcst, v_fcst,
                     map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
+    if ret:
+        return ret
+        
 @date_init('obs_time')
 def veri_heatwave(data_source='cassandra',
                 obs_time=None,anamodel='grapes_gfs',
@@ -94,10 +98,13 @@ def veri_heatwave(data_source='cassandra',
                     'tmx24_2m_obs': tmx24_2m_obs}
         ret.update({'data': dataret})
     if is_draw:
-        drawret = draw_veri_heatwave(
+        drawret = draw_veri_synop.draw_veri_heatwave(
                     tmx24_2m_fcst,tmx24_2m_obs,
                     map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
+
+    if ret:
+        return ret
 
 if __name__ == '__main__':
     import datetime

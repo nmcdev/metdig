@@ -13,11 +13,7 @@ from metdig.onestep.complexgrid_var.rain06 import read_rain06
 from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv
 from metdig.onestep.complexgrid_var.wsp import read_wsp
 
-from metdig.products.diag_synoptic import draw_hgt_uv_prmsl
-from metdig.products.diag_synoptic import draw_hgt_uv_rain06
-from metdig.products.diag_synoptic import draw_hgt_uv_wsp
-from metdig.products.diag_synoptic import draw_pv_div_uv
-from metdig.products.diag_synoptic import draw_syn_composite
+from metdig.products import diag_synoptic as draw_synoptic
 
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
@@ -63,13 +59,14 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     
     # plot
     if is_draw:
-        drawret = draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv, 
+        drawret = draw_synoptic.draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv, 
                                     map_extent=map_extent, add_city=add_city,add_background=add_background,
                                     **products_kwargs)
 
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -98,11 +95,12 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=map_extent, **products_kwargs)
+        drawret = draw_synoptic.draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=map_extent, **products_kwargs)
 
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -133,10 +131,11 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_rain06(hgt, u, v, rain06, map_extent=map_extent, **products_kwargs)
+        drawret = draw_synoptic.draw_hgt_uv_rain06(hgt, u, v, rain06, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -170,10 +169,11 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_wsp(hgt, u, v, wsp, map_extent=map_extent, **products_kwargs)
+        drawret = draw_synoptic.draw_hgt_uv_wsp(hgt, u, v, wsp, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 
@@ -207,7 +207,8 @@ def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     
     # plot
     if is_draw:
-        drawret = draw_pv_div_uv(pv, div, u, v, map_extent=map_extent, **products_kwargs)
+        drawret = draw_synoptic.draw_pv_div_uv(pv, div, u, v, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret

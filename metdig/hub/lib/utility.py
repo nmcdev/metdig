@@ -206,12 +206,12 @@ def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=Tru
     return png_path
 
 
-def save_list(img_bufs, output_dir, png_names, list_size=(16, 9), is_clean_plt=True):
+def save_list(img_bufs, output_dir, png_paths, list_size=(16, 9), is_clean_plt=True):
     '''
     保存成list，多图分开绘制
     '''
     png_path_list = []
-    for imgbuf, png_name in zip(img_bufs, png_names):
+    for imgbuf, png_path in zip(img_bufs, png_paths):
         fig = plt.figure(figsize=list_size)
         ax = fig.add_subplot(111)
         ax.axis('off')
@@ -219,9 +219,28 @@ def save_list(img_bufs, output_dir, png_names, list_size=(16, 9), is_clean_plt=T
         plt.tight_layout()  # 调整整体空白
         plt.subplots_adjust(wspace=0.02, hspace=0.02)  # 调整子图间距# 输出
         if output_dir:
-            png_path = os.path.join(output_dir, png_name)
-            png_path_list.append(png_path)
-            plt.savefig(png_path, dpi=200, bbox_inches='tight')
+            outpng = os.path.join(output_dir, png_path)
+            png_path_list.append(outpng)
+            plt.savefig(outpng, dpi=200, bbox_inches='tight')
         if is_clean_plt:
             plt.close(fig)
     return png_path_list
+
+
+def get_onestep_ret_imgbufs(all_ret):
+    imgbufs = []
+    for ret in all_ret:
+        if ret is None:
+            continue 
+        if 'img_buf' in ret.keys():
+            imgbufs.append(ret['img_buf'])
+    return imgbufs
+
+def get_onestep_ret_pngnames(all_ret):
+    pics = []
+    for ret in all_ret:
+        if ret is None:
+            continue 
+        if 'png_name' in ret.keys():
+            pics.append(ret['png_name'])
+    return pics

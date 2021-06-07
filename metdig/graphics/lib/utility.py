@@ -261,24 +261,25 @@ def get_imgbuf_from_fig(fig, dpi=200):
     
     return img_arr
 
-def save(fig, ax, png_name, output_dir, is_return_imgbuf=False, is_clean_plt=True, is_return_figax=False):
+def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_plt=False, is_return_figax=False, is_return_pngname=False):
     # 保存图片通用方法
     ret = {
-        'png_name': None,
-        'output_dir': None,
-        'pic_path': None,
-        'img_buf': None,
-        'fig': None,
-        'ax': None,
+        # 'png_name': None,
+        # 'output_dir': None,
+        # 'pic_path': None,
+        # 'img_buf': None,
+        # 'fig': None,
+        # 'ax': None,
     }
+    if is_return_pngname:
+        ret['png_name'] = png_name
 
     # save
-    ret['png_name'] = png_name
-    ret['output_dir'] = output_dir
     if output_dir:
         if(not os.path.exists(output_dir)):
             os.makedirs(output_dir)
         out_png = os.path.join(output_dir, png_name)
+        ret['output_dir'] = output_dir
         ret['pic_path'] = out_png
         plt.savefig(out_png, dpi=200, bbox_inches='tight')
 

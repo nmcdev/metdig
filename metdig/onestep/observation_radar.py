@@ -11,7 +11,7 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.observation_radar import draw_cref_sounding_hgt
+from metdig.products import observation_radar as draw_obsradar
 
 import metdig.cal as mdgcal
 
@@ -49,7 +49,8 @@ def cref_sounding_hgt(cref_obs_time=None,
 
     # plot
     if is_draw:
-        drawret = draw_cref_sounding_hgt(cref, hgt, sounding_u, sounding_v, map_extent=map_extent, **products_kwargs)
+        drawret = draw_obsradar.draw_cref_sounding_hgt(cref, hgt, sounding_u, sounding_v, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret

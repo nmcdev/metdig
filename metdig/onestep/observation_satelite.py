@@ -11,7 +11,7 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.observation_satelite import draw_fy4air_sounding_hgt
+from metdig.products import observation_satelite as draw_obssate
 
 import metdig.cal as mdgcal
 
@@ -46,7 +46,8 @@ def fy4air_sounding_hgt(ir_obs_time=None, ir_channel=9,
 
     # plot
     if is_draw:
-        drawret = draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=map_extent, **products_kwargs)
+        drawret = draw_obssate.draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret

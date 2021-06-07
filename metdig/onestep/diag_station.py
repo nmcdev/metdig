@@ -8,8 +8,7 @@ from metdig.io import get_model_points
 
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.observation_station import draw_uv_tmp_rh_rain
-from metdig.products.observation_station import draw_SkewT
+from metdig.products import diag_station as draw_station
 
 import metdig.cal as mdgcal
 
@@ -34,10 +33,11 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain03, wsp, **products_kwargs)
+        drawret = draw_station.draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain03, wsp, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, 
@@ -62,10 +62,11 @@ def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
 
 
     if is_draw:
-        drawret = draw_SkewT(pres, tmp, td, u, v, **products_kwargs)
+        drawret = draw_station.draw_SkewT(pres, tmp, td, u, v, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 '''

@@ -9,8 +9,7 @@ from metdig.onestep.lib.utility import date_init
 
 from metdig.onestep.complexgrid_var.theta import read_theta
 
-
-from metdig.products.diag_thermal import *
+from metdig.products import diag_thermal as draw_thermal
 
 @date_init('init_time')
 def hgt_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -45,10 +44,11 @@ def hgt_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_theta(hgt, u, v, theta, map_extent=map_extent, **products_kwargs)
+        drawret = draw_thermal.draw_hgt_uv_theta(hgt, u, v, theta, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -80,10 +80,11 @@ def hgt_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_tmp(hgt, u, v, tmp, map_extent=map_extent, **products_kwargs)
+        drawret = draw_thermal.draw_hgt_uv_tmp(hgt, u, v, tmp, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -118,7 +119,8 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=map_extent, **products_kwargs)
+        drawret = draw_thermal.draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret

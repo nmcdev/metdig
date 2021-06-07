@@ -5,13 +5,13 @@
 '''
 import os
 import datetime
-import imageio
 import copy
-import matplotlib.pyplot as plt
 
 from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import save_animation,save_tab
 from metdig.hub.lib.utility import mult_process
+from metdig.hub.lib.utility import get_onestep_ret_imgbufs
+from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
 
 
@@ -45,28 +45,30 @@ def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmw
         func_args['init_time'] = init_time
         func_args['fhour'] = fhour
         func_args['data_name'] = data_name
+        func_args['is_return_pngname'] = True
         func_args['is_return_imgbuf'] = True
         func_args_all.append(func_args)
 
     # 多进程绘图
     all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
-    all_img_buf = [ret['img_buf'] for ret in all_ret]
-    all_png_name= [ret['png_name'] for ret in all_ret]
+    all_img_bufs = get_onestep_ret_imgbufs(all_ret)
+    all_png_names = get_onestep_ret_pngnames(all_ret)
 
+
+    # 输出
+    ret = None
     if show == 'list':
-        all_pic = save_list(all_img_buf, output_dir, all_png_name, list_size=list_size, is_clean_plt=is_clean_plt)
-        return all_pic
+        ret = save_list(all_img_bufs, output_dir, all_png_names, list_size=list_size, is_clean_plt=is_clean_plt)
     elif show == 'animation':
         gif_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.gif'.format(func.__name__, data_name, init_time, fhours[0], fhours[-1])
-        gif_path = save_animation(all_img_buf, output_dir, gif_name, is_clean_plt=is_clean_plt)
-        return gif_path
+        ret = save_animation(all_img_bufs, output_dir, gif_name, is_clean_plt=is_clean_plt)
 
     elif show == 'tab':
         png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.png'.format(func.__name__, 'models', init_time, fhours[0], fhours[-1])
-        png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
-        return png_path
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
         
-    return None
+    if ret:
+        return ret
 
 
 def analysis_evolution(init_time=None, data_name='era5',data_source='cds',
@@ -100,25 +102,26 @@ def analysis_evolution(init_time=None, data_name='era5',data_source='cds',
         func_args['fhour'] = 0
         func_args['data_name'] = data_name
         func_args['data_source'] = data_source
+        func_args['is_return_pngname'] = True
         func_args['is_return_imgbuf'] = True
         func_args_all.append(func_args)
 
     # 多进程绘图
     all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
-    all_img_buf = [ret['img_buf'] for ret in all_ret]
-    all_png_name= [ret['png_name'] for ret in all_ret]
+    all_img_bufs = get_onestep_ret_imgbufs(all_ret)
+    all_png_names = get_onestep_ret_pngnames(all_ret)
 
+
+    ret = None
     if show == 'list':
-        all_pic = save_list(all_img_buf, output_dir, all_png_name, list_size=list_size, is_clean_plt=is_clean_plt)
-        return all_pic
+        ret = save_list(all_img_bufs, output_dir, all_png_names, list_size=list_size, is_clean_plt=is_clean_plt)
     elif show == 'animation':
         gif_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:%Y%m%d%H}.gif'.format(func.__name__, data_name, init_time[0], init_time[-1])
-        gif_path = save_animation(all_img_buf, output_dir, gif_name, is_clean_plt=is_clean_plt)
-        return gif_path
+        ret = save_animation(all_img_bufs, output_dir, gif_name, is_clean_plt=is_clean_plt)
 
     elif show == 'tab':
         png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:%Y%m%d%H}.png'.format(func.__name__, 'models', init_time[0], init_time[-1])
-        png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
-        return png_path
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
         
-    return None
+    if ret:
+        return ret

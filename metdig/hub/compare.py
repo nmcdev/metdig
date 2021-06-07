@@ -6,12 +6,12 @@
 import os
 import copy
 import datetime
-import imageio
-import matplotlib.pyplot as plt
 
 from metdig.hub.lib.utility import save_tab
 from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import mult_process
+from metdig.hub.lib.utility import get_onestep_ret_imgbufs
+from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
 
 def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 'ncep_gfs', 'grapes_3km'],
@@ -43,19 +43,22 @@ def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 
         func_args['fhour'] = fhour
         func_args['data_name'] = data_name
         func_args['is_return_imgbuf'] = True
+        func_args['is_return_pngname'] = True
         func_args_all.append(func_args)
 
     # 多进程绘图
     all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
-    all_img_buf = [ret['img_buf'] for ret in all_ret]
-    all_png_name = [ret['png_name'] for ret in all_ret]
+    all_img_bufs = get_onestep_ret_imgbufs(all_ret)
+    all_png_names = get_onestep_ret_pngnames(all_ret)
 
+
+    # 输出
+    ret = None
     if show == 'list':
-        all_pic = save_list(all_img_buf, output_dir, all_png_name, list_size=list_size, is_clean_plt=is_clean_plt)
-        return all_pic
+        ret = save_list(all_img_bufs, output_dir, all_png_names, list_size=list_size, is_clean_plt=is_clean_plt)
     elif show == 'tab':
         png_name = 'compare_{}_{}_{:%Y%m%d%H}_{:03d}.png'.format(func.__name__, 'models', init_time, fhour)
-        png_path = save_tab(all_img_buf, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
-        return png_path
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
 
-    return None
+    if ret:
+        return ret

@@ -17,16 +17,7 @@ from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv_4d
 from metdig.onestep.complexgrid_var.spfh import read_spfh_4D,read_spfh_3D
 from metdig.onestep.complexgrid_var.theta import read_theta3d
 
-from metdig.products.diag_crossection import draw_wind_tmp_rh
-from metdig.products.diag_crossection import draw_wind_theta_absv
-from metdig.products.diag_crossection import draw_wind_theta_rh
-from metdig.products.diag_crossection import draw_wind_theta_spfh
-from metdig.products.diag_crossection import draw_time_rh_uv_tmp
-from metdig.products.diag_crossection import draw_time_rh_uv_theta
-from metdig.products.diag_crossection import draw_wind_theta_mpv
-from metdig.products.diag_crossection import draw_wind_vortadv_tmp
-from metdig.products.diag_crossection import draw_wind_tmpadv_tmp, draw_time_div_vort_rh_uv, draw_time_div_vort_spfh_uv, draw_time_wind_vortadv_tmp, draw_time_wind_tmpadv_tmp, draw_wind_w_tmpadv_tmp,draw_time_wind_qcld_qice_tmp
-from metdig.products import diag_crossection
+from metdig.products import diag_crossection as draw_cross
 
 
 import metdig.cal as mdgcal
@@ -66,9 +57,10 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='grapes_gfs', init
         dataret = {'u': u, 'v': v, 'qsn' : qsn, 'qcld':qcld,'tmp': tmp}
         ret.update({'data': dataret})
     if is_draw:
-        drawret = diag_crossection.draw_time_wind_qcld_qsn_tmp(qcld,qsn, tmp, u, v, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_wind_qcld_qsn_tmp(qcld,qsn, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time', method=date_init.special_series_set)
@@ -105,9 +97,10 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='grapes_gfs', ini
         dataret = {'u': u, 'v': v, 'qice' : qice, 'qcld':qcld,'tmp': tmp}
         ret.update({'data': dataret})
     if is_draw:
-        drawret = draw_time_wind_qcld_qice_tmp(qcld,qice, tmp, u, v, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_wind_qcld_qice_tmp(qcld,qice, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -164,14 +157,15 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
                                        lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -199,10 +193,11 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
     terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)
     terrain.attrs['var_units'] = ''
     if is_draw:
-        drawret = draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -230,10 +225,11 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)
     terrain.attrs['var_units'] = ''
     if is_draw:
-        drawret = draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time', method=date_init.special_series_set)
@@ -266,9 +262,10 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv': tmpadv}
         ret.update({'data': dataret})
     if is_draw:
-        drawret = draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -311,13 +308,14 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
                                        lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -368,13 +366,14 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w*ratio, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w*ratio, cross_terrain, hgt,
                                          st_point=st_point, ed_point=ed_point,
                                          lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                          map_extent=map_extent, h_pos=h_pos,
                                          **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 if __name__ == '__main__':
     wind_w_tmpadv_tmp(init_time='2020111708',st_point=[20, 117.5], ed_point=[50, 117.6],
@@ -407,9 +406,10 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'vortadv': vortadv}
         ret.update({'data': dataret})
     if is_draw:
-        drawret = draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -453,13 +453,14 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                                         st_point=st_point, ed_point=ed_point,
                                         lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                         map_extent=map_extent, h_pos=h_pos,
                                         **products_kwargs)
         ret.update(drawret)
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -500,14 +501,15 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
-        drawret = draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                       st_point=st_point, ed_point=ed_point,
                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                       map_extent=map_extent, h_pos=h_pos,
                                       **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -560,14 +562,15 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
-        drawret = draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
                                        lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -616,14 +619,15 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
-        drawret = draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                      st_point=st_point, ed_point=ed_point,
                                      lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                      map_extent=map_extent, h_pos=h_pos,
                                      **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -675,14 +679,15 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
-        drawret = draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
                                        lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -730,14 +735,15 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     cross_rh = cross_rh.where(cross_rh < 100, 100)  # 大于100的赋值成100
 
     if is_draw:
-        drawret = draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n, cross_terrain, hgt,
                                    st_point=st_point, ed_point=ed_point,
                                    lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                    map_extent=map_extent, h_pos=h_pos,
                                    **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time', method=date_init.special_series_set)
@@ -766,10 +772,11 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
     theta = mdgcal.equivalent_potential_temperature(pressure, tmp, td)
 
     if is_draw:
-        drawret = draw_time_rh_uv_theta(rh, u, v, theta, **products_kwargs)
+        drawret = draw_cross.draw_time_rh_uv_theta(rh, u, v, theta, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time', method=date_init.special_series_set)
@@ -803,7 +810,8 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 
     if is_draw:
-        drawret = draw_time_rh_uv_tmp(rh, u, v, tmp, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_rh_uv_tmp(rh, u, v, tmp, terrain, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret

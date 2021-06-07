@@ -7,10 +7,12 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.diag_dynamic import draw_hgt_uv_vvel, draw_hgt_uv_div, draw_hgt_uv_vortadv, draw_uv_fg_thta
 from metdig.onestep.complexgrid_var.div_uv import read_div_uv
 from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv
 from metdig.onestep.complexgrid_var.theta import read_theta
+
+from metdig.products import diag_dynamic as draw_dynamic
+
 import metdig.cal as mdgcal
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
@@ -47,10 +49,11 @@ def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_vvel(hgt, u, v, vvel, map_extent=map_extent, **products_kwargs)
+        drawret = draw_dynamic.draw_hgt_uv_vvel(hgt, u, v, vvel, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -85,10 +88,11 @@ def hgt_uv_div(data_source='cassandra', data_name='grapes_gfs', init_time=None, 
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_div(hgt, u, v, div, map_extent=map_extent, **products_kwargs)
+        drawret = draw_dynamic.draw_hgt_uv_div(hgt, u, v, div, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -121,10 +125,11 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     # plot
     if is_draw:
-        drawret = draw_hgt_uv_vortadv(hgt, u, v, vortadv, map_extent=map_extent, **products_kwargs)
+        drawret = draw_dynamic.draw_hgt_uv_vortadv(hgt, u, v, vortadv, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -157,8 +162,9 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     # plot
     if is_draw:
-        drawret = draw_uv_fg_thta(u, v, thta, fg, map_extent=map_extent, **products_kwargs)
+        drawret = draw_dynamic.draw_uv_fg_thta(u, v, thta, fg, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 

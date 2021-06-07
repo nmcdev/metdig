@@ -9,9 +9,7 @@ from metdig.io.cassandra import get_obs_stations_multitime
 
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.observation_station import draw_uv_tmp_rh_rain
-from metdig.products.observation_station import draw_obs_uv_tmp_rh_rain
-from metdig.products.observation_station import draw_SkewT
+from metdig.products import observation_station as draw_obsstation
 
 import metdig.cal as mdgcal
 import metdig.utl as mdgstda
@@ -37,10 +35,11 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain03, wsp, **products_kwargs)
+        drawret = draw_obsstation.draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain03, wsp, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('obs_times', method=date_init.series_1_36_set)
 def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='national', obs_times=None,id_selected=54511,
@@ -61,10 +60,11 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='national', obs_times=
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain01, wsp, **products_kwargs)
+        drawret = draw_obsstation.draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain01, wsp, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 if __name__ == '__main__':
     # obs_uv_tmp_rh_rain()
@@ -95,10 +95,11 @@ def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
 
 
     if is_draw:
-        drawret = draw_SkewT(pres, tmp, td, u, v, **products_kwargs)
+        drawret = draw_obsstation.draw_SkewT(pres, tmp, td, u, v, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 '''

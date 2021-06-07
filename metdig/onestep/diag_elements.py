@@ -9,10 +9,7 @@ from metdig.io import get_model_grids
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.diag_elements import draw_tmp
-from metdig.products.diag_elements import draw_mslp_gust
-from metdig.products.diag_elements import draw_dt2m
-from metdig.products.diag_elements import draw_mslp_gust_uv10m
+from metdig.products import diag_elements as draw_elements
 
 import metdig.cal as mdgcal
 
@@ -46,10 +43,11 @@ def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_tmp(tmx24_2m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_tmp(tmx24_2m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def t2m_mn24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fhour=24, area='全国',
@@ -81,10 +79,11 @@ def t2m_mn24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_tmp(tmn24_2m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_tmp(tmn24_2m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -115,10 +114,11 @@ def mslp_gust10m(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     prmsl = mdgcal.gaussian_filter(prmsl, 5)
 
     if is_draw:
-        drawret = draw_mslp_gust(gust10m, prmsl, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_mslp_gust(gust10m, prmsl, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 @date_init('init_time')
 def mslp_gust10m_uv10m(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, t_gap=3, area='全国',
@@ -152,10 +152,11 @@ def mslp_gust10m_uv10m(data_source='cassandra', data_name='ecmwf', init_time=Non
     prmsl = mdgcal.gaussian_filter(prmsl, 5)
     
     if is_draw:
-        drawret = draw_mslp_gust_uv10m(gust10m, prmsl, u10m, v10m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_mslp_gust_uv10m(gust10m, prmsl, u10m, v10m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
     
 
 if __name__=='__main__':
@@ -209,10 +210,11 @@ def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_dt2m(dtmx_2m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_dt2m(dtmx_2m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -263,10 +265,11 @@ def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_dt2m(dtmn_2m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_dt2m(dtmn_2m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -306,7 +309,8 @@ def dt2m_mean24(data_source='cassandra', data_name='grapes_gfs', init_time=None,
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_dt2m(dtmean_2m, map_extent=map_extent, **products_kwargs)
+        drawret = draw_elements.draw_dt2m(dtmean_2m, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret

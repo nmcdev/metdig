@@ -10,10 +10,7 @@ from metdig.io import get_model_grids
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products.diag_qpf import draw_hgt_rain
-from metdig.products.diag_qpf import draw_mslp_rain_snow
-# from metdig.products.diag_qpf import draw_cumulated_precip
-# from metdig.products.diag_qpf import draw_rain_evo
+from metdig.products import diag_qpf as draw_qpf
 
 import metdig.cal as mdgcal
 
@@ -40,10 +37,11 @@ def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=2
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_hgt_rain(hgt, rain, map_extent=map_extent, **products_kwargs)
+        drawret = draw_qpf.draw_hgt_rain(hgt, rain, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 @date_init('init_time')
@@ -75,10 +73,11 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
     prmsl = mdgcal.gaussian_filter(prmsl, 5)
     
     if is_draw:
-        drawret = draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=map_extent, **products_kwargs)
+        drawret = draw_qpf.draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    return ret
+    if ret:
+        return ret
 
 
 '''
@@ -97,9 +96,9 @@ def cumulated_precip(data_source='cassandra', data_name='ecmwf', init_time=None,
     rain.attrs['var_cn_name'] = ''
     rain.attrs['valid_time'] = ''
     
-    # ret = draw_cumulated_precip(rain, map_extent=map_extent, **products_kwargs)
-
-    # return ret
+    # ret = draw_qpf.draw_cumulated_precip(rain, map_extent=map_extent, **products_kwargs)
+    # if ret:
+        # return ret
 
 def rain_evo(data_source='cassandra', data_name='ecmwf', init_time=None, t_gap=6, t_range=[6, 36], fcs_lvl=4, area='全国', **products_kwargs):
 
@@ -109,8 +108,9 @@ def rain_evo(data_source='cassandra', data_name='ecmwf', init_time=None, t_gap=6
     rain = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                            var_name='rain{:02d}'.format(t_gap), extent=map_extent)
     
-    ret = draw_rain_evo(rain, map_extent=map_extent, **products_kwargs)
+    ret = draw_qpf.draw_rain_evo(rain, map_extent=map_extent, **products_kwargs)
 
-    return ret
+    if ret:
+        return ret
 
 '''
