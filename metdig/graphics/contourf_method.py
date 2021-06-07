@@ -61,6 +61,22 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
+def heatwave_contourf(ax, stda, xdim='lon', ydim='lat', 
+                      add_colorbar=True,
+                      levels=[33,35,37,40,50], cmap='YlOrBr', extend='max', 
+                      transform=ccrs.PlateCarree(), alpha=0.5, colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) 
+
+    cmap,norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+
+    img = ax.contourf(x, y, z,levels=levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=levels, label='Temperature ($^\circ$C)', extendrect=False, **colorbar_kwargs)
+
+@kwargs_wrapper
 def qcld_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
                     levels=np.arange(0.05,0.51,0.05), cmap='Greens', extend='max',
