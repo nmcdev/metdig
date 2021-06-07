@@ -12,8 +12,14 @@ from metpy.units import units as mpunits
 import metpy.interpolate as mpinterp
 from metpy.plots.mapping import CFProjection
 
-from .lib import utility  as utl
+from .lib import utility as utl
 import metdig.utl as mdgstda
+
+
+__all__ = [
+    'cross_section',
+    'cross_section_components'
+]
 
 
 def cross_section(data, start, end, steps=101, interp_type='linear'):
@@ -37,20 +43,20 @@ def cross_section(data, start, end, steps=101, interp_type='linear'):
     '''
 
     # data.coords['crs'] = CFProjection({'grid_mapping_name': 'latitude_longitude'})
-    data=data.metpy.assign_crs(grid_mapping_name='latitude_longitude') #metpy 1.0
+    data = data.metpy.assign_crs(grid_mapping_name='latitude_longitude')  # metpy 1.0
 
-    cross_data = mpinterp.cross_section(data, start, end, steps=steps, interp_type=interp_type)  
+    cross_data = mpinterp.cross_section(data, start, end, steps=steps, interp_type=interp_type)
 
     # to_stda
-    np_cross = cross_data.values # [member, level, time, dtime, index]
-    np_cross = np_cross[:, :, :, :, np.newaxis, :] # 增加一维lat，然后将index转换成lon
+    np_cross = cross_data.values  # [member, level, time, dtime, index]
+    np_cross = np_cross[:, :, :, :, np.newaxis, :]  # 增加一维lat，然后将index转换成lon
     cross_stda = mdgstda.numpy_to_gridstda(np_cross,
-                                                 cross_data['member'].values,
-                                                 cross_data['level'].values,
-                                                 cross_data['time'].values,
-                                                 cross_data['dtime'].values,
-                                                 [9999],
-                                                 cross_data['lon'].values)
+                                           cross_data['member'].values,
+                                           cross_data['level'].values,
+                                           cross_data['time'].values,
+                                           cross_data['dtime'].values,
+                                           [9999],
+                                           cross_data['lon'].values)
     cross_stda.attrs = cross_data.attrs
 
     cross_stda.coords['crs'] = CFProjection({'grid_mapping_name': 'latitude_longitude'})
@@ -95,8 +101,8 @@ def cross_section_components(cross_x, cross_y):
     data_y = data_y.rename({'lon': 'unknow_lon', 'lat': 'unknow_lat'})
     data_y = data_y.rename({'lon_cross': 'lon', 'lat_cross': 'lat'})
 
-    data_x = data_x.metpy.assign_crs(grid_mapping_name='latitude_longitude') # metpy 1.0
-    data_y = data_y.metpy.assign_crs(grid_mapping_name='latitude_longitude') # metpy 1.0
+    data_x = data_x.metpy.assign_crs(grid_mapping_name='latitude_longitude')  # metpy 1.0
+    data_y = data_y.metpy.assign_crs(grid_mapping_name='latitude_longitude')  # metpy 1.0
     cross_t, cross_n = mpcalc.cross_section_components(data_x, data_y, index='index')
 
     # 计算结束后转换为stda维度
@@ -104,14 +110,14 @@ def cross_section_components(cross_x, cross_y):
     cross_t = cross_t.rename({'unknow_lon': 'lon', 'unknow_lat': 'lat'})
     cross_t = cross_t.swap_dims({'index': 'lon'})
     cross_t.attrs = cross_x.attrs
-    cross_t.attrs['var_name']='t_components'
-    cross_t.attrs['var_cn_name']='切向分量'
+    cross_t.attrs['var_name'] = 't_components'
+    cross_t.attrs['var_cn_name'] = '切向分量'
 
     cross_n = cross_n.rename({'lon': 'lon_cross', 'lat': 'lat_cross'})
     cross_n = cross_n.rename({'unknow_lon': 'lon', 'unknow_lat': 'lat'})
     cross_n = cross_n.swap_dims({'index': 'lon'})
     cross_n.attrs = cross_y.attrs
-    cross_n.attrs['var_name']='n_components'
-    cross_n.attrs['var_cn_name']='法向分量'
+    cross_n.attrs['var_name'] = 'n_components'
+    cross_n.attrs['var_cn_name'] = '法向分量'
 
     return cross_t, cross_n

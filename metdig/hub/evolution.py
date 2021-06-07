@@ -13,6 +13,10 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+__all__ = [
+    'model_evolution',
+    'analysis_evolution'
+]
 
 
 def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmwf',

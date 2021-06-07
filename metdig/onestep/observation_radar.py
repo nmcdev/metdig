@@ -15,6 +15,10 @@ from metdig.products import observation_radar as draw_obsradar
 
 import metdig.cal as mdgcal
 
+__all__ = [
+    'cref_sounding_hgt',
+]
+
 
 def cref_sounding_hgt(cref_obs_time=None,
                       sounding_obs_time=None,

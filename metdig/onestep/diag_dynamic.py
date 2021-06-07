@@ -16,6 +16,14 @@ from metdig.products import diag_dynamic as draw_dynamic
 import metdig.cal as mdgcal
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
+__all__ = [
+    'hgt_uv_vvel',
+    'hgt_uv_div',
+    'hgt_uv_vortadv',
+    'uv_fg_thta',
+]
+
+
 @date_init('init_time')
 def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 hgt_lev=500, uv_lev=850, vvel_lev=850, smth_step=3, is_mask_terrain=True,
@@ -94,6 +102,7 @@ def hgt_uv_div(data_source='cassandra', data_name='grapes_gfs', init_time=None, 
     if ret:
         return ret
 
+
 @date_init('init_time')
 def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                    hgt_lev=500, vort_lev=850, smth_step=1, is_mask_terrain=True,
@@ -112,7 +121,7 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'vortadv': vortadv}
         ret.update({'data': dataret})
 
-    vortadv=mdgcal.gaussian_filter(vortadv,smth_step)
+    vortadv = mdgcal.gaussian_filter(vortadv, smth_step)
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
@@ -122,7 +131,6 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
         v = mask_terrian(psfc, vort_lev, v)
         vortadv = mask_terrian(psfc, vort_lev, vortadv)
 
-
     # plot
     if is_draw:
         drawret = draw_dynamic.draw_hgt_uv_vortadv(hgt, u, v, vortadv, map_extent=map_extent, **products_kwargs)
@@ -131,10 +139,11 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if ret:
         return ret
 
+
 @date_init('init_time')
 def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                fg_lev=500, is_mask_terrain=True,
-                area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+               fg_lev=500, is_mask_terrain=True,
+               area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # get area
@@ -142,12 +151,13 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=fg_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=fg_lev, extent=map_extent)
-    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', level=fg_lev, extent=map_extent)
-    
+    tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                         data_name=data_name, var_name='tmp', level=fg_lev, extent=map_extent)
+
     pres = utl_stda_grid.gridstda_full_like(tmp, fg_lev, var_name='pres')
     thta = mdgcal.potential_temperature(pres, tmp)
     fg = mdgcal.frontogenesis(thta, u, v)
-    thta=mdgcal.gaussian_filter(thta,1)
+    thta = mdgcal.gaussian_filter(thta, 1)
     if is_return_data:
         dataret = {'u': u, 'v': v, 'thta': thta, 'fg': fg}
         ret.update({'data': dataret})
@@ -167,4 +177,3 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     if ret:
         return ret
-

@@ -15,8 +15,11 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+__all__ = [
+    'model_basic_anl',
+]
 
-def basic_analysis(func=None, func_other_args=None, max_workers=6,
+def model_basic_anl(func=None, func_other_args=None, max_workers=6,
                    output_dir=None, output_name=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
                    is_clean_plt=False):
     '''

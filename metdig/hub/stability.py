@@ -16,7 +16,9 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
-
+__all__ = [
+    'model_stability',
+]
 
 def model_stability(target_time=None, latest_init_time=None, ninit=4, init_interval=12, data_name='ecmwf',
                      func=None, func_other_args={}, max_workers=6,

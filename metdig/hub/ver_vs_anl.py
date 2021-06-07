@@ -16,6 +16,9 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+__all__ = [
+    'modelver_vs_anl',
+]
 
 def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='ecmwf',
                     ninit=4, init_interval=12, data_source='cassandra', data_name='ecmwf',

@@ -6,6 +6,9 @@ import os
 import pandas as pd
 import numpy as np
 
+__all__ = [
+    'get_stda_attrs'
+]
 
 def __check_units(var_units):
     try:

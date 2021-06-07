@@ -14,6 +14,11 @@ from metdig.products import diag_qpf as draw_qpf
 
 import metdig.cal as mdgcal
 
+__all__ = [
+    'hgt_rain',
+    'mslp_rain_snow',
+]
+
 
 @date_init('init_time')
 def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',
@@ -71,7 +76,7 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
         ret.update({'data': dataret})
 
     prmsl = mdgcal.gaussian_filter(prmsl, 5)
-    
+
     if is_draw:
         drawret = draw_qpf.draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)

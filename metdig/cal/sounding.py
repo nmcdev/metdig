@@ -11,6 +11,11 @@ from metpy.units import units
 from .lib import utility as utl
 import metdig.utl as mdgstda
 
+__all__ = [
+    'lcl',
+    'parcel_profile',
+]
+
 
 def lcl(pres, tmp, td, max_iters=50, eps=1e-5):
     pres_p = utl.stda_to_quantity(pres)  # hpa

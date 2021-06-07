@@ -15,6 +15,10 @@ from metdig.products import observation_satelite as draw_obssate
 
 import metdig.cal as mdgcal
 
+__all__ = [
+    'fy4air_sounding_hgt',
+]
+
 
 def fy4air_sounding_hgt(ir_obs_time=None, ir_channel=9,
                         sounding_obs_time=None,

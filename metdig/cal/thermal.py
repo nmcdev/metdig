@@ -8,8 +8,14 @@ import xarray as xr
 import metpy.calc as mpcalc
 from metpy.units import units
 
-from .lib import utility  as utl
+from .lib import utility as utl
 import metdig.utl as mdgstda
+
+__all__ = [
+    'potential_temperature',
+    'equivalent_potential_temperature',
+    'apparent_temperature',
+]
 
 
 def potential_temperature(pres, tmp):
@@ -31,7 +37,6 @@ def potential_temperature(pres, tmp):
     thta = utl.quantity_to_stda_byreference('thta', thta_p, tmp)  # degC
 
     return thta
-
 
 
 def equivalent_potential_temperature(pres, tmp, td):
@@ -56,8 +61,6 @@ def equivalent_potential_temperature(pres, tmp, td):
     theta = utl.quantity_to_stda_byreference('theta', theta_p, tmp)  # kelvin
 
     return theta
-
-
 
 
 def apparent_temperature(tmp, wsp, p_vapor):

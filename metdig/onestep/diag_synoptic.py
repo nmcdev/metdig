@@ -19,54 +19,65 @@ import metdig.utl.utl_stda_grid as utl_stda_grid
 
 import metdig.cal as mdgcal
 
+__all__ = [
+    'syn_composite',
+    'hgt_uv_prmsl',
+    'hgt_uv_rain06',
+    'hgt_uv_wsp',
+    'pv_div_uv',
+]
+
+
 @date_init('init_time')
 def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                 hgt_lev=500, uv_lev=850, is_mask_terrain=True,
-                 area='全国',  is_return_data=False, is_draw=True,add_city=False,add_background=False,
-                 **products_kwargs):
+                  hgt_lev=500, uv_lev=850, is_mask_terrain=True,
+                  area='全国',  is_return_data=False, is_draw=True, add_city=False, add_background=False,
+                  **products_kwargs):
     ret = {}
     # get area
     map_extent = get_map_area(area)
 
     # get data
-    vort500, u500, v500 = read_vort_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,level=500, extent=map_extent)    
-    wsp200, u200, v200 = read_wsp(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,level=200, extent=map_extent)
-    hgt500 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=500, extent=map_extent)
+    vort500, u500, v500 = read_vort_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=500, extent=map_extent)
+    wsp200, u200, v200 = read_wsp(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=200, extent=map_extent)
+    hgt500 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                            data_name=data_name, var_name='hgt', level=500, extent=map_extent)
     u850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=850, extent=map_extent)
-    v850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=850, extent=map_extent)    
+    v850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=850, extent=map_extent)
     prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='prmsl', extent=map_extent)
     tcwv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tcwv', extent=map_extent)
 
     if is_return_data:
-        dataret = {'hgt': hgt500, 'u850': u850, 'v850': v850,'wsp200': wsp200, 'prmsl': prmsl}
+        dataret = {'hgt': hgt500, 'u850': u850, 'v850': v850, 'wsp200': wsp200, 'prmsl': prmsl}
         ret.update({'data': dataret})
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt500 = mask_terrian(psfc, 500, hgt500)
-        vort500 = mask_terrian(psfc,500,vort500)
+        vort500 = mask_terrian(psfc, 500, vort500)
         u850 = mask_terrian(psfc, 850, u850)
         v850 = mask_terrian(psfc, 850, v850)
 
-    prmsl_attrs=prmsl.attrs
-    prmsl = prmsl.rolling(lon=10,lat=10,min_periods=1,center=True).mean()
-    prmsl.attrs=prmsl_attrs
+    prmsl_attrs = prmsl.attrs
+    prmsl = prmsl.rolling(lon=10, lat=10, min_periods=1, center=True).mean()
+    prmsl.attrs = prmsl_attrs
 
-    vort500_attrs=vort500.attrs
-    vort500 = vort500.rolling(lon=10,lat=10,min_periods=1,center=True).mean()
-    vort500.attrs=vort500_attrs
-    
+    vort500_attrs = vort500.attrs
+    vort500 = vort500.rolling(lon=10, lat=10, min_periods=1, center=True).mean()
+    vort500.attrs = vort500_attrs
+
     # plot
     if is_draw:
-        drawret = draw_synoptic.draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv, 
-                                    map_extent=map_extent, add_city=add_city,add_background=add_background,
-                                    **products_kwargs)
+        drawret = draw_synoptic.draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv,
+                                                   map_extent=map_extent, add_city=add_city, add_background=add_background,
+                                                   **products_kwargs)
 
         ret.update(drawret)
 
     if ret:
         return ret
+
 
 @date_init('init_time')
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -77,7 +88,8 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                         data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
     prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='prmsl', extent=map_extent)
@@ -102,6 +114,7 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     if ret:
         return ret
 
+
 @date_init('init_time')
 def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,
@@ -112,15 +125,15 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                         data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
     rain06 = read_rain06(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent)
-    
+
     if is_return_data:
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'rain06': rain06}
         ret.update({'data': dataret})
-
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
@@ -143,12 +156,13 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
                hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
-    
+
     # get area
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                         data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
 
@@ -176,7 +190,6 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
         return ret
 
 
-
 @date_init('init_time')
 def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
               lvl_ana=250, levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 100], is_mask_terrain=True,
@@ -187,7 +200,8 @@ def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     map_extent = get_map_area(area)
 
     # get data
-    pv, div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, lvl_ana=lvl_ana, levels=levels, extent=map_extent)
+    pv, div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
+                                   data_name=data_name, lvl_ana=lvl_ana, levels=levels, extent=map_extent)
 
     if is_return_data:
         dataret = {'pv': pv, 'u': u, 'v': v, 'div': div}
@@ -204,7 +218,7 @@ def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     # smooth
     pv = mdgcal.smooth_n_point(pv, 9, 2)
     div = mdgcal.smooth_n_point(div, 9, 2)
-    
+
     # plot
     if is_draw:
         drawret = draw_synoptic.draw_pv_div_uv(pv, div, u, v, map_extent=map_extent, **products_kwargs)

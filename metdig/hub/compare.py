@@ -13,6 +13,9 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 
+__all__ = [
+    'models_compare',
+]
 
 def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 'ncep_gfs', 'grapes_3km'],
                    func=None, func_other_args={}, max_workers=6,
