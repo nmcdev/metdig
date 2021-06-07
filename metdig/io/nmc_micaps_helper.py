@@ -1,5 +1,7 @@
 '''
+
 nmc_met_io.retrieve_micaps_server的拓展方法，后续若nmc_met_io有相同功能的方法，可去除此处方法
+
 '''
 
 import json

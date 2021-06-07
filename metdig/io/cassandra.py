@@ -504,7 +504,7 @@ def get_wind_profiler(obs_time=None, data_name=None, var_name=None):
     cassandra_dir = os.path.dirname(cassandra_path) + '/'
     filename = os.path.basename(cassandra_path)
     # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
-    data = nmc_micaps_helper.get_wind_profiler(cassandra_dir, filename=filename)  
+    data = nmc_micaps_helper.get_wind_profiler(cassandra_dir, filename=filename) 
     if data is None:
         raise NMCMetIOError('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
