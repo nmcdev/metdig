@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+
 from datetime import datetime, timedelta
 
+import os
+import time
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -51,7 +54,7 @@ def reset_id_back(sta):
     '''
     输入的sta的站号中可能有些站号包含a-z,A-Z的字母，对此将这些字母转换为对应的ASCII数字，再将整个字符串格式的站号转换为数值形式
     返回sta站号为整型
-    '''
+                                '''
     # print(sta)
     values = sta['id'].values
     if type(values[0]) != str:
@@ -78,7 +81,7 @@ def area_cut(data, extent, x_percent, y_percent):
     delt_y = (extent[3] - extent[2]) * y_percent
     cut_extent = (extent[0] - delt_x, extent[1] + delt_x, extent[2] - delt_y, extent[3] + delt_y)
 
-    if isinstance(data, xr.DataArray) or isinstance(data, xr.Dataset) :
+    if isinstance(data, xr.DataArray) or isinstance(data, xr.Dataset):
         return data.where((data['lon'] >= cut_extent[0]) &
                           (data['lon'] <= cut_extent[1]) &
                           (data['lat'] >= cut_extent[2]) &
@@ -113,13 +116,26 @@ def sta_select_id(df, id_selected):
         data = df.drop(index=df.index)
     return data
 
-def cfgpath_format(cfgpath, time, **kwargs):
-    return cfgpath.format(Y='{:%Y}'.format(time),
-                          y='{:%y}'.format(time),
-                          m='{:%m}'.format(time),
-                          d='{:%d}'.format(time),
-                          H='{:%H}'.format(time),
-                          M='{:%M}'.format(time),
-                          S='{:%S}'.format(time),
+
+def cfgpath_format_todatestr(cfgpath, **kwargs):
+    """[xxx_cfg.csv配置文件中的路径格式化成只有日期的字符串，函数返回值可以用strftime格式化成datetime]
+
+    Args:
+        cfgpath ([str]): [配置文件中的路径]
+        time ([datetime]): [日期]
+
+    Returns:
+        [str]: [可以直接使用的有效路径字符串]
+    """
+    return  cfgpath.format(Y='%Y',
+                          y='%y',
+                          m='%m',
+                          d='%d',
+                          H='%H',
+                          M='%M',
+                          S='%S',
                           **kwargs,
                           )
+
+
+
