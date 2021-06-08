@@ -176,32 +176,58 @@ def add_south_china_sea_plt(map_extent=[107, 120, 2, 20], pos=[0.1, 0.1, .2, .4]
     ax = plt.axes(pos, projection=plotcrs)
     datacrs = ccrs.PlateCarree()
     ax.set_extent(map_extent, crs=datacrs)
-    ax.add_feature(cfeature.OCEAN)
     ax.coastlines('50m', edgecolor='black', linewidth=0.5, zorder=50)
     add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=40)
-    #ax.background_img(name='RD', resolution='high')
-    add_cartopy_background(ax, name='RD')
+    '''
+    ax.add_feature(cfeature.OCEAN)
+    add_cartopy_background(ax, name='RD')  # ax.background_img(name='RD', resolution='high')
+    '''
+    ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
+    ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
     return ax
 
 
-def add_south_china_sea_png(pos=[0.1, 0.1, .2, .4], size='medium', **kwargs):
+def add_south_china_sea_png(pos=[0.1, 0.1, .2, .4], name='simple', **kwargs):
     fname_suffix = {
-        # 'small': 'small.png',
-        'medium': 'medium.png',
-        # 'large': 'large.png',
-        # 'Xlarge': 'Xlarge.png',
+        'simple': 'simple.png',
+        'RD': 'RD.png',
     }
     try:
-        fname = fname_suffix[size]
+        fname = fname_suffix[name]
         fpath = "resources/south_china/" + fname
     except KeyError:
-        raise ValueError('Unknown south_china size or selection')
+        raise ValueError('Unknown south_china name or selection')
     img = plt.imread(pkg_resources.resource_filename(pkg_name, fpath))
 
     ax = plt.axes(pos)
     ax.imshow(img, zorder=0)
     ax.axis('off')
     return ax
+
+def create_south_china_png(outfile='./south_china.png'):
+    # 创建南海静态图
+    fig = plt.figure(figsize=(0.9, 1.24))
+    ax = fig.add_subplot(projection=ccrs.PlateCarree())
+    datacrs = ccrs.PlateCarree()
+    ax.set_extent([107, 120, 2, 20], crs=datacrs)
+    ax.coastlines('50m', edgecolor='black', linewidth=0.5, zorder=50)
+    add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=40)
+
+    ax.add_feature(cfeature.OCEAN)
+    add_cartopy_background(ax, name='RD')  # ax.background_img(name='RD', resolution='high')
+    # ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
+    # ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+
+    from metdig.graphics.lib.utility import get_imgbuf_from_fig
+    import PIL
+    imagebuf = get_imgbuf_from_fig(fig)
+    imagebuf = imagebuf[2:-2, 2:-2, :] # 去掉2个像素的黑边框
+    PIL.Image.fromarray(imagebuf.astype(np.uint8), mode='RGBA').save(outfile)
+
+    # plt.savefig('./south_china.png', dpi=200, bbox_inches='tight')
+
+    plt.close()
+
 
 def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=None, transform=ccrs.PlateCarree(), **kwargs):
     
