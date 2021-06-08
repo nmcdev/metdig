@@ -3,7 +3,7 @@ from .diag_dynamic import *
 from .diag_elements import *
 from .diag_moisture import *
 from .diag_qpf import *
-# from .diag_station import * # 这个和observation_station一致？
+from .diag_station import *
 from .diag_synoptic import *
 from .diag_thermal import *
 from .observation_radar import *
