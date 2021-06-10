@@ -22,11 +22,7 @@ from metpy.plots import SkewT
 import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 
-
-def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
-                       title='', title_fontsize=23, forcast_info='', nmc_logo=False,
-                       add_china=True, add_city=True, add_background=True, add_south_china_sea=True, add_grid=True):
-
+def plt_base_env():
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
 
@@ -34,6 +30,12 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
     if(sys.platform[0:3] == 'win'):
         locale.setlocale(locale.LC_CTYPE, 'chinese')
+
+
+def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
+                       title='', title_fontsize=23, forcast_info='', nmc_logo=False,
+                       add_china=True, add_city=True, add_background=True, add_south_china_sea=True, add_grid=True):
+    plt_base_env() # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(projection=ccrs.PlateCarree())
@@ -99,13 +101,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
 
 def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False):
 
-    plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
-    plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
-
-    if(sys.platform[0:3] == 'lin'):
-        locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
-    if(sys.platform[0:3] == 'win'):
-        locale.setlocale(locale.LC_CTYPE, 'chinese')
+    plt_base_env() # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
@@ -154,13 +150,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     if(reverse_time):
         times = times[::-1]
 
-    plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
-    plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
-
-    if(sys.platform[0:3] == 'lin'):
-        locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
-    if(sys.platform[0:3] == 'win'):
-        locale.setlocale(locale.LC_CTYPE, 'chinese')
+    plt_base_env() # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
@@ -199,16 +189,52 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
 
     return fig, ax
 
+def profile_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True):
+    if(reverse_time):
+        times = times[::-1]
+
+    plt_base_env() # 初始化字体中文等
+
+    fig = plt.figure(figsize=figsize)
+    ax = plt.axes()
+
+    ax.set_title(title, loc='right', fontsize=25)
+
+    xstklbls = mpl.dates.DateFormatter('%m月%d日%H时')
+    ax.xaxis.set_major_formatter(xstklbls)
+    for label in ax.get_xticklabels():
+        label.set_rotation(30)
+        label.set_fontsize(15)
+        label.set_horizontalalignment('right')
+
+    for label in ax.get_yticklabels():
+        label.set_fontsize(15)
+
+    ax.set_ylabel('高度/m', fontsize=15)
+    ax.set_yticklabels([0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000])
+    # ax.set_yticks([100, 925, 850, 700, 600, 500, 400, 300])
+    ax.set_ylim(0, 5000)
+    ax.set_xlim(times[0], times[-1])
+
+    if forcast_info:
+        l, b, w, h = ax.get_position().bounds
+        bax = plt.axes([l, b + h, .25, .1], facecolor='#FFFFFFCC')
+        bax.axis('off')
+        bax.set_yticks([])
+        bax.set_xticks([])
+        bax.axis([0, 10, 0, 10])
+        bax.text(1.5, 0.4, forcast_info, size=11)
+
+    if nmc_logo:
+        l, b, w, h = ax.get_position().bounds
+        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
+
+    return fig, ax
+
 
 def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax=''):
 
-    plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
-    plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
-
-    if(sys.platform[0:3] == 'lin'):
-        locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
-    if(sys.platform[0:3] == 'win'):
-        locale.setlocale(locale.LC_CTYPE, 'chinese')
+    plt_base_env() # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
 
@@ -261,13 +287,8 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
 
 
 def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', nmc_logo=False):
-    plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
-    plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
 
-    if(sys.platform[0:3] == 'lin'):
-        locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
-    if(sys.platform[0:3] == 'win'):
-        locale.setlocale(locale.LC_CTYPE, 'chinese')
+    plt_base_env() # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
 

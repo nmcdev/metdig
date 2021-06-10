@@ -29,13 +29,13 @@ def get_obs_filename(directory, filename_format, obs_time=None, isnearesttime=Fa
         isnearesttime (bool, optional): [如果obs_time非空，是否需要读取离obs_time最近的实况]. Defaults to False.
     """
     if obs_time is None:
-        fnames = nmc_micaps_io.get_file_list(directory, latest=1)
+        fnames = nmc_micaps_io.get_file_list(directory, latest=1) # 此方法如果遇到文件量多的情况会有点慢，后续看是否能优化
         if len(fnames) == 0:
             raise Exception('Can not retrieve data from ' + directory)
         filename = fnames[0]  # obs_time为空，获取第一个就是最新的
     else:
         if isnearesttime:
-            fnames = nmc_micaps_io.get_file_list(directory)  # 目录下所有文件名
+            fnames = nmc_micaps_io.get_file_list(directory)  # 目录下所有文件名， 此方法如果遇到文件量多的情况会有点慢，后续看是否能优化
             if len(fnames) == 0:
                 raise Exception('Can not retrieve data from ' + directory)
             fnames.sort(reverse=True)  # 按照日期从大到小排序
@@ -59,7 +59,7 @@ def get_obs_filenames(directory, filename_format, obs_st_time=None, obs_ed_time=
         obs_st_time ([dateime], optional): [description]. Defaults to None.
         obs_ed_time ([dateime], optional): [description]. Defaults to None.
     """
-    fnames = nmc_micaps_io.get_file_list(directory)  # 目录下所有文件名
+    fnames = nmc_micaps_io.get_file_list(directory)  # 目录下所有文件名， 此方法如果遇到文件量多的情况会有点慢，后续看是否能优化
     if len(fnames) == 0:
         raise Exception('Can not retrieve data from ' + directory)
     fnames.sort(reverse=True)  # 按照日期从大到小排序
