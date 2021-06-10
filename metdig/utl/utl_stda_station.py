@@ -14,6 +14,7 @@ __all__ = [
     'numpy_to_stastda',
     'gridstda_to_stastda',
     'stastda_copy',
+    'stastda_to_2dgridstda',
 ]
 
 def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons, 
@@ -163,6 +164,50 @@ def stastda_copy(data, iscopy_otherdim=True, iscopy_value=True):
 
     return newdata
 
+
+def stastda_to_2dgridstda(df, xdim='lon', ydim='lat'):
+    '''
+    根据给定的xdim ydim 将站点stda转换为二维格点stda，缺失点填充nan，
+    注意事项：
+    1. 要求输入的站点stda除xdim ydim两维外，其余维度去重后长度为1
+    2. 站点stda的id不可作为xdim ydim参数，因为格点stda中没有这一维度
+    3. 站点stda的id会以属性的方式写到格点stda中
+    4. data_start_columns不会写到格点stda属性中
+    '''
+    member = df.stda.member.values[0]
+    griddims = {}
+    for col in ['level', 'time', 'dtime', 'id', 'lon', 'lat']:
+        dimvalue = np.unique(df[col].values)
+        if col != xdim and col != ydim:
+            if dimvalue.size > 1:
+                raise Exception('除输入参数的xdim ydim，其余维度去重后长度必须为1')
+        griddims[col] = np.sort(dimvalue)
+    
+    _grid2d_y, _grid2d_x = np.meshgrid(griddims[ydim], griddims[xdim])
+    _grid2d_df = pd.DataFrame()
+    _grid2d_df[xdim] = _grid2d_x.flatten()
+    _grid2d_df[ydim] = _grid2d_y.flatten()
+    # 按照_grid2d_df合并，(对输入的df去重，保证merge正常)
+    _grid2d_df = pd.merge(_grid2d_df, df.drop_duplicates(subset=[xdim, ydim], keep='first'), how='left', on=[xdim, ydim])
+    _grid2d_data = _grid2d_df[member].values.reshape(_grid2d_x.shape)
+    
+    # 处理成stda
+    coords = [(xdim, griddims[xdim]),
+              (ydim, griddims[ydim]),]
+    _grid2d_xr = xr.DataArray(_grid2d_data, coords=coords)
+    for dim in ('level', 'time', 'dtime', 'lat', 'lon'):
+        if dim != xdim and dim != ydim:
+            _grid2d_xr = _grid2d_xr.expand_dims({dim: griddims[col]})
+    _grid2d_xr = _grid2d_xr.expand_dims({'member': [member]})
+    _grid2d_xr = _grid2d_xr.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+    _grid2d_xr.attrs = {'id': griddims['id']}
+    try:
+        _grid2d_xr.attrs.update(df.attrs)
+        _grid2d_xr.attrs.pop('data_start_columns')
+    except:
+      pass
+    return _grid2d_xr
+    
 
 @pd.api.extensions.register_dataframe_accessor('stda')
 class __STDADataFrameAccessor(object):
