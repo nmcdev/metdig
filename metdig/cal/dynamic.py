@@ -5,9 +5,11 @@
 '''
 
 import numpy as np
+import xarray as xr
 
 import metpy.calc as mpcalc
 from metpy.units import units
+from xarray.core.common import zeros_like
 
 from .lib import utility as utl
 import metdig.utl.utl_stda_grid as utl_stda_grid
@@ -55,7 +57,7 @@ def var_advect(var, u, v):
     '''
 
     dx, dy = mpcalc.lat_lon_grid_deltas(u['lon'].values, u['lat'].values)
-    adv = v.copy(deep=True)
+    adv = xr.zeros_like(u).copy()
     for ilvl in var['level'].values:
         for it in var['time'].values:
             for idt in var['dtime'].values:
