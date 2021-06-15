@@ -18,13 +18,13 @@ import metpy.calc as mpcalc
 from metpy.units import units
 
 
-def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
-                            is_clean_plt=False, is_return_figax=False, is_return_imgbuf=False):
+def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
     init_time = pd.to_datetime(tmp['time'].values[0]).replace(tzinfo=None).to_pydatetime()
 
     title_left = '{} [{:.2f},{:.2f}]'.format(tmp['id'].values[0], tmp['lon'].values[0], tmp['lat'].values[0])
     title_right = '起报时间：{0:%Y}年{0:%m}月{0:%m}日{0:%H}时'.format(init_time)
     title_right = ''
+    png_name = '观测_{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(tmp['id'].values[0], init_time)
 
     t2m_ylabel = '气温($^\circ$C) \n 风速(m s$^-$$^1$) \n 降水(mm)'
     rh_ylabel = '相对湿度(%)'
@@ -92,15 +92,10 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, output_dir=None,
     # add legend
     ax_tmp.legend(fontsize=15, loc='upper right')
 
-    ret = {
-        'png_name': None,
-        'output_dir': None,
-        'pic_path': None,
-        'img_buf': None,
-        'fig': None,
-        'ax': None,
-    }
-
-    png_name = '观测_{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(tmp['id'].values[0], init_time)
-    return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax)
-
+    # save
+    output_dir = pallete_kwargs.pop('output_dir', None)
+    is_return_imgbuf = pallete_kwargs.pop('is_return_imgbuf', False)
+    is_clean_plt = pallete_kwargs.pop('is_clean_plt', False)
+    is_return_figax = pallete_kwargs.pop('is_return_figax', False)
+    is_return_pngname = pallete_kwargs.pop('is_return_pngname', False)
+    return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)

@@ -30,6 +30,6 @@ tlogp,wdir,degree,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
 tlogp,wsp,m/s,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
 tlogp,t,degC,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
 tlogp,td,degC,,UPPER_AIR/TLOGP/{Y}{m}{d}{H}{M}{S}.000
-wind_profiler,wdir,degree,,WIND_PROFILER/ROBS/52889/{Y}{m}{d}{H}{M}{S}.JSON
-wind_profiler,wsp,m/s,,WIND_PROFILER/ROBS/52889/{Y}{m}{d}{H}{M}{S}.JSON
-wind_profiler,w,m/s,,WIND_PROFILER/ROBS/52889/{Y}{m}{d}{H}{M}{S}.JSON
+wind_profiler,wdir,degree,,WIND_PROFILER/ROBS/{ID}/{Y}{m}{d}{H}{M}{S}.JSON
+wind_profiler,wsp,m/s,,WIND_PROFILER/ROBS/{ID}/{Y}{m}{d}{H}{M}{S}.JSON
+wind_profiler,w,m/s,,WIND_PROFILER/ROBS/{ID}/{Y}{m}{d}{H}{M}{S}.JSON

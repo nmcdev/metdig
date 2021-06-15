@@ -260,11 +260,12 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
         cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
-    
-    # 读取数据
-    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time, level=level)
-    cassandra_dir = os.path.dirname(cassandra_path) + '/'
-    filename = os.path.basename(cassandra_path)
+
+    cassandra_path = utl.cfgpath_format_todatestr(cassandra_path, level=level)  # 带日期格式的路径
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
+    filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
+    filename = datetime.datetime.strftime(obs_time, filename)
+
     # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
     data = nmc_micaps_io.get_station_data(cassandra_dir, filename=filename)
     if data is None:
@@ -350,10 +351,23 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
     return None
 
 
-def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, extent=None, x_percent=0, y_percent=0):
-    '''
-    卫星观测数据
-    '''
+def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, extent=None, x_percent=0, y_percent=0, isnearesttime=False):
+    """[获取卫星观测数据]
+
+    Args:
+        obs_time ([datetime], optional): [观测时间]. Defaults to None.
+        data_name ([str], optional): [观测类型]. Defaults to None.
+        var_name ([str], optional): [要素名]. Defaults to None.
+        channel ([int or str], optional): [卫星通道]. Defaults to None.
+        extent ([tuple], optional): [裁剪区域，如(50, 150, 0, 65)]. Defaults to None.
+        x_percent (int, optional): [根据裁剪区域经度方向扩充百分比]. Defaults to 0.
+        y_percent (int, optional): [根据裁剪区域纬度方向扩充百分比]. Defaults to 0.
+        isnearesttime (bool, optional): [如果obs_time非空，是否需要读取离obs_time最近的实况]. Defaults to False.
+
+    Returns:
+        [stda] -- [stda格式数据]
+    """
+
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据路径
@@ -361,10 +375,12 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
     except Exception as e:
         raise Exception(str(e))
 
-    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time, channel=channel)
-    cassandra_dir = os.path.dirname(cassandra_path) + '/'
-    filename = os.path.basename(cassandra_path)
-    # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
+    cassandra_path = utl.cfgpath_format_todatestr(cassandra_path, channel=channel)  # 带日期格式的路径
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
+    cassandra_filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
+
+    filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
+
     data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
@@ -388,9 +404,21 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
 def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
               extent=None, x_percent=0, y_percent=0, is_save_other_info=False):
-    '''
-    探空tlogp数据
-    '''
+    """[探空tlogp数据]
+
+    Args:
+        obs_time ([datetime], optional): [观测时间]. Defaults to None.
+        data_name ([str], optional): [观测类型]. Defaults to None.
+        var_name ([str], optional): [要素名]. Defaults to None.
+        id_selected {[list or item]} -- [站号，站号列表或单站] default: None.
+        extent ([tuple], optional): [裁剪区域，如(50, 150, 0, 65)]. Defaults to None.
+        x_percent (int, optional): [根据裁剪区域经度方向扩充百分比]. Defaults to 0.
+        y_percent (int, optional): [根据裁剪区域纬度方向扩充百分比]. Defaults to 0.
+        is_save_other_info {bool} -- [是否保存从nmc_met_io中读取到的其它信息] (default: {False})
+
+    Returns:
+        [stda] -- [stda格式数据]
+    """    
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -398,10 +426,11 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
     except Exception as e:
         raise Exception(str(e))
 
-    # 读取数据
-    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
-    cassandra_dir = os.path.dirname(cassandra_path) + '/'
-    filename = os.path.basename(cassandra_path)
+    cassandra_path = utl.cfgpath_format_todatestr(cassandra_path)  # 带日期格式的路径
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
+    filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
+    filename = datetime.datetime.strftime(obs_time, filename)
+
     # ['ID', 'lon', 'lat', 'alt', 'time', 'p', 'h', 't', 'td', 'wd', 'ws]
     data = nmc_micaps_io.get_tlogp(cassandra_dir, filename=filename)
     if data is None:
@@ -436,10 +465,21 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
     )
 
 
-def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, x_percent=0, y_percent=0):
-    '''
-    雷达回波全国拼图数据
-    '''
+def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, x_percent=0, y_percent=0, isnearesttime=False):
+    """[雷达回波全国拼图数据]
+
+    Args:
+        obs_time ([datetime], optional): [观测时间]. Defaults to None.
+        data_name ([str], optional): [观测类型]. Defaults to None.
+        var_name ([str], optional): [要素名]. Defaults to None.
+        extent ([tuple], optional): [裁剪区域，如(50, 150, 0, 65)]. Defaults to None.
+        x_percent (int, optional): [根据裁剪区域经度方向扩充百分比]. Defaults to 0.
+        y_percent (int, optional): [根据裁剪区域纬度方向扩充百分比]. Defaults to 0.
+        isnearesttime (bool, optional): [如果obs_time非空，是否需要读取离obs_time最近的实况]. Defaults to False.
+
+    Returns:
+        [stda] -- [stda格式数据]
+    """    
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -447,10 +487,12 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
     except Exception as e:
         raise Exception(str(e))
 
-    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
-    cassandra_dir = os.path.dirname(cassandra_path) + '/'
-    filename = os.path.basename(cassandra_path)
-    # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
+    cassandra_path = utl.cfgpath_format_todatestr(cassandra_path)  # 带日期格式的路径
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
+    cassandra_filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
+
+    filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
+
     data = nmc_micaps_io.get_radar_mosaic(cassandra_dir, filename=filename)
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
@@ -472,10 +514,19 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
     return stda_data
 
 
-def get_wind_profiler(obs_time=None, data_name=None, var_name=None):
-    '''
-    风廓线数据
-    '''
+def get_wind_profiler_bytimerange(obs_st_time=None, obs_ed_time=None, data_name=None, var_name=None, id_selected=None):
+    """[获取时间范围内的风廓线数据]
+
+    Args:
+        obs_st_time ([datetime], optional): [观测开始时间]. Defaults to None.
+        obs_ed_time ([datetime], optional): [观测结束时间]. Defaults to None.
+        id_selected ([int or str], optional): [站号]. Defaults to None.
+        data_name ([str], optional): [观测类型]. Defaults to None.
+        var_name ([str], optional): [要素名]. Defaults to None.
+
+    Returns:
+        [stda] -- [stda格式数据]
+    """    
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -483,11 +534,59 @@ def get_wind_profiler(obs_time=None, data_name=None, var_name=None):
     except Exception as e:
         raise Exception(str(e))
 
-    # 读取数据
-    cassandra_path = utl.cfgpath_format(cassandra_path, obs_time)
-    cassandra_dir = os.path.dirname(cassandra_path) + '/'
-    filename = os.path.basename(cassandra_path)
-    # ['ID', 'lon', 'lat', 'time', ......] ('ID', 'i4'), ('lon', 'f4'), ('lat', 'f4'), ('numb', 'i2')]
+    cassandra_path = utl.cfgpath_format_todatestr(cassandra_path, ID=id_selected)  # 带日期格式的路径
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
+    cassandra_filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
+
+    filenames, obs_times = nmc_micaps_helper.get_obs_filenames(cassandra_dir, cassandra_filename, obs_st_time=obs_st_time, obs_ed_time=obs_ed_time)
+
+    datas = []
+    attrs = {}
+    obs_times.sort(reverse=False)  # 按照日期从小到大排序
+    for obs_time in obs_times:
+        try:
+            data = get_wind_profiler_bytime(obs_time=obs_time, data_name=data_name, var_name=var_name, id_selected=id_selected, isnearesttime=False)
+            if data is not None and len(data) > 0:
+                attrs = data.attrs
+                datas.append(data)
+
+        except Exception as e:
+            _log.info(str(e))
+
+    if datas:
+        df = pd.concat(datas, ignore_index=True)
+        df.attrs = attrs
+        return df
+
+    return None
+
+
+def get_wind_profiler_bytime(obs_time=None, data_name=None, var_name=None, id_selected=None, isnearesttime=False):
+    """[获取风廓线数据]
+
+    Args:
+        obs_time ([datetime], optional): [观测时间]. Defaults to None.
+        id_selected ([int or str], optional): [站号]. Defaults to None.
+        data_name ([str], optional): [观测类型]. Defaults to None.
+        var_name ([str], optional): [要素名]. Defaults to None.
+        isnearesttime (bool, optional): [如果obs_time非空，是否需要读取离obs_time最近的实况]. Defaults to False.
+
+    Returns:
+        [stda] -- [stda格式数据]
+    """    
+    # 从配置中获取相关信息
+    try:
+        cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+    except Exception as e:
+        raise Exception(str(e))
+
+    cassandra_path = utl.cfgpath_format_todatestr(cassandra_path, ID=id_selected)  # 带日期格式的路径
+    cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
+    cassandra_filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
+
+    filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
+
     data = nmc_micaps_helper.get_wind_profiler(cassandra_dir, filename=filename)
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
@@ -532,6 +631,15 @@ if __name__ == '__main__':
     # print(np.min(x.values), np.max(x.values), np.mean(x.values))
     # print(x)
 
-    obs_time = datetime.datetime(2021, 6, 3, 13, 54, 0)
-    df = get_wind_profiler(obs_time=obs_time, data_name='wind_profiler', var_name='wdir')
+    obs_time = datetime.datetime(2021, 6, 6, 5, 6, 0)
+    df = get_wind_profiler_bytime(obs_time=obs_time, id_selected=51463, data_name='wind_profiler', var_name='wdir')
     print(df)
+
+    # obs_time = datetime.datetime(2021, 6, 8, 8, 10, 1)
+    # df = get_radar_mosaic(obs_time=obs_time, data_name='achn', var_name='cref', isnearesttime=True)
+    # print(df)
+
+    # obs_st_time = datetime.datetime(2021, 6, 6, 5)
+    # obs_ed_time = datetime.datetime(2021, 6, 8, 8)
+    # df = get_wind_profiler_bytimerange(obs_st_time, obs_ed_time, id_selected='51463', data_name='wind_profiler', var_name='wdir')
+    # print(df)
