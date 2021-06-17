@@ -106,10 +106,12 @@ def add_cartopy_background(ax, name='RD'):
     ax.background_img(name=name, resolution='high')
 
 
-def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10, **kwargs):
+def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10,city_type='provincial_capital',city_slt=None, **kwargs):
     """
     :param ax: `matplotlib.figure`, The `figure` instance used for plotting
     :param x: x position padding in pixels
+    :city_type: str, provincial_capital or county
+    :city_slt: list, 指定显示的城市
     :param kwargs:
     :return: `matplotlib.image.FigureImage`
              The `matplotlib.image.FigureImage` instance created.
@@ -141,8 +143,11 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10, **
     #             ax.text(lon[i],lat[i],city_names[i], family='SimHei',ha='right',va='top',size=size-4,color='black',zorder=zorder,**kwargs)
     #         ax.scatter(lon[i], lat[i], c='black', s=25, alpha=0.5,zorder=zorder, **kwargs)
     # province city
+
+    fnames={'provincial_capital':'city_province.000',
+           'county':'county.000'}
     try:
-        fname = 'city_province.000'
+        fname = fnames[city_type]
         fpath = "resources/stations/" + fname
     except KeyError:
         raise ValueError('can not find the file city_province.000 in the resources')
@@ -156,17 +161,43 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10, **
     # 步骤一（替换sans-serif字体） #得删除C:\Users\HeyGY\.matplotlib 然后重启vs，刷新该缓存目录获得新的字体
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
-    for i in range(0, len(city_names)):
-        if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
-           (lat[i] > map_extent[2] + dlat * 0.05) and (lat[i] < map_extent[3] - dlat * 0.05)):
-            if(city_names[i] != '香港' and city_names[i] != '南京' and city_names[i] != '石家庄' and city_names[i] != '天津'):
-                r = city_names[i]
-                t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='right', va='top', size=size, zorder=zorder, **kwargs)
-            else:
-                t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
-            t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
-                                mpatheffects.Normal()])
-            ax.scatter(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60., int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60., c='black', s=25, zorder=zorder, **kwargs)
+
+    if(city_type == 'provincial_capital'):
+        for i in range(0, len(city_names)):
+            if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
+            (lat[i] > map_extent[2] + dlat * 0.05) and (lat[i] < map_extent[3] - dlat * 0.05)):
+                if (city_slt == None):
+                    if(city_names[i] != '香港' and city_names[i] != '南京' and city_names[i] != '石家庄' and city_names[i] != '天津'):
+                        r = city_names[i]
+                        t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='right', va='top', size=size, zorder=zorder, **kwargs)
+                    else:
+                        t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
+                    t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                        mpatheffects.Normal()])
+                    ax.scatter(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60., int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60., c='black', s=25, zorder=zorder, **kwargs)
+                else:
+                    for islt in city_slt:
+                        if(city_names[i]==islt):
+                            t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
+                            t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                        mpatheffects.Normal()])
+                            ax.scatter(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60., int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60., c='black', s=25, zorder=zorder, **kwargs)
+    else:
+        for i in range(0, len(city_names)):
+            if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
+            (lat[i] > map_extent[2] + dlat * 0.05) and (lat[i] < map_extent[3] - dlat * 0.05)):
+                if (city_slt == None):
+                    t = ax.text(lon[i]+(map_extent[1]-map_extent[0])*0.01, lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
+                    t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                        mpatheffects.Normal()])
+                    ax.scatter(lon[i], lat[i], c='black', s=25, zorder=zorder, **kwargs)
+                else:
+                    for islt in city_slt:
+                        if(city_names[i]==islt):
+                            t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
+                            t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                        mpatheffects.Normal()])
+                            ax.scatter(lon[i], lat[i], c='black', s=25, zorder=zorder, **kwargs)
     return
 
 def add_south_china_sea_plt(map_extent=[107, 120, 2, 20], pos=[0.1, 0.1, .2, .4], **kwargs):
