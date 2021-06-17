@@ -128,23 +128,6 @@ def add_logo_extra_in_axes(pos=[0.1, 0.1, .2, .4],
     ax.axis('off')
 
 
-'''
-弃用
-def plt_kwargs_lcn_set(cmap_def, norm_def, levels_def, **kwargs):
-    # 关于levels cmap norm设置的规则，如果kwargs设置了levels cmap norm则逐项顶掉预设值
-    levels = kwargs.pop('levels', None)
-    cmap = kwargs.pop('cmap', None)
-    norm = kwargs.pop('norm', None)
-    if levels is None:
-        levels = levels_def
-    if cmap is None:
-        cmap = cmap_def
-    if norm is None:
-        norm = norm_def
-    return cmap, norm, levels, kwargs
-'''
-
-
 @nb.jit()
 def img_trim(img):
     '''

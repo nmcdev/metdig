@@ -8,6 +8,7 @@ from . import io
 from . import onestep
 from . import products
 from . import utl
+from . import package_tools
 
 import logging
 _log = logging.getLogger(__name__)
