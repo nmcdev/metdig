@@ -23,11 +23,11 @@ def wind_profiler(obs_st_time=None, obs_ed_time=None, id_selected=51463, is_retu
     u, v = mdgcal.wind_components(wsp, wdir)
 
     # 转成格点stda
-    u = mdgstda.stastda_to_2dgridstda(u, xdim='time', ydim='level')
-    v = mdgstda.stastda_to_2dgridstda(v, xdim='time', ydim='level')
+    u = mdgstda.stastda_to_gridstda(u, xdim='time', ydim='level')
+    v = mdgstda.stastda_to_gridstda(v, xdim='time', ydim='level')
 
     # 时间维度简单稀疏化
-    step = int(u.stda.time.size / 20)
+    step = int(u.stda.time.size / 40)
     u = u.isel(time=slice(0, -1, step))
     v = v.isel(time=slice(0, -1, step))
 

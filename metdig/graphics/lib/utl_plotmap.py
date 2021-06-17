@@ -222,6 +222,7 @@ def add_south_china_sea_png(pos=[0.1, 0.1, .2, .4], name='simple', **kwargs):
     fname_suffix = {
         'simple': 'simple.png',
         'RD': 'RD.png',
+        'white': 'white.png',
     }
     try:
         fname = fname_suffix[name]
@@ -244,10 +245,10 @@ def create_south_china_png(outfile='./south_china.png'):
     ax.coastlines('50m', edgecolor='black', linewidth=0.5, zorder=50)
     add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=40)
 
-    ax.add_feature(cfeature.OCEAN)
-    add_cartopy_background(ax, name='RD')  # ax.background_img(name='RD', resolution='high')
-    # ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
-    # ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+    # ax.add_feature(cfeature.OCEAN)
+    # add_cartopy_background(ax, name='RD')  # ax.background_img(name='RD', resolution='high')
+    ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
+    ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
 
     from metdig.graphics.lib.utility import get_imgbuf_from_fig
     import PIL

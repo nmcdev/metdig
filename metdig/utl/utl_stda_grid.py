@@ -10,10 +10,70 @@ from metpy.units import units
 import metdig.utl as mdgstda
 
 __all__ = [
+    'xrda_to_gridstda',
     'numpy_to_gridstda',
     'gridstda_full_like',
     'gridstda_full_like_by_levels',
 ]
+
+
+def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='dtime', lat='lat', lon='lon',
+                      np_input_units='', var_name='',
+                      **attrs_kwargv):
+    """[通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda，]
+
+    Args:
+        xrda ([xarray.DataArray]): [输入的DataArray]
+        member (str, optional): [xrda中代表stda的member维的名称，如果在xrda中未找到该名称，则将其作为stda的member维的数据]. Defaults to 'member'.
+        level (str, optional): [xrda中代表stda的level维的名称，如果在xrda中未找到该名称，则将其作为stda的levelr维的数据]. Defaults to 'level'.
+        time (str, optional): [xrda中代表stda的time维的名称，如果在xrda中未找到该名称，则将其作为stda的time维的数据]. Defaults to 'time'.
+        dtime (str, optional): [xrda中代表stda的dtime维的名称，如果在xrda中未找到该名称，则将其作为stda的dtime维的数据]. Defaults to 'dtime'.
+        lat (str, optional): [xrda中代表stda的lat维的名称，如果在xrda中未找到该名称，则将其作为stda的lat维的数据]. Defaults to 'lat'.
+        lon (str, optional): [xrda中代表stda的lon维的名称，如果在xrda中未找到该名称，则将其作为stda的lon维的数据]. Defaults to 'lon'.
+        np_input_units (str, optional): [np_input数据对应的单位，自动转换为能查询到的stda单位]. Defaults to ''.
+        var_name (str, optional): [要素名]. Defaults to ''.
+        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
+
+    Returns:
+        [STDA] -- [STDA网格数据]
+    """    
+
+    stda_data = xrda
+
+    if member in xrda.dims:
+        stda_data = stda_data.rename(member='member')
+    else:
+        stda_data = stda_data.expand_dims(member=[member])
+
+    if level in xrda.dims:
+        stda_data = stda_data.rename(level='level')
+    else:
+        stda_data = stda_data.expand_dims(level=[level])
+
+    if time in xrda.dims:
+        stda_data = stda_data.rename(time='time')
+    else:
+        stda_data = stda_data.expand_dims(time=[time])
+
+    if dtime in xrda.dims:
+        stda_data = stda_data.rename(dtime='dtime')
+    else:
+        stda_data = stda_data.expand_dims(dtime=[dtime])
+
+    if lat in xrda.dims:
+        stda_data = stda_data.rename(lat='lat')
+    else:
+        stda_data = stda_data.expand_dims(lat=[lat])
+
+    if lon in xrda.dims:
+        stda_data = stda_data.rename(lon='lon')
+    else:
+        stda_data = stda_data.expand_dims(lon=[lon])
+
+    stda_data = stda_data.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+
+    return stda_data
+
 
 def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
                       np_input_units='', var_name='',
@@ -211,7 +271,7 @@ class __STDADataArrayAccessor(object):
         else:
             description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析\nwww.nmc.cn'.format(init_time)
         return description
-    
+
     def description_point(self, describe=''):
         '''
         获取描述信息，格式如下
@@ -237,8 +297,7 @@ class __STDADataArrayAccessor(object):
         else:
             description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}\nwww.nmc.cn'.format(
                 init_time, data_name, point_lon, point_lat, describe)
-        return description    
-
+        return description
 
     def get_dim_value(self, dim_name):
         '''
