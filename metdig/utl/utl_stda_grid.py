@@ -38,7 +38,7 @@ def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='d
         [STDA] -- [STDA网格数据]
     """    
 
-    stda_data = xrda
+    stda_data = xrda.copy(deep=True)
 
     if member in xrda.dims:
         stda_data = stda_data.rename(member='member')
@@ -71,6 +71,13 @@ def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='d
         stda_data = stda_data.expand_dims(lon=[lon])
 
     stda_data = stda_data.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+
+    # attrs
+    stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+    # 单位转换
+    stda_data.values, data_units = mdgstda.numpy_units_to_stda(stda_data.values, np_input_units, stda_attrs['var_units'])
+    stda_attrs['var_units'] = data_units
+    stda_data.attrs = stda_attrs
 
     return stda_data
 
