@@ -10,6 +10,7 @@ Other required packages:
 - meteva >=1.3.*
 - cdsapi
 - nmc_met_io
+- folium
 ## Install
 please install metdig under anaconda enviroment.
 since Cartopy is hard to install, 
