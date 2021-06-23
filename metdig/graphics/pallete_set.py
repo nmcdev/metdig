@@ -66,8 +66,9 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
                                     zorder=101, size=13, small_city=small_city)
 
     if add_background:
-        # ax.add_feature(cfeature.OCEAN)
-        # utl_plotmap.add_cartopy_background(ax, name='RD')
+        ax.add_feature(cfeature.OCEAN)
+        utl_plotmap.add_cartopy_background(ax, name='RD')
+    else:
         ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
         ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
 
