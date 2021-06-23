@@ -14,6 +14,7 @@ import metdig.utl as mdgstda
 
 __all__ = [
     'dewpoint_from_relative_humidity',
+    'dewpoint_from_specific_humidity',
     'saturation_vapor_pressure',
     'specific_humidity_from_dewpoint',
     'cal_ivt_singlelevel',
@@ -43,6 +44,29 @@ def dewpoint_from_relative_humidity(tmp, rh):
 
     return td
 
+def dewpoint_from_specific_humidity(pres, tmp, spfh):
+    
+    '''
+
+    [Calculate the dewpoint from specific humidity, temperature, and pressure.]
+
+    Arguments:
+        pres {[stda]} -- [pressure]
+        tmp {[stda]} -- [air temperature]
+        spfh {[stda]} -- [specific_humidity]
+
+    Returns:
+        [stda] -- [The dewpoint temperature]
+    '''
+    pres_p = utl.stda_to_quantity(pres)  # hPa
+    tmp_p = utl.stda_to_quantity(tmp)  # degC
+    spfh_p = utl.stda_to_quantity(spfh)  # g/kg
+
+    td_p = mpcalc.dewpoint_from_specific_humidity(pres_p, tmp_p, spfh_p)
+
+    td = utl.quantity_to_stda_byreference('td', td_p, tmp)
+
+    return td
 
 def saturation_vapor_pressure(tmp):
     '''

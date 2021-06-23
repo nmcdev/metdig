@@ -5,6 +5,7 @@ from . import diag_moisture
 from . import diag_qpf
 from . import diag_synoptic
 from . import diag_thermal
+from . import diag_station
 from . import observation_radar
 from . import observation_satelite
 from . import observation_station
