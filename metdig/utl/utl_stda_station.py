@@ -324,6 +324,16 @@ class __STDADataFrameAccessor(object):
         point_lat = self.lat[0]
         data_name = self.member[0].upper()
 
+        if point_lon > 0:
+            point_lon = str(point_lon) + 'E'
+        else:
+            point_lon = str(point_lon) + 'W'
+
+        if point_lat > 0:
+            point_lat = str(point_lat) + 'N'
+        else:
+            point_lat = str(point_lat) + 'S'
+
         title = ''
         if(fhour != 0):
             description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}\nwww.nmc.cn'.format(

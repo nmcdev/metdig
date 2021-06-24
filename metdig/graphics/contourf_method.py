@@ -17,8 +17,8 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 def contourf_2d(ax, stda, xdim='lon', ydim='lat',
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                 levels=None, cmap='jet', extend='both',
-                transform=ccrs.PlateCarree(), alpha=0.8,
-                **kwargs):
+                transform=ccrs.PlateCarree(), alpha=0.8, 
+                colorbar_kwargs={}, **kwargs):
     """[graphics层绘制contourf平面图通用方法]
 
     Args:
@@ -52,7 +52,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 
     if add_colorbar:
         cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
-        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
+        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, **colorbar_kwargs)
     
     return img
 
