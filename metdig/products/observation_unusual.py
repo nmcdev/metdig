@@ -18,7 +18,7 @@ def draw_wind_profiler(u, v, id, st_time, ed_time, uv_barbs_kwargs={}, **pallete
     times = u.stda.time
 
     title = '风廓线雷达时间剖面图'
-    forcast_info = '站号: {2}\n开始时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时{0:%M}分\n结束时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时{1:%M}分\nwww.nmc.cn'.format(
+    forcast_info = '站号: {2}\n开始时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时{0:%M}分\n结束时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时{1:%M}分'.format(
         st_time, ed_time, id)
     png_name = '{2}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时{0:%M}分_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时{1:%M}分风廓线雷达时间剖面图.png'.format(st_time, ed_time, id)
 

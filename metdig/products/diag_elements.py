@@ -93,8 +93,7 @@ def draw_dt2m(dt2m, map_extent=(60, 145, 15, 55),
     var_cn_name = dt2m.attrs['var_cn_name']
     title = '[{}] {}'.format(data_name.upper(), var_cn_name)
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
-        init_time, fcst_time, fhour)
+    forcast_info = dt2m.stda.description()
     png_name = '{2}_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
     dt2m_filter = mdgcal.gaussian_filter(dt2m, 5)

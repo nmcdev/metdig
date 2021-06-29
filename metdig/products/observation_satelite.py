@@ -33,7 +33,7 @@ def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 14
         uv_color = 'white'
 
     title = 'FY4A{}观测 探空观测 高度场'.format(ir_name)
-    forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n探空观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n高度场时间: {2:%Y}年{2:%m}月{2:%d}日{2:%H}时\nwww.nmc.cn'.format(
+    forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n探空观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n高度场时间: {2:%Y}年{2:%m}月{2:%d}日{2:%H}时'.format(
         ir_time, sounding_time, hgt_time)
     png_name = '卫星观测{1}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时.png'.format(ir_time, ir_name)
 

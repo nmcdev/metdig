@@ -30,7 +30,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     levels = qcld['level'].values
 
     title = '云水比, 雪水比, 温度, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}'.format(
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_云水比_雪水比_水平风_温度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -68,7 +68,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
     levels = qcld['level'].values
 
     title = '云水比, 冰水比, 温度, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}'.format(
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_云水比_冰水比_水平风_温度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -340,7 +340,7 @@ def draw_time_rh_uv_theta(rh, u, v, theta, rh_contourf_kwargs={}, uv_barbs_kwarg
     levels = rh['level'].values
 
     title = '相当位温, 相对湿度, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}'.format(
         init_time, data_name, points['lon'], points['lat'])
     png_name = '{3}_相当位温_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -364,7 +364,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
     levels = spfh['level'].values
 
     title = '散度, 垂直涡度, 比湿, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}'.format(
         init_time, data_name, points['lon'], points['lat'])
     png_name = '{3}_散度_垂直涡度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -395,7 +395,7 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     levels = tmpadv['level'].values
 
     title = '温度, 温度平流, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}'.format(
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_温度_温度平流_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -433,7 +433,7 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     levels = vortadv['level'].values
 
     title = '温度, 垂直涡度平流, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}'.format(
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_温度_垂直涡度平流_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -471,7 +471,7 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
     levels = rh['level'].values
 
     title = '散度, 垂直涡度, 相对湿度, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}'.format(
         init_time, data_name, points['lon'], points['lat'])
     png_name = '{3}_散度_垂直涡度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
@@ -500,7 +500,7 @@ def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  rh_contourf_kwargs={}, uv_barbs
     levels = rh['level'].values
 
     title = '温度, 相对湿度, 水平风'
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}\nwww.nmc.cn'.format(
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}'.format(
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_温度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)

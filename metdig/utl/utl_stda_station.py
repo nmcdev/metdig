@@ -292,17 +292,16 @@ class __STDADataFrameAccessor(object):
         起报时间: Y年m月d日H时
         预报时间: Y年m月d日H时
         预报时效: 小时
-        www.nmc.cn
         '''
         init_time = self.time[0]
         fhour = self.dtime[0]
         fcst_time = self.fcst_time[0]
 
         if fhour != 0:
-            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(
                 init_time, fcst_time, fhour)
         else:
-            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析\nwww.nmc.cn'.format(init_time)
+            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析'.format(init_time)
         return description
     
     def description_point(self, describe=''):
@@ -311,12 +310,10 @@ class __STDADataFrameAccessor(object):
         起报时间: Y年m月d日H时
         [data_name]N小时预报describe
         预报点: lon, lat
-        www.nmc.cn
 
         起报时间: Y年m月d日H时
         [data_name]实况info
         分析点: lon, lat
-        www.nmc.cn
         '''
         init_time = self.time[0]
         fhour = self.dtime[0]
@@ -336,10 +333,10 @@ class __STDADataFrameAccessor(object):
 
         title = ''
         if(fhour != 0):
-            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}\nwww.nmc.cn'.format(
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}'.format(
                 init_time, data_name, fhour, point_lon, point_lat, describe)
         else:
-            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}\nwww.nmc.cn'.format(
+            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}'.format(
                 init_time, data_name, point_lon, point_lat, describe)
         return description        
     
