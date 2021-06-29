@@ -24,18 +24,18 @@ def config_init(CMADaaS_DNS=None, CMADaaS_PORT=None, CMADaaS_USER_ID=None, CMADa
     """[io数据接口参数初始化方法，不存在则创建。不传参保持原配置不变。]
 
     Args:
-        CMADaaS_DNS ([string], optional): [CMADaaS配置]. Defaults to None.
-        CMADaaS_PORT ([string], optional): [CMADaaS配置]. Defaults to None.
-        CMADaaS_USER_ID ([string], optional): [CMADaaS配置]. Defaults to None.
-        CMADaaS_PASSWORD ([string], optional): [CMADaaS配置]. Defaults to None.
-        CMADaaS_serviceNodeId ([string], optional): [CMADaaS配置]. Defaults to None.
-        MICAPS_GDS_IP ([string], optional): [MICAPS配置]. Defaults to None.
-        MICAPS_GDS_PORT ([string], optional): [MICAPS配置]. Defaults to None.
-        THREDDS_IP ([string], optional): [THREDDS配置]. Defaults to None.
-        THREDDS_PORT ([string], optional): [THREDDS配置]. Defaults to None.
-        CDS_UID ([string], optional): [CDS配置]. Defaults to None.
-        CDS_AIP_KEY ([string], optional): [CDS配置]. Defaults to None.
-        CACHE_DIR ([string], optional): [缓存路径]. Defaults to None.
+        CMADaaS_DNS ([string], optional): [CMADaaS配置 xx.xx.xx.xx]. Defaults to None.
+        CMADaaS_PORT ([string], optional): [CMADaaS配置 xx]. Defaults to None.
+        CMADaaS_USER_ID ([string], optional): [CMADaaS配置 xxxxxxxxx]. Defaults to None.
+        CMADaaS_PASSWORD ([string], optional): [CMADaaS配置 xxxxxxxxx]. Defaults to None.
+        CMADaaS_serviceNodeId ([string], optional): [CMADaaS配置 xxxxxxxxx]. Defaults to None.
+        MICAPS_GDS_IP ([string], optional): [MICAPS配置 xx.xx.xx.xx]. Defaults to None.
+        MICAPS_GDS_PORT ([string], optional): [MICAPS配置 xx]. Defaults to None.
+        THREDDS_IP ([string], optional): [THREDDS配置 xx.xx.xx.xx]. Defaults to None.
+        THREDDS_PORT ([string], optional): [THREDDS配置 xx]. Defaults to None.
+        CDS_UID ([string], optional): [CDS配置 xxxxx]. Defaults to None.
+        CDS_AIP_KEY ([string], optional): [CDS配置 xxxxx]. Defaults to None.
+        CACHE_DIR ([string], optional): [缓存路径 ~]. Defaults to None.
     """
     config.init_nmcdev_cfg(
         CMADaaS_DNS=CMADaaS_DNS, CMADaaS_PORT=CMADaaS_PORT, CMADaaS_USER_ID=CMADaaS_USER_ID, CMADaaS_PASSWORD=CMADaaS_PASSWORD,
