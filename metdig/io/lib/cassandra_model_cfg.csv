@@ -154,3 +154,5 @@ grapes_meso_3km,qice,high,g/kg,,any,GRAPES_3KM/ICE_WATER_MIXING_RATIO/
 grapes_meso_3km,qsn,high,g/kg,,any,GRAPES_3KM/SNOW_MIXING_RATIO/
 grapes_meso_3km,qrn,high,g/kg,,any,GRAPES_3KM/RAIN_MIXING_RATIO/
 grapes_meso_3km,cref,surface,,,0,GRAPES_3KM/RADAR_COMBINATION_REFLECTIVITY/
+grapes_meso_1km,cref,surface,,,0,GRAPES_1KM/RADAR_COMBINATION_REFLECTIVITY/
+grapes_meso_1km,rain01,surface,mm,,0,GRAPES_1KM/RAIN01/

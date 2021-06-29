@@ -127,13 +127,16 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
     '''
     stda_data = []
     for fhour in fhours:
-        data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+        try: #待斟酌
+            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+        except: #待斟酌
+            continue
         if data is not None and data.size > 0:
             stda_data.append(data)
     if stda_data:
         return xr.concat(stda_data, dim='dtime')
-    return None
-
+    else:
+        raise Exception('Can not get data from cassandra! {}{}'.format(data_name, var_name))
 
 def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None, levels=None,
                       extent=None, x_percent=0, y_percent=0):
