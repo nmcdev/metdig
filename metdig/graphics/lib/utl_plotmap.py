@@ -20,17 +20,21 @@ import metdig.graphics.lib.utility as utl
 
 pkg_name = 'metdig.graphics'
 
-def add_ticks(ax, xticks=None, yticks=None, crs=ccrs.PlateCarree(), **kwargs):
+def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False ,**kwargs):
     if xticks is not None:
         ax.set_xticks(xticks, crs=crs)
         lon_formatter = LongitudeFormatter(zero_direction_label=False)
         ax.xaxis.set_major_formatter(lon_formatter)
-        ax.tick_params(axis='x', **kwargs)
+        ax.tick_params(axis='x', labelsize=labelsize, **kwargs)
     if yticks is not None:
         ax.set_yticks(yticks, crs=crs)
         lat_formatter = LatitudeFormatter()
         ax.yaxis.set_major_formatter(lat_formatter)
-        ax.tick_params(axis='y', **kwargs)
+        ax.tick_params(axis='y', labelsize=labelsize, **kwargs)
+    
+    if add_grid:
+        ax.gridlines(crs=crs, xlocs=xticks, ylocs=yticks, linewidth=1, color='gray', alpha=0.5, linestyle='--', zorder=100)
+    
 
 def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
                                   edgecolor='c', lw=2, **kwargs):

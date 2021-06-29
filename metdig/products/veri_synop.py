@@ -29,10 +29,9 @@ def draw_veri_heatwave(tmx24_2m_fcst, tmx24_2m_obs,
     fhour = int(tmx24_2m_fcst['dtime'].values[0])
     fcstTime = init_time + datetime.timedelta(hours=fhour)
     data_name = tmx24_2m_fcst['member'].values[0]
-    title = '[{}] 高温天气预报检验'.format(
-        data_name.upper())
+    title = '[{}] 高温天气预报检验'.format(data_name.upper())
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcstTime, fhour)
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(init_time, fcstTime, fhour)
     png_name = '{2}_高温天气_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper())
 
     
@@ -65,7 +64,7 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
         hgt_ana['level'].values[0],
         u_ana['level'].values[0])
 
-    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n分析时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时\nwww.nmc.cn'.format(init_time, fcstTime, fhour)
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n分析时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(init_time, fcstTime, fhour)
     png_name = '{2}_位势高度_风_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)

@@ -17,8 +17,8 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 def contourf_2d(ax, stda, xdim='lon', ydim='lat',
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                 levels=None, cmap='jet', extend='both',
-                transform=ccrs.PlateCarree(), alpha=0.8,
-                **kwargs):
+                transform=ccrs.PlateCarree(), alpha=0.8, 
+                colorbar_kwargs={}, **kwargs):
     """[graphics层绘制contourf平面图通用方法]
 
     Args:
@@ -52,7 +52,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 
     if add_colorbar:
         cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
-        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label)
+        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, **colorbar_kwargs)
     
     return img
 
@@ -92,6 +92,7 @@ def heatwave_contourf(ax, stda, xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z,levels=levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='Temperature ($^\circ$C)', extendrect=False, **colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def qcld_contourf(ax, stda,  xdim='lon', ydim='lat',
@@ -106,6 +107,7 @@ def qcld_contourf(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='QCLD (g kg$^{-1}$)',**colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def qsn_contourf(ax, stda,  xdim='lon', ydim='lat',
@@ -120,6 +122,7 @@ def qsn_contourf(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='QSNOW (g kg$^{-1}$)',**colorbar_kwargs)
+    return img
 
 
 @kwargs_wrapper
@@ -135,6 +138,7 @@ def qice_contourf(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='QICE (g kg$^{-1}$)',**colorbar_kwargs)
+    return img
 
 
 @kwargs_wrapper
@@ -151,6 +155,7 @@ def tcwv_contourf(ax, stda, xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='total column water(mm)', extend='max',**colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
@@ -183,6 +188,7 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='temperature advection (10' + '$^{-4}$K*s$^{-1}$)',**colorbar_kwargs)
+    return img
 
 
 @kwargs_wrapper
@@ -200,6 +206,7 @@ def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='vorticity advection (10' + '$^{-8}$s$^{-1}$)',extend=extend,**colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
@@ -215,6 +222,7 @@ def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='vorticity (10' + '$^{-5}$s$^{-1}$)',**colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def div_contourf(ax, stda, xdim='lon', ydim='lat',
@@ -231,6 +239,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$')
+    return img
 
 
 @kwargs_wrapper
@@ -247,6 +256,7 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='mean sea level pressure (hPa)', extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -296,6 +306,7 @@ def rain_contourf(ax, stda, xdim='lon', ydim='lat',
     img = ax.contourf(x, y, z, levels, colors=colors, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -313,6 +324,7 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='max', pos='right')
+    return img
 
 
 @kwargs_wrapper
@@ -332,6 +344,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend='max', pos='right')
+    return img
 
 
 @kwargs_wrapper
@@ -348,6 +361,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='max', **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend='max', pos='right')
+    return img
 
 
 @kwargs_wrapper
@@ -366,6 +380,7 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Moisture Potential Vorticity (10$^{-6}$ K*m**2/(s*kg))',
                          label_size=15, orientation='vertical', extend='max', pos='right')
+    return img
 
 
 @kwargs_wrapper
@@ -382,3 +397,4 @@ def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
         cmap = col.LinearSegmentedColormap.from_list('own3', [endcolor, startcolor])
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    return img

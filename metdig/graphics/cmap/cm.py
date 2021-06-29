@@ -99,10 +99,10 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
             name = '#000000'
             name = 'black'
             name = ['#000000', '#ffffff']
-            name = 'met/ape_new'
-            name = 'ncl/Blre'
+            name = 'met/ape_new' or 'met/ape_new_r' (_r结尾的反转颜色表)
+            name = 'ncl/Blre' or 'ncl/Blre_r' (_r结尾的反转颜色表)
             name = ''
-            name = 'jet'
+            name = 'jet' or 'jet_r' (_r结尾的反转颜色表)
         ]
         extend (str, optional): [both max min neither，仅在填写levels时才生效]. Defaults to 'neither'.
         levels ([list], optional): [长度必须大于等于2的颜色等级]. Defaults to None.
@@ -113,11 +113,20 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
     """    
     if isinstance(name, str):
         if name.startswith('met/'):
-            colors = met_cmaps(name[4:]).colors
+            if name.lower().endswith('_r'):
+                colors = met_cmaps(name[4:-2]).colors[::-1, :] # _r结尾的反转颜色表
+            else:
+                colors = met_cmaps(name[4:]).colors
         elif name.startswith('ncl/'):
-            colors = ncl_cmaps(name[4:]).colors
+            if name.lower().endswith('_r'):
+                colors = ncl_cmaps(name[4:-2]).colors[::-1, :] # _r结尾的反转颜色表
+            else:
+                colors = ncl_cmaps(name[4:]).colors
         elif name.startswith('guide/'):
-            colors = guide_cmaps(name[6:]).colors
+            if name.lower().endswith('_r'):
+                colors = guide_cmaps(name[6:-2]).colors[::-1, :] # _r结尾的反转颜色表
+            else:
+                colors = guide_cmaps(name[6:]).colors
         else:
             if name in matplotlib.cm.cmap_d.keys():
                 colors = plt.get_cmap(name)(range(256))

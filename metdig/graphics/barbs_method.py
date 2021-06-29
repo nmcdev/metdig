@@ -68,3 +68,4 @@ def uv_barbs(ax, ustda, vstda, color='black', transform=ccrs.PlateCarree(),
     # 绘制
     img = ax.barbs(x, y, u, v, color=color, transform=transform, length=length,
                    regrid_shape=regrid_shape, fill_empty=fill_empty, sizes=sizes, **kwargs)
+    return img

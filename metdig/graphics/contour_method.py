@@ -76,6 +76,7 @@ def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+    return img
 
 @kwargs_wrapper
 def vort_contour(ax, stda, xdim='lon', ydim='lat',
@@ -90,6 +91,7 @@ def vort_contour(ax, stda, xdim='lon', ydim='lat',
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
+    return img
 
 @kwargs_wrapper
 def div_contour(ax, stda, xdim='lon', ydim='lat',
@@ -104,6 +106,7 @@ def div_contour(ax, stda, xdim='lon', ydim='lat',
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
+    return img
 
 @kwargs_wrapper
 def pv_contour(ax, stda, xdim='lon', ydim='lat',
@@ -118,6 +121,7 @@ def pv_contour(ax, stda, xdim='lon', ydim='lat',
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+    return img
 
 
 @kwargs_wrapper
@@ -132,6 +136,7 @@ def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors=colors)
+    return img
 
 
 @kwargs_wrapper
@@ -149,6 +154,7 @@ def tmp_contour(ax, stda,  xdim='lon', ydim='lat',
         if cl is not None:
             for t in cl:
                 t.set_path_effects([mpatheffects.Stroke(linewidth=2, foreground='white'), mpatheffects.Normal()])
+    return img
 
 
 @kwargs_wrapper
@@ -174,6 +180,7 @@ def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
         if cl is not None:
             for t in cl:
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
+    return img
 
 
 @kwargs_wrapper
@@ -188,6 +195,7 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
         plt.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+    return img
 
 
 @kwargs_wrapper
@@ -206,3 +214,4 @@ def cross_tmp_contour(ax, stda, xdim='lon', ydim='level',
         img = ax.contour(x, y, z, levels=[0], colors='k', linewidths=3)
         if add_clabel:
             plt.clabel(img, [0], fontsize=22, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+    return img
