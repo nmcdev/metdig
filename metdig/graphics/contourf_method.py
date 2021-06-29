@@ -61,6 +61,23 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
+def cref_contourf(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  levels=[10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70], 
+                  transform=ccrs.PlateCarree(), alpha=1,colorbar_kwargs={},
+                  **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # mm
+    z[z<15]=np.nan
+    colors = ['#01A0F6', '#00ECEC', '#00D800', '#019000', '#FFFF00', '#E7C000', '#FF9000', '#FF0000', '#D60000', '#D60000', '#FF00F0', '#9600B4', '#AD90F0']
+    cmap, norm = cm_collected.get_cmap(colors, extend='max', levels=levels)
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='(dbz)', extend='max', **colorbar_kwargs)
+
+@kwargs_wrapper
 def heatwave_contourf(ax, stda, xdim='lon', ydim='lat', 
                       add_colorbar=True,
                       levels=[33,35,37,40,50], cmap='YlOrBr', extend='max', 
@@ -231,6 +248,38 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='mean sea level pressure (hPa)', extend='max')
 
+
+@kwargs_wrapper
+def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
+                   add_colorbar=True,
+                   transform=ccrs.PlateCarree(), alpha=1,
+                   **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # mm
+
+    if valid_time == 24:
+        levels = np.concatenate((
+            np.array([0, 0.1, 0.5, 1]), np.arange(2.5, 25, 2.5),
+            np.arange(25, 50, 5), np.arange(50, 150, 10),
+            np.arange(150, 475, 25)))
+    elif valid_time == 6:
+        levels = np.concatenate(
+            (np.array([0, 0.1, 0.5]), np.arange(1, 4, 1),
+             np.arange(4, 13, 1.5), np.arange(13, 25, 2),
+             np.arange(25, 60, 2.5), np.arange(60, 105, 5)))
+    else:
+        levels = np.concatenate(
+            (np.array([0, 0.01, 0.1]), np.arange(0.5, 2, 0.5),
+             np.arange(2, 8, 1), np.arange(8, 20, 2),
+             np.arange(20, 55, 2.5), np.arange(55, 100, 5)))
+    cmap, norm = cm_collected.get_cmap('met/qpf_nws', extend='max', levels=levels)
+    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+
+    z = np.where(z < 0.1, np.nan, z)
+    img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='{}h precipitation (mm)'.format(valid_time), extend='max')
 
 @kwargs_wrapper
 def rain_contourf(ax, stda, xdim='lon', ydim='lat',

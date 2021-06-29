@@ -11,14 +11,66 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import date_init
 
 from metdig.products import diag_qpf as draw_qpf
+from metdig.products import observation_radar as draw_obsradar
 
 import metdig.cal as mdgcal
 
 __all__ = [
     'hgt_rain',
     'mslp_rain_snow',
+    'model_cref'
 ]
 
+@date_init('init_time')
+def model_cref(data_source='cassandra', data_name='grapes_meso_3km', init_time=None, fhour=24, area='全国',
+             is_return_data=False, is_draw=True, **products_kwargs):
+
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    # get data
+    cref = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='cref', extent=map_extent)
+    # cref = cref[..., ::4, ::4]
+
+    if is_return_data:
+        dataret = {'cref': cref}
+        ret.update({'data': dataret})
+
+    # plot
+    if is_draw:
+        drawret = draw_qpf.draw_model_cref(cref, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+@date_init('init_time')
+def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',
+             is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+    map_extent = get_map_area(area)
+
+    if atime > 3:
+        fhour_gh = int(fhour - atime / 2)
+    else:
+        fhour_gh = fhour
+
+    rain = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='rain{:02d}'.format(atime), extent=map_extent)
+
+    if is_return_data:
+        dataret = {'rain': rain}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_qpf.draw_rain(rain, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
 
 @date_init('init_time')
 def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',

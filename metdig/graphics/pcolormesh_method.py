@@ -420,7 +420,7 @@ def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # mm
-
+    z[z<15]=np.nan
     colors = ['#01A0F6', '#00ECEC', '#00D800', '#019000', '#FFFF00', '#E7C000', '#FF9000', '#FF0000', '#D60000', '#D60000', '#FF00F0', '#9600B4', '#AD90F0']
     cmap, norm = cm_collected.get_cmap(colors, extend='max', levels=levels)
 

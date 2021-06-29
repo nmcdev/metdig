@@ -117,10 +117,12 @@ nwfd_smerage,tmx24_2m,surface,degC,,2,NWFD_SMERGE/MAXIMUM_TEMPERATURE/2M_ABOVE_G
 nwfd_smerage,tmn24_2m,surface,degC,,2,NWFD_SMERGE/MINIMUM_TEMPERATURE/2M_ABOVE_GROUND/
 nwfd_smerage,t2m,surface,degC,,2,NWFD_SMERGE/TMP/2M_ABOVE_GROUND/
 nwfd_smerage,rh2m,surface,percent,,2,NWFD_SMERGE/RH/2M_ABOVE_GROUND/
+cldas,rain01,surface,mm,,0,CLDAS/RAIN01_TRI_DATA_SOURCE/
 cldas,tmx24_2m,surface,degC,,2,CLDAS/MAXIMUM_TEMPERATURE/2M_ABOVE_GROUND/
 grapes_meso_3km,u10m,surface,m/s,,10,GRAPES_3KM/UGRD/10M_ABOVE_GROUND/
 grapes_meso_3km,v10m,surface,m/s,,10,GRAPES_3KM/VGRD/10M_ABOVE_GROUND/
 grapes_meso_3km,prmsl,surface,hPa,,0,GRAPES_3KM/PRMSL/
+grapes_meso_3km,rain01,surface,mm,,0,GRAPES_3KM/RAIN01/
 grapes_meso_3km,rain24,surface,mm,,0,GRAPES_3KM/RAIN24/
 grapes_meso_3km,rain03,surface,mm,,0,GRAPES_3KM/RAIN03/
 grapes_meso_3km,rain06,surface,mm,,0,GRAPES_3KM/RAIN06/
@@ -151,3 +153,4 @@ grapes_meso_3km,qcld,high,g/kg,,any,GRAPES_3KM/CLOUD_MIXING_RATIO/
 grapes_meso_3km,qice,high,g/kg,,any,GRAPES_3KM/ICE_WATER_MIXING_RATIO/
 grapes_meso_3km,qsn,high,g/kg,,any,GRAPES_3KM/SNOW_MIXING_RATIO/
 grapes_meso_3km,qrn,high,g/kg,,any,GRAPES_3KM/RAIN_MIXING_RATIO/
+grapes_meso_3km,cref,surface,,,0,GRAPES_3KM/RADAR_COMBINATION_REFLECTIVITY/

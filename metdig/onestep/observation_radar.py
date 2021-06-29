@@ -17,7 +17,39 @@ import metdig.cal as mdgcal
 
 __all__ = [
     'cref_sounding_hgt',
+    'cref'
 ]
+
+def cref(cref_obs_time=None,
+        is_mask_terrain=True,
+        area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    # get data
+    cref = get_radar_mosaic(obs_time=cref_obs_time, data_name='achn', var_name='cref',  extent=map_extent)
+
+    # cref = cref[..., ::4, ::4]
+
+    if is_return_data:
+        dataret = {'cref': cref}
+        ret.update({'data': dataret})
+
+    # plot
+    if is_draw:
+        drawret = draw_obsradar.draw_cref(cref, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+if __name__=='__main__':
+
+    import datetime
+    cref(cref_obs_time=datetime.datetime(2021,6,28,11,0,0),area='华北')
 
 
 def cref_sounding_hgt(cref_obs_time=None,
