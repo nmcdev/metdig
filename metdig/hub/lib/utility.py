@@ -28,7 +28,7 @@ def get_labels_dist(num):
     if num == 1:
         return (1, 1)
     if num == 2:
-        return (2, 1)
+        return (1, 2)
 
     if num > 2 and num <= 4:
         return (2, 2)
@@ -128,13 +128,13 @@ def save_animation(img_bufs, output_dir, gif_name, is_clean_plt=True):
     gif_path = None
     if output_dir:
         gif_path = os.path.join(output_dir, gif_name)
-        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=1, loop=0) as writer:
+        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=2, loop=0) as writer:
             for imgbuf in img_bufs:
                 writer.append_data(imgbuf)
 
     if is_clean_plt == False:
         gif_path = BytesIO()
-        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=1, loop=0) as writer:
+        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=2, loop=0) as writer:
             for imgbuf in img_bufs:
                 writer.append_data(imgbuf)
         img = Image(data=gif_path.getvalue())
@@ -163,7 +163,7 @@ def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=Tru
     png_path = None
     if output_dir:
         png_path = os.path.join(output_dir, png_name)
-        plt.savefig(png_path, dpi=200, bbox_inches='tight')
+        plt.savefig(png_path, dpi=100, bbox_inches='tight')
 
     if is_clean_plt:
         plt.close(fig)

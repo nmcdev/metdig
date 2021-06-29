@@ -16,6 +16,7 @@ from mpl_toolkits.axisartist.parasite_axes import HostAxes, ParasiteAxes
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 
 from metpy.plots import SkewT
 
@@ -34,7 +35,8 @@ def plt_base_env():
 
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=23, forcast_info='', nmc_logo=False,
-                       add_china=True, add_city=True, add_background=True, add_south_china_sea=True, add_grid=True):
+                       add_china=True, add_city=True, add_background=True, add_south_china_sea=True, add_grid=True,add_ticks=False,
+                       background_style=None,background_zoom_level=10):
     plt_base_env() # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
@@ -48,8 +50,8 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     # add grid lines
     if add_grid:
         gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
-        gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 360, 15))
-        gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 15))
+        gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 360, 10))
+        gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
 
     if add_china:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.8, zorder=100, alpha=0.5)
@@ -71,6 +73,24 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     else:
         ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
         ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+
+    if background_style!=None:
+        if(background_style=='satellite'):
+            request = utl.TDT_img() #卫星图像
+        if(background_style=='terrain'):
+            request = utl.TDT_ter() #卫星图像
+        if(background_style=='road'):
+            request = utl.TDT() #卫星图像
+        ax.add_image(request, background_zoom_level)# level=10 缩放等级 
+
+    #增加坐标
+    if add_ticks:
+        ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=ccrs.PlateCarree())
+        ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1,10), crs=ccrs.PlateCarree())
+        lon_formatter = LongitudeFormatter(degree_symbol='',dateline_direction_label=True)
+        lat_formatter = LatitudeFormatter(degree_symbol='')
+        ax.xaxis.set_major_formatter(lon_formatter)
+        ax.yaxis.set_major_formatter(lat_formatter)
 
 
     if add_south_china_sea:
@@ -97,6 +117,13 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
             bax.axis([0, 10, 0, 10])
             bax.text(0.5, 9.8, forcast_info, size=15, va='top', ha='left',)
 
+    #添加 powered by metdig
+    cax = plt.axes([l+w-0.10, b, 0.1, 0.025], facecolor='#FFFFFFCC')
+    cax.set_yticks([])
+    cax.set_xticks([])
+    cax.set_axis_off()
+    cax.axis([0, 10, 0, 10])
+    cax.text(0.5, 9.8, 'Powered by MetDig', size=13, va='top', ha='left',)
     return fig, ax
 
 

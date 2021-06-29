@@ -21,6 +21,25 @@ _log = logging.getLogger(__name__)
 pkg_name = 'metdig.graphics'
 
 
+
+import cartopy.io.img_tiles as cimgt
+import cartopy.crs as ccrs
+class TDT_img(cimgt.GoogleWTS):
+    def _image_url(self, tile):
+        x, y, z = tile
+        url = 'https://webst01.is.autonavi.com/appmaptile?x=%s&y=%s&z=%s&style=6'% (x, y, z)
+        return url
+class TDT_ter(cimgt.GoogleWTS):
+    def _image_url(self, tile):
+        x, y, z = tile
+        url = 'http://mt2.google.cn/vt/lyrs=p&scale=2&hl=zh-CN&gl=cn&x=%s&y=%s&z=%s'% (x, y, z)
+        return url
+class TDT(cimgt.GoogleWTS):
+    def _image_url(self, tile):
+        x, y, z = tile
+        url = 'http://wprd01.is.autonavi.com/appmaptile?x=%s&y=%s&z=%s&lang=zh_cn&size=1&scl=1&style=7'% (x, y, z)
+        return url
+
 def kwargs_wrapper(func):
     '''
     关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数
