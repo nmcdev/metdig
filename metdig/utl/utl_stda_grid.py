@@ -18,9 +18,22 @@ __all__ = [
 
 
 def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='dtime', lat='lat', lon='lon',
-                      np_input_units='', var_name='',
-                      **attrs_kwargv):
-    """[通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda，]
+                     np_input_units='', var_name='',
+                     **attrs_kwargv):
+    """[通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda，
+    Example:
+    xrda = xr.DataArray([[271, 272, 273], [274, 275, 276]], dims=("X", "Y"), coords={"X": [10, 20], 'Y': [80, 90, 100]})
+
+    # 指定xrda中各个维度对应的stda的维度名称
+    stda = metdig.utl.xrda_to_gridstda(xrda, lon='X', lat='Y') 
+
+    # 可以指定缺失的stda维度
+    stda = metdig.utl.xrda_to_gridstda(xrda, member='cassandra', lon='X', lat='Y') 
+
+    # 可以指定stda的要素，同时给定输入单位，自动转换为stda的单位
+    stda = metdig.utl.xrda_to_gridstda(xrda, member='cassandra', lon='X', lat='Y', np_input_units='K' ,var_name='tmp') 
+    
+    ]
 
     Args:
         xrda ([xarray.DataArray]): [输入的DataArray]
@@ -36,37 +49,37 @@ def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='d
 
     Returns:
         [STDA] -- [STDA网格数据]
-    """    
+    """
 
     stda_data = xrda.copy(deep=True)
 
     if member in xrda.dims:
-        stda_data = stda_data.rename(member='member')
+        stda_data = stda_data.rename({member: 'member'})
     else:
         stda_data = stda_data.expand_dims(member=[member])
 
     if level in xrda.dims:
-        stda_data = stda_data.rename(level='level')
+        stda_data = stda_data.rename({level: 'level'})
     else:
         stda_data = stda_data.expand_dims(level=[level])
 
     if time in xrda.dims:
-        stda_data = stda_data.rename(time='time')
+        stda_data = stda_data.rename({time: 'time'})
     else:
         stda_data = stda_data.expand_dims(time=[time])
 
     if dtime in xrda.dims:
-        stda_data = stda_data.rename(dtime='dtime')
+        stda_data = stda_data.rename({dtime: 'dtime'})
     else:
         stda_data = stda_data.expand_dims(dtime=[dtime])
 
     if lat in xrda.dims:
-        stda_data = stda_data.rename(lat='lat')
+        stda_data = stda_data.rename({lat: 'lat'})
     else:
         stda_data = stda_data.expand_dims(lat=[lat])
 
     if lon in xrda.dims:
-        stda_data = stda_data.rename(lon='lon')
+        stda_data = stda_data.rename({lon: 'lon'})
     else:
         stda_data = stda_data.expand_dims(lon=[lon])
 

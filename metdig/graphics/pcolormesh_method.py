@@ -76,6 +76,7 @@ def ulj_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max',**colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
@@ -93,6 +94,7 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='Vertical Velocity (0.1*Pa/s)', extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -110,6 +112,7 @@ def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Theta-E (K)')
+    return img
 
 
 @kwargs_wrapper
@@ -128,6 +131,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Temperature (°C)')
+    return img
 
 
 @kwargs_wrapper
@@ -147,6 +151,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -165,6 +170,7 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='total column water(mm)', extend='max',**colorbar_kwargs)
+    return img
 
 
 @kwargs_wrapper
@@ -183,6 +189,7 @@ def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(%)', extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -200,6 +207,7 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)')
+    return img
 
 
 @kwargs_wrapper
@@ -218,6 +226,7 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)')
+    return img
             
 
 @kwargs_wrapper
@@ -240,6 +249,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Water Vapor Flux g/(cm*hPa*s)', extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -257,6 +267,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, vmin=-45, vmax=45, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='°C', extend='both')
+    return img
 
 
 @kwargs_wrapper
@@ -278,6 +289,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     if add_colorbar:
         ticks = levels
         utl.add_colorbar(ax, img, ticks=ticks, label='风速 (m/s)', extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -297,6 +309,7 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     if add_colorbar:
         ticks = [-16, -12, -10, -8, -6, -4, 0, 4, 6, 8, 10, 12, 16]
         utl.add_colorbar(ax, img, ticks=ticks, label='°C', extend='both')
+    return img
 
 
 @kwargs_wrapper
@@ -330,6 +343,7 @@ def qpf_pcolormesh(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='{}h precipitation (mm)'.format(valid_time), extend='max')
+    return img
 
 
 @kwargs_wrapper
@@ -351,10 +365,10 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
         levels = [0.01, 2, 7, 13, 30, 60, 800]
     cmap, norm = cm_collected.get_cmap('met/rain_nws', extend='neither', levels=levels)
 
-    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    imgrain = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         l, b, w, h = ax.get_position().bounds
-        utl.add_colorbar(ax, img, label='雨 (mm)', rect=[l + w * 0.75, b - 0.04, w * 0.25, .02])
+        utl.add_colorbar(ax, imgrain, label='雨 (mm)', rect=[l + w * 0.75, b - 0.04, w * 0.25, .02])
 
     # 雪
     stda = rain_snow_sleet_stdas[1]
@@ -370,10 +384,10 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
         levels = [0.1, 1, 2, 4, 8, 12]
     cmap, norm = cm_collected.get_cmap('met/snow_nws', extend='neither', levels=levels)
 
-    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    imgsnow = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         l, b, w, h = ax.get_position().bounds
-        utl.add_colorbar(ax, img, label='雪 (mm)', rect=[l + w * 0.38, b - 0.04, w * 0.25, .02], extend='max')
+        utl.add_colorbar(ax, imgsnow, label='雪 (mm)', rect=[l + w * 0.38, b - 0.04, w * 0.25, .02], extend='max')
 
     # 雨夹雪
     stda = rain_snow_sleet_stdas[2]
@@ -389,9 +403,10 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
         levels = [0.1, 2, 7, 13, 30, 60]
     cmap, norm = cm_collected.get_cmap('met/sleet_nws', extend='neither', levels=levels)
 
-    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    imgsleet = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.25, .02], extend='max')
+        utl.add_colorbar(ax, imgsleet, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.25, .02], extend='max')
+    return imgrain, imgsnow, imgsleet
 
 
 @kwargs_wrapper
@@ -409,6 +424,7 @@ def ir_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(K)', extend='neither', **colorbar_kwargs)
+    return img
         
 @kwargs_wrapper
 def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
@@ -426,3 +442,4 @@ def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(dbz)', **colorbar_kwargs)
+    return img

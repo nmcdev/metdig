@@ -35,3 +35,4 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
             ax_inset.plot(endpoints[:, 0], endpoints[:, 1], c='k', zorder=2)
     else:
         ax_inset.plot(lon_cross, lat_cross, c='k', zorder=2)
+    return ax_inset
