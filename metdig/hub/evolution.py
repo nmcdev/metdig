@@ -12,6 +12,7 @@ from metdig.hub.lib.utility import save_animation,save_tab
 from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
+from metdig.hub.lib.utility import strparsetime
 
 __all__ = [
     'model_evolution',
@@ -42,6 +43,8 @@ def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmw
     Returns:
         [type] -- [description]
     '''
+    init_time = strparsetime(init_time)
+
     # 参数准备
     func_args_all = []
     for fhour in fhours:
@@ -98,6 +101,8 @@ def analysis_evolution(init_times=None, data_name='era5',data_source='cds',
     Returns:
         [type] -- [description]
     '''
+    init_times = list(map(lambda x: strparsetime(x), init_times))
+
     # 参数准备
     func_args_all = []
     for iinit in init_times:

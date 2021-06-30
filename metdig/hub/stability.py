@@ -15,6 +15,7 @@ from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
+from metdig.hub.lib.utility import strparsetime
 
 import logging
 _log = logging.getLogger(__name__)
@@ -23,10 +24,11 @@ __all__ = [
     'model_stability',
 ]
 
+
 def model_stability(target_time=None, latest_init_time=None, ninit=4, init_interval=12, data_name='ecmwf',
-                     func=None, func_other_args={}, max_workers=6,
-                     output_dir=None, show='animation', tab_size=(30, 18), list_size=(16, 9),
-                     is_clean_plt=False):
+                    func=None, func_other_args={}, max_workers=6,
+                    output_dir=None, show='animation', tab_size=(30, 18), list_size=(16, 9),
+                    is_clean_plt=False):
     '''
 
     [稳定性]
@@ -50,6 +52,9 @@ def model_stability(target_time=None, latest_init_time=None, ninit=4, init_inter
     Returns:
         [type] -- [description]
     '''
+    latest_init_time = strparsetime(latest_init_time)
+    target_time = strparsetime(target_time)
+
     if latest_init_time is None:
         # 获得最近的一次模式起报时间
         latest_init_time = get_nearest_init_time(24, data_name, func, func_other_args)
@@ -58,7 +63,7 @@ def model_stability(target_time=None, latest_init_time=None, ninit=4, init_inter
 
     # 如果target_time为空，则取latest_init_time+36
     if target_time is None:
-        target_time = latest_init_time + datetime.timedelta(hours=36) 
+        target_time = latest_init_time + datetime.timedelta(hours=36)
     target_time = datetime.datetime(target_time.year, target_time.month, target_time.day, target_time.hour)
     if target_time < latest_init_time:
         raise Exception('target_time({:%Y%m%d%H}) < latest_init_time({:%Y%m%d%H})'.format(target_time, latest_init_time))
@@ -79,12 +84,10 @@ def model_stability(target_time=None, latest_init_time=None, ninit=4, init_inter
         _log.info(f'''{func_args['init_time']} {func_args['fhour']}''')
         func_args_all.append(func_args)
 
-
     # 多进程绘图
     all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
     all_img_bufs = get_onestep_ret_imgbufs(all_ret)
     all_png_names = get_onestep_ret_pngnames(all_ret)
-
 
     # 输出
     ret = None

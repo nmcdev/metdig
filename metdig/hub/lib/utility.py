@@ -209,3 +209,14 @@ def get_onestep_ret_pngnames(all_ret):
         if 'png_name' in ret.keys():
             pics.append(ret['png_name'])
     return pics
+
+def strparsetime(dt):
+    # 字符型日期转datetime
+    if isinstance(dt, str):
+        if len(dt) == 10:
+            dt = datetime.datetime.strptime(dt, '%Y%m%d%H')
+        elif len(dt) == 8:
+            dt = datetime.datetime.strptime(dt, '%y%m%d%H')
+        else:
+            raise Exception('time must be datetime or str like 2001010100(%Y%m%d%H) or str like 01010100(%y%m%d%H)')
+    return dt

@@ -23,6 +23,7 @@ from metpy.plots import SkewT
 import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 
+
 def plt_base_env():
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
@@ -35,13 +36,35 @@ def plt_base_env():
 
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=23, forcast_info='', nmc_logo=False,
-                       add_china=True, add_city=True, add_background=True, add_south_china_sea=True, add_grid=True,add_ticks=False,
-                       background_style=None,background_zoom_level=10):
-    plt_base_env() # 初始化字体中文等
+                       add_china=True, add_city=True,  add_background_style='RD', add_south_china_sea=True, add_grid=True, add_ticks=False,
+                       background_zoom_level=10):
+    """[水平分布图画板设置]]
+
+    Args:
+        figsize (tuple, optional): [画板大小]. Defaults to (16, 9).
+        crs ([type], optional): [画板投影类型投影]. Defaults to ccrs.PlateCarree().
+        map_extent (tuple, optional): [绘图区域]. Defaults to (60, 145, 15, 55).
+        title (str, optional): [标题]. Defaults to ''.
+        title_fontsize (int, optional): [标题字体大小]. Defaults to 23.
+        forcast_info (str, optional): [预报或其它描述信息]. Defaults to ''.
+        nmc_logo (bool, optional): [是否增加logo]. Defaults to False.
+        add_china (bool, optional): [是否增加中国边界线]. Defaults to True.
+        add_city (bool, optional): [是否增加城市名称]. Defaults to True.
+        add_background_style (str, [None, False, 'RD', 'YB', 'satellite', 'terrain', 'road']): [是否增加背景底图，None/False(无填充),RD(陆地海洋),YB(陆地海洋),satellite/terrain/road(卫星图像)，]. Defaults to 'RD'.
+        add_south_china_sea (bool, optional): [是否增加南海]. Defaults to True.
+        add_grid (bool, optional): [是否绘制网格线]]. Defaults to True.
+        add_ticks (bool, optional): [是否绘制刻度]. Defaults to False.
+        background_zoom_level (int, optional): [背景地图是卫星地图时需要手动设置zoomlevel]. Defaults to 10.
+
+    Returns:
+        [type]: [description]
+    """    
+    plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(projection=ccrs.PlateCarree())
 
+    # 标题
     ax.set_title(title, loc='left', fontsize=title_fontsize)
 
     # set_map_extent
@@ -53,6 +76,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 360, 10))
         gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
 
+    # 海岸线，省界，河流等中国边界信息
     if add_china:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.8, zorder=100, alpha=0.5)
         utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=0.5, zorder=100)
@@ -60,6 +84,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         utl_plotmap.add_china_map_2cartopy_public(ax, name='river', edgecolor='#74b9ff', lw=0.8, zorder=100, alpha=0.5)
         pass
 
+    # 城市名称
     if add_city:
         small_city = False
         if(map_extent2[1] - map_extent2[0] < 25):
@@ -67,69 +92,61 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         utl_plotmap.add_city_on_map(ax, map_extent=map_extent2, transform=ccrs.PlateCarree(),
                                     zorder=101, size=13, small_city=small_city)
 
-    if add_background:
-        ax.add_feature(cfeature.OCEAN)
-        utl_plotmap.add_cartopy_background(ax, name='RD')
-    else:
-        ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
-        ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+    # 背景图
+    if add_background_style:
+        if add_background_style == 'RD':
+            ax.add_feature(cfeature.OCEAN)
+            utl_plotmap.add_cartopy_background(ax, name='RD')
+        elif add_background_style == 'YB':
+            ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
+            ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+        elif add_background_style == 'satellite':
+            request = utl.TDT_img()  # 卫星图像
+            ax.add_image(request, background_zoom_level)  # level=10 缩放等级
+        elif add_background_style == 'terrain':
+            request = utl.TDT_img()  # 卫星图像
+            ax.add_image(request, background_zoom_level)  # level=10 缩放等级
+        elif add_background_style == 'road':
+            request = utl.TDT_img()  # 卫星图像
+            ax.add_image(request, background_zoom_level)  # level=10 缩放等级
 
-    if background_style!=None:
-        if(background_style=='satellite'):
-            request = utl.TDT_img() #卫星图像
-        if(background_style=='terrain'):
-            request = utl.TDT_ter() #卫星图像
-        if(background_style=='road'):
-            request = utl.TDT() #卫星图像
-        ax.add_image(request, background_zoom_level)# level=10 缩放等级 
-
-    #增加坐标
+    # 增加坐标
     if add_ticks:
         ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=ccrs.PlateCarree())
-        ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1,10), crs=ccrs.PlateCarree())
-        lon_formatter = LongitudeFormatter(degree_symbol='',dateline_direction_label=True)
+        ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=ccrs.PlateCarree())
+        lon_formatter = LongitudeFormatter(degree_symbol='', dateline_direction_label=True)
         lat_formatter = LatitudeFormatter(degree_symbol='')
         ax.xaxis.set_major_formatter(lon_formatter)
         ax.yaxis.set_major_formatter(lat_formatter)
 
-
+    # 南海
     if add_south_china_sea:
         l, b, w, h = ax.get_position().bounds
         utl_plotmap.add_south_china_sea_png(pos=[l + w - 0.094, b, 0.11, 0.211], name='simple')  # 直接贴图
 
-    l, b, w, h = ax.get_position().bounds
+    # 预报/分析描述信息
+    if forcast_info:
+        ax.text(0.01, 0.99, forcast_info, transform=ax.transAxes, size=15, va='top',
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0))
+
+    # logo
+
     if nmc_logo:
-        if forcast_info:
-            bax_h = 0.1
-            bax = plt.axes([l, b + h - bax_h, 0.25, bax_h], facecolor='#FFFFFFCC')
-            bax.set_yticks([])
-            bax.set_xticks([])
-            bax.axis([0, 10, 0, 10])
-            bax.text(2.5, 9.8, forcast_info, size=15, va='top', ha='left',)
+        l, b, w, h = ax.get_position().bounds
+        # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h - 0.1, .1, .1], which='nmc', size='Xlarge') # 左上角
+        utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
-        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')
-    else:
-        if forcast_info:
-            bax_h = 0.025 * len(forcast_info.strip().split('\n'))
-            bax = plt.axes([l, b + h - bax_h, 0.2, bax_h], facecolor='#FFFFFFCC')
-            bax.set_yticks([])
-            bax.set_xticks([])
-            bax.axis([0, 10, 0, 10])
-            bax.text(0.5, 9.8, forcast_info, size=15, va='top', ha='left',)
-
-    #添加 powered by metdig
-    cax = plt.axes([l+w-0.10, b, 0.1, 0.025], facecolor='#FFFFFFCC')
-    cax.set_yticks([])
-    cax.set_xticks([])
-    cax.set_axis_off()
-    cax.axis([0, 10, 0, 10])
-    cax.text(0.5, 9.8, 'Powered by MetDig', size=13, va='top', ha='left',)
+    # 添加 powered by metdig
+    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+            color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+    # ax.text(1.00, -0.12, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='right')  # 右下角图的外面，colorbar的下边
+    # ax.text(1.00, -0.005, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='top',  ha='right' )  # 右下角图的外面刻度线的位置
     return fig, ax
 
 
 def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False):
 
-    plt_base_env() # 初始化字体中文等
+    plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
@@ -146,19 +163,16 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     ax.set_xlabel('Longitude')
 
     if forcast_info:
-        l, b, w, h = ax.get_position().bounds
-        bax = plt.axes([l, b + h, .25, .1], facecolor='#FFFFFFCC')
-        bax.axis('off')
-        bax.set_yticks([])
-        bax.set_xticks([])
-        bax.axis([0, 10, 0, 10])
-        bax.text(1.5, 0.4, forcast_info, size=11)
+        ax.text(0.01, 1.005, forcast_info, transform=ax.transAxes, size=11, va='bottom',
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='white', pad=0.0))
 
     if nmc_logo:
         l, b, w, h = ax.get_position().bounds
-        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
+        # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
+        utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
-    ax.annotate('Powered by MetDig', [0.9,-0.05], xycoords='axes fraction', fontsize=16,c='gray')
+    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+            color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
 
 
@@ -179,7 +193,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     if(reverse_time):
         times = times[::-1]
 
-    plt_base_env() # 初始化字体中文等
+    plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
@@ -205,25 +219,24 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     ax.set_xlim(times[0], times[-1])
 
     if forcast_info:
-        l, b, w, h = ax.get_position().bounds
-        bax = plt.axes([l, b + h, .25, .1], facecolor='#FFFFFFCC')
-        bax.axis('off')
-        bax.set_yticks([])
-        bax.set_xticks([])
-        bax.axis([0, 10, 0, 10])
-        bax.text(1.5, 0.4, forcast_info, size=11)
+        ax.text(0.01, 1.005, forcast_info, transform=ax.transAxes, size=11, va='bottom',
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='white', pad=0.0))
 
     if nmc_logo:
         l, b, w, h = ax.get_position().bounds
-        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
+        # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
+        utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
+    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+            color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
+
 
 def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True):
     if(reverse_time):
         times = times[::-1]
 
-    plt_base_env() # 初始化字体中文等
+    plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
@@ -247,24 +260,21 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
     ax.set_xlim(times[0], times[-1])
 
     if forcast_info:
-        l, b, w, h = ax.get_position().bounds
-        bax = plt.axes([l, b + h, .25, .1], facecolor='#FFFFFFCC')
-        bax.axis('off')
-        bax.set_yticks([])
-        bax.set_xticks([])
-        bax.axis([0, 10, 0, 10])
-        bax.text(1.5, 0.4, forcast_info, size=11)
+        ax.text(0.01, 1.005, forcast_info, transform=ax.transAxes, size=11, va='bottom',
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='white', pad=0.0))
 
     if nmc_logo:
         l, b, w, h = ax.get_position().bounds
-        utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
+        # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
+        utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
+    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='left')  # 左下角图的里面
     return fig, ax
 
 
 def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax=''):
 
-    plt_base_env() # 初始化字体中文等
+    plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
 
@@ -313,12 +323,14 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
     ax_bottom.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
     ax_bottom.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
 
+    ax_bottom.text(0.00, 0.001, 'Powered by MetDig', transform=ax_bottom.transAxes, size=14,
+                   color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax_left, ax_right, ax_bottom
 
 
 def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', nmc_logo=False):
 
-    plt_base_env() # 初始化字体中文等
+    plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
 
@@ -329,26 +341,17 @@ def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', 
     skew.ax.set_ylim(1000, 100)
     skew.ax.set_xlim(-40, 60)
 
+    if forcast_info:
+        # skew.ax.text(0.01, 0.99, forcast_info, transform=skew.ax.transAxes, size=11, va='top',
+        #              ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0))
+        skew.ax.text(0.01, 1.005, forcast_info, transform=skew.ax.transAxes, size=11, va='bottom',
+                     ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='white', pad=0.0))
+
     if nmc_logo:
-        if forcast_info:
-            bax_h = 0.08
-            l, b, w, h = skew.ax.get_position().bounds
-            bax = plt.axes([l, b + h - bax_h, .32, bax_h], facecolor='#FFFFFFCC')
-            bax.set_yticks([])
-            bax.set_xticks([])
-            bax.axis([0, 10, 0, 10])
-            bax.text(2.5, 9.8, forcast_info, size=11, va='top', ha='left',)
-
         l, b, w, h = skew.ax.get_position().bounds
-        utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')
-    else:
-        if forcast_info:
-            bax_h = 0.02 * len(forcast_info.strip().split('\n'))
-            l, b, w, h = skew.ax.get_position().bounds
-            bax = plt.axes([l, b + h - bax_h, .28, bax_h], facecolor='#FFFFFFCC')
-            bax.set_yticks([])
-            bax.set_xticks([])
-            bax.axis([0, 10, 0, 10])
-            bax.text(0.5, 9.8, forcast_info, size=11, va='top', ha='left',)
+        utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')  # 左上角
+        # utl.add_logo_extra_in_axes(pos=[l + w - 0.1, b , .1, .1], which='nmc', size='Xlarge')  # 右下角
 
+    skew.ax.text(0.00, 0.001, 'Powered by MetDig', transform=skew.ax.transAxes, size=14,
+                 color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, skew
