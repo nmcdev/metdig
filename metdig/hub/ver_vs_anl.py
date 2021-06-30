@@ -15,6 +15,7 @@ from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
+from metdig.hub.lib.utility import strparsetime
 
 import logging
 _log = logging.getLogger(__name__)
@@ -51,6 +52,8 @@ def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='e
     Returns:
         [type] -- [description]
     '''
+    anl_time = strparsetime(anl_time)
+
     init_time = None
     fhour = None
     if anl_time is None:

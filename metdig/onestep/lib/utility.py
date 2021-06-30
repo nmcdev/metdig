@@ -136,7 +136,7 @@ class date_init(object):
                     elif len(dt) == 8:
                         dt = datetime.datetime.strptime(dt, '%y%m%d%H')
                     else:
-                        raise Exception('time must be datetime or str like 2001010100 or str like 01010100')
+                        raise Exception('time must be datetime or str like 2001010100(%Y%m%d%H) or str like 01010100(%y%m%d%H)')
                 kwargs[var_name] = dt
             return func(*argv, **kwargs)
         return wrapper

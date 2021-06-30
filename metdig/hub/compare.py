@@ -12,10 +12,12 @@ from metdig.hub.lib.utility import save_list
 from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
+from metdig.hub.lib.utility import strparsetime
 
 __all__ = [
     'models_compare',
 ]
+
 
 def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 'ncep_gfs', 'grapes_3km'],
                    func=None, func_other_args={}, max_workers=6,
@@ -38,6 +40,8 @@ def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 
         tab_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(30, 18)})
 
     '''
+    init_time = strparsetime(init_time)
+
     # 参数准备
     func_args_all = []
     for data_name in data_names:
@@ -53,7 +57,6 @@ def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 
     all_ret = mult_process(func=func, func_args_all=func_args_all, max_workers=max_workers)
     all_img_bufs = get_onestep_ret_imgbufs(all_ret)
     all_png_names = get_onestep_ret_pngnames(all_ret)
-
 
     # 输出
     ret = None
