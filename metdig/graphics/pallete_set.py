@@ -158,6 +158,7 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
         l, b, w, h = ax.get_position().bounds
         utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')
 
+    ax.annotate('Powered by MetDig', [0.9,-0.05], xycoords='axes fraction', fontsize=16,c='gray')
     return fig, ax
 
 

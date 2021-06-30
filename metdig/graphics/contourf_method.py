@@ -228,7 +228,7 @@ def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
 def div_contourf(ax, stda, xdim='lon', ydim='lat',
                  add_colorbar=True,
                  levels=np.arange(-10, -1), cmap='Blues_r', extend='both',
-                 transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+                 transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # 1/s
@@ -238,7 +238,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$')
+        utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$',**colorbar_kwargs)
     return img
 
 
@@ -321,9 +321,9 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
 
     cmap = cm_collected.get_cmap(cmap)
 
-    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, extend='both'**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='max', pos='right')
+        utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='both', pos='right')
     return img
 
 
