@@ -39,12 +39,12 @@ def draw_syn_composite(
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
     tcwv_contourf(obj.ax, tcwv, alpha=1, cmap='ncl/WhiteGreen', levels=np.arange(20, 70, 4),
-                  colorbar_kwargs={'pos': 'right center', 'orientation': 'vertical', 'label_size': 15}, kwargs=tcwv_contourf_kwargs)
+                  colorbar_kwargs={'pos': 'right center', 'orientation': 'vertical', 'tick_size':10,'label_size': 10}, kwargs=tcwv_contourf_kwargs)
     uv_quiver(obj.ax, u850, v850, color='#404040', label='850hPa wind', kwargs=uv_quiver_kwargs)
     ulj_contourf(obj.ax, wsp200, alpha=0.6, colorbar_kwargs={'pos': 'right top',
-                                                             'orientation': 'vertical', 'label_size': 15}, kwargs=ulj_contourf_kwargs)
-    vort_contourf(obj.ax, vort500, alpha=0.4, colorbar_kwargs={'pos': 'right bottom',
-                                                               'orientation': 'vertical', 'label_size': 15}, kwargs=vort_contourf_kwargs)
+                                                             'orientation': 'vertical','tick_size':10, 'label_size': 10}, kwargs=ulj_contourf_kwargs)
+    vort_contourf(obj.ax, vort500, alpha=0.4, colorbar_kwargs={'pos': 'right bottom', 'tick_size':10,
+                                                               'orientation': 'vertical','tick_size':10, 'label_size': 10}, kwargs=vort_contourf_kwargs)
     hgt_contour(obj.ax, hgt500, kwargs=hgt_contour_kwargs)
     prmsl_contour(obj.ax, prmsl, colors='red', linewidths=0.7, levels=np.arange(950, 1100, 4), kwargs=prmsl_contour_kwargs)
     uv_label = obj.ax.get_legend_handles_labels()

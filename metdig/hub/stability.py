@@ -27,7 +27,7 @@ __all__ = [
 
 def model_stability(target_time=None, latest_init_time=None, ninit=4, init_interval=12, data_name='ecmwf',
                     func=None, func_other_args={}, max_workers=6,
-                    output_dir=None, show='animation', tab_size=(30, 18), list_size=(16, 9),
+                    output_dir=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
                     is_clean_plt=False):
     '''
 

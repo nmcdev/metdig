@@ -19,7 +19,7 @@ __all__ = [
 ]
 
 
-def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 'ncep_gfs', 'grapes_3km'],
+def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'grapes_gfs', 'ncep_gfs', 'grapes_meso_3km'],
                    func=None, func_other_args={}, max_workers=6,
                    output_dir=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
                    is_clean_plt=False):

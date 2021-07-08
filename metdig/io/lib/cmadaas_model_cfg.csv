@@ -1,14 +1,14 @@
 #,,,,,,,,
 # 注意事项,,,,,,,,
-#    1. var_name为stda要素名
-#    2. var_units为当前数据的在cmadass中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
-#    3. cmadaas_var_name为cmadass上数据接口需要的要素名
-#    4. cmadaas_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
-#    5. cmadaas_level_type为cmadass上数据接口需要的层次类型
-#    6. cmadaas_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any
-#    7. cmadaas_data_code为cmadass上数据接口需要的data_code，因为存在多个来源，此处填写多个以/分割
-#    8. 此表还与cmadass_datacode_cfg.csv相关联，关联列为data_name,cmadaas_data_code
-#    9. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行
+#    1. var_name为stda要素名,,,,,,,,
+#    2. var_units为当前数据的在cmadass中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,,,,
+#    3. cmadaas_var_name为cmadass上数据接口需要的要素名,,,,,,,,
+#    4. cmadaas_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,,,,
+#    5. cmadaas_level_type为cmadass上数据接口需要的层次类型,,,,,,,,
+#    6. cmadaas_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,,,,
+#    7. cmadaas_data_code为cmadass上数据接口需要的data_code，因为存在多个来源，此处填写多个以/分割,,,,,,,,
+#    8. 此表还与cmadass_datacode_cfg.csv相关联，关联列为data_name,cmadaas_data_code,,,,,,,
+#    9. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行,,,,,,
 # ,,,,,,,,
 data_name,var_name,level_type,var_units,cmadaas_var_name,cmadaas_discription,cmadaas_level_type,cmadaas_level,cmadaas_data_code
 grapes_gfs,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
@@ -31,27 +31,28 @@ grapes_gfs,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE
 grapes_gfs,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,tcwv,surface,mm,TIWV,总柱状比湿（整层水汽含量）,10,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
-#
-grapes_meso,hgt,high,gpm,GPH,位势高度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,u,high,m/s,WIU,东西风风速,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,v,high,m/s,WIV,南北风风速,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,vvel,high,Pa/s,VVM,垂直速度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,tmp,high,kelvin,TEM,气温,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,rh,high,percent,RHU,相对湿度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,td,high,kelvin,DPT,露点温度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,wvfl,high,g/(cm*hPa*s),MOFU,水汽通量,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,theta,high,kelvin,PPT,假相当位温,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,t2m,surface,kelvin,TEM,气温,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,psfc,surface,Pa,PRS,气压,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,tpe,surface,mm,TPE,总降水量,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso,tcwv,surface,mm,TIWV,总柱状比湿（整层水汽含量）,10,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-#
+#,,,,,,,,
+grapes_meso_3km,hgt,high,gpm,GPH,位势高度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,u,high,m/s,WIU,东西风风速,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,v,high,m/s,WIV,南北风风速,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,vvel,high,Pa/s,VVM,垂直速度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,tmp,high,kelvin,TEM,气温,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,rh,high,percent,RHU,相对湿度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,td,high,kelvin,DPT,露点温度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,wvfl,high,g/(cm*hPa*s),MOFU,水汽通量,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,theta,high,kelvin,PPT,假相当位温,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,t2m,surface,kelvin,TEM,气温,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,psfc,surface,Pa,PRS,气压,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,tcwv,surface,mm,TIWV,总柱状比湿（整层水汽含量）,10,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,cref,surface,,RACR,雷达组合反射率,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+#,,,,,,,,
 grapes_rafs_3km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
@@ -59,7 +60,7 @@ grapes_rafs_3km,t2m,surface,kelvin,TEM,气温,103,2,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_
 grapes_rafs_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,psfc,surface,Pa,PRS,气压,1,0,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
-#
+#,,,,,,,,
 rmaps_st_9km,hgt,high,gpm,GPH,位势高度,100,any,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,u,high,m/s,WIU,东西风风速,100,any,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,v,high,m/s,WIV,南北风风速,100,any,NAFP_RMAPS_ST_9KM_CHN
@@ -74,7 +75,7 @@ rmaps_st_9km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_RMAPS_ST_9KM_CHN
-#
+#,,,,,,,,
 rmaps_st_3km,hgt,high,gpm,GPH,位势高度,100,any,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,u,high,m/s,WIU,东西风风速,100,any,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,v,high,m/s,WIV,南北风风速,100,any,NAFP_RMAPS_ST_3KM_NCN
@@ -89,7 +90,7 @@ rmaps_st_3km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_RMAPS_ST_3KM_NCN
-# ecmwf有多个来源，data_code只填写一个
+# ecmwf有多个来源，data_code只填写一个,,,,,,,,
 ecmwf,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_HIGH_EC_ANEA
 ecmwf,u,high,m/s,WIU,东西风风速,100,any,NAFP_FOR_FTM_HIGH_EC_ANEA
 ecmwf,v,high,m/s,WIV,南北风风速,100,any,NAFP_FOR_FTM_HIGH_EC_ANEA
@@ -109,4 +110,5 @@ ecmwf,td2m,surface,kelvin,DPT,露点温度,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,prmsl,surface,Pa,SSP,海平面气压,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,tcwv,surface,mm,TCWV,总柱状比湿（整层水汽含量）,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,gust10m_3h,surface,m/s,10FG3,过去3小时10米阵风,1,0,NAFP_ECMF_C1D_GLB_FOR
-
+#,,,,,,,,
+cldas,rain01,surface,mm,PRE,小时降水,999,0,NAFP_CLDAS2.0_RT_HOR_ASI

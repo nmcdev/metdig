@@ -26,7 +26,7 @@ __all__ = [
 
 @date_init('init_time')
 def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                hgt_lev=500, uv_lev=850, vvel_lev=850, smth_step=3, is_mask_terrain=True,
+                hgt_lev=500, uv_lev=500, vvel_lev=500, smth_step=3, is_mask_terrain=True,
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -105,7 +105,7 @@ def hgt_uv_div(data_source='cassandra', data_name='grapes_gfs', init_time=None, 
 
 @date_init('init_time')
 def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                   hgt_lev=500, vort_lev=850, smth_step=1, is_mask_terrain=True,
+                   hgt_lev=500, vort_lev=500, smth_step=1, is_mask_terrain=True,
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 

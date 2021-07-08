@@ -9,6 +9,7 @@ from metdig.io import get_model_grids
 
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import date_init
+from metdig.onestep.complexgrid_var.get_rain import read_rain
 
 from metdig.products import diag_qpf as draw_qpf
 from metdig.products import observation_radar as draw_obsradar
@@ -58,8 +59,8 @@ def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, a
     else:
         fhour_gh = fhour
 
-    rain = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='rain{:02d}'.format(atime), extent=map_extent)
+    rain = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          atime=atime, extent=map_extent)
 
     if is_return_data:
         dataret = {'rain': rain}
@@ -71,6 +72,13 @@ def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, a
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    import metdig
+    metdig.set_loglevel('debug')
+    rain(data_name='grapes_meso_3km',fhour=5, atime=4,data_source='cmadaas')
+    plt.show()
 
 @date_init('init_time')
 def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',

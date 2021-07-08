@@ -9,7 +9,7 @@ from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
 from metdig.onestep.complexgrid_var.pv_div_uv import read_pv_div_uv
-from metdig.onestep.complexgrid_var.rain06 import read_rain06
+from metdig.onestep.complexgrid_var.get_rain import read_rain
 from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv
 from metdig.onestep.complexgrid_var.wsp import read_wsp
 
@@ -31,7 +31,7 @@ __all__ = [
 @date_init('init_time')
 def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,
-                  area='全国',  is_return_data=False, is_draw=True, add_city=False, add_background=False,
+                  area='全国',  is_return_data=False, is_draw=True, add_city=False, add_background_style=False,
                   **products_kwargs):
     ret = {}
     # get area
@@ -70,7 +70,7 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     # plot
     if is_draw:
         drawret = draw_synoptic.draw_syn_composite(hgt500, vort500, u850, v850, wsp200, prmsl, tcwv,
-                                                   map_extent=map_extent, add_city=add_city, add_background=add_background,
+                                                   map_extent=map_extent, add_city=add_city, add_background_style=add_background_style,
                                                    **products_kwargs)
 
         ret.update(drawret)
@@ -78,6 +78,10 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if ret:
         return ret
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    syn_composite()
+    plt.show()
 
 @date_init('init_time')
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -129,7 +133,7 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
-    rain06 = read_rain06(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, extent=map_extent)
+    rain06 = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=6, extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'rain06': rain06}
@@ -149,7 +153,6 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     if ret:
         return ret
-
 
 @date_init('init_time')
 def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,

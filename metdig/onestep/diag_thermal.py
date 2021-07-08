@@ -98,7 +98,7 @@ def hgt_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
 @date_init('init_time')
 def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                  hgt_lev=500, tmp_lev=850, is_mask_terrain=True,
+                  hgt_lev=500, tmp_lev=500, is_mask_terrain=True,
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 

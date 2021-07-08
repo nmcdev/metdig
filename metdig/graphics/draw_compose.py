@@ -23,8 +23,11 @@ class horizontal_compose(object):
         # crs = ccrs.AlbersEqualArea(central_latitude=(map_extent[2] + map_extent[3]) / 2.,
         #                            central_longitude=(map_extent[0] + map_extent[1]) / 2.,
         #                            standard_parallels=[30., 60.])
-        crs = ccrs.PlateCarree()
-        self.fig, self.ax = pallete_set.horizontal_pallete(figsize=(18, 9), crs=crs, map_extent=map_extent,
+        # crs = ccrs.PlateCarree()
+        # self.fig, self.ax = pallete_set.horizontal_pallete(figsize=(18, 9), crs=crs, map_extent=map_extent,
+        #                                                    title=title, forcast_info=description, **kwargs)
+
+        self.fig, self.ax = pallete_set.horizontal_pallete(figsize=(18, 9), map_extent=map_extent,
                                                            title=title, forcast_info=description, **kwargs)
 
     def save(self):

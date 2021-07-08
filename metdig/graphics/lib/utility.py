@@ -32,7 +32,7 @@ class TDT_img(cimgt.GoogleWTS):
 class TDT_ter(cimgt.GoogleWTS):
     def _image_url(self, tile):
         x, y, z = tile
-        url = 'http://mt2.google.cn/vt/lyrs=p&scale=2&hl=zh-CN&gl=cn&x=%s&y=%s&z=%s'% (x, y, z)
+        url = 'http://mt3.google.cn/vt/lyrs=p&scale=2&hl=zh-CN&gl=cn&x=%s&y=%s&z=%s'% (x, y, z)
         return url
 class TDT(cimgt.GoogleWTS):
     def _image_url(self, tile):
@@ -258,7 +258,7 @@ def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_pl
 
 
 @kwargs_wrapper
-def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rect=None,  orientation='horizontal', pad=0, **kwargs):
+def add_colorbar(ax, img, ticks=None, label='', label_size=20, tick_size=15,pos='bottom', rect=None,  orientation='horizontal', pad=0, **kwargs):
     """[summary]
 
     Args:
@@ -306,7 +306,8 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, pos='bottom', rec
             orientation = 'vertical'
 
     cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
-    cb.ax.tick_params(labelsize='x-large')
+    # cb.ax.tick_params(labelsize='x-large')
+    cb.ax.tick_params(labelsize=tick_size)
     cb.set_label(label, size=label_size)
     return cb
 
