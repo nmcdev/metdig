@@ -78,7 +78,12 @@ def model_cmadaas_var_name(data_name=None, var_name=None, level_type=None, data_
 
 
 def model_cmadaas_level_type(data_name=None, var_name=None, level_type=None, data_code=None):
-    return get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=data_code)['cmadaas_level_type']
+    temp=get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=data_code)['cmadaas_level_type']
+    if(temp == 999):  #表内不好储存字符型符号
+        return '-'
+    else:
+        return temp
+    # return get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=data_code)['cmadaas_level_type']
 
 
 def model_cmadaas_units(data_name=None, var_name=None, level_type=None, data_code=None):

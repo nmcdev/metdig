@@ -56,8 +56,14 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         raise Exception(str(e))
 
     timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
-    data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
-                                             init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
+    
+    try:
+        data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
+                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
+                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
+    except:  #针对大数据云平台中的实况格点数据，入cldas
+        data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
+                                             time_str=timestr+'0000', level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
 
     # 建议这里修改为warning
@@ -80,8 +86,11 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         levels = [cmadaas_level]
 
     # 转成stda
-    if 'data' in data.keys():
-        np_data = np.squeeze(data['data'].values)
+    # stda_data=mdgstda.xrda_to_gridstda(data[list(data.keys())[0]],member=data_name,var_name=var_name)
+    # return stda_data
+    # if 'data' in data.keys():
+    try:
+        np_data = np.squeeze(data[list(data.keys())[0]].values)
         np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
         stda_data = mdgstda.numpy_to_gridstda(
             np_data, [data_name],
@@ -91,7 +100,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
             level_type=level_type)
 
         return stda_data
-    else:
+    except:
         raise Exception('data is not in nmc_met_io return data_set')
 
 
