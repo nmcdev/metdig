@@ -91,8 +91,8 @@ def make_cmap(incolors, position=None, rgb=False, hex=False):
 
 
 def get_cmap(name, extend='neither', levels=None, isLinear=False):
-    """[获取颜色表，注意：如果levels传参了，则会返回cmap和norm，如果levels没传参，则只会返回cmap。]
-
+    """[获取颜色表，注意：如果levels传参了，则会返回cmap和norm，如果levels没传参，则只会返回cmap。如果用户传进来的本身就是cmap,则直接返回cmap]
+  
     Args:
         name ([type]): [color or colorlist or metdig colormap or matplotlib colorcmap. 
         such as:
@@ -110,7 +110,9 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
 
     Returns:
         [type]: [cmap [norm]]
-    """    
+    """
+    if (isinstance(name,str) == False) and (isinstance(name,list) == False):  #应对可能用户喂进来的本身就是cmap,则自动返回
+        return name
     if isinstance(name, str):
         if name.startswith('met/'):
             if name.lower().endswith('_r'):

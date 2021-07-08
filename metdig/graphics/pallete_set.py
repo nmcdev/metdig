@@ -23,7 +23,6 @@ from metpy.plots import SkewT
 import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 
-
 def plt_base_env():
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
@@ -33,11 +32,10 @@ def plt_base_env():
     if(sys.platform[0:3] == 'win'):
         locale.setlocale(locale.LC_CTYPE, 'chinese')
 
-
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=23, forcast_info='', nmc_logo=False,
-                       add_china=True, add_city=True,  add_background_style='RD', add_south_china_sea=True, add_grid=True, add_ticks=False,
-                       background_zoom_level=10):
+                       add_china=True, add_city=True,  add_background_style='RD', add_south_china_sea=False, add_grid=False, add_ticks=False,
+                       background_zoom_level=5):
     """[水平分布图画板设置]]
 
     Args:
@@ -62,13 +60,15 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot(projection=ccrs.PlateCarree())
-
+    ax = fig.add_subplot(projection=crs)
     # 标题
     ax.set_title(title, loc='left', fontsize=title_fontsize)
 
     # set_map_extent
-    map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
+    if((map_extent[1]-map_extent[0] > 350) or (map_extent[3]-map_extent[2] > 80)):
+        ax.set_global()
+    else:
+        map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
 
     # add grid lines
     if add_grid:
@@ -93,22 +93,23 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
                                     zorder=101, size=13, small_city=small_city)
 
     # 背景图
-    if add_background_style:
-        if add_background_style == 'RD':
-            ax.add_feature(cfeature.OCEAN)
-            utl_plotmap.add_cartopy_background(ax, name='RD')
-        elif add_background_style == 'YB':
-            ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
-            ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
-        elif add_background_style == 'satellite':
-            request = utl.TDT_img()  # 卫星图像
-            ax.add_image(request, background_zoom_level)  # level=10 缩放等级
-        elif add_background_style == 'terrain':
-            request = utl.TDT_img()  # 卫星图像
-            ax.add_image(request, background_zoom_level)  # level=10 缩放等级
-        elif add_background_style == 'road':
-            request = utl.TDT_img()  # 卫星图像
-            ax.add_image(request, background_zoom_level)  # level=10 缩放等级
+    if add_background_style is None:
+        ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+    elif add_background_style == 'RD':
+        ax.add_feature(cfeature.OCEAN)
+        utl_plotmap.add_cartopy_background(ax, name='RD')
+    elif add_background_style == 'YB':
+        ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
+        ax.add_feature(cfeature.OCEAN, facecolor='#C8EBFA')
+    elif add_background_style == 'satellite':
+        request = utl.TDT_img()  # 卫星图像
+        ax.add_image(request, background_zoom_level)  # level=10 缩放等级
+    elif add_background_style == 'terrain':
+        request = utl.TDT_ter()  # 卫星图像
+        ax.add_image(request, background_zoom_level)  # level=10 缩放等级
+    elif add_background_style == 'road':
+        request = utl.TDT()  # 卫星图像
+        ax.add_image(request, background_zoom_level)  # level=10 缩放等级
 
     # 增加坐标
     if add_ticks:
@@ -127,7 +128,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     # 预报/分析描述信息
     if forcast_info:
         ax.text(0.01, 0.99, forcast_info, transform=ax.transAxes, size=15, va='top',
-                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0))
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=10)
 
     # logo
 
