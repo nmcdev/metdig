@@ -148,15 +148,17 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10,cit
     #         ax.scatter(lon[i], lat[i], c='black', s=25, alpha=0.5,zorder=zorder, **kwargs)
     # province city
 
-    fnames={'provincial_capital':'city_province.000',
-           'county':'county.000'}
+    fnames={'provincial_capital':'city_province.csv',
+           'county':'county.csv'}
     try:
         fname = fnames[city_type]
         fpath = "resources/stations/" + fname
     except KeyError:
         raise ValueError('can not find the file city_province.000 in the resources')
 
-    city = utl.read_micaps_17(pkg_resources.resource_filename(pkg_name, fpath))
+    #city = utl.read_micaps_17(pkg_resources.resource_filename(pkg_name, fpath))
+
+    city = pd.read_csv(pkg_resources.resource_filename(pkg_name, fpath), encoding='gbk', comment='#')
 
     lon = city['lon'].values.astype(np.float) / 100.
     lat = city['lat'].values.astype(np.float) / 100.
@@ -274,12 +276,13 @@ def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=N
     dlat = map_extent[3] - map_extent[2]
     # province city
     try:
-        fname = 'city_province.000'
+        fname = 'city_province.csv'
         fpath = "resources/stations/" + fname
     except KeyError:
-        raise ValueError('can not find the file city_province.000 in the resources')
+        raise ValueError('can not find the file city_province.csv in the resources')
 
-    city = utl.read_micaps_17(pkg_resources.resource_filename(pkg_name, fpath))
+    city = pd.read_csv(pkg_resources.resource_filename(pkg_name, fpath), encoding='gbk', comment='#')
+    # city = utl.read_micaps_17(pkg_resources.resource_filename(pkg_name, fpath))
 
     lon = city['lon'].values.astype(np.float) / 100.
     lat = city['lat'].values.astype(np.float) / 100.
