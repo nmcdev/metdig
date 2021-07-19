@@ -57,14 +57,16 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
     timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
     
-    try:
-        data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
-                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
-                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
-    except:  #针对大数据云平台中的实况格点数据，入cldas
+    if cmadaas_data_code == 'NAFP_CLDAS2.0_NRT_ASI_NC':
+        #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
                                              time_str=timestr+'0000', level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
+    else:
+        data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
+                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
+                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
+  
 
     # 建议这里修改为warning
     if data is None:
