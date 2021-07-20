@@ -61,11 +61,11 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
                                              time_str=timestr+'0000', level_type=cmadaas_level_type,
-                                             fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
+                                             fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     else:
         data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                                 init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
-                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name)
+                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
   
 
     # 建议这里修改为warning
@@ -81,12 +81,22 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     data = data.sortby('lon')
     # time_BJT= [itime.values+np.timedelta64(8,'h') for itime in data.time]
     # data.coords['time']=time_BJT
+
+    # 待测试。。。
+    stda_data = mdgstda.xrda_to_gridstda(data[list(data.keys())[0]],
+                                         level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
+                                         member=[data_name], level=[cmadaas_level], time=[init_time], dtime=[fhour],
+                                         var_name=var_name, np_input_units=cmadaas_units,
+                                         data_source='cmadaas', level_type=level_type)
+    return stda_data
+
+    '''
     stda_data = None
     if level:
         levels = [level]
     else:
         levels = [cmadaas_level]
-
+    
     # 转成stda
     # stda_data=mdgstda.xrda_to_gridstda(data[list(data.keys())[0]],member=data_name,var_name=var_name)
     # return stda_data
@@ -104,6 +114,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         return stda_data
     except:
         raise Exception('data is not in nmc_met_io return data_set')
+    '''
 
 
 def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, level=None,

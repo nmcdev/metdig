@@ -170,6 +170,7 @@ def stastda_to_gridstda(df, xdim='lon', ydim='lat'):
     根据给定的xdim ydim 将站点stda转换为二维格点stda，缺失点填充nan，
     （后续可以再优化成多维的）
     注意事项：
+    方法不涉及插值，只是简单放到二维网格
     1. 要求输入的站点stda除xdim ydim两维外，其余维度去重后长度为1
     2. 站点stda的id不可作为xdim ydim参数，因为格点stda中没有这一维度
     3. 站点stda的id会以属性的方式写到格点stda中
