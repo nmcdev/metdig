@@ -23,7 +23,7 @@ __all__ = [
     'model_basic_anl',
 ]
 
-def model_basic_anl(func=None, func_other_args=None, max_workers=6,
+def model_basic_anl(func=None, func_other_args=None, max_workers=6,fps=2,
                    output_dir=None, output_name=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
                    is_clean_plt=False):
     '''
@@ -34,6 +34,7 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,
         func {[type]} -- [函数名或函数名构成的list，当func和func_other_args均为长度大于1的list时，必须保证list长度相同，否则无法一一对应] (default: {None})
         func_other_args {[函数参数字典或函数字典构成的list，当func和func_other_args均为长度大于1的list时，必须保证list长度相同，否则无法一一对应]} -- [函数参数字典] (default: {None})
         max_workers {number} -- [最大进程数] (default: {6})
+        fps {number} -- [动画速度] (default: {2})
         output_dir {[str]} -- [输出目录] (default: {None})
         output_name {[str]} -- [输出文件名，仅在show=tab or show=animation时生效，如果不填，则使用默认文件名] (default: {None})
         show {str} -- ['list', show all plots in one cell.
@@ -100,7 +101,7 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,
     elif show == 'animation':
         if not output_name:
             output_name = 'basic_analysis.gif'
-        ret = save_animation(all_img_bufs, output_dir, output_name, is_clean_plt=is_clean_plt)
+        ret = save_animation(all_img_bufs, output_dir, output_name,fps=fps, is_clean_plt=is_clean_plt)
     elif show == 'tab':
         if not output_name:
             output_name = 'basic_analysis.png'

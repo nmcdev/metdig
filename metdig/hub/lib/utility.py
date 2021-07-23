@@ -119,7 +119,7 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=F
     return all_ret
 
 
-def save_animation(img_bufs, output_dir, gif_name, is_clean_plt=True):
+def save_animation(img_bufs, output_dir, gif_name, fps=2, is_clean_plt=True):
     '''
     保存成gif
     '''
@@ -128,13 +128,13 @@ def save_animation(img_bufs, output_dir, gif_name, is_clean_plt=True):
     gif_path = None
     if output_dir:
         gif_path = os.path.join(output_dir, gif_name)
-        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=2, loop=0) as writer:
+        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=fps, loop=0) as writer:
             for imgbuf in img_bufs:
                 writer.append_data(imgbuf)
 
     if is_clean_plt == False:
         gif_path = BytesIO()
-        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=2, loop=0) as writer:
+        with imageio.get_writer(gif_path, format='GIF', mode='I', fps=fps, loop=0) as writer:
             for imgbuf in img_bufs:
                 writer.append_data(imgbuf)
         img = Image(data=gif_path.getvalue())
