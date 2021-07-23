@@ -49,10 +49,17 @@ def _era5_download_hourly_pressure_levels(
     if not os.path.exists(os.path.dirname(savefile)):
         os.makedirs(os.path.dirname(savefile))
 
+    if(year > 1978):
+        data_code='reanalysis-era5-pressure-levels'
+    else:
+        data_code='reanalysis-era5-pressure-levels-preliminary-back-extension'
+
     c = cdsapi.Client(quiet=True)
 
     c.retrieve(
-        'reanalysis-era5-pressure-levels',
+        # 'reanalysis-era5-pressure-levels',
+        # 'reanalysis-era5-pressure-levels-preliminary-back-extension',
+        data_code,
         {
             'product_type': 'reanalysis',
             'format': 'netcdf',
@@ -92,8 +99,13 @@ def _era5_download_hourly_single_levels(
 
     c = cdsapi.Client(quiet=True)
 
+    if(year > 1978):
+        data_code='reanalysis-era5-single-levels'
+    else:
+        data_code='reanalysis-era5-single-levels-preliminary-back-extension'
     c.retrieve(
-        'reanalysis-era5-single-levels',
+        #'reanalysis-era5-single-levels',
+        data_code,
         {
             'product_type': 'reanalysis',
             'format': 'netcdf',

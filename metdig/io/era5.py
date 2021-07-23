@@ -49,10 +49,16 @@ class ERA5DataService(object):
         if not os.path.exists(os.path.dirname(savefile)):
             os.makedirs(os.path.dirname(savefile))
 
+        if(init_time.year > 1978):
+            data_code='reanalysis-era5-pressure-levels'
+        else:
+            data_code='reanalysis-era5-pressure-levels-preliminary-back-extension'
+
         c = cdsapi.Client()
 
         c.retrieve(
-            'reanalysis-era5-pressure-levels',
+            # 'reanalysis-era5-pressure-levels-preliminary-back-extension',
+            data_code,
             {
                 'product_type': 'reanalysis',
                 'format': 'netcdf',
@@ -75,10 +81,16 @@ class ERA5DataService(object):
         if not os.path.exists(os.path.dirname(savefile)):
             os.makedirs(os.path.dirname(savefile))
 
+        if(init_time.year > 1978):
+            data_code='reanalysis-era5-single-levels'
+        else:
+            data_code='reanalysis-era5-single-levels-preliminary-back-extension'
+
         c = cdsapi.Client()
 
         c.retrieve(
-            'reanalysis-era5-single-levels',
+            #'reanalysis-era5-single-levels-preliminary-back-extension',
+            data_code,
             {
                 'product_type': 'reanalysis',
                 'format': 'netcdf',
