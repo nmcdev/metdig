@@ -258,6 +258,24 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='mean sea level pressure (hPa)', extend='max')
     return img
 
+@kwargs_wrapper
+def pres_contourf(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,
+                   levels=None, cmap='guide/cs26', extend='both',
+                   transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # hPa
+
+    if(levels==None):
+        levels=np.arange(int(np.nanmin(z)),int(np.nanmax(z)),2.5)
+        ticks=np.arange(int(np.nanmin(z)),int(np.nanmax(z)),int(int(int(np.nanmax(z))-int(np.nanmin(z)))/10)).tolist()
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=ticks, label='surface pressure (hPa)', extend=extend)
+    return img
 
 @kwargs_wrapper
 def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
@@ -313,7 +331,7 @@ def rain_contourf(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(-60, 60, 1), cmap='ncl/hotcold_18lev',
+                        levels=np.arange(-36, 36+1, 4), cmap='ncl/BlueWhiteOrangeRed',
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -350,16 +368,16 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_w_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(-5, 5, 0.5), cmap='RdYlGn_r',
+                        levels=np.arange(-0.5,0.51,0.05).tolist(), cmap='RdYlGn_r',
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim) # m/s
     cmap = cm_collected.get_cmap(cmap)
 
-    img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='max', **kwargs)
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='both', **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Vertical velocity (m/s)',  orientation='vertical', extend='max', pos='right')
+        utl.add_colorbar(ax, img, label='Vertical velocity (m/s)',  orientation='vertical', extend='both', pos='right')
     return img
 
 @kwargs_wrapper

@@ -50,7 +50,7 @@ def draw_syn_composite(
     uv_label = obj.ax.get_legend_handles_labels()
     red_line = lines.Line2D([], [], color='red', label='mean sea leve pressure')
     black_line = lines.Line2D([], [], color='black', label='500hPa geopotential height')
-    leg = obj.ax.legend(handles=uv_label[0]+[red_line, black_line], loc=3, title=None, framealpha=1)
+    leg = obj.ax.legend(handles=uv_label[0]+[red_line, black_line], loc=1, title=None, framealpha=1)
     leg.set_zorder(100)
     return obj.save()
 

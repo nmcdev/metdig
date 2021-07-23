@@ -27,7 +27,7 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
 
     data_name = t2m.stda.member[0]
     title_left = '{}预报 {} [{},{}]'.format(data_name.upper(), t2m['id'].values[0], t2m['lon'].values[0], t2m['lat'].values[0])
-    title_right = '起报时间：{0:%Y}年{0:%m}月{0:%m}日{0:%H}时'.format(init_time)
+    title_right = '起报时间：{0:%Y}年{0:%m}月{0:%d}日{0:%H}时'.format(init_time)
     png_name = '{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(t2m['id'].values[0], init_time)
 
     t2m_ylabel = '2米温度($^\circ$C) \n 10米风(m s$^-$$^1$) \n 逐{}小时降水(mm)'.format(hourstep)

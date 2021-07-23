@@ -77,17 +77,20 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
     ax_rh.set_ylim(0, 100)
 
     # 10米风
-    uv_x = u.stda.fcst_time.values
-    u_y = u.stda.get_value()
-    v_y = v.stda.get_value()
-    ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
-                fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
-                length=5.8, linewidth=1.5, zorder=100)
-    ax_uv.set_ylim(-1, 1)
-    ax_uv.set_xlim(uv_x[0] - pd.Timedelta(hours=1), uv_x[-1] + pd.Timedelta(hours=1))
-    for label in ax_uv.get_xticklabels():
-        label.set_rotation(30)
-        label.set_horizontalalignment('center')
+    if(u==None or v==None):
+        ax_uv.set_axis_off()
+    else:
+        uv_x = u.stda.fcst_time.values
+        u_y = u.stda.get_value()
+        v_y = v.stda.get_value()
+        ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
+                    fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
+                    length=5.8, linewidth=1.5, zorder=100)
+        ax_uv.set_ylim(-1, 1)
+        ax_uv.set_xlim(uv_x[0] - pd.Timedelta(hours=1), uv_x[-1] + pd.Timedelta(hours=1))
+        for label in ax_uv.get_xticklabels():
+            label.set_rotation(30)
+            label.set_horizontalalignment('center')
 
     # add legend
     ax_tmp.legend(fontsize=15, loc='upper right')

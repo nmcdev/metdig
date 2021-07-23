@@ -14,7 +14,7 @@ data_name,var_name,level_type,var_units,cmadaas_var_name,cmadaas_discription,cma
 grapes_gfs,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,u,high,m/s,WIU,东西风风速,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,v,high,m/s,WIV,南北风风速,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
-grapes_gfs,vvel,high,10*Pa/s,VVM,垂直速度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,w,high,m/s,VVM,垂直速度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,tmp,high,kelvin,TEM,气温,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,rh,high,percent,RHU,相对湿度,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
@@ -35,7 +35,7 @@ grapes_gfs,tcwv,surface,mm,TIWV,总柱状比湿（整层水汽含量）,10,0,NAFP_FOR_FTM_GRA
 grapes_meso_3km,hgt,high,gpm,GPH,位势高度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,u,high,m/s,WIU,东西风风速,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,v,high,m/s,WIV,南北风风速,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso_3km,vvel,high,Pa/s,VVM,垂直速度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,w,high,m/s,VVM,垂直速度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,tmp,high,kelvin,TEM,气温,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,rh,high,percent,RHU,相对湿度,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
