@@ -58,6 +58,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
+    #读取集合预报
+    if('number' in list(data.coords.keys())):
+        data_name=data.coords['number'].values
+    else:
+        data_name=[data_name]
+
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
 
@@ -74,9 +80,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     # 转成stda
     if 'data' in data.keys():
         np_data = np.squeeze(data['data'].values)
-        np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
+        if(np.array(data_name).size > 1):
+            np_data = np_data[:, np.newaxis, np.newaxis, np.newaxis, ...]
+        else:
+            np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
         stda_data = mdgstda.numpy_to_gridstda(
-            np_data, [data_name],
+            np_data, data_name,
             levels, [init_time],
             [fhour],
             data.coords['lat'].values, data.coords['lon'].values, var_name=var_name, np_input_units=cassandra_units, data_source='cassandra',
@@ -86,8 +95,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     else:
         speed = data['speed'].squeeze()
         angle = data['angle'].squeeze()
-        speed = speed[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        angle = angle[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
+        if(np.array(data_name).size > 1):
+            speed = speed[:, np.newaxis, np.newaxis, np.newaxis, ...]
+            angle = angle[:, np.newaxis, np.newaxis, np.newaxis, ...]
+        else:
+            speed = speed[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
+            angle = angle[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
         speed_stda = mdgstda.numpy_to_gridstda(speed, [data_name],
                                                levels, [init_time],
                                                [fhour],
@@ -105,6 +118,11 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         else:
             raise Exception('error nmc_met_io.get_model_grid return value keys is not in [data speed angle]!')
 
+if __name__ == '__main__':
+    from datetime import datetime
+    r24 = get_model_grid(init_time=datetime(2021,7,10,20),
+                   fhour=24, data_name='ecmwf', var_name='rain24', level=0) 
+    print(r24)
 
 def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, level=None,
                     extent=None, x_percent=0, y_percent=0):
