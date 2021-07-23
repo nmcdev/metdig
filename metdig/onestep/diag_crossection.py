@@ -16,6 +16,8 @@ from metdig.onestep.complexgrid_var.div_uv import read_div_uv_4d,read_div_uv_3d
 from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv_4d
 from metdig.onestep.complexgrid_var.spfh import read_spfh_4D,read_spfh_3D
 from metdig.onestep.complexgrid_var.theta import read_theta3d
+from metdig.onestep.complexgrid_var.w import read_w3d
+
 
 from metdig.products import diag_crossection as draw_cross
 
@@ -64,14 +66,16 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
                             var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='vvel', levels=levels, extent=map_extent)
-    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='spfh', levels=levels, extent=map_extent)
+    # vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+    #                         var_name='vvel', levels=levels, extent=map_extent)
+    # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+    #                         var_name='spfh', levels=levels, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='psfc', extent=map_extent)
 
-    w = mdgcal.vertical_velocity(vvel, tmp, spfh)
+    # w = mdgcal.vertical_velocity(vvel, tmp, spfh)
+
+    w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
@@ -107,6 +111,12 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_theta_w(init_time=datetime.datetime(2021, 7, 20, 8, 0),st_point=[35.2,107.1], ed_point=[31,131],
+                        fhour=3,data_name='grapes_gfs')
+    plt.show()
 
 @date_init('init_time')
 def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -576,10 +586,6 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
         ret.update(drawret)
     if ret:
         return ret
-
-if __name__ == '__main__':
-    wind_w_tmpadv_tmp(init_time='2020111708',st_point=[20, 117.5], ed_point=[50, 117.6],
-                        fhour=0,data_source='era5')
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
