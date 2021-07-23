@@ -70,7 +70,7 @@ def reset_id_back(sta):
         sta["id"] = int_id
 
 
-def area_cut(data, extent, x_percent, y_percent):
+def area_cut(data, extent, x_percent=0, y_percent=0):
     '''
     区域裁剪 
     '''

@@ -13,11 +13,13 @@ import sys
 
 import metdig.utl as mdgstda
 
+from metdig.io.lib import utility as utl
 from .lib import utl_era5
 from .lib import config as CONFIG
 
 import logging
 _log = logging.getLogger(__name__)
+
 
 class ERA5DataService(object):
     """
@@ -120,8 +122,8 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     Returns:
         [type] -- [description]
     '''
-    
-    init_time_utc = init_time- datetime.timedelta(hours=8) # 世界时
+
+    init_time_utc = init_time - datetime.timedelta(hours=8)  # 世界时
     if extent:
         # 数据预先扩大xy percent
         delt_x = (extent[1] - extent[0]) * x_percent
@@ -151,7 +153,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
         era5_units = utl_era5.era5_units(level_type=level_type, var_name=var_name)
     except Exception as e:
         raise Exception(str(e))
-    
+
     if not os.path.exists(cache_file):
         if level:
             ERA5DataService().download_hourly_pressure_levels(init_time_utc, era5_var, level, cache_file, extent=extent)
@@ -164,25 +166,18 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     data = data.squeeze().transpose('latitude', 'longitude')
     data = data.rename({'latitude': 'lat', 'longitude': 'lon'})
 
-    # 数据裁剪
-    if extent:
-        data = data.where((data['lon'] >= extent[0]) & (data['lon'] <= extent[1]) & (data['lat'] >= extent[2]) & (data['lat'] <= extent[3]), drop=True)
+    # 数据裁剪，此处不传xpercent，因为之前已经扩大范围了时候已经扩大范围了
+    data = utl.area_cut(data, extent)
 
     # 经纬度从小到大排序好
     data = data.sortby('lat')
     data = data.sortby('lon')
 
-    if level:
-        levels = [level]
-    else:
-        levels = [era5_level]
-
-    np_data = data.values[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-    stda_data = mdgstda.numpy_to_gridstda(
-        np_data, ['era5'], levels, [init_time], [0], data.coords['lat'].values, data.coords['lon'].values,
-        var_name=var_name, np_input_units=era5_units,
-        data_source='cds', level_type=level_type)
-
+    stda_data = mdgstda.xrda_to_gridstda(data,
+                                         lat_dim='lat', lon_dim='lon',
+                                         member=['era5'], level=[era5_level], time=[init_time],
+                                         var_name=var_name, np_input_units=era5_units,
+                                         data_source='cds', level_type=level_type)
     return stda_data
 
 

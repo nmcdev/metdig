@@ -73,25 +73,17 @@ def get_model_grid(init_time=None, data_name=None,  var_name=None, level=None, e
     data = data.squeeze().transpose('lat', 'lon')
 
     # 数据裁剪
-    if extent:
-        data = data.where((data['lon'] >= extent[0]) & (data['lon'] <= extent[1]) & (
-            data['lat'] >= extent[2]) & (data['lat'] <= extent[3]), drop=True)
+    data = utl.area_cut(data, extent, x_percent, y_percent)
 
     # 经纬度从小到大排序好
     data = data.sortby('lat')
     data = data.sortby('lon')
 
-    if level:
-        levels = [level]
-    else:
-        levels = [thredds_level]
-
-    np_data = data.values[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-    stda_data = mdgstda.numpy_to_gridstda(
-        np_data, [data_name], levels, [init_time], [0], data.coords['lat'].values, data.coords['lon'].values,
-        var_name=var_name, np_input_units=thredds_units,
-        data_source='thredds', level_type=level_type)
-
+    stda_data = mdgstda.xrda_to_gridstda(data,
+                                         lat_dim='lat', lon_dim='lon',
+                                         member=[data_name], level=[thredds_level], time=[init_time],
+                                         var_name=var_name, np_input_units=thredds_units,
+                                         data_source='thredds', level_type=level_type)
     return stda_data
 
 

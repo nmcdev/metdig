@@ -11,82 +11,112 @@ import metdig.utl as mdgstda
 
 __all__ = [
     'xrda_to_gridstda',
-    'numpy_to_gridstda',
+    'numpy_to_gridstda',  # 目前不建议用该接口（仍在优化中），改用用npda_to_gridstda
+    'npda_to_gridstda',
     'gridstda_full_like',
     'gridstda_full_like_by_levels',
 ]
 
 
-def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='dtime', lat='lat', lon='lon',
+def xrda_to_gridstda(xrda,
+                     member_dim='member', level_dim='level', time_dim='time', dtime_dim='dtime', lat_dim='lat', lon_dim='lon',
+                     member=None, level=None, time=None, dtime=None, lat=None, lon=None,
                      np_input_units='', var_name='',
-                     **attrs_kwargv):
-    """[通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda，
+                     **attrs_kwargs):
+    """[通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda（如果不给出缺失的维度数据，默认填0）
+
     Example:
     xrda = xr.DataArray([[271, 272, 273], [274, 275, 276]], dims=("X", "Y"), coords={"X": [10, 20], 'Y': [80, 90, 100]})
 
     # 指定xrda中各个维度对应的stda的维度名称
-    stda = metdig.utl.xrda_to_gridstda(xrda, lon='X', lat='Y') 
+    stda = metdig.utl.xrda_to_gridstda(xrda, lon_dim='X', lat_dim='Y') 
 
     # 可以指定缺失的stda维度
-    stda = metdig.utl.xrda_to_gridstda(xrda, member='cassandra', lon='X', lat='Y') 
+    stda = metdig.utl.xrda_to_gridstda(xrda, lon_dim='X', lat_dim='Y', member=['cassandra']) 
 
     # 可以指定stda的要素，同时给定输入单位，自动转换为stda的单位
-    stda = metdig.utl.xrda_to_gridstda(xrda, member='cassandra', lon='X', lat='Y', np_input_units='K' ,var_name='tmp') 
+    stda = metdig.utl.xrda_to_gridstda(xrda, lon_dim='X', lat_dim='Y', member=['cassandra'], np_input_units='K' ,var_name='tmp') 
 
     ]
 
     Args:
         xrda ([xarray.DataArray]): [输入的DataArray]
-        member (str, optional): [xrda中代表stda的member维的名称，如果在xrda中未找到该名称，则将其作为stda的member维的数据]. Defaults to 'member'.
-        level (str, optional): [xrda中代表stda的level维的名称，如果在xrda中未找到该名称，则将其作为stda的levelr维的数据]. Defaults to 'level'.
-        time (str, optional): [xrda中代表stda的time维的名称，如果在xrda中未找到该名称，则将其作为stda的time维的数据]. Defaults to 'time'.
-        dtime (str, optional): [xrda中代表stda的dtime维的名称，如果在xrda中未找到该名称，则将其作为stda的dtime维的数据]. Defaults to 'dtime'.
-        lat (str, optional): [xrda中代表stda的lat维的名称，如果在xrda中未找到该名称，则将其作为stda的lat维的数据]. Defaults to 'lat'.
-        lon (str, optional): [xrda中代表stda的lon维的名称，如果在xrda中未找到该名称，则将其作为stda的lon维的数据]. Defaults to 'lon'.
+        member_dim (str, optional): [xrda中代表stda的member维的名称]. Defaults to 'member'.
+        level_dim (str, optional): [xrda中代表stda的level维的名称]. Defaults to 'level'.
+        time_dim (str, optional): [xrda中代表stda的time维的名称]. Defaults to 'time'.
+        dtime_dim (str, optional): [xrda中代表stda的dtime维的名称]. Defaults to 'dtime'.
+        lat_dim (str, optional): [xrda中代表stda的lat维的名称]. Defaults to 'lat'.
+        lon_dim (str, optional): [xrda中代表stda的lon维的名称]. Defaults to 'lon'.
+        member ([list], optional): [使用member替换xrda的member数据]]. Defaults to None.
+        level ([list], optional): [使用level替换xrda的level数据]. Defaults to None.
+        time ([list], optional): [使用time替换xrda的time数据]. Defaults to None.
+        dtime ([list], optional): [使用dtime替换xrda的dtime数据]. Defaults to None.
+        lat ([list], optional): [使用lat替换xrda的lat数据]. Defaults to None.
+        lon ([list], optional): [使用lon替换xrda的lon数据]. Defaults to None.
         np_input_units (str, optional): [np_input数据对应的单位，自动转换为能查询到的stda单位]. Defaults to ''.
         var_name (str, optional): [要素名]. Defaults to ''.
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
+        **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
 
     Returns:
         [STDA] -- [STDA网格数据]
     """
+    def _easy_check_None(parm):
+        if parm is None:
+            return True
+        if len(parm) == 1 and parm[0] is None:
+            return True
+        return False
 
     stda_data = xrda.copy(deep=True)
 
-    if member in xrda.dims:
-        stda_data = stda_data.rename({member: 'member'})
+    # 已知维度替换成stda维度名称，同时补齐缺失维度
+    if member_dim in xrda.dims:
+        stda_data = stda_data.rename({member_dim: 'member'})
     else:
-        stda_data = stda_data.expand_dims(member=[member])
-
-    if level in xrda.dims:
-        stda_data = stda_data.rename({level: 'level'})
+        stda_data = stda_data.expand_dims(member=[0])
+    if level_dim in xrda.dims:
+        stda_data = stda_data.rename({level_dim: 'level'})
     else:
-        stda_data = stda_data.expand_dims(level=[level])
-
-    if time in xrda.dims:
-        stda_data = stda_data.rename({time: 'time'})
+        stda_data = stda_data.expand_dims(level=[0])
+    if time_dim in xrda.dims:
+        stda_data = stda_data.rename({time_dim: 'time'})
     else:
-        stda_data = stda_data.expand_dims(time=[time])
-
-    if dtime in xrda.dims:
-        stda_data = stda_data.rename({dtime: 'dtime'})
+        stda_data = stda_data.expand_dims(time=[0])
+    if dtime_dim in xrda.dims:
+        stda_data = stda_data.rename({dtime_dim: 'dtime'})
     else:
-        stda_data = stda_data.expand_dims(dtime=[dtime])
-
-    if lat in xrda.dims:
-        stda_data = stda_data.rename({lat: 'lat'})
+        stda_data = stda_data.expand_dims(dtime=[0])
+    if lat_dim in xrda.dims:
+        stda_data = stda_data.rename({lat_dim: 'lat'})
     else:
-        stda_data = stda_data.expand_dims(lat=[lat])
-
-    if lon in xrda.dims:
-        stda_data = stda_data.rename({lon: 'lon'})
+        stda_data = stda_data.expand_dims(lat=[0])
+    if lon_dim in xrda.dims:
+        stda_data = stda_data.rename({lon_dim: 'lon'})
     else:
-        stda_data = stda_data.expand_dims(lon=[lon])
+        stda_data = stda_data.expand_dims(lon=[0])
 
+    # 替换掉需要替换的维度数据
+    if _easy_check_None(member) == False:
+        stda_data = stda_data.assign_coords(member=member)
+    if _easy_check_None(level) == False:
+        stda_data = stda_data.assign_coords(level=level)
+    if _easy_check_None(time) == False:
+        stda_data = stda_data.assign_coords(time=time)
+    if _easy_check_None(dtime) == False:
+        stda_data = stda_data.assign_coords(dtime=dtime)
+    if _easy_check_None(lat) == False:
+        stda_data = stda_data.assign_coords(lat=lat)
+    if _easy_check_None(lon) == False:
+        stda_data = stda_data.assign_coords(lon=lon)
+
+    # 转置到stda维度
     stda_data = stda_data.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
 
+    # delete 冗余维度
+    stda_data = stda_data.drop([i for i in stda_data.coords if i not in stda_data.dims])
+
     # attrs
-    stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+    stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
     # 单位转换
     stda_data.values, data_units = mdgstda.numpy_units_to_stda(stda_data.values, np_input_units, stda_attrs['var_units'])
     stda_attrs['var_units'] = data_units
@@ -94,9 +124,78 @@ def xrda_to_gridstda(xrda, member='member', level='level', time='time', dtime='d
 
     return stda_data
 
+
+def npda_to_gridstda(npda,
+                     dims=('lat', 'lon'),
+                     member=None, level=None, time=None, dtime=None, lat=None, lon=None,
+                     np_input_units='', var_name='',
+                     **attrs_kwargs):
+    """[通过给出npda的维度信息及其维度数据，('member', 'level', 'time', 'dtime', 'lat', 'lon')，将npda转成stda（如果不给出缺失的维度数据，默认填0）
+    Example:
+    npda = np.array([[271, 272, 273], [274, 275, 276]])
+
+    # 指定xrda中各个维度对应的stda的维度名称
+    stda = metdig.utl.npda_to_gridstda(npda, dims=('lat', 'lon'), lon=[80, 90, 100], lat=[10, 20])
+
+    # 可以指定缺失的stda维度
+    stda = metdig.utl.npda_to_gridstda(npda, dims=('lat', 'lon'), lon=[80, 90, 100], lat=[10, 20], member=['cassandra'])
+
+    # 可以指定stda的要素，同时给定输入单位，自动转换为stda的单位
+    stda =  metdig.utl.npda_to_gridstda(npda, dims=('lat', 'lon'), lon=[80, 90, 100], lat=[10, 20], member=['cassandra'], np_input_units='K' ,var_name='tmp') 
+
+    ]
+
+    Args:
+        npda ([ndarray]): [numpy数据]
+        dims (tuple, optional): [npda对应的stda的维度]. Defaults to ('lat', 'lon').
+        member ([list], optional): [npda的member维数据]]. Defaults to None.
+        level ([list], optional): [npda的level维数据]. Defaults to None.
+        time ([list], optional): [npda的time维数据]. Defaults to None.
+        dtime ([list], optional): [npda的dtime维数据]. Defaults to None.
+        lat ([list], optional): [npda的lat维数据]. Defaults to None.
+        lon ([list], optional): [npda的lon维数据]. Defaults to None.
+        np_input_units (str, optional): [np_input数据对应的单位，自动转换为能查询到的stda单位]. Defaults to ''.
+        var_name (str, optional): [要素名]. Defaults to ''.
+        **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
+
+    Returns:
+        [STDA] -- [STDA网格数据]
+    """
+    if len(npda.shape) != len(dims):
+        raise Exception('error: npda shape not equal dims, please check npda and dims')
+    for _d in dims:
+        if _d != 'member' and _d != 'level' and _d != 'time' and _d != 'dtime' and _d != 'lat' and _d != 'lon':
+            raise Exception('''error: dims need the following definitions: ('member', 'level', 'time', 'dtime', 'lat', 'lon'), please check dims''')
+
+    temp = dict(member=member, level=level, time=time, dtime=dtime, lat=lat, lon=lon)
+
+    # 第一步：输入的npda转成xrda
+    coords = [(_d,  np.arange(_l)) if temp[_d] is None else (_d,  temp[_d]) for _d, _l in zip(dims, npda.shape)]
+    xrda = xr.DataArray(npda, coords=coords)
+
+    # 第二步：缺失维度补齐，未指定的维度以0补齐
+    for _d in list(set(('member', 'level', 'time', 'dtime', 'lat', 'lon')).difference(set(dims))):
+        if temp[_d] is not None:
+            xrda = xrda.expand_dims({_d: temp[_d]})
+        else:
+            xrda = xrda.expand_dims({_d: [0]})
+
+    # 第三步：转置到stda维度
+    xrda = xrda.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+
+    # attrs
+    stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
+    # 单位转换
+    xrda.values, data_units = mdgstda.numpy_units_to_stda(xrda.values, np_input_units, stda_attrs['var_units'])
+    stda_attrs['var_units'] = data_units
+    xrda.attrs = stda_attrs
+
+    return xrda
+
+
 def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
                       np_input_units='', var_name='',
-                      **attrs_kwargv):
+                      **attrs_kwargs):
     '''
 
     [numpy数组转stda网格标准格式]
@@ -109,7 +208,7 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
         dtimes {[list or ndarray]} -- [预报失效列表]
         lats {[list or ndarray]} -- [纬度列表]
         lons {[list or ndarray]} -- [经度列表]
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
+        **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
 
     Keyword Arguments:
         np_input_units {[str]} -- [np_input数据对应的单位，自动转换为能查询到的stda单位]
@@ -120,7 +219,7 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
     '''
 
     # get attrs
-    stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+    stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
 
     # 单位转换
     data, data_units = mdgstda.numpy_units_to_stda(np_input, np_input_units, stda_attrs['var_units'])
@@ -161,7 +260,7 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
     return stda_data
 
 
-def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargv):
+def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargs):
     '''
 
     [返回一个和参数a具有相同维度信息的STDA数据，并且均按fill_value填充该stda]
@@ -169,7 +268,7 @@ def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargv):
     Arguments:
         a {[stda]} -- [description]
         fill_value {[scalar]} -- [Value to fill the new object with before returning it]
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
+        **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
 
     Keyword Arguments:
         dtype {[dtype, optional]} -- [dtype of the new array. If omitted, it defaults to other.dtype] (default: {None})
@@ -179,11 +278,11 @@ def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargv):
         [stda] -- [stda网格数据]
     '''
     stda_data = xr.full_like(a, fill_value, dtype=dtype)
-    stda_data.attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+    stda_data.attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
     return stda_data
 
 
-def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs_kwargv):
+def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs_kwargs):
     '''
 
     [返回一个和参数a具有相同维度信息的stda数据，并且按参数levels逐层赋值]
@@ -191,7 +290,7 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
     Arguments:
         a {[type]} -- [description]
         levels {[type]} -- [description]
-        **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
+        **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
 
     Keyword Arguments:
         dtype {[dtype, optional]} -- [dtype of the new array. If omitted, it defaults to other.dtype] (default: {None})
@@ -202,7 +301,7 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
     '''
 
     # 后续可以改为stda_broadcast_levels， xr.broadcast(a, levels.squeeze())
-    stda_data = gridstda_full_like(a, 0, var_name=var_name, **attrs_kwargv)
+    stda_data = gridstda_full_like(a, 0, var_name=var_name, **attrs_kwargs)
     for i, lev in enumerate(levels):
         stda_data.values[:, i, :, :, :, :] = lev
     return stda_data

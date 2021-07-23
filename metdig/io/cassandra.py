@@ -53,7 +53,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     except Exception as e:
         raise Exception(str(e))
     filename = utl.model_filename(init_time, fhour)
-    data = nmc_micaps_io.get_model_grid(cassandra_dir, filename=filename)
+    data = nmc_micaps_io.get_model_grid(cassandra_dir, filename=filename)  # ['number', 'time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     # 此处建议修改为warnning
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
@@ -72,57 +72,32 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     data = data.sortby('lon')
 
     stda_data = None
-    if level:
-        levels = [level]
-    else:
-        levels = [cassandra_level]
-
-    # 转成stda
     if 'data' in data.keys():
-        np_data = np.squeeze(data['data'].values)
-        if(np.array(data_name).size > 1):
-            np_data = np_data[:, np.newaxis, np.newaxis, np.newaxis, ...]
-        else:
-            np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        stda_data = mdgstda.numpy_to_gridstda(
-            np_data, data_name,
-            levels, [init_time],
-            [fhour],
-            data.coords['lat'].values, data.coords['lon'].values, var_name=var_name, np_input_units=cassandra_units, data_source='cassandra',
-            level_type=level_type)
-
-        return stda_data
+        stda_data = mdgstda.xrda_to_gridstda(data['data'],
+                                             member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
+                                             member=[data_name], level=[cassandra_level], time=[init_time], dtime=[fhour],
+                                             var_name=var_name, np_input_units=cassandra_units,
+                                             data_source='cassandra', level_type=level_type)
     else:
-        speed = data['speed'].squeeze()
-        angle = data['angle'].squeeze()
-        if(np.array(data_name).size > 1):
-            speed = speed[:, np.newaxis, np.newaxis, np.newaxis, ...]
-            angle = angle[:, np.newaxis, np.newaxis, np.newaxis, ...]
-        else:
-            speed = speed[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-            angle = angle[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-        speed_stda = mdgstda.numpy_to_gridstda(speed, [data_name],
-                                               levels, [init_time],
-                                               [fhour],
-                                               speed.coords['lat'].values, speed.coords['lon'].values, var_name=var_name,
-                                               np_input_units=cassandra_units, data_source='cassandra', level_type=level_type)
-        angle_stda = mdgstda.numpy_to_gridstda(angle, [data_name],
-                                               levels, [init_time],
-                                               [fhour],
-                                               angle.coords['lat'].values, angle.coords['lon'].values, var_name=var_name,
-                                               np_input_units=cassandra_units, data_source='cassandra', level_type=level_type)
+        speed_stda = mdgstda.xrda_to_gridstda(data['speed'],
+                                              member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
+                                              member=[data_name], level=[cassandra_level], time=[init_time], dtime=[fhour],
+                                              var_name=var_name, np_input_units=cassandra_units,
+                                              data_source='cassandra', level_type=level_type)
+        angle_stda = mdgstda.xrda_to_gridstda(data['angle'],
+                                              member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
+                                              member=[data_name], level=[cassandra_level], time=[init_time], dtime=[fhour],
+                                              var_name=var_name, np_input_units=cassandra_units,
+                                              data_source='cassandra', level_type=level_type)
         if var_name == 'wsp':
-            return speed_stda
+            stda_data = speed_stda
         elif var_name == 'wdir':
-            return angle_stda
+            stda_data = angle_stda
         else:
             raise Exception('error nmc_met_io.get_model_grid return value keys is not in [data speed angle]!')
 
-if __name__ == '__main__':
-    from datetime import datetime
-    r24 = get_model_grid(init_time=datetime(2021,7,10,20),
-                   fhour=24, data_name='ecmwf', var_name='rain24', level=0) 
-    print(r24)
+    return stda_data
+
 
 def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, level=None,
                     extent=None, x_percent=0, y_percent=0):
@@ -145,9 +120,9 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
     '''
     stda_data = []
     for fhour in fhours:
-        try: #待斟酌
+        try:  # 待斟酌
             data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
-        except: #待斟酌
+        except:  # 待斟酌
             continue
         if data is not None and data.size > 0:
             stda_data.append(data)
@@ -155,6 +130,7 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
         return xr.concat(stda_data, dim='dtime')
     else:
         raise Exception('Can not get data from cassandra! {}{}'.format(data_name, var_name))
+
 
 def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None, levels=None,
                       extent=None, x_percent=0, y_percent=0):
@@ -402,7 +378,7 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
     filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
 
-    data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)
+    data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)  # nmc_micaps_io返回的维度固定为 ['time', 'channel', 'lat', 'lon']
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
@@ -414,11 +390,10 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
     data = data.sortby('lon')
 
     # 转成stda
-    np_data = np.squeeze(data['image'].values)
-    np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-    stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], [channel], [obs_time], [0], data.coords['lat'].values, data.coords['lon'].values,
-                                          var_name=var_name, np_input_units=cassandra_units,
-                                          data_source='cassandra')
+    stda_data = mdgstda.xrda_to_gridstda(data['image'],
+                                         level_dim='channel', time_dim='time', lat_dim='lat', lon_dim='lon',
+                                         member=[data_name], level=[channel], time=[obs_time],
+                                         var_name=var_name, np_input_units=cassandra_units, data_source='cassandra')
 
     return stda_data
 
@@ -439,7 +414,7 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
 
     Returns:
         [stda] -- [stda格式数据]
-    """    
+    """
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -500,7 +475,7 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
 
     Returns:
         [stda] -- [stda格式数据]
-    """    
+    """
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -514,7 +489,7 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
 
     filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
 
-    data = nmc_micaps_io.get_radar_mosaic(cassandra_dir, filename=filename)
+    data = nmc_micaps_io.get_radar_mosaic(cassandra_dir, filename=filename)  # nmc_micaps_io返回的维度固定为，['time', 'lat', 'lon']
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
@@ -524,13 +499,13 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
     # 经纬度从小到大排序好
     data = data.sortby('lat')
     data = data.sortby('lon')
+    # print(data)
 
     # 转成stda
-    np_data = np.squeeze(data['data'].values)
-    np_data = np_data[np.newaxis, np.newaxis, np.newaxis, np.newaxis, ...]
-    stda_data = mdgstda.numpy_to_gridstda(np_data, [data_name], [0], [obs_time], [0], data.coords['lat'].values, data.coords['lon'].values,
-                                          var_name=var_name, np_input_units=cassandra_units,
-                                          data_source='cassandra')
+    stda_data = mdgstda.xrda_to_gridstda(data['data'],
+                                         time_dim='time', lat_dim='lat', lon_dim='lon',
+                                         member=[data_name],  time=[obs_time],
+                                         var_name=var_name, np_input_units=cassandra_units, data_source='cassandra')
 
     return stda_data
 
@@ -547,7 +522,7 @@ def get_wind_profiler_bytimerange(obs_st_time=None, obs_ed_time=None, data_name=
 
     Returns:
         [stda] -- [stda格式数据]
-    """    
+    """
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
@@ -594,7 +569,7 @@ def get_wind_profiler_bytime(obs_time=None, data_name=None, var_name=None, id_se
 
     Returns:
         [stda] -- [stda格式数据]
-    """    
+    """
     # 从配置中获取相关信息
     try:
         cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
