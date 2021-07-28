@@ -62,8 +62,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if('number' in list(data.coords.keys())):
         data_name=data.coords['number'].values
     else:
-        data_name=[data_name]
-
+        data_name=data_name
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
 
