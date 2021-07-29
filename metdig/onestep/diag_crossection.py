@@ -112,12 +112,6 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_theta_w(init_time=datetime.datetime(2021, 7, 20, 8, 0),st_point=[35.2,107.1], ed_point=[31,131],
-                        fhour=3,data_name='grapes_gfs')
-    plt.show()
-
 @date_init('init_time')
 def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
@@ -350,26 +344,25 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_w = mdgcal.cross_section(w, st_point, ed_point)
+    cross_t, cross_n = mdgcal.cross_section_components(cross_u, cross_v)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
     cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
-
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
-
     pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
-
     cross_spfh = mdgcal.specific_humidity_from_dewpoint(pressure, cross_td)
-
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
+    ratio = np.abs(cross_n.values).max()/np.abs(cross_w.values).max()
     if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'rh': rh, 'wind_n': cross_n, 'w': cross_w, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_cross.draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w*ratio, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
                                        lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
@@ -378,6 +371,11 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_w_theta_spfh(st_point=[33.6,120.7],ed_point=[41.5,114.6])
+    plt.show()
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -544,9 +542,8 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
                           var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='v', levels=levels, extent=map_extent)
-    vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                             var_name='vvel', levels=levels, extent=map_extent)
-    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels,extent=map_extent)
+
+    w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
 
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             var_name='tmp', levels=levels, extent=map_extent)
@@ -560,7 +557,6 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     tmpadv = mdgcal.var_advect(tmp, u, v)
-    w = mdgcal.vertical_velocity(vvel, tmp, spfh)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_w = mdgcal.cross_section(w, st_point, ed_point)
