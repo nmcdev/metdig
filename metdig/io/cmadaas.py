@@ -20,7 +20,7 @@ _log = logging.getLogger(__name__)
 
 
 def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, level=None,
-                   extent=None, x_percent=0, y_percent=0):
+                   extent=None, x_percent=0, y_percent=0,cache_clear=True):
     '''
 
     [读取单层单时次模式网格数据]
@@ -57,15 +57,16 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
     timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
     
-    if cmadaas_data_code == 'NAFP_CLDAS2.0_NRT_ASI_NC':
+    # if cmadaas_data_code == 'NAFP_CLDAS2.0_NRT_ASI_NC':
+    if cmadaas_data_code == 'NAFP_CLDAS2.0_RT_HOR_ASI':
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
                                              time_str=timestr+'0000', level_type=cmadaas_level_type,
-                                             fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+                                             fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     else:
         data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                                 init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
-                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
   
 
     # 建议这里修改为warning
