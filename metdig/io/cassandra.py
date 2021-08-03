@@ -60,9 +60,10 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
     #读取集合预报
     if('number' in list(data.coords.keys())):
-        data_name=data.coords['number'].values
+        member = data.coords['number'].values
+        member = list(map(lambda x: data_name + '_' + str(x), member))
     else:
-        data_name=data_name
+        member = [data_name]
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
 
@@ -74,18 +75,18 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if 'data' in data.keys():
         stda_data = mdgstda.xrda_to_gridstda(data['data'],
                                              member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
-                                             member=[data_name], level=[cassandra_level], time=[init_time], dtime=[fhour],
+                                             member=member, level=[cassandra_level], time=[init_time], dtime=[fhour],
                                              var_name=var_name, np_input_units=cassandra_units,
                                              data_source='cassandra', level_type=level_type)
     else:
         speed_stda = mdgstda.xrda_to_gridstda(data['speed'],
                                               member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
-                                              member=[data_name], level=[cassandra_level], time=[init_time], dtime=[fhour],
+                                              member=member, level=[cassandra_level], time=[init_time], dtime=[fhour],
                                               var_name=var_name, np_input_units=cassandra_units,
                                               data_source='cassandra', level_type=level_type)
         angle_stda = mdgstda.xrda_to_gridstda(data['angle'],
                                               member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
-                                              member=[data_name], level=[cassandra_level], time=[init_time], dtime=[fhour],
+                                              member=member, level=[cassandra_level], time=[init_time], dtime=[fhour],
                                               var_name=var_name, np_input_units=cassandra_units,
                                               data_source='cassandra', level_type=level_type)
         if var_name == 'wsp':
@@ -374,10 +375,13 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
     cassandra_path = utl.cfgpath_format_todatestr(cassandra_path, channel=channel)  # 带日期格式的路径
     cassandra_dir = os.path.dirname(cassandra_path) + '/'  # 可以直接使用的目录
     cassandra_filename = os.path.basename(cassandra_path)  # 带日期格式的文件名
-
+    
     filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
 
+    print(cassandra_dir, filename)
+    print()
     data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)  # nmc_micaps_io返回的维度固定为 ['time', 'channel', 'lat', 'lon']
+    print(data)
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 

@@ -16,7 +16,7 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 @kwargs_wrapper
 def contourf_2d(ax, stda, xdim='lon', ydim='lat',
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
-                levels=None, cmap='jet', extend='both',
+                levels=None, cmap='jet', extend='both', isLinear=False,
                 transform=ccrs.PlateCarree(), alpha=0.8, 
                 colorbar_kwargs={}, **kwargs):
     """[graphics层绘制contourf平面图通用方法]
@@ -33,6 +33,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
         levels ([list], optional): [description]. Defaults to None.
         cmap (str, optional): [description]. Defaults to 'jet'.
         extend (str, optional): [description]. Defaults to 'both'.
+        isLinear ([bool], optional): [是否对colors线性化]. Defaults to False.
         transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         alpha (float, optional): [description]. Defaults to 0.8.
 
@@ -43,7 +44,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)
 
-    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels, isLinear=isLinear)
 
     if transform is None or (xdim != 'lon' and ydim != 'lat'):
         img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, alpha=alpha, extend=extend, **kwargs)
