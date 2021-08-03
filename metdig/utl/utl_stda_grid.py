@@ -440,7 +440,7 @@ class __STDADataArrayAccessor(object):
                 ydim = 'dtime'
             else:
                 ydim = 'time'
-        data = self._xr.squeeze().transpose(ydim, xdim).values
+        data = self._xr.squeeze().transpose(ydim, xdim).values.copy()
         if xunits == True:
             data = data * units(self._xr.attrs['var_units'])
         return data
