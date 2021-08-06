@@ -17,7 +17,7 @@ import metdig.utl as mdgstda
 
 
 from metdig.io.lib import config as CONFIG
-from metdig.io.lib import utl_era5
+from metdig.io.lib import era5_cfg
 
 import logging
 _log = logging.getLogger(__name__)
@@ -194,7 +194,7 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
         savefile = os.path.join(savedir,
                                 '{}_{:%Y%m%d}_{:%Y%m%d}_{}_{}_{}_{}.nc'.format(
                                     var_name, dt_start_utc, dt_end_utc, extent[0], extent[1], extent[2], extent[3]))
-        era5_var = utl_era5.era5_variable(var_name=var_name, level_type='high')
+        era5_var = era5_cfg().era5_variable(var_name=var_name, level_type='high')
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
         _era5_download_hourly_pressure_levels(savefile=savefile, year=years, month=months, day=days, hour=hour,
                                               pressure_level=pressure_level, variable=era5_var, extent=extent, is_overwrite=is_overwrite)
@@ -220,7 +220,7 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v1
         savefile = os.path.join(savedir,
                                 '{}_{:%Y%m%d}_{:%Y%m%d}_{}_{}_{}_{}.nc'.format(
                                     var_name, dt_start_utc, dt_end_utc, extent[0], extent[1], extent[2], extent[3]))
-        era5_var = utl_era5.era5_variable(var_name, level_type='surface')
+        era5_var = era5_cfg().era5_variable(var_name, level_type='surface')
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
 
         _era5_download_hourly_single_levels(savefile=savefile, year=years, month=months, day=days, hour=hour,

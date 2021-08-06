@@ -11,7 +11,7 @@ import pandas as pd
 import nmc_met_io.retrieve_micaps_server as nmc_micaps_io
 import metdig.io.nmc_micaps_helper as nmc_micaps_helper
 
-from metdig.io.lib import utl_cassandra
+from metdig.io.lib import cassandra_model_cfg, cassandra_obs_cfg, cassandra_sate_cfg, cassandra_radar_cfg
 from metdig.io.lib import utility as utl
 
 import metdig.utl as mdgstda
@@ -43,13 +43,13 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     try:
         if level:
             level_type = 'high'
-            cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name,
+            cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name,
                                                               var_name=var_name, level=level)  # cassandra数据路径
         else:
             level_type = 'surface'
-            cassandra_dir = utl_cassandra.model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.model_cassandra_units(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
-        cassandra_level = utl_cassandra.model_cassandra_level(level_type=level_type, data_name=data_name, var_name=var_name, level=level)
+            cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = cassandra_model_cfg().model_cassandra_units(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_level = cassandra_model_cfg().model_cassandra_level(level_type=level_type, data_name=data_name, var_name=var_name, level=level)
     except Exception as e:
         raise Exception(str(e))
     filename = utl.model_filename(init_time, fhour)
@@ -253,8 +253,8 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
     '''
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_path = cassandra_obs_cfg().obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = cassandra_obs_cfg().obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
 
@@ -367,8 +367,8 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据路径
-        cassandra_units = utl_cassandra.sate_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
+        cassandra_path = cassandra_sate_cfg().sate_cassandra_dir(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据路径
+        cassandra_units = cassandra_sate_cfg().sate_cassandra_units(data_name=data_name, var_name=var_name, channel=channel)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
 
@@ -378,10 +378,7 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
     
     filename, obs_time = nmc_micaps_helper.get_obs_filename(cassandra_dir, cassandra_filename, obs_time=obs_time, isnearesttime=isnearesttime)  # 文件名
 
-    print(cassandra_dir, filename)
-    print()
     data = nmc_micaps_io.get_fy_awx(cassandra_dir, filename=filename)  # nmc_micaps_io返回的维度固定为 ['time', 'channel', 'lat', 'lon']
-    print(data)
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
 
@@ -420,8 +417,8 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
     """
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_path = cassandra_obs_cfg().obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = cassandra_obs_cfg().obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
 
@@ -481,8 +478,8 @@ def get_radar_mosaic(obs_time=None, data_name=None, var_name=None, extent=None, 
     """
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.radar_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.radar_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_path = cassandra_radar_cfg().radar_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = cassandra_radar_cfg().radar_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
 
@@ -528,8 +525,8 @@ def get_wind_profiler_bytimerange(obs_st_time=None, obs_ed_time=None, data_name=
     """
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_path = cassandra_obs_cfg().obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = cassandra_obs_cfg().obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
 
@@ -575,8 +572,8 @@ def get_wind_profiler_bytime(obs_time=None, data_name=None, var_name=None, id_se
     """
     # 从配置中获取相关信息
     try:
-        cassandra_path = utl_cassandra.obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = utl_cassandra.obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
+        cassandra_path = cassandra_obs_cfg().obs_cassandra_dir(data_name=data_name, var_name=var_name)  # cassandra数据路径
+        cassandra_units = cassandra_obs_cfg().obs_cassandra_units(data_name=data_name, var_name=var_name)  # cassandra数据单位
     except Exception as e:
         raise Exception(str(e))
 
