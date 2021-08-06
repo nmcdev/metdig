@@ -283,7 +283,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
     # print(data.index)
 
     # 数据列转换成stda标准的名称
-    data = utl_cassandra.obs_rename_colname(data)
+    data = utl.obs_rename_colname(data)
 
     # 层次初始化，如果为地面层次，初始化为0
     if level:
