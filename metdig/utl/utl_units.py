@@ -23,13 +23,19 @@ def numpy_units_to_stda(np_input, np_input_units, stda_units):
         raise Exception('error: np_input_units must be str!')
     if not isinstance(stda_units, str):
         raise Exception('error: stda_units must be str!')
+    
+    np_input = np_input.copy()
 
     if np_input_units == '' or stda_units == '' or np_input_units == 'undefined stda' or stda_units == 'undefined stda' :
-        return np_input, np_input_units # 无法转换，则按原数据返回，同时返回的单位为空
+        return np_input, np_input_units # 为空或未定义，无法转换，则按原数据返回，同时返回的单位为空
+
+    if stda_units == np_input_units:
+        return np_input, np_input_units # 相同，不需要转换
+
 
     if np.array(units(stda_units)) != 1:
         raise Exception('error: stda_units={} 单位不能带倍数, '.format(stda_units))
-
+    
     # 单位转换
     data = (np_input * units(np_input_units)).to(stda_units)
     data = np.array(data)

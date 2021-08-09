@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from metdig import utl
 import matplotlib.pyplot as plt
 import math
 import numpy as np
@@ -63,7 +64,7 @@ def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
 
     pres = tmp.copy(deep=True)
-    pres.stda.reset_value(levels, var_name='pres')
+    pres.stda.set_values(levels, var_name='pres')
 
     if is_return_data:
         dataret = {'pres': pres, 'tmp': tmp, 'td': td, 'u': u, 'v': v, 'rh': rh}

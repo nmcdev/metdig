@@ -121,7 +121,6 @@ def xrda_to_gridstda(xrda,
     stda_data.values, data_units = mdgstda.numpy_units_to_stda(stda_data.values, np_input_units, stda_attrs['var_units'])
     stda_attrs['var_units'] = data_units
     stda_data.attrs = stda_attrs
-
     return stda_data
 
 
@@ -166,6 +165,8 @@ def npda_to_gridstda(npda,
     for _d in dims:
         if _d != 'member' and _d != 'level' and _d != 'time' and _d != 'dtime' and _d != 'lat' and _d != 'lon':
             raise Exception('''error: dims need the following definitions: ('member', 'level', 'time', 'dtime', 'lat', 'lon'), please check dims''')
+
+    npda = npda.copy()
 
     temp = dict(member=member, level=level, time=time, dtime=dtime, lat=lat, lon=lon)
 
@@ -217,6 +218,8 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
     Returns:
         [STDA] -- [STDA网格数据]
     '''
+
+    np_input = np_input.copy()
 
     # get attrs
     stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
@@ -318,16 +321,20 @@ class __STDADataArrayAccessor(object):
 
     @property
     def level(self):
-        '''
-        获取level, 返回值为pd.series
-        '''
+        """[get level]
+
+        Returns:
+            [pd.series]: [level]
+        """
         return pd.Series(self._xr['level'].values)
 
     @property
     def fcst_time(self):
-        '''
-        [获取预报时间（time*dtime)，返回值类型为pd.series]
-        '''
+        """[get fcst_time*dtime)]
+
+        Returns:
+            [pd.series]: [fcst_time]
+        """
         fcst_time = []
         for time in self._xr['time'].values:
             for dtime in self._xr['dtime'].values:
@@ -337,69 +344,111 @@ class __STDADataArrayAccessor(object):
 
     @property
     def time(self):
-        '''
-        获取time，返回值类型为pd.series
-        '''
+        """[get time]
+
+        Returns:
+            [pd.series]: [time]
+        """
         time = pd.to_datetime(self._xr['time'].values)
         return pd.Series(time)
 
     @property
     def dtime(self):
-        '''
-        获取dtime，返回值类型为pd.series
-        '''
+        """[get dtime]
+
+        Returns:
+            [pd.series]: [dtime]
+        """
         return pd.Series(self._xr['dtime'].values)
 
     @property
     def lat(self):
-        '''
-        获取lat，返回值类型为pd.series
-        '''
+        """[get lat]
+
+        Returns:
+            [pd.series]: [lat]
+        """
         return pd.Series(self._xr['lat'].values)
 
     @property
     def lon(self):
-        '''
-        获取lon，返回值类型为pd.series
-        '''
+        """[get lon]
+
+        Returns:
+            [pd.series]: [lon]
+        """
         return pd.Series(self._xr['lon'].values)
 
     @property
     def member(self):
-        '''
-        获取member，返回值类型为pd.series
-        '''
+        """[get member]
+
+        Returns:
+            [pd.series]: [member]
+        """
         return pd.Series(self._xr['member'].values)
 
     @property
     def values(self):
-        '''
-        获取数据，返回值类型为numpy
-        '''
+        """[get values]
+
+        Returns:
+            [numpy]: [values]
+        """
         return self._xr.values
 
+    @values.setter
+    def values(self, values):
+        """[set values（注意，该方法为直接赋值不会改变属性信息，如果需要改变属性属性，请调用set_values方法）
+        example: sample.stda.values = 1 ]
+
+        Args:
+            values ([int or float or numpy]]): [values]
+        """
+        self._xr.values = values
+
+    def set_values(self, values, var_name=None, **attrs_kwargv):
+        """[set values，如果给定var_name。则自动赋值stda属性]
+
+        Args:
+            values ([int or float or numpy]): [values]
+            var_name ([str], optional): [stda要素名]. Defaults to None.
+            **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
+        """
+        self._xr.values = values
+        if var_name is not None:
+            attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+            self._xr.attrs = attrs
+
     def get_quantity(self):
-        '''
-        获取数据，返回值类型为quantity
-        '''
+        """[get quantity values]
+
+        Returns:
+            [quantity numpy]: [带单位的数据]
+        """
         return self._xr.values * units(self._xr.attrs['var_units'])
 
     def get_dim_value(self, dim_name):
-        '''
-        获取维度信息，如果dim_name=='fcst_time'情况下，特殊处理，范围time*dtime
-        返回值为numpy
-        '''
+        """[获取维度值，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]
+
+        Args:
+            dim_name ([str]): [维度名]
+
+        Returns:
+            [numpy]: [维度值]
+        """
         if dim_name == 'fcst_time':
             return self.fcst_time.values
         if dim_name == 'time':
             return self.time.values
         return self._xr[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon', xunits=False):
-        '''
-        获取二维数据，假如stda不是二维的数据，则报错
-        返回值为numpy
-        '''
+    def get_value(self, ydim='lat', xdim='lon'):
+        """[根据维度获取数据，假如stda不是二维的数据，则报错]
+
+        Returns:
+            [numpy]: [values]
+        """
         if xdim == 'fcst_time':
             if self._xr['time'].values.size == 1:  # 因为是二维，假如time维长度为1，则有维度的肯定在dtime维
                 xdim = 'dtime'
@@ -411,8 +460,6 @@ class __STDADataArrayAccessor(object):
             else:
                 ydim = 'time'
         data = self._xr.squeeze().transpose(ydim, xdim).values
-        if xunits == True:
-            data = data * units(self._xr.attrs['var_units'])
         return data
 
     def description(self):
@@ -457,6 +504,12 @@ class __STDADataArrayAccessor(object):
             description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}'.format(
                 init_time, data_name, point_lon, point_lat, describe)
         return description
+
+    def where(self, conditon, other=np.nan):
+        '''
+        根据conditon条件过滤数据，类似于xr.DataArray.where
+        '''
+        return self._xr.where(conditon, other=other)
 
 
 if __name__ == '__main__':

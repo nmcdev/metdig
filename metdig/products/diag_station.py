@@ -42,7 +42,7 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
 
     # t2m
     t2m_x = t2m.stda.fcst_time.values
-    t2m_y = t2m.stda.get_value()
+    t2m_y = t2m.stda.values
     curve_t2m = ax_t2m.plot(t2m_x, t2m_y, c='#FF6600', linewidth=3, label='气温')
     ax_t2m.set_xlim(t2m_x[0] - pd.Timedelta(hours=1), t2m_x[-1] + pd.Timedelta(hours=1))
     ax_t2m.set_ylim(
@@ -52,12 +52,12 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
 
     # wsp
     wsp_x = wsp.stda.fcst_time.values
-    wsp_y = wsp.stda.get_value()
+    wsp_y = wsp.stda.values
     curve_wsp = ax_t2m.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='10米风')
 
     # rain
     rain_x = rain.stda.fcst_time.values
-    rain_y = rain.stda.get_value()
+    rain_y = rain.stda.values
     bars_rn = ax_t2m.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='{}小时降水'.format(hourstep))
 
     def bars_autolabel(ax, rects):
@@ -73,14 +73,14 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
 
     # rh2m
     rh2m_x = rh2m.stda.fcst_time.values
-    rh2m_y = rh2m.stda.get_value()
+    rh2m_y = rh2m.stda.values
     curve_rh = ax_rh2m.plot(rh2m_x, rh2m_y, c='#067907', linewidth=3, label='相对湿度')
     ax_rh2m.set_ylim(0, 100)
 
     # 10米风
     uv_x = u10m.stda.fcst_time.values
-    u_y = u10m.stda.get_value()
-    v_y = v10m.stda.get_value()
+    u_y = u10m.stda.values
+    v_y = v10m.stda.values
     ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
                 fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
                 length=5.8, linewidth=1.5, zorder=100)
@@ -118,9 +118,9 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     forcast_info = tmp.stda.description_point(describe='探空')
 
     # 获取带单位的数据
-    pres = pres.stda.get_value(xunits=True)
-    tmp = tmp.stda.get_value(xunits=True)
-    td = td.stda.get_value(xunits=True)
+    pres = pres.stda.get_quantity()
+    tmp = tmp.stda.get_quantity()
+    td = td.stda.get_quantity()
 
     # draw
     obj = skewt_compose(title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
@@ -129,8 +129,8 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     obj.skew.plot(pres, td, 'g')
 
     if u is not None and v is not None:
-        u = u.stda.get_value(xunits=True)
-        v = v.stda.get_value(xunits=True)
+        u = u.stda.get_quantity()
+        v = v.stda.get_quantity()
         obj.skew.plot_barbs(pres, u, v)
 
     lcl_pres, lcl_tmp = mpcalc.lcl(pres, tmp[0], td[0])
