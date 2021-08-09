@@ -10,6 +10,7 @@ __all__ = [
     'get_stda_attrs'
 ]
 
+
 def __check_units(var_units):
     try:
         if np.array(units(var_units)) != 1:
@@ -18,33 +19,35 @@ def __check_units(var_units):
         raise e
 
 
-__stda_attrs_csv = os.path.dirname(os.path.realpath(__file__)) + '/stda_attrs_cfg.csv'
-__stda_attrs = pd.read_csv(__stda_attrs_csv, encoding='gbk', comment='#')
-__stda_attrs = __stda_attrs.fillna({'var_cn_name': '', 'var_units': '', 'valid_time': 0})
-__stda_attrs.apply(lambda row: __check_units(row['var_units']), axis=1)  # 检查是否满足units格式
+__stda_attrs = None
 
 
 def get_stda_attrs(var_name='', **attrs_kwargv):
     '''
-    
+
     [
         get stda attributes
         Example: attrs = get_stda_attrs(var_name='hgt')
         Example: attrs = get_stda_attrs(var_name='hgt', data_source='cassandra', level_type='high', data_name='ecmwf')
     ]
 
-    
+
     Arguments:
         **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
-    
+
     Keyword Arguments:
         var_name {str} -- [要素名] (default: {''})
 
-    
+
     Returns:
         [dictionary] -- [属性列表]
     '''
-
+    global __stda_attrs
+    if __stda_attrs is None:
+        __stda_attrs_csv = os.path.dirname(os.path.realpath(__file__)) + '/stda_attrs_cfg.csv'
+        __stda_attrs = pd.read_csv(__stda_attrs_csv, encoding='gbk', comment='#')
+        __stda_attrs = __stda_attrs.fillna({'var_cn_name': '', 'var_units': '', 'valid_time': 0})
+        __stda_attrs.apply(lambda row: __check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
     this_attrs = __stda_attrs[__stda_attrs['var_name'] == var_name].copy(deep=True)
 

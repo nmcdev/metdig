@@ -14,8 +14,8 @@ import sys
 import metdig.utl as mdgstda
 
 from metdig.io.lib import utility as utl
-from .lib import utl_era5
-from .lib import config as CONFIG
+from metdig.io.lib import era5_cfg
+from metdig.io.lib import config as CONFIG
 
 import logging
 _log = logging.getLogger(__name__)
@@ -148,9 +148,9 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
             level_type = 'surface'
             cache_file = CONFIG.get_era5cache_file(init_time_utc, var_name, extent, level=None, find_area=True)
 
-        era5_var = utl_era5.era5_variable(var_name=var_name, level_type=level_type)
-        era5_level = utl_era5.era5_level(var_name=var_name, level_type=level_type, level=level)
-        era5_units = utl_era5.era5_units(level_type=level_type, var_name=var_name)
+        era5_var = era5_cfg().era5_variable(var_name=var_name, level_type=level_type)
+        era5_level = era5_cfg().era5_level(var_name=var_name, level_type=level_type, level=level)
+        era5_units = era5_cfg().era5_units(level_type=level_type, var_name=var_name)
     except Exception as e:
         raise Exception(str(e))
 

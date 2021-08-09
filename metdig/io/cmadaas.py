@@ -9,7 +9,7 @@ import pandas as pd
 
 import nmc_met_io.retrieve_cmadaas as nmc_cmadaas_io
 
-from metdig.io.lib import utl_cmadaas
+from metdig.io.lib import cmadaas_model_cfg, cmadaas_obs_cfg
 from metdig.io.lib import utility as utl
 
 
@@ -43,14 +43,14 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
             level_type = 'high'
         else:
             level_type = 'surface'
-        cmadaas_data_code = utl_cmadaas.model_cmadaas_data_code(data_name=data_name, var_name=var_name, level_type=level_type, fhour=fhour)
-        cmadaas_var_name = utl_cmadaas.model_cmadaas_var_name(
+        cmadaas_data_code = cmadaas_model_cfg().model_cmadaas_data_code(data_name=data_name, var_name=var_name, level_type=level_type, fhour=fhour)
+        cmadaas_var_name = cmadaas_model_cfg().model_cmadaas_var_name(
             data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
-        cmadaas_level_type = utl_cmadaas.model_cmadaas_level_type(
+        cmadaas_level_type = cmadaas_model_cfg().model_cmadaas_level_type(
             data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
-        cmadaas_level = utl_cmadaas.model_cmadaas_level(level_type=level_type, var_name=var_name,
+        cmadaas_level = cmadaas_model_cfg().model_cmadaas_level(level_type=level_type, var_name=var_name,
                                                         data_name=data_name, data_code=cmadaas_data_code, level=level)
-        cmadaas_units = utl_cmadaas.model_cmadaas_units(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code)
+        cmadaas_units = cmadaas_model_cfg().model_cmadaas_units(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code)
         _log.debug('cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, fhour={}'.format(cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, fhour))
     except Exception as e:
         raise Exception(str(e))
@@ -270,9 +270,9 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
     '''
     # 从配置中获取相关信息
     try:
-        cmadaas_data_code = utl_cmadaas.obs_cmadaas_data_code(data_name=data_name, var_name=var_name)
-        cmadass_units = utl_cmadaas.obs_cmadaas_units(data_name=data_name, var_name=var_name)  # cmadass数据单位
-        cmadaas_var_name = utl_cmadaas.obs_cmadaas_var_name(data_name=data_name, var_name=var_name)
+        cmadaas_data_code = cmadaas_obs_cfg().obs_cmadaas_data_code(data_name=data_name, var_name=var_name)
+        cmadass_units = cmadaas_obs_cfg().obs_cmadaas_units(data_name=data_name, var_name=var_name)  # cmadass数据单位
+        cmadaas_var_name = cmadaas_obs_cfg().obs_cmadaas_var_name(data_name=data_name, var_name=var_name)
         stda_attrs = mdgstda.get_stda_attrs(data_source='cmadaas', data_name=data_name, var_name=var_name)  # stda属性获取
         _log.debug('cmadaas_data_code={}, cmadaas_var_name={} '.format(cmadaas_data_code, cmadaas_var_name))
     except Exception as e:

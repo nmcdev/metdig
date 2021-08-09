@@ -17,13 +17,14 @@ __all__ = [
     'stastda_to_gridstda',
 ]
 
-def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons, 
-                     np_input_units='', var_name='', other_input={}, 
+
+def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons,
+                     np_input_units='', var_name='', other_input={},
                      **attrs_kwargv):
     '''
-    
+
     [numpy数组转stda站点标准格式]
-    
+
     Arguments:
         np_input {[list or ndarray]} -- [numpy或者list数据]
         members {[list or ndarray]} -- [成员列表]
@@ -34,12 +35,12 @@ def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons,
         lats {[list or ndarray or number]} -- [纬度列表]
         lons {[list or ndarray or number]} -- [经度列表]
         **attrs_kwargv {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
-    
+
     Keyword Arguments:
         np_input_units {[str]} -- [np_input数据对应的单位，自动转换为能查询到的stda单位]
         other_input {dict} -- [其它坐标信息] (default: {{}})
         var_name {str} -- [要素名] (default: {''})
-    
+
     Returns:
         [STDA] -- [STDA网格数据]
     '''
@@ -55,8 +56,8 @@ def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons,
     _temp_data, stda_attrs['var_units'] = mdgstda.numpy_units_to_stda(np_input, np_input_units, stda_attrs['var_units'])
     _member_len = len(list(members))
     _temp_data = _temp_data.reshape((int(_temp_data.size/_member_len), _member_len))
-    for i,m in enumerate(members):
-        df[m] = _temp_data[:,i]
+    for i, m in enumerate(members):
+        df[m] = _temp_data[:, i]
 
     # 7+N列：其它坐标信息列
     for other_name in other_input_names:
@@ -184,7 +185,7 @@ def stastda_to_gridstda(df, xdim='lon', ydim='lat'):
             if dimvalue.size > 1:
                 raise Exception('除输入参数的xdim ydim，其余维度去重后长度必须为1')
         griddims[col] = np.sort(dimvalue)
-    
+
     _grid2d_y, _grid2d_x = np.meshgrid(griddims[ydim], griddims[xdim])
     _grid2d_df = pd.DataFrame()
     _grid2d_df[xdim] = _grid2d_x.flatten()
@@ -192,10 +193,10 @@ def stastda_to_gridstda(df, xdim='lon', ydim='lat'):
     # 按照_grid2d_df合并，(对输入的df去重，保证merge正常)
     _grid2d_df = pd.merge(_grid2d_df, df.drop_duplicates(subset=[xdim, ydim], keep='first'), how='left', on=[xdim, ydim])
     _grid2d_data = _grid2d_df[member].values.reshape(_grid2d_x.shape)
-    
+
     # 处理成stda
     coords = [(xdim, griddims[xdim]),
-              (ydim, griddims[ydim]),]
+              (ydim, griddims[ydim]), ]
     _grid2d_xr = xr.DataArray(_grid2d_data, coords=coords)
     for dim in ('level', 'time', 'dtime', 'lat', 'lon'):
         if dim != xdim and dim != ydim:
@@ -207,15 +208,16 @@ def stastda_to_gridstda(df, xdim='lon', ydim='lat'):
         _grid2d_xr.attrs.update(df.attrs)
         _grid2d_xr.attrs.pop('data_start_columns')
     except:
-      pass
+        pass
     return _grid2d_xr
-    
+
 
 @pd.api.extensions.register_dataframe_accessor('stda')
 class __STDADataFrameAccessor(object):
     """
     stda 格式说明: 列定义为(level, time, dtime, id, lon, lat, member1, member2...)
-    """    
+    """
+
     def __init__(self, df):
         self._df = df
 
@@ -233,7 +235,7 @@ class __STDADataFrameAccessor(object):
         '''
         fcst_time = pd.to_datetime(self._df['time']) + pd.to_timedelta(self._df['dtime'], unit='h')
         return pd.Series(fcst_time)
-    
+
     @property
     def time(self):
         '''
@@ -241,22 +243,21 @@ class __STDADataFrameAccessor(object):
         '''
         time = pd.to_datetime(self._df['time'].values)
         return pd.Series(time)
-    
+
     @property
     def dtime(self):
         '''
         获取dtime，返回值类型为pd.series
         '''
         return pd.Series(self._df['dtime'].values)
-    
+
     @property
     def id(self):
         '''
         获取id，返回值类型为pd.series
         '''
         return pd.Series(self._df['id'].values)
-    
-    
+
     @property
     def lon(self):
         '''
@@ -279,14 +280,44 @@ class __STDADataFrameAccessor(object):
         member = self._df.columns[self._df.attrs['data_start_columns']:]
         return pd.Series(member)
 
-
     @property
-    def data(self):
+    def values(self):
         '''
-        [获取数据（自data_start_columns起所有列），返回值类型为pd.dataframe]
+        获取数据（自data_start_columns起所有列），返回值类型为numpy
         '''
-        return self._df.loc[:, self.member]
-    
+        return self._df.loc[:, self.member].values.squeeze()  # 此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
+
+    def get_quantity(self):
+        '''
+        获取数据（自data_start_columns起所有列），返回值类型为quantity
+        '''
+        return self.values * units(self._df.attrs['var_units'])
+
+    def get_dim_value(self, dim_name):
+        '''
+        获取维度信息，如果dim_name=='fcst_time'情况下，特殊处理，范围time*dtime
+        返回值为numpy
+        '''
+        if dim_name == 'fcst_time':
+            return self.fcst_time.values
+        if dim_name == 'time':
+            return self.time.values
+        return self._df[dim_name].values
+
+    def get_value(self, ydim='lat', xdim='lon', xunits=False, selonlyonecol=True):
+        '''
+        类似于网格stda获取数据，因为是pandas站点数据，直接data_start_columns那一列即可。忽略xdim ydim两个参数，不用传这两个参数
+        返回值为numpy
+        '''
+        data = self._df.iloc[:, self._df.attrs['data_start_columns']].values
+        if selonlyonecol == True: # 是否可以去掉这个参数？？？
+            data = self._df.iloc[:, self._df.attrs['data_start_columns']].values  # 仅获取一列
+        else:
+            data = self.values.squeeze()  # 获取所有列，此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
+        if xunits == True:
+            data = data * units(self._df.attrs['var_units'])
+        return data
+
     def description(self):
         '''
         获取描述信息，格式如下:
@@ -304,7 +335,7 @@ class __STDADataFrameAccessor(object):
         else:
             description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析'.format(init_time)
         return description
-    
+
     def description_point(self, describe=''):
         '''
         获取描述信息，格式如下
@@ -339,40 +370,15 @@ class __STDADataFrameAccessor(object):
         else:
             description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}'.format(
                 init_time, data_name, point_lon, point_lat, describe)
-        return description        
-    
-    def get_dim_value(self, dim_name):
-        '''
-        获取维度信息，如果dim_name=='fcst_time'情况下，特殊处理，范围time*dtime
-        返回值为numpy
-        '''
-        if dim_name == 'fcst_time':
-            return self.fcst_time.values
-        if dim_name == 'time':
-            return self.time.values
-        return self._df[dim_name].values
-    
-    def get_value(self, ydim='lat', xdim='lon', xunits=False, selonlyonecol=True):
-        '''
-        类似于网格stda获取数据，因为是pandas站点数据，直接data_start_columns那一列即可。忽略xdim ydim两个参数，不用传这两个参数
-        返回值为numpy
-        '''
-        data = self._df.iloc[:, self._df.attrs['data_start_columns']].values
-        if selonlyonecol == True:
-            data = self._df.iloc[:, self._df.attrs['data_start_columns']].values # 仅获取一列
-        else:
-            data = self.data.values.squeeze() # 获取所有列，此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
-        if xunits == True:
-            data = data * units(self._df.attrs['var_units'])
-        return data
+        return description
 
     def where(self, conditon, other=np.nan):
         '''
         因data_start_columns列开始为数据，此处增加数据过滤方法，过滤data_start_columns列开始的数据，注意：直接修改原数据里的值
-        示例: 过滤小于100且大于200的值，mydf.stda.where((mydf.stda.data > 100) & (mydf.stda.data > 200), np.nan)
+        示例: 过滤小于100且大于200的值，mydf.stda.where((mydf.stda.values > 100) & (mydf.stda.values > 200), np.nan)
         '''
-        self._df.loc[:, self.member] = self.data.where(conditon, other)
-        
+        self._df.loc[:, self.member] = np.where(conditon, self.values, other)
+
     def reset_value(self, value, var_name=None, **attrs_kwargv):
         '''
         重新设置数值，如果给定var_name。则重新设置属性

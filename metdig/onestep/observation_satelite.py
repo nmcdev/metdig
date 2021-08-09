@@ -39,8 +39,8 @@ def fy4air_sounding_hgt(ir_obs_time=None, ir_channel=9,
     # 计算uv
     sounding_u, sounding_v = mdgcal.wind_components(sounding_wsp, sounding_wdir)
     # 过滤超过100的uv
-    sounding_u.stda.where((sounding_u.stda.data < 100) & (sounding_v.stda.data < 100), np.nan)
-    sounding_v.stda.where((sounding_u.stda.data < 100) & (sounding_v.stda.data < 100), np.nan)
+    sounding_u.stda.where((sounding_u.stda.values < 100) & (sounding_v.stda.values < 100), np.nan)
+    sounding_v.stda.where((sounding_u.stda.values < 100) & (sounding_v.stda.values < 100), np.nan)
 
     if is_return_data:
         dataret = {'ir': ir, 'hgt': hgt, 'sounding_u': sounding_u, 'sounding_v': sounding_v}

@@ -10,10 +10,10 @@ import pandas as pd
 
 import metdig.utl as mdgstda
 
-from .lib import utl_thredds
-from .lib import utility as utl
+from metdig.io.lib import thredds_model_cfg
+from metdig.io.lib import utility as utl
 
-from .lib import config as CONFIG
+from metdig.io.lib import config as CONFIG
 
 import logging
 _log = logging.getLogger(__name__)
@@ -47,10 +47,10 @@ def get_model_grid(init_time=None, data_name=None,  var_name=None, level=None, e
 
         ip = CONFIG.CONFIG['THREDDS']['IP']
         port = CONFIG.CONFIG['THREDDS']['port']
-        thredds_path = utl_thredds.model_thredds_path(data_name=data_name, var_name=var_name, level_type=level_type)
-        thredds_var_name = utl_thredds.model_thredds_variable(data_name=data_name, var_name=var_name, level_type=level_type)
-        thredds_level = utl_thredds.model_thredds_level(data_name=data_name, var_name=var_name, level_type=level_type, level=level)
-        thredds_units = utl_thredds.model_thredds_units(data_name=data_name, level_type=level_type, var_name=var_name)
+        thredds_path = thredds_model_cfg().model_thredds_path(data_name=data_name, var_name=var_name, level_type=level_type)
+        thredds_var_name = thredds_model_cfg().model_thredds_variable(data_name=data_name, var_name=var_name, level_type=level_type)
+        thredds_level = thredds_model_cfg().model_thredds_level(data_name=data_name, var_name=var_name, level_type=level_type, level=level)
+        thredds_units = thredds_model_cfg().model_thredds_units(data_name=data_name, level_type=level_type, var_name=var_name)
     except Exception as e:
         raise Exception(str(e))
 
