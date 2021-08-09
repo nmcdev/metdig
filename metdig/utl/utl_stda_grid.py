@@ -397,6 +397,15 @@ class __STDADataArrayAccessor(object):
         """
         return self._xr.values
 
+    @property
+    def quantity(self):
+        """[get quantity values]
+
+        Returns:
+            [quantity numpy]: [quantity values]
+        """
+        return self.values * units(self._xr.attrs['var_units'])
+
     @values.setter
     def values(self, values):
         """[set values（注意，该方法为直接赋值不会改变属性信息，如果需要改变属性属性，请调用set_values方法）
@@ -419,14 +428,6 @@ class __STDADataArrayAccessor(object):
         if var_name is not None:
             attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
             self._xr.attrs = attrs
-
-    def get_quantity(self):
-        """[get quantity values]
-
-        Returns:
-            [quantity numpy]: [带单位的数据]
-        """
-        return self._xr.values * units(self._xr.attrs['var_units'])
 
     def get_dim_value(self, dim_name):
         """[获取维度值，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]

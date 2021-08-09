@@ -118,9 +118,9 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     forcast_info = tmp.stda.description_point(describe='探空')
 
     # 获取带单位的数据
-    pres = pres.stda.get_quantity()
-    tmp = tmp.stda.get_quantity()
-    td = td.stda.get_quantity()
+    pres = pres.stda.quantity
+    tmp = tmp.stda.quantity
+    td = td.stda.quantity
 
     # draw
     obj = skewt_compose(title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
@@ -129,8 +129,8 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     obj.skew.plot(pres, td, 'g')
 
     if u is not None and v is not None:
-        u = u.stda.get_quantity()
-        v = v.stda.get_quantity()
+        u = u.stda.quantity
+        v = v.stda.quantity
         obj.skew.plot_barbs(pres, u, v)
 
     lcl_pres, lcl_tmp = mpcalc.lcl(pres, tmp[0], td[0])

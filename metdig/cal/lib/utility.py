@@ -19,7 +19,7 @@ def stda_to_quantity(data):
     Returns:
         [quantity] -- [description]
     '''
-    return data.stda.get_quantity()
+    return data.stda.quantity
 
 
 def stda_to_numpy(data):
