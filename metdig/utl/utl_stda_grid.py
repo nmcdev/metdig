@@ -371,48 +371,18 @@ class __STDADataArrayAccessor(object):
         '''
         return pd.Series(self._xr['member'].values)
 
-    def description(self):
+    @property
+    def values(self):
         '''
-        获取描述信息，格式如下:
-        起报时间: Y年m月d日H时
-        预报时间: Y年m月d日H时
-        预报时效: 小时
+        获取数据，返回值类型为numpy
         '''
-        init_time = self.time[0]
-        fhour = self.dtime[0]
-        fcst_time = self.fcst_time[0]
+        return self._xr.values
 
-        if fhour != 0:
-            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(
-                init_time, fcst_time, fhour)
-        else:
-            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析'.format(init_time)
-        return description
-
-    def description_point(self, describe=''):
+    def get_quantity(self):
         '''
-        获取描述信息，格式如下
-        起报时间: Y年m月d日H时
-        [data_name]N小时预报describe
-        预报点: lon, lat
-
-        起报时间: Y年m月d日H时
-        [data_name]实况info
-        分析点: lon, lat
+        获取数据，返回值类型为quantity
         '''
-        init_time = self.time[0]
-        fhour = self.dtime[0]
-        point_lon = self.lon[0]
-        point_lat = self.lat[0]
-        data_name = self.member[0].upper()
-
-        if(fhour != 0):
-            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}'.format(
-                init_time, data_name, fhour, point_lon, point_lat, describe)
-        else:
-            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}'.format(
-                init_time, data_name, point_lon, point_lat, describe)
-        return description
+        return self._xr.values * units(self._xr.attrs['var_units'])
 
     def get_dim_value(self, dim_name):
         '''
@@ -444,6 +414,49 @@ class __STDADataArrayAccessor(object):
         if xunits == True:
             data = data * units(self._xr.attrs['var_units'])
         return data
+
+    def description(self):
+        '''
+        获取描述信息，格式如下:
+        起报时间: Y年m月d日H时
+        预报时间: Y年m月d日H时
+        预报时效: 小时
+        '''
+        init_time = self.time[0]
+        fhour = self.dtime[0]
+        fcst_time = self.fcst_time[0]
+
+        if fhour != 0:
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n预报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(
+                init_time, fcst_time, fhour)
+        else:
+            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n实况/分析'.format(init_time)
+        return description
+
+    def description_point(self, describe=''):
+        '''
+        获取描述信息，格式如下
+        起报时间: Y年m月d日H时
+        [data_name]N小时预报[describe]
+        预报点: lon, lat
+
+        起报时间: Y年m月d日H时
+        [data_name]实况info
+        分析点: lon, lat
+        '''
+        init_time = self.time[0]
+        fhour = self.dtime[0]
+        point_lon = self.lon[0]
+        point_lat = self.lat[0]
+        data_name = self.member[0].upper()
+
+        if(fhour != 0):
+            description = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]{2}小时预报{5}\n预报点: {3}, {4}'.format(
+                init_time, data_name, fhour, point_lon, point_lat, describe)
+        else:
+            description = '分析时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]实况/分析{4}\n分析点: {2}, {3}'.format(
+                init_time, data_name, point_lon, point_lat, describe)
+        return description
 
 
 if __name__ == '__main__':

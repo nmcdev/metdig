@@ -19,13 +19,7 @@ def stda_to_quantity(data):
     Returns:
         [quantity] -- [description]
     '''
-    if isinstance(data, xr.DataArray):
-        return data.values * units(data.attrs['var_units'])
-    elif isinstance(data, pd.DataFrame):
-        # return data.iloc[:, data.attrs['data_start_columns']:].values * units(data.attrs['var_units']) # 弃用
-        return data.stda.data.values.squeeze() * units(data.attrs['var_units']) # 此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
-    else:
-        raise Exception('stda_to_quantity Failed! type(data) must be pd.DataFrame or xr.DataArray!')
+    return data.stda.get_quantity()
 
 
 def stda_to_numpy(data):
@@ -39,12 +33,7 @@ def stda_to_numpy(data):
     Returns:
         [ndarray] -- [description]
     '''
-
-    if isinstance(data, xr.DataArray):
-        return data.values
-    elif isinstance(data, pd.DataFrame):
-        # return data.iloc[:, data.attrs['data_start_columns']:].values # 弃用
-        return data.stda.data.values.squeeze() # 此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
+    return data.stda.values
 
 
 def quantity_to_stda_byreference(var_name, data, reference_variables):
