@@ -11,7 +11,7 @@ from scipy import ndimage
 
 import metpy.calc as mpcalc
 
-from .lib import utility as utl
+from metdig.cal.lib import utility as utl
 
 __all__ = [
     'smooth_n_point',

@@ -8,7 +8,7 @@ import xarray as xr
 import metpy.calc as mpcalc
 from metpy.units import units
 
-from .lib import utility as utl
+from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
 
 __all__ = [
