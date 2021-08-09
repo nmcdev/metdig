@@ -15,6 +15,8 @@ ecmwf,vvel,high,0.01*Pa/s,,any,ECMWF_HR/VVEL/
 ecmwf,rh,high,percent,,any,ECMWF_HR/RH/
 ecmwf,spfh,high,g/kg,,any,ECMWF_HR/SPFH/
 ecmwf,tmp,high,degC,,any,ECMWF_HR/TMP/
+ecmwf,pv,high,0.000001*K*m**2/(kg*s),,any,ECMWF_HR/PVORT/
+ecmwf,div,high,0.00001/s,,any,ECMWF_HR/DIV/
 grapes_gfs,hgt,high,dagpm,,any,GRAPES_GFS/HGT/
 grapes_gfs,u,high,m/s,,any,GRAPES_GFS/UGRD/
 grapes_gfs,v,high,m/s,,any,GRAPES_GFS/VGRD/
@@ -47,7 +49,11 @@ ecmwf,prmsl,surface,hPa,,0,ECMWF_HR/PRMSL/
 ecmwf,rain24,surface,mm,,0,ECMWF_HR/RAIN24/
 ecmwf,rain03,surface,mm,,0,ECMWF_HR/RAIN03/
 ecmwf,rain06,surface,mm,,0,ECMWF_HR/RAIN06/
-#ecmwf,rainc06,surface,mm,,0,ECMWF_HR/RAINC06/
+ecmwf,rainnc03,surface,mm,,0,ECMWF_HR/RAIN_LARGE_SCALE03/
+ecmwf,rainc03,surface,mm,,0,ECMWF_HR/RAINC03/
+ecmwf,acpcp,surface,mm,,0,ECMWF_HR/ACPCP/
+ecmwf,rainnc,surface,mm,,0,ECMWF_HR/APCP_LARGE_SCALE/
+ecmwf,snow,surface,mm,,0,ECMWF_HR/ASNOW/
 ecmwf,snow03,surface,mm,,0,ECMWF_HR/SNOW03/
 ecmwf,snow06,surface,mm,,0,ECMWF_HR/SNOW06/
 ecmwf,snow24,surface,mm,,0,ECMWF_HR/SNOW024/
@@ -63,6 +69,14 @@ ecmwf,psfc,surface,hPa,,0,ECMWF_HR/PRES/SURFACE/
 #ecmwf,oro,surface,,,0,ECMWF_HR/OROGRAPHY/
 ecmwf,tmx3_2m,surface,degC,,2,ECMWF_HR/MAXIMUM_TEMPERATURE_AT_2_METRES_IN_THE_LAST_3_HOURS/
 ecmwf,tmn3_2m,surface,degC,,2,ECMWF_HR/MINIMUM_TEMPERATURE_AT_2_METRES_IN_THE_LAST_3_HOURS/
+ecmwf,albedo,surface,percent,,0,ECMWF_HR/FORECAST_ALBEDO
+ecmwf,cape,surface,J/kg,,0,ECMWF_HR/CAPE/
+ecmwf,tmx3_2m,surface,degC,,2,ECMWF_HR/MAXIMUM_TEMPERATURE_AT_2_METRES_IN_THE_LAST_3_HOURS/
+ecmwf,tmn3_2m,surface,degC,,2,ECMWF_HR/MINIMUM_TEMPERATURE_AT_2_METRES_IN_THE_LAST_3_HOURS/
+ecmwf,snow_density,surface,kg/m**3,,0,ECMWF_HR/SDEN/
+ecmwf,snow_depth,surface,cm,,0,ECMWF_HR/SNOD/
+ecmwf,sst,surface,degC,,0,ECMWF_HR/SST/
+ecmwf,vis,surface,km,,0,ECMWF_HR/VIS/
 grapes_gfs,u10m,surface,m/s,,10,GRAPES_GFS/UGRD/10M_ABOVE_GROUND/
 grapes_gfs,v10m,surface,m/s,,10,GRAPES_GFS/VGRD/10M_ABOVE_GROUND/
 grapes_gfs,prmsl,surface,hPa,,0,GRAPES_GFS/PRMSL/

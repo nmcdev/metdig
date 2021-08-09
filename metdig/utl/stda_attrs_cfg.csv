@@ -30,6 +30,10 @@ rain03,3小时降水,mm,3
 rain06,6小时降水,mm,6
 rain12,12小时降水,mm,12
 rain24,24小时降水,mm,24
+rainnc,非对流降水,mm,0
+rainnc03,3小时非对流性降水,mm,3
+rainc,对流降水,mm,0
+rainc03,3小时对流性降水,mm,3
 es,饱和水汽压,hPa,0
 u10m,10mU风,m/s,0
 v10m,10mV风,m/s,0
@@ -53,6 +57,7 @@ tmx3_2m,过去3小时2米最高温度,degC,3
 tmn3_2m,过去3小时2米最低温度,degC,3
 tmx24_2m,过去24小时2米最高温度,degC,24
 tmn24_2m,过去24小时2米最低温度,degC,24
+snow,降雪,mm,0
 snow03,3小时降雪,mm,3
 snow06,6小时降雪,mm,6
 snow24,24小时降雪,mm,24
@@ -69,3 +74,8 @@ t_td,温度露点差,degC,0
 ref,反射率,percent,0
 tbb,亮温,kelvin,0
 cref,雷达组合反射率,,0
+cape,对流有效位能,J/kg,0
+snow_density,雪密度,kg/m**3,0
+snow_depth,积雪深度,cm,0
+sst,海表温度,degC,0
+albedo,反照率,percent,0
