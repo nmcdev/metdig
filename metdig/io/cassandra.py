@@ -118,6 +118,8 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
     Returns:
         [stda] -- [stda格式数据]
     '''
+    fhours = utl.parm_tolist(fhours)
+
     stda_data = []
     for fhour in fhours:
         try:  # 待斟酌
@@ -143,7 +145,7 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
         fhour {[int32]} -- [预报时效]
         data_name {[str]} -- [模式名]
         var_name {[str]} -- [要素名]
-        levels {[list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list or number]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
         y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
@@ -151,8 +153,8 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
     Returns:
         [stda] -- [stda格式数据]
     '''
-    if levels is None:
-        levels = [None]
+    levels = utl.parm_tolist(levels)
+
     stda_data = []
     for level in levels:
         try:
@@ -177,7 +179,7 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
         fhours {[list]} -- [预报时效]
         data_name {[str]} -- [模式名]
         var_name {[str]} -- [要素名]
-        levels {[list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list or number]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
         y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
@@ -185,8 +187,9 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
     Returns:
         [stda] -- [stda格式数据]
     '''
-    if levels is None:
-        levels = [None]
+    fhours = utl.parm_tolist(fhours)
+    levels = utl.parm_tolist(levels)
+
     stda_data = []
     for fhour in fhours:
         temp_data = []
@@ -214,15 +217,18 @@ def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None,
 
     Keyword Arguments:
         init_time {[datetime]} -- [起报时间]
-        fhours {[list]} -- [预报时效]
+        fhours {[list or number]} -- [预报时效]
         data_name {[str]} -- [模式名]
         var_name {[str]} -- [要素名]
-        levels {[list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list or number]} -- [层次，不传代表地面层] (default: {None})
         points {[dict]} -- [站点信息，字典中必须包含经纬度{'lon':[], 'lat':[]}]
 
     Returns:
         [stda] -- [stda格式数据]
     '''
+    fhours = utl.parm_tolist(fhours)
+    levels = utl.parm_tolist(levels)
+
     # get grids data
     stda_data = get_model_3D_grids(init_time, fhours, data_name, var_name, levels)
 
@@ -315,7 +321,7 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
     [获取单层多时次观测站点数据]
 
     Keyword Arguments:
-        obs_times {[list]} -- [观测时间列表]
+        obs_times {[list or time]} -- [观测时间列表]
         data_name {[str]} -- [观测类型]
         var_name {[str]} -- [要素名]
         id_selected {[list or item]} -- [站号，站号列表或单站] (default: {None})
@@ -326,6 +332,8 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
     Returns:
         [stda] -- [stda格式数据]
     '''
+    obs_times = utl.parm_tolist(obs_times)
+
     datas = []
     attrs = {}
     for obs_time in obs_times:

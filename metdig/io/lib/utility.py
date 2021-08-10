@@ -9,8 +9,17 @@ import xarray as xr
 import numpy as np
 import pandas as pd
 
+import inspect
+
 import logging
 _log = logging.getLogger(__name__)
+
+
+def parm_tolist(parm):
+    try:
+        return list(parm)
+    except:
+        return [parm]
 
 
 def model_filename(initTime, fhour, UTC=False):
@@ -22,7 +31,6 @@ def model_filename(initTime, fhour, UTC=False):
             like 18042008' or datetime(2018, 4, 20, 8).
         fhour {int} -- model forecast hours.
     """
-
     if(UTC is False):
         if isinstance(initTime, datetime):
             return initTime.strftime('%y%m%d%H') + ".{:03d}".format(fhour)
@@ -54,7 +62,7 @@ def reset_id_back(sta):
     '''
     输入的sta的站号中可能有些站号包含a-z,A-Z的字母，对此将这些字母转换为对应的ASCII数字，再将整个字符串格式的站号转换为数值形式
     返回sta站号为整型
-                                '''
+                                                                '''
     # print(sta)
     values = sta['id'].values
     if type(values[0]) != str:
@@ -127,7 +135,7 @@ def cfgpath_format_todatestr(cfgpath, **kwargs):
     Returns:
         [str]: [可以直接使用的有效路径字符串]
     """
-    return  cfgpath.format(Y='%Y',
+    return cfgpath.format(Y='%Y',
                           y='%y',
                           m='%m',
                           d='%d',
@@ -136,7 +144,6 @@ def cfgpath_format_todatestr(cfgpath, **kwargs):
                           S='%S',
                           **kwargs,
                           )
-
 
 
 def obs_rename_colname(data):
