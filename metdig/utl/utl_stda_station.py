@@ -223,100 +223,143 @@ class __STDADataFrameAccessor(object):
 
     @property
     def level(self):
-        '''
-        获取level, 返回值为pd.series
-        '''
+        """[get level]
+
+        Returns:
+            [pd.series]: [level]
+        """
         return pd.Series(self._df['level'].values)
 
     @property
     def fcst_time(self):
-        '''
-        [获取预报时间（time列+dtime列），返回值类型为pd.series]
-        '''
+        """[get fcst_time*dtime)]
+
+        Returns:
+            [pd.series]: [fcst_time]
+        """
         fcst_time = pd.to_datetime(self._df['time']) + pd.to_timedelta(self._df['dtime'], unit='h')
         return pd.Series(fcst_time)
 
     @property
     def time(self):
-        '''
-        获取time，返回值类型为pd.series
-        '''
+        """[get time]
+
+        Returns:
+            [pd.series]: [time]
+        """
         time = pd.to_datetime(self._df['time'].values)
         return pd.Series(time)
 
     @property
     def dtime(self):
-        '''
-        获取dtime，返回值类型为pd.series
-        '''
+        """[get dtime]
+
+        Returns:
+            [pd.series]: [dtime]
+        """
         return pd.Series(self._df['dtime'].values)
 
     @property
     def id(self):
-        '''
-        获取id，返回值类型为pd.series
-        '''
+        """[get id]
+
+        Returns:
+            [pd.series]: [id]
+        """
         return pd.Series(self._df['id'].values)
 
     @property
-    def lon(self):
-        '''
-        获取lon，返回值类型为pd.series
-        '''
-        return pd.Series(self._df['lon'].values)
-
-    @property
     def lat(self):
-        '''
-        获取lon，返回值类型为pd.series
-        '''
+        """[get lat]
+
+        Returns:
+            [pd.series]: [lat]
+        """
         return pd.Series(self._df['lat'].values)
 
     @property
+    def lon(self):
+        """[get lon]
+
+        Returns:
+            [pd.series]: [lon]
+        """
+        return pd.Series(self._df['lon'].values)
+
+    @property
     def member(self):
-        '''
-        [获取数据列名（自data_start_columns起所有列），返回值类型为pd.series]
-        '''
+        """[get member]
+
+        Returns:
+            [pd.series]: [member]
+        """
         member = self._df.columns[self._df.attrs['data_start_columns']:]
         return pd.Series(member)
 
     @property
     def values(self):
-        '''
-        获取数据（自data_start_columns起所有列），返回值类型为numpy
-        '''
+        """[get values]
+
+        Returns:
+            [numpy]: [values]
+        """
         return self._df.loc[:, self.member].values.squeeze()  # 此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
 
-    def get_quantity(self):
-        '''
-        获取数据（自data_start_columns起所有列），返回值类型为quantity
-        '''
+    @property
+    def quantity(self):
+        """[get quantity values]
+
+        Returns:
+            [quantity numpy]: [quantity values]
+        """
         return self.values * units(self._df.attrs['var_units'])
 
+    @values.setter
+    def values(self, values):
+        """[set values（注意，该方法为直接赋值不会改变属性信息，如果需要改变属性属性，请调用set_values方法）
+        example: sample.stda.values = 1 ]
+
+        Args:
+            values ([int or float or numpy]]): [values]
+        """
+        self._df.loc[:, self.member] = values
+
+    def set_values(self, values, var_name=None, **attrs_kwargv):
+        """[set values，如果给定var_name。则自动赋值stda属性]
+
+        Args:
+            values ([int or float or numpy]): [values]
+            var_name ([str], optional): [stda要素名]. Defaults to None.
+            **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
+        """
+        self._df.loc[:, self.member] = values
+        if var_name is not None:
+            attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
+            attrs['data_start_columns'] = self._df.attrs['data_start_columns']
+            self._df.attrs = attrs
+
     def get_dim_value(self, dim_name):
-        '''
-        获取维度信息，如果dim_name=='fcst_time'情况下，特殊处理，范围time*dtime
-        返回值为numpy
-        '''
+        """[获取维度值，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]
+
+        Args:
+            dim_name ([str]): [维度名]
+
+        Returns:
+            [numpy]: [维度值]
+        """
         if dim_name == 'fcst_time':
             return self.fcst_time.values
         if dim_name == 'time':
             return self.time.values
         return self._df[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon', xunits=False, selonlyonecol=True):
-        '''
-        类似于网格stda获取数据，因为是pandas站点数据，直接data_start_columns那一列即可。忽略xdim ydim两个参数，不用传这两个参数
-        返回值为numpy
-        '''
-        data = self._df.iloc[:, self._df.attrs['data_start_columns']:].values.squeeze() # 20210811 宫宇修改 获取之后所有的列
-        if selonlyonecol == True: # 是否可以去掉这个参数？？？
-            data = self._df.iloc[:, self._df.attrs['data_start_columns']:].values.squeeze()  # 仅获取一列 #20210811 宫宇修改 获取之后所有的列
-        else:
-            data = self.values.squeeze()  # 获取所有列，此处加squeeze保证只有一列的时候返回的是个一维数组，只有一行一列的返回的是一个数值
-        if xunits == True:
-            data = data * units(self._df.attrs['var_units'])
-        return data
+    def get_value(self, ydim='lat', xdim='lon'):
+        """[根据维度获取数据，（此处仅为了和站点stda统一接口，固忽略xdim ydim两个参数，不用传这两个参数）]
+
+        Returns:
+            [numpy]: [values]
+        """
+        return self.values
 
     def description(self):
         '''
@@ -374,35 +417,10 @@ class __STDADataFrameAccessor(object):
 
     def where(self, conditon, other=np.nan):
         '''
-        因data_start_columns列开始为数据，此处增加数据过滤方法，过滤data_start_columns列开始的数据，注意：直接修改原数据里的值
+        根据conditon条件过滤数据自data_start_columns列开始的数据，类似于pandas.DataFrame.where
         示例: 过滤小于100且大于200的值，mydf.stda.where((mydf.stda.values > 100) & (mydf.stda.values > 200), np.nan)
         '''
         self._df.loc[:, self.member] = np.where(conditon, self.values, other)
-
-    def reset_value(self, value, var_name=None, **attrs_kwargv):
-        '''
-        重新设置数值，如果给定var_name。则重新设置属性
-        '''
-        self._df.loc[:, self.member] = value
-        if var_name is not None:
-            attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargv)
-            attrs['data_start_columns'] = self._df.attrs['data_start_columns']
-            self._df.attrs = attrs
-
-    def get_firstline(self):
-        '''
-        获取第一行数据，因用iloc取第一行返回的是pd.series，此处单独给出方法，返回的依旧为pd.Dataframe
-        '''
-        return self._df[self._df.index == 0]
-
-    def to_grid(self):
-
-        # return data, level, time, dtime, id, lon, lat
-        pass
-
-    def plot(self):
-        # plot this array's data on a map, e.g., using Cartopy
-        pass
 
 
 if __name__ == '__main__':

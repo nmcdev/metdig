@@ -38,7 +38,7 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
 
     # tmp
     tmp_x = tmp.stda.fcst_time.values
-    tmp_y = tmp.stda.get_value()
+    tmp_y = tmp.stda.values
     curve_t2m = ax_tmp.plot(tmp_x, tmp_y, c='#FF6600', linewidth=3, label='气温')
     ax_tmp.set_xlim(tmp_x[0] - pd.Timedelta(hours=1), tmp_x[-1] + pd.Timedelta(hours=1))
     ax_tmp.set_ylim(
@@ -48,13 +48,13 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
 
     # wsp
     wsp_x = wsp.stda.fcst_time.values
-    wsp_y = wsp.stda.get_value()
+    wsp_y = wsp.stda.values
     curve_wsp = ax_tmp.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='风')
 
     if(rain is not None):
         # rain
         rain_x = rain.stda.fcst_time.values
-        rain_y = rain.stda.get_value()
+        rain_y = rain.stda.values
         bars_rn = ax_tmp.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='降水')
 
     def bars_autolabel(ax, rects):
@@ -72,17 +72,17 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
 
     # rh2m
     rh_x = rh.stda.fcst_time.values
-    rh_y = rh.stda.get_value()
+    rh_y = rh.stda.values
     curve_rh = ax_rh.plot(rh_x, rh_y, c='#067907', linewidth=3, label='相对湿度')
     ax_rh.set_ylim(0, 100)
 
     # 10米风
-    if(u==None or v==None):
+    if(u is None or v is None):
         ax_uv.set_axis_off()
     else:
         uv_x = u.stda.fcst_time.values
-        u_y = u.stda.get_value()
-        v_y = v.stda.get_value()
+        u_y = u.stda.values
+        v_y = v.stda.values
         ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
                     fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
                     length=5.8, linewidth=1.5, zorder=100)

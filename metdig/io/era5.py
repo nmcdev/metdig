@@ -187,7 +187,7 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     [读取单层多时次模式网格数据]
 
     Keyword Arguments:
-        init_times {[list]} -- [再分析时间列表] (default: {None})
+        init_times {[list or time]} -- [再分析时间列表] (default: {None})
         var_name {[str]} -- [要素名]
         level {[int32]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
@@ -197,8 +197,7 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     Returns:
         [stda] -- [stda格式数据]
     '''
-    if not isinstance(init_times, list):
-        init_times = [init_times]
+    init_times = utl.parm_tolist(init_times)
 
     stda_data = []
     for init_time in init_times:
@@ -221,7 +220,7 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     Keyword Arguments:
         init_time {[datetime]} -- [再分析时间]
         var_name {[str]} -- [要素名]
-        levels {[list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list or number]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
         y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
@@ -229,8 +228,8 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     Returns:
         [stda] -- [stda格式数据]
     '''
-    if levels is None:
-        levels = [None]
+    levels = utl.parm_tolist(levels)
+
     stda_data = []
     for level in levels:
         try:
@@ -251,9 +250,9 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
     [读取多层多时次模式网格数据]
 
     Keyword Arguments:
-        init_times {[list]} -- [再分析时间列表] (default: {None})
+        init_times {[list or time]} -- [再分析时间列表] (default: {None})
         var_name {[str]} -- [要素名]
-        levels {[list]} -- [层次，不传代表地面层] (default: {None})
+        levels {[list or number]} -- [层次，不传代表地面层] (default: {None})
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
         y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
@@ -261,11 +260,8 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
     Returns:
         [stda] -- [stda格式数据]
     '''
-    if levels is None:
-        levels = [None]
-    if not isinstance(init_times, list):
-        init_times = [init_times]
-    # print(init_times, levels, kwargs)
+    init_times = utl.parm_tolist(init_times)
+    levels = utl.parm_tolist(levels)
 
     stda_data = []
     for init_time in init_times:
@@ -292,7 +288,7 @@ def get_model_points(init_time=None, var_name=None, levels=None, points={}, **kw
     [读取单层/多层，单时效/多时效 模式网格数据，插值到站点上]
 
     Keyword Arguments:
-        init_times {[list]} -- [再分析时间] (default: {None})
+        init_times {[list or time]} -- [再分析时间] (default: {None})
         var_name {[str]} -- [要素名]
         levels {[list]} -- [层次，不传代表地面层] (default: {None})
         points {[dict]} -- [站点信息，字典中必须包含经纬度{'lon':[], 'lat':[]}]
@@ -300,6 +296,8 @@ def get_model_points(init_time=None, var_name=None, levels=None, points={}, **kw
     Returns:
         [stda] -- [stda格式数据]
     '''
+    levels = utl.parm_tolist(levels)
+
     # get grids data
     stda_data = get_model_3D_grids(init_time, var_name, levels)
 

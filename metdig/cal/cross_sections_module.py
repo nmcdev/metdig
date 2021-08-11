@@ -12,7 +12,7 @@ from metpy.units import units as mpunits
 import metpy.interpolate as mpinterp
 from metpy.plots.mapping import CFProjection
 
-from .lib import utility as utl
+from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
 
 

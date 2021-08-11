@@ -5,7 +5,7 @@ import numpy as np
 import metpy.calc as mpcalc
 from metpy.units import units as mpunits
 
-from .lib import utility as utl
+from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
 
 __all__ = [
