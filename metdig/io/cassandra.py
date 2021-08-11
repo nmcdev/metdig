@@ -61,7 +61,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     #读取集合预报
     if('number' in list(data.coords.keys())):
         member = data.coords['number'].values
-        member = list(map(lambda x: data_name + '_' + str(x), member))
+        member = list(map(lambda x: data_name + '-' + str(x), member))
     else:
         member = [data_name]
     # 数据裁剪

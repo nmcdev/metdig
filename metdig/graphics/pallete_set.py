@@ -286,6 +286,68 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
     ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='left')  # 左下角图的里面
     return fig, ax
 
+def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add_bottom=True, title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax=''):
+
+    plt_base_env()  # 初始化字体中文等
+
+    fig = plt.figure(figsize=figsize)
+
+    if(if_add_right):
+        ax_left = HostAxes(fig, [0.1, 0.28, .8, .62])
+        fig.add_axes(ax_left)
+        ax_left.axis['left'].label.set_fontsize(15)
+        ax_left.axis['left'].major_ticklabels.set_fontsize(15)
+        ax_right = ParasiteAxes(ax_left, sharex=ax_left)
+        # append axes
+        ax_left.parasites.append(ax_right)
+        ax_left.axis['right'].set_visible(False)
+        ax_left.axis['right'].set_visible(False)
+        ax_right.axis['right'].set_visible(True)
+        ax_right.axis['right'].major_ticklabels.set_visible(True)
+        ax_right.axis['right'].label.set_visible(True)
+        ax_right.axis['right'].label.set_fontsize(15)
+        ax_right.axis['right'].major_ticklabels.set_fontsize(15)
+        ax_right.set_ylabel(label_rightax)
+    else:
+        ax_left=fig.add_axes([0.1, 0.28, .8, .62])
+        ax_left.tick_params(axis='y',labelsize=10)
+        ax_left.tick_params(axis='x',labelsize=10)
+        ax_right=None
+
+    plt.title(title_left, loc='left', fontsize=21)
+    plt.title(title_right, loc='right', fontsize=15)
+    ax_left.grid(axis='x', which='minor', ls='--')
+    ax_left.tick_params(length=10)
+    ax_left.set_ylabel(label_leftax)
+    ax_left.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
+    ax_left.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
+    ax_left.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+    ax_left.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(1))  # 将此y轴次刻度标签设置为1的倍数
+    ax_left.yaxis.set_major_locator(mpl.ticker.MultipleLocator(5))  # 将此y轴主刻度标签设置为5的倍数
+
+    if(if_add_bottom):
+        ax_left.set_xticklabels([' '])
+        ax_bottom = plt.axes([0.1, 0.16, .8, .12])
+        ax_bottom.grid(axis='x', which='both', ls='--')
+        ax_bottom.tick_params(length=5, axis='x')
+        ax_bottom.tick_params(length=0, axis='y')
+        ax_bottom.tick_params(axis='x', labelsize=15)
+        ax_bottom.set_ylabel(label_bottomax, fontsize=15)
+        # ax_bottom.axis('off')
+        ax_bottom.set_yticklabels([' '])
+        ax_bottom.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
+        ax_bottom.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
+        ax_bottom.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+        ax_bottom.text(0.90, -1.2, 'Powered by MetDig', transform=ax_bottom.transAxes, size=14,
+                    color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+    else:
+        # metdig 标识
+        ax_left.text(0.90, -0.2, 'Powered by MetDig', transform=ax_left.transAxes, size=14,
+                    color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+        ax_bottom=None
+    return fig, ax_left, ax_right, ax_bottom
+
+
 
 def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax=''):
 

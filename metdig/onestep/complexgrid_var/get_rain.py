@@ -18,24 +18,24 @@ def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, var_n
     return rain
 
 
-def _by_tpe(data_source=None, init_time=None, fhour=None,data_name=None, atime=None, extent=(50, 150, 0, 65)):
-    tpe1 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='tpe', extent=extent, x_percent=0, y_percent=0, throwexp=False)
+def _by_rain(data_source=None, init_time=None, fhour=None,data_name=None, atime=None, extent=(50, 150, 0, 65)):
+    rain1 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='rain', extent=extent, x_percent=0, y_percent=0, throwexp=False)
     
-    if tpe1 is None:
+    if rain1 is None:
         return None
 
-    rain = tpe1.copy(deep=True)
+    rain = rain1.copy(deep=True)
     
     if((fhour - atime) != 0):
-        tpe2 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour - atime, data_name=data_name,
-                            var_name='tpe', extent=extent, x_percent=0, y_percent=0, throwexp=False)
+        rain2 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour - atime, data_name=data_name,
+                            var_name='rain', extent=extent, x_percent=0, y_percent=0, throwexp=False)
 
-        if tpe1 is None or tpe2 is None:
+        if rain1 is None or rain2 is None:
             return None
-        rain.values = tpe1.values - tpe2.values
+        rain.values = rain1.values - rain2.values
   
-    attrs=tpe1.attrs
+    attrs=rain1.attrs
     rain.attrs=attrs
     rain.attrs['valid_time']=atime
     rain.attrs['var_cn_name']=str(atime)+'小时降水'
@@ -65,8 +65,8 @@ def read_rain(data_source=None, init_time=None, fhour=None, extent=(50, 150, 0, 
     if rain is not None:
         return rain
 
-    _log.info('cal rain'+'%02d'%atime+' _by_tpe')
-    rain = _by_tpe(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=atime, extent=extent)
+    _log.info('cal rain'+'%02d'%atime+' _by_rain')
+    rain = _by_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=atime, extent=extent)
     if rain is not None:
         return rain
 
@@ -76,3 +76,18 @@ def read_rain(data_source=None, init_time=None, fhour=None, extent=(50, 150, 0, 
         return rain
 
     raise Exception('Can not get any data!')
+
+def read_points_rain(points=None,fhours=None,**kwargs):
+
+    rain=[]
+    for ifhour in fhours:
+        try:
+            data=read_rain(fhour=ifhour,**kwargs)
+            rain.append(data)
+        except:
+            continue
+    if(rain !=[]):
+        rain=xr.concat(rain, dim='dtime')
+        return mdgstda.gridstda_to_stastda(rain, points)
+    return None
+    

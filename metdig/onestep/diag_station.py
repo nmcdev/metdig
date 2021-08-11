@@ -7,6 +7,7 @@ import numpy as np
 from metdig.io import get_model_points
 
 from metdig.onestep.lib.utility import date_init
+from metdig.onestep.complexgrid_var.get_rain import read_points_rain
 
 from metdig.products import diag_station as draw_station
 
@@ -15,7 +16,54 @@ import metdig.cal as mdgcal
 __all__ = [
     'uv_tmp_rh_rain',
     'sta_SkewT',
+    't2m_ens',
+    'rain_ens'
 ]
+
+@date_init('init_time')
+def rain_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), atime=3, points={'lon': [110], 'lat': [20],'id':['任意点']},
+                   is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    # get data
+    rain = read_points_rain(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, points=points,atime=atime)
+
+    # calcu
+    if is_return_data:
+        dataret = {'t2m': rain}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_station.draw_rain_ens(rain, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    rain_ens(init_time='2021081020')
+    plt.show()
+
+@date_init('init_time')
+def t2m_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), points={'lon': [110], 'lat': [20],'id':['任意点']},
+                   is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    # get data
+    t2m = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='t2m', points=points)
+
+    # calcu
+    if is_return_data:
+        dataret = {'t2m': t2m}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_station.draw_t2m_ens(t2m, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
 
 @date_init('init_time')
 def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20]},
@@ -42,7 +90,6 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     if ret:
         return ret
-
 
 @date_init('init_time')
 def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
