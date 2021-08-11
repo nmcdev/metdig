@@ -26,7 +26,7 @@ grapes_gfs,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE
 grapes_gfs,tmx3_2m,surface,kelvin,MXT,过去3小时最高温度,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,t2m,surface,kelvin,TEM,气温,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,psfc,surface,Pa,PRS,气压,1,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
-grapes_gfs,tpe,surface,mm,TPE,总降水量,1,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
+grapes_gfs,rain,surface,mm,TPE,总降水量,1,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
 grapes_gfs,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE/NAFP_ANA_FTM_GRAPES_GFS_NEHE
@@ -46,7 +46,7 @@ grapes_meso_3km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_GRAPES_MESO_FOR_3KM/
 grapes_meso_3km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,t2m,surface,kelvin,TEM,气温,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,psfc,surface,Pa,PRS,气压,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso_3km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
+grapes_meso_3km,rain,surface,mm,TPE,总降水量,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
 grapes_meso_3km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM
@@ -55,7 +55,7 @@ grapes_meso_3km,cref,surface,,RACR,雷达组合反射率,1,0,NAFP_GRAPES_MESO_FOR_3KM/N
 #,,,,,,,,
 grapes_rafs_3km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
-grapes_rafs_3km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
+grapes_rafs_3km,rain,surface,mm,TPE,总降水量,1,0,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,t2m,surface,kelvin,TEM,气温,103,2,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
 grapes_rafs_3km,psfc,surface,Pa,PRS,气压,1,0,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM
@@ -71,7 +71,7 @@ rmaps_st_9km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,t2m,surface,kelvin,TEM,气温,103,2,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,psfc,surface,Pa,PRS,气压,1,0,NAFP_RMAPS_ST_9KM_CHN
-rmaps_st_9km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_RMAPS_ST_9KM_CHN
+rmaps_st_9km,rain,surface,mm,TPE,总降水量,1,0,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_RMAPS_ST_9KM_CHN
@@ -86,7 +86,7 @@ rmaps_st_3km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,t2m,surface,kelvin,TEM,气温,103,2,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,psfc,surface,Pa,PRS,气压,1,0,NAFP_RMAPS_ST_3KM_NCN
-rmaps_st_3km,tpe,surface,mm,TPE,总降水量,1,0,NAFP_RMAPS_ST_3KM_NCN
+rmaps_st_3km,rain,surface,mm,TPE,总降水量,1,0,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_RMAPS_ST_3KM_NCN
@@ -105,7 +105,7 @@ ecmwf,v100m,surface,m/s,WIV100,南北风风速,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,tmn3_2m,surface,kelvin,MN2T3,过去3小时最低温度,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,t2m,surface,kelvin,TEM,气温,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,psfc,surface,Pa,PRS,气压,1,0,NAFP_ECMF_C1D_GLB_FOR
-ecmwf,tpe,surface,m,TPE,总降水量,1,0,NAFP_ECMF_C1D_GLB_FOR
+ecmwf,rain,surface,m,TPE,总降水量,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,td2m,surface,kelvin,DPT,露点温度,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,prmsl,surface,Pa,SSP,海平面气压,1,0,NAFP_ECMF_C1D_GLB_FOR
 ecmwf,tcwv,surface,mm,TCWV,总柱状比湿（整层水汽含量）,1,0,NAFP_ECMF_C1D_GLB_FOR

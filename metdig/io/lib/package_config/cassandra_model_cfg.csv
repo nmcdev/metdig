@@ -46,6 +46,7 @@ ecmwf,v10m,surface,m/s,,10,ECMWF_HR/VGRD_10M/
 ecmwf,u100m,surface,m/s,,100,ECMWF_HR/UGRD_100M/
 ecmwf,v100m,surface,m/s,,100,ECMWF_HR/VGRD_100M/
 ecmwf,prmsl,surface,hPa,,0,ECMWF_HR/PRMSL/
+ecmwf,rain,surface,mm,,0,ECMWF_HR/APCP/
 ecmwf,rain24,surface,mm,,0,ECMWF_HR/RAIN24/
 ecmwf,rain03,surface,mm,,0,ECMWF_HR/RAIN03/
 ecmwf,rain06,surface,mm,,0,ECMWF_HR/RAIN06/
@@ -178,6 +179,7 @@ ecmwf_ens,v10m,surface,m/s,,10,ECMWF_ENSEMBLE/RAW/VGRD_10M/
 ecmwf_ens,u100m,surface,m/s,,100,ECMWF_ENSEMBLE/RAW/UGRD_100M/
 ecmwf_ens,v100m,surface,m/s,,100,ECMWF_ENSEMBLE/RAW/VGRD_100M/
 ecmwf_ens,prmsl,surface,hPa,,0,ECMWF_ENSEMBLE/RAW/PRMSL/
+ecmwf_ens,rain,surface,mm,,0,ECMWF_ENSEMBLE/RAW/APCP/
 ecmwf_ens,rain24,surface,mm,,0,ECMWF_ENSEMBLE/RAW/RAIN24/
 ecmwf_ens,rain03,surface,mm,,0,ECMWF_ENSEMBLE/RAW/RAIN03/
 ecmwf_ens,rain06,surface,mm,,0,ECMWF_ENSEMBLE/RAW/RAIN06/
