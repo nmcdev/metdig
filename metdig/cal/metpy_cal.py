@@ -382,16 +382,25 @@ def psychrometric_vapor_pressure_wet(pres, dry_bulb_temperature, wet_bulb_temper
 def relative_humidity_from_dewpoint(tmp, td):
     '''
 
-    []
+    [Calculate the relative humidity.
+
+    Uses temperature and dewpoint to calculate relative humidity as the ratio of vapor pressure to saturation vapor pressures.]
 
     Args:
-         {[stda]} -- []
-         {[stda]} -- []
-         {[stda]} -- []
+        tmp {[stda]} -- [Air temperature]
+        td {[stda]} -- [Dewpoint temperature]
 
     Returns:
-        [stda]: []
+        [stda]: [Relative humidity]
     '''
+    tmp_p = utl.stda_to_quantity(tmp)  # degC
+    td_p = utl.stda_to_quantity(td)  # degC
+
+    rh_p = mpcalc.relative_humidity_from_dewpoint(tmp_p, td_p) # 
+
+    rh = utl.quantity_to_stda_byreference('rh', rh_p, tmp)
+
+    return rh
 
 
 def relative_humidity_from_mixing_ratio(pres, tmp, mixing_ratio):
@@ -412,16 +421,25 @@ def relative_humidity_from_mixing_ratio(pres, tmp, mixing_ratio):
 def relative_humidity_from_specific_humidity(pres, tmp, spfh):
     '''
 
-    []
+    [Calculate the relative humidity from specific humidity, temperature, and pressure.]
 
     Args:
-         {[stda]} -- []
-         {[stda]} -- []
-         {[stda]} -- []
+        pres {[stda]} -- [Total atmospheric pressure]
+        tmp {[stda]} -- [Air temperature]
+        spfh {[stda]} -- [Specific humidity of air]
 
     Returns:
-        [stda]: []
+        [stda]: [Relative humidity]
     '''
+    pres_p = utl.stda_to_quantity(pres)  # hPa
+    tmp_p = utl.stda_to_quantity(tmp)  # degC
+    spfh_p = utl.stda_to_quantity(spfh)  # g/kg
+
+    rh_p = mpcalc.relative_humidity_from_specific_humidity(pres_p, tmp_p, spfh_p)
+
+    rh = utl.quantity_to_stda_byreference('rh', rh_p, tmp)
+
+    return rh
 
 
 def relative_humidity_wet_psychrometric(pres, dry_bulb_temperature, wet_bulb_temperature, **kwargs):
@@ -472,15 +490,13 @@ def saturation_mixing_ratio(total_pres, tmp):
 def saturation_vapor_pressure(tmp):
     '''
 
-    []
+    [Calculate the saturation water vapor (partial) pressure.]
 
     Args:
-         {[stda]} -- []
-         {[stda]} -- []
-         {[stda]} -- []
+        tmp {[stda]} -- [Air temperature]
 
     Returns:
-        [stda]: []
+        [stda]: [Saturation water vapor (partial) pressure]
     '''
 
 
