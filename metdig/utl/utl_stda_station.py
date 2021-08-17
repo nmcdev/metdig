@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, timedelta
-
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -339,7 +337,7 @@ class __STDADataFrameAccessor(object):
             self._df.attrs = attrs
 
     def get_dim_value(self, dim_name):
-        """[获取维度值，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]
+        """[获取维度数据，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]
 
         Args:
             dim_name ([str]): [维度名]
@@ -354,7 +352,10 @@ class __STDADataFrameAccessor(object):
         return self._df[dim_name].values
 
     def get_value(self, ydim='lat', xdim='lon'):
-        """[根据维度获取数据，（此处仅为了和站点stda统一接口，固忽略xdim ydim两个参数，不用传这两个参数）]
+        """[根据维度名获取stda数据，
+        注： 
+        1、网格stda仅支持二维，非二维stda调用该函数会报错
+        2、站点stda为pd.DataFrame，无意义，故忽略xdim ydim两个参数]
 
         Returns:
             [numpy]: [values]
@@ -381,7 +382,7 @@ class __STDADataFrameAccessor(object):
 
     def description_point(self, describe=''):
         '''
-        获取描述信息，格式如下
+        获取描述信息，格式如下:
         起报时间: Y年m月d日H时
         [data_name]N小时预报describe
         预报点: lon, lat

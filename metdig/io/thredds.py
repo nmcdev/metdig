@@ -54,7 +54,8 @@ def get_model_grid(init_time=None, data_name=None,  var_name=None, level=None, e
     except Exception as e:
         raise Exception(str(e))
 
-    thredds_path = utl.cfgpath_format(thredds_path, init_time_utc, thredds_var_name=thredds_var_name, ip=ip, port=port)
+    thredds_path = utl.cfgpath_format_todatestr(thredds_path, thredds_var_name=thredds_var_name, ip=ip, port=port)
+    thredds_path = datetime.datetime.strftime(init_time_utc, thredds_path)
 
     result = requests.get(thredds_path + '.html')
     if result.status_code == 200:
