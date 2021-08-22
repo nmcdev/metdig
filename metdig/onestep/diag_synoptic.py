@@ -29,6 +29,46 @@ __all__ = [
 
 
 @date_init('init_time')
+def uvstream_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+               uv_lev=200, is_mask_terrain=True,
+               area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    # get data
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+
+    # calculate
+    wsp = mdgcal.wind_speed(u, v)
+
+    if is_return_data:
+        dataret = {'u': u, 'v': v, 'wsp': wsp}
+        ret.update({'data': dataret})
+
+    # 隐藏被地形遮挡地区
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
+        u = mask_terrian(psfc, uv_lev, u)
+        v = mask_terrian(psfc, uv_lev, v)
+        wsp = mask_terrian(psfc, uv_lev, wsp)
+
+    # plot
+    if is_draw:
+        drawret = draw_synoptic.draw_uvstream_wsp(u, v, wsp, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    uvstream_wsp()
+    plt.show()
+
+@date_init('init_time')
 def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                   area='全国',  is_return_data=False, is_draw=True, add_city=False, add_background_style=False,

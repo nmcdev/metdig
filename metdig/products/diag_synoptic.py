@@ -12,9 +12,29 @@ from metdig.graphics.contour_method import *
 from metdig.graphics.contourf_method import *
 from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.quiver_method import *
+from metdig.graphics.streamplot_method import *
 from metdig.graphics.text_method import *
 from metdig.graphics.draw_compose import *
 
+def draw_uvstream_wsp(u, v, wsp, map_extent=(60, 145, 15, 55),
+                    wsp_pcolormesh_kwargs={}, uv_streamplot_kwargs={},
+                    **pallete_kwargs):
+    init_time = pd.to_datetime(u.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhour = int(u['dtime'].values[0])
+    fcst_time = init_time + datetime.timedelta(hours=fhour)
+
+    data_name = str(u['member'].values[0])
+    title = '[{}] {}hPa 流线, 风速'.format(
+        data_name.upper(),
+        u['level'].values[0])
+
+    forcast_info = u.stda.description()
+    png_name = '{2}_流线_风速_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
+
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    wsp_pcolormesh(obj.ax, wsp,levels=np.arange(30,70,4) ,kwargs=wsp_pcolormesh_kwargs)
+    uv_streamplot(obj.ax, u, v, kwargs=uv_streamplot_kwargs)
+    return obj.save()
 
 
 def draw_syn_composite(
