@@ -21,7 +21,7 @@ import metdig.cal as mdgcal
 import metpy.calc as mpcalc
 from metpy.units import units
 
-def draw_rain_ens(rain, **pallete_kwargs):
+def draw_rain_ens_boxplot(rain, **pallete_kwargs):
 
     init_time = pd.to_datetime(rain['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     data_name = rain.stda.member[0].split('-')[0]
@@ -54,7 +54,7 @@ def draw_rain_ens(rain, **pallete_kwargs):
     return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
 
 
-def draw_t2m_ens(t2m, **pallete_kwargs):
+def draw_t2m_ens_boxplot(t2m, **pallete_kwargs):
 
     init_time = pd.to_datetime(t2m['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     data_name = t2m.stda.member[0].split('-')[0]

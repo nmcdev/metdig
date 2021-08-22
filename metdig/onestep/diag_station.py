@@ -17,12 +17,12 @@ import metdig.cal as mdgcal
 __all__ = [
     'uv_tmp_rh_rain',
     'sta_SkewT',
-    't2m_ens',
-    'rain_ens'
+    't2m_ens_boxplot',
+    'rain_ens_boxplot'
 ]
 
 @date_init('init_time')
-def rain_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), atime=3, points={'lon': [110], 'lat': [20],'id':['任意点']},
+def rain_ens_boxplot(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), atime=3, points={'lon': [110], 'lat': [20],'id':['任意点']},
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -35,7 +35,7 @@ def rain_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fho
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_station.draw_rain_ens(rain, **products_kwargs)
+        drawret = draw_station.draw_rain_ens_boxplot(rain, **products_kwargs)
         ret.update(drawret)
 
     if ret:
@@ -43,11 +43,11 @@ def rain_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fho
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    rain_ens(init_time='2021081020')
+    rain_ens_boxplot(init_time='2021081020')
     plt.show()
 
 @date_init('init_time')
-def t2m_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), points={'lon': [110], 'lat': [20],'id':['任意点']},
+def t2m_ens_boxplot(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), points={'lon': [110], 'lat': [20],'id':['任意点']},
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -60,7 +60,7 @@ def t2m_ens(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhou
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_station.draw_t2m_ens(t2m, **products_kwargs)
+        drawret = draw_station.draw_t2m_ens_boxplot(t2m, **products_kwargs)
         ret.update(drawret)
 
     if ret:
