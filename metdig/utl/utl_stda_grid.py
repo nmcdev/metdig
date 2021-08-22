@@ -23,7 +23,9 @@ def xrda_to_gridstda(xrda,
                      member=None, level=None, time=None, dtime=None, lat=None, lon=None,
                      np_input_units='', var_name='',
                      **attrs_kwargs):
-    """[通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda（如果不给出缺失的维度数据，默认填0）
+    """[将一个xarray数据，转换成网格stda标准格式数据
+    
+    通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda（如果不给出缺失的维度数据，默认填0）
 
     Example:
     xrda = xr.DataArray([[271, 272, 273], [274, 275, 276]], dims=("X", "Y"), coords={"X": [10, 20], 'Y': [80, 90, 100]})
@@ -47,13 +49,13 @@ def xrda_to_gridstda(xrda,
         dtime_dim (str, optional): [xrda中代表stda的dtime维的名称]. Defaults to 'dtime'.
         lat_dim (str, optional): [xrda中代表stda的lat维的名称]. Defaults to 'lat'.
         lon_dim (str, optional): [xrda中代表stda的lon维的名称]. Defaults to 'lon'.
-        member ([list], optional): [使用member替换xrda的member数据]]. Defaults to None.
-        level ([list], optional): [使用level替换xrda的level数据]. Defaults to None.
-        time ([list], optional): [使用time替换xrda的time数据]. Defaults to None.
-        dtime ([list], optional): [使用dtime替换xrda的dtime数据]. Defaults to None.
-        lat ([list], optional): [使用lat替换xrda的lat数据]. Defaults to None.
-        lon ([list], optional): [使用lon替换xrda的lon数据]. Defaults to None.
-        np_input_units (str, optional): [np_input数据对应的单位，自动转换为能查询到的stda单位]. Defaults to ''.
+        member ([list], optional): [使用member该参数替换xrda的member数据]]. Defaults to None.
+        level ([list], optional): [使用该参数替换xrda的level数据]. Defaults to None.
+        time ([list], optional): [使用该参数替换xrda的time数据]. Defaults to None.
+        dtime ([list], optional): [使用该参数e替换xrda的dtime数据]. Defaults to None.
+        lat ([list], optional): [使用l该参数替换xrda的lat数据]. Defaults to None.
+        lon ([list], optional): [使用该参数替换xrda的lon数据]. Defaults to None.
+        np_input_units (str, optional): [输入数据对应的单位，自动转换为能查询到的stda单位]. Defaults to ''.
         var_name (str, optional): [要素名]. Defaults to ''.
         **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high']
 
@@ -129,7 +131,10 @@ def npda_to_gridstda(npda,
                      member=None, level=None, time=None, dtime=None, lat=None, lon=None,
                      np_input_units='', var_name='',
                      **attrs_kwargs):
-    """[通过给出npda的维度信息及其维度数据，('member', 'level', 'time', 'dtime', 'lat', 'lon')，将npda转成stda（如果不给出缺失的维度数据，默认填0）
+    """[将一个numpy数据，转换成网格stda标准格式数据
+    
+    通过给出npda的维度信息及其维度数据，('member', 'level', 'time', 'dtime', 'lat', 'lon')，将npda转成stda（如果不给出缺失的维度数据，默认填0）
+
     Example:
     npda = np.array([[271, 272, 273], [274, 275, 276]])
 
@@ -430,7 +435,7 @@ class __STDADataArrayAccessor(object):
             self._xr.attrs = attrs
 
     def get_dim_value(self, dim_name):
-        """[获取维度值，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]
+        """[获取维度数据，如果dim_name=='fcst_time'情况下，特殊处理，返回time*dtime]
 
         Args:
             dim_name ([str]): [维度名]
@@ -444,8 +449,11 @@ class __STDADataArrayAccessor(object):
             return self.time.values
         return self._xr[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon'):
-        """[根据维度获取数据，假如stda不是二维的数据，则报错]
+    def get_value(self, ydim='lat', xdim='lon'):        
+        """[根据维度名获取stda数据，
+        注： 
+        1、网格stda仅支持二维，非二维stda调用该函数会报错
+        2、站点stda为pd.DataFrame，无意义，故忽略xdim ydim两个参数]
 
         Returns:
             [numpy]: [values]
@@ -483,7 +491,7 @@ class __STDADataArrayAccessor(object):
 
     def description_point(self, describe=''):
         '''
-        获取描述信息，格式如下
+        获取描述信息，格式如下:
         起报时间: Y年m月d日H时
         [data_name]N小时预报[describe]
         预报点: lon, lat
