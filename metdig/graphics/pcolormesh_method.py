@@ -146,7 +146,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     z = stda.stda.get_value(ydim, xdim)  # m/s
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels)
-    if levels:
+    if levels is not None:
         z = np.where(z >= levels[0], z, np.nan)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
@@ -214,7 +214,7 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
-                  vmin=-4, vmax=4, cmap='ncl/hotcolr_19lev',
+                  levels = np.arange(-4, 4.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',
                   transform=ccrs.PlateCarree(), alpha=0.8,
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
@@ -222,25 +222,24 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     z = stda.stda.get_value(ydim, xdim)  # kelvin/m/s
     z = z * 1e9  
     z[np.abs(z)<0.5]=np.nan
-    cmap = cm_collected.get_cmap(cmap)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax, transform=transform, alpha=alpha, **kwargs)
+    img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha,**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)')
+        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)', extend='both')
     return img
             
 
 @kwargs_wrapper
 def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
-                    levels=np.arange(5, 46), cmap='met/wvfl_ctable',
+                    levels=np.arange(5, 46).tolist(), cmap='met/wvfl_ctable',
                     transform=ccrs.PlateCarree(), alpha=0.8,
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # g/(cm*hPa*s)
 
-    levels = np.arange(5, 46).tolist()
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
@@ -256,16 +255,16 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
-                   cmap='met/temp', vmin=-45, vmax=45,
+                   cmap='met/temp',levels = np.arange(-45, 46,1),
                    transform=ccrs.PlateCarree(), alpha=0.5,
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # degC
 
-    cmap = cm_collected.get_cmap(cmap)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, vmin=vmin, vmax=vmax, **kwargs)
+    img = ax.pcolormesh(x, y, z, cmap=cmap,norm=norm, transform=transform, alpha=alpha,  **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='°C', extend='both')
     return img
@@ -295,7 +294,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
 @kwargs_wrapper
 def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
-                    add_colorbar=True,
+                    add_colorbar=True, levels=np.arange(-16,17,1),
                     cmap='ncl/hotcold_18lev',
                     transform=ccrs.PlateCarree(), alpha=1,
                     **kwargs):
@@ -303,10 +302,10 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # degC
     z[np.abs(z)<4]=np.nan
-    cmap = cm_collected.get_cmap(cmap)
-    cmap = cm_collected.linearized_cmap(cmap)
+    cmap,norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels,isLinear=True)
+    # cmap = cm_collected.linearized_cmap(cmap)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, vmin=-16, vmax=16, **kwargs)
+    img = ax.pcolormesh(x, y, z, cmap=cmap, transform=transform, alpha=alpha, norm=norm, **kwargs)
     if add_colorbar:
         ticks = [-16, -12, -10, -8, -6, -4, 0, 4, 6, 8, 10, 12, 16]
         utl.add_colorbar(ax, img, ticks=ticks, label='°C', extend='both')

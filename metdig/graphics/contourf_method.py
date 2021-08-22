@@ -281,7 +281,7 @@ def pres_contourf(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                    add_colorbar=True,
-                   transform=ccrs.PlateCarree(), alpha=1,levels=None,
+                   transform=ccrs.PlateCarree(), alpha=1,levels=None,cmap='met/qpf_nws',
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -303,7 +303,7 @@ def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                 (np.array([0, 0.01, 0.1]), np.arange(0.5, 2, 0.5),
                 np.arange(2, 8, 1), np.arange(8, 20, 2),
                 np.arange(20, 55, 2.5), np.arange(55, 100, 5)))
-    cmap, norm = cm_collected.get_cmap('met/qpf_nws', extend='max', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     z = np.where(z < 0.1, np.nan, z)
