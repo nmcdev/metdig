@@ -107,8 +107,8 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     qsn_contourf(obj.ax, qsn, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -145,8 +145,8 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
     qice_contourf(obj.ax, qice, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -460,8 +460,8 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
     vort_contour(obj.ax, vort, xdim='fcst_time', ydim='level', colors='black', transform=None, kwargs=div_contour_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='horizontal divergence')
     black_line = lines.Line2D([], [], color='black', label='vertical vorticity')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
@@ -471,7 +471,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
 
 
 def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
-                              tmpadv_contour_kwargs={'levels': np.arange(-15, 15, 1)}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},
+                              tmpadv_contourf_kwargs={'levels': np.arange(-15, 15, 1)}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
                               **pallete_kwargs):
 
     init_time = pd.to_datetime(tmpadv['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -495,11 +495,11 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
-    tmpadv_contourf(obj.ax, tmpadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=tmpadv_contour_kwargs)
+    tmpadv_contourf(obj.ax, tmpadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=tmpadv_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contourf_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -536,8 +536,8 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     vortadv_contourf(obj.ax, vortadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, if_mask=False,kwargs=vortadv_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contourf_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -567,8 +567,8 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
     vort_contour(obj.ax, vort, xdim='fcst_time', ydim='level', colors='black', transform=None, kwargs=div_contour_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='horizontal divergence')
     black_line = lines.Line2D([], [], color='black', label='vertical verticity')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
@@ -603,6 +603,6 @@ def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  rh_contourf_kwargs={}, uv_barbs
     cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 101, 0.5), extend='max', kwargs=rh_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
-    if terrain.values.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.values.max(), 0.1), zorder=100)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     return obj.save()

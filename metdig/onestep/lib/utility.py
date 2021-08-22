@@ -55,12 +55,17 @@ def get_map_area(area):
         raise ValueError('area must be str or list(len=4) or tuple(len=4)')
 
 
-def mask_terrian(psfc, level, stda_input):
+def mask_terrian(psfc, level, stda_input, keep_terrian=False):
+    #输入的任何维度气压坐标系的stda均能够mask
     psfc_new = psfc.interp(lon=stda_input['lon'].values,
                            lat=stda_input['lat'].values,
                            kwargs={'fill_value': None},
-                           )
-    return stda_input.where(psfc_new.values - level >= 0)  # 保留psfc-level>=0的，小于0的赋值成nan
+                           ).values.repeat(stda_input['level'].size, axis=1)
+    pressure=stda_input.level.broadcast_like(stda_input)
+    if keep_terrian:
+        return stda_input.where(psfc_new - pressure < 0)  # 保留psfc-level>=0的，小于0的赋值成nan
+    else:
+        return stda_input.where(psfc_new - pressure >= 0)  # 保留psfc-level>=0的，小于0的赋值成nan
 
 
 class date_init(object):

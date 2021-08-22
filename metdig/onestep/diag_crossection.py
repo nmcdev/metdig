@@ -372,11 +372,6 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_w_theta_spfh(st_point=[33.6,120.7],ed_point=[41.5,114.6])
-    plt.show()
-
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                           levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
@@ -400,7 +395,7 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
     spfh = spfh.interp(lon=points['lon'], lat=points['lat'])
     psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)
+    terrain= mask_terrian(psfc, levels, pressure,keep_terrian=True)
     terrain.attrs['var_units'] = ''
     if is_draw:
         drawret = draw_cross.draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain, **products_kwargs)
@@ -432,7 +427,7 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     rh = rh.interp(lon=points['lon'], lat=points['lat'])
     psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)
+    terrain= mask_terrian(psfc, levels, pressure,keep_terrian=True)
     terrain.attrs['var_units'] = ''
     if is_draw:
         drawret = draw_cross.draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain, **products_kwargs)
@@ -1008,7 +1003,7 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values.repeat(pressure['level'].size, axis=1)
+    terrain= mask_terrian(psfc, levels, pressure,keep_terrian=True)
     terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
@@ -1019,3 +1014,8 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    time_rh_uv_tmp(init_time='2021081120',mean_area=[100,120,30,40])
+    plt.show()
