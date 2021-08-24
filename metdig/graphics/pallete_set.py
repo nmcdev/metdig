@@ -68,10 +68,14 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     ax.set_title(title, loc='left', fontsize=title_fontsize)
 
     # set_map_extent
-    if((map_extent[1]-map_extent[0] > 350) or (map_extent[3]-map_extent[2] > 80)):
+    if((map_extent[1]-map_extent[0] > 350) and (map_extent[3]-map_extent[2] > 170)):
         ax.set_global()
     else:
-        map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
+        # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
+        ax.set_extent(map_extent, crs=ccrs.PlateCarree())
+
+
+
 
     # add grid lines
     if add_grid:
@@ -94,9 +98,9 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     # 城市名称
     if add_city:
         small_city = False
-        if(map_extent2[1] - map_extent2[0] < 25):
+        if(map_extent[1] - map_extent[0] < 25):
             small_city = True
-        utl_plotmap.add_city_on_map(ax, map_extent=map_extent2, transform=ccrs.PlateCarree(),
+        utl_plotmap.add_city_on_map(ax, map_extent=map_extent, transform=ccrs.PlateCarree(),
                                     zorder=101, size=13, small_city=small_city)
 
     # 背景图

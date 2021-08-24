@@ -49,7 +49,7 @@ def _era5_download_hourly_pressure_levels(
     if not os.path.exists(os.path.dirname(savefile)):
         os.makedirs(os.path.dirname(savefile))
 
-    if(year > 1978):
+    if(year[0] > 1978):
         data_code='reanalysis-era5-pressure-levels'
     else:
         data_code='reanalysis-era5-pressure-levels-preliminary-back-extension'
@@ -99,7 +99,7 @@ def _era5_download_hourly_single_levels(
 
     c = cdsapi.Client(quiet=True)
 
-    if(year > 1978):
+    if(year[0] > 1978):
         data_code='reanalysis-era5-single-levels'
     else:
         data_code='reanalysis-era5-single-levels-preliminary-back-extension'
@@ -263,12 +263,15 @@ def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u10
 
 
 def test():
-    dt_start = datetime.datetime(2020, 1, 2)  # 北京时
-    dt_end = datetime.datetime(2020, 1, 3)
+    dt_start = datetime.datetime(2021,7,17,0)  # 北京时
+    dt_end = datetime.datetime(2020,7,22,0)
     hour = [0, 4, 6, 9, 12]
 
-    era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=hour)
-    era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=hour)
+    # era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=hour)
+    # era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=hour)
+
+    era5_psl_download(dt_start, dt_end)#, var_names=['hgt', 'u', 'v'], hour=hour)
+    era5_sfc_download(dt_start, dt_end)#, var_names=['u10m', 'v10m'], hour=hour)
 
 
 if __name__ == '__main__':
