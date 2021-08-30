@@ -29,17 +29,28 @@ class TDT_img(cimgt.GoogleWTS):
         x, y, z = tile
         url = 'https://webst01.is.autonavi.com/appmaptile?x=%s&y=%s&z=%s&style=6'% (x, y, z)
         return url
-class TDT_ter(cimgt.GoogleWTS):
+class TDT_ter(cimgt.GoogleTiles):
     def _image_url(self, tile):
         x, y, z = tile
-        url = 'http://mt3.google.cn/vt/lyrs=p&scale=2&hl=zh-CN&gl=cn&x=%s&y=%s&z=%s'% (x, y, z)
+        # url = 'http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/tile/%s/%s/%s'% (z, y, x)
+        # url = 'http://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/%s/%s/%s'% (z, y, x)
+        url = 'http://cache1.arcgisonline.cn/arcgis/rest/services/ChinaOnlineCommunity/MapServer/tile/%s/%s/%s'% (z, y, x)
+        # url = 'http://server.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/tile/%s/%s/%s'% (z, y, x)
+
         return url
+
 class TDT(cimgt.GoogleWTS):
     def _image_url(self, tile):
         x, y, z = tile
         url = 'http://wprd01.is.autonavi.com/appmaptile?x=%s&y=%s&z=%s&lang=zh_cn&size=1&scl=1&style=7'% (x, y, z)
         return url
 
+class TDT_Hillshade(cimgt.GoogleTiles):
+    def _image_url(self, tile):
+        x, y, z = tile
+        # url = 'http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/tile/%s/%s/%s'% (z, y, x)
+        url = 'http://server.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade/MapServer/tile/%s/%s/%s'% (z, y, x)
+        return url
 def kwargs_wrapper(func):
     '''
     关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数

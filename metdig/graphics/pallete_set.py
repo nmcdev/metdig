@@ -117,8 +117,11 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         request = utl.TDT_img()  # 卫星图像
         ax.add_image(request, background_zoom_level)  # level=10 缩放等级
     elif add_background_style == 'terrain':
-        request = utl.TDT_ter()  # 卫星图像
-        ax.add_image(request, background_zoom_level)  # level=10 缩放等级
+        request = utl.TDT_Hillshade()  # 地形阴影
+        ax.add_image(request, background_zoom_level)  # level=10 缩放等
+        request = utl.TDT_ter()  # 地形
+        ax.add_image(request, background_zoom_level,alpha=0.5)  # level=10 缩放等
+
     elif add_background_style == 'road':
         request = utl.TDT()  # 卫星图像
         ax.add_image(request, background_zoom_level)  # level=10 缩放等级
