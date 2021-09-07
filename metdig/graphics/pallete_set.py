@@ -38,7 +38,7 @@ def plt_base_env():
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=18, forcast_info='', nmc_logo=False,
                        add_china=True, add_city=True,  add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
-                       background_zoom_level=5):
+                       background_zoom_level=5,add_tag=True):
     """[水平分布图画板设置]]
 
     Args:
@@ -56,6 +56,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         add_grid (bool, optional): [是否绘制网格线]]. Defaults to True.
         add_ticks (bool, optional): [是否绘制刻度]. Defaults to False.
         background_zoom_level (int, optional): [背景地图是卫星地图时需要手动设置zoomlevel]. Defaults to 10.
+        add_tag(bool, optional): [是否标注metdig信息]. Defaults to True.
 
     Returns:
         [type]: [description]
@@ -105,10 +106,12 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
 
     # 背景图
     if add_background_style is None:
-        ax.add_feature(cfeature.OCEAN, facecolor='#EDFBFE')
-        ax.add_feature(cfeature.LAND, facecolor='#FCF6EA')
+        # ax.add_feature(cfeature.OCEAN, facecolor='#EDFBFE')
+        # ax.add_feature(cfeature.LAND, facecolor='#FCF6EA')
+        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=0) 
     elif add_background_style == 'RD':
-        ax.add_feature(cfeature.OCEAN)
+        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.5, encoding='gbk',zorder=0) 
+        # ax.add_feature(cfeature.OCEAN)
         utl_plotmap.add_cartopy_background(ax, name='RD')
     elif add_background_style == 'YB':
         ax.add_feature(cfeature.LAND, facecolor='#EBDBB2')
@@ -153,20 +156,21 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
     # 添加 powered by metdig
-    t=ax.text(0.01, 0.025, 'Powered by MetDig', transform=ax.transAxes, size=10,
-            color='black', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
-    t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
-                mpatheffects.Normal()])
-    t=ax.text(0.01, 0.003, 'https://github.com/nmcdev/metdig', transform=ax.transAxes, size=10,
-            color='black', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
-    t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
-                mpatheffects.Normal()])
+    if(add_tag):
+        t=ax.text(0.01, 0.025, 'Powered by MetDig', transform=ax.transAxes, size=10,
+                color='black', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+        t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                    mpatheffects.Normal()])
+        t=ax.text(0.01, 0.003, 'https://github.com/nmcdev/metdig', transform=ax.transAxes, size=10,
+                color='black', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+        t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                    mpatheffects.Normal()])
     # ax.text(1.00, -0.12, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='right')  # 右下角图的外面，colorbar的下边
     # ax.text(1.00, -0.005, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='top',  ha='right' )  # 右下角图的外面刻度线的位置
     return fig, ax
 
 
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False):
+def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -193,8 +197,9 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
         # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
-    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
-            color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+    if(add_tag):
+        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+                color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
 
 
