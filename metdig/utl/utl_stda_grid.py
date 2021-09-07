@@ -468,7 +468,9 @@ class __STDADataArrayAccessor(object):
                 ydim = 'dtime'
             else:
                 ydim = 'time'
-        data = self._xr.squeeze().transpose(ydim, xdim).values
+        xdim2=self._xr.coords[xdim].dims[0] #一个dim可能对应多个coord,所以要取到对应的dim
+        ydim2=self._xr.coords[ydim].dims[0] #一个dim可能对应多个coord,所以要取到对应的dim
+        data = self._xr.squeeze().transpose(ydim2, xdim2).values
         return data
 
     def description(self):
