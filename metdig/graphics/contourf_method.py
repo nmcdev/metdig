@@ -343,7 +343,7 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, extend='both',**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Absolute Vorticity (dimensionless)',  orientation='vertical', extend='both', pos='right')
+        utl.add_colorbar(ax, img, label='Absolute Vorticity (10' + '$^{-5}$s$^{-1}$)',  orientation='vertical', extend='both', pos='right')
     return img
 
 
