@@ -37,8 +37,8 @@ setup(
     exclude_package_data={'': ['.gitignore']},
 
     install_requires=[
-                      'matplotlib !=3.3.*',
-                      'cartopy',
+                      'matplotlib',
+                      'cartopy>=0.19.0',
                       'nmc_met_io>=0.1.0',
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
