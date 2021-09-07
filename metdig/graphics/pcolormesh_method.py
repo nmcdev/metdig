@@ -83,7 +83,7 @@ def ulj_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=[-30, -20, -10, -5, -2.5, -1, -0.5, 0.5, 1, 2.5, 5, 10, 20, 30], cmap='met/vertical_velocity_nws',
-                    transform=ccrs.PlateCarree(), alpha=0.5,
+                    transform=ccrs.PlateCarree(), alpha=0.7,
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -97,6 +97,25 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, ticks=levels, label='Vertical Velocity (0.1*Pa/s)', extend='max')
     return img
 
+@kwargs_wrapper
+def cape_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                     add_colorbar=True,
+                     levels=np.arange(600, 4100, 200), cmap='ncl/MPL_YlorRd',
+                     transform=ccrs.PlateCarree(), alpha=0.5,
+                     **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # K
+
+    if levels is not None:
+        z = np.where(z >= levels[0], z, np.nan)
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
+
+    img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='CAPE (J/kg)', extend='max')
+    return img
 
 @kwargs_wrapper
 def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
@@ -145,7 +164,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # m/s
 
-    cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
     if levels is not None:
         z = np.where(z >= levels[0], z, np.nan)
 
