@@ -36,11 +36,13 @@ def stda_to_numpy(data):
     return data.stda.values
 
 
-def quantity_to_stda_byreference(var_name, data, reference_variables):
+def quantity_to_stda_byreference(var_name, data, reference_variables,
+                      **attrs_kwargs):
     '''
 
     [根据reference_variables(stda格式)，将data(Quantity)转换成功stda格式，其中坐标信息均来自于reference_variables。
-    注意，此处data需要外部转换好单位再进入此函数，此函数不涉及单位转换]
+    注意，此处data需要外部转换好单位再进入此函数，此函数不涉及单位转换，
+    改进，为保留reference_variables中非可选的坐标信息，比如lon_cross,lat_cross]
 
     Arguments:
         data {[quantity]} -- [需要转换的数据]
@@ -50,12 +52,18 @@ def quantity_to_stda_byreference(var_name, data, reference_variables):
         Exception -- [description]
     '''
     if isinstance(reference_variables, xr.DataArray):
-        stda_data = mdgstda.numpy_to_gridstda(
-            np.array(data),
-            reference_variables['member'].values, reference_variables['level'].values, reference_variables['time'].values,
-            reference_variables['dtime'].values, reference_variables['lat'].values, reference_variables['lon'].values,
-            var_name=var_name, np_input_units=str(data.units),
-        )
+        stda_data=reference_variables.copy(deep=True)
+        stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
+        data, data_units = mdgstda.numpy_units_to_stda(data.magnitude, str(data.units), stda_attrs['var_units'])
+        stda_data.values=data
+        stda_data.attrs=stda_attrs
+
+        # stda_data = mdgstda.numpy_to_gridstda(
+        #     np.array(data),
+        #     reference_variables['member'].values, reference_variables['level'].values, reference_variables['time'].values,
+        #     reference_variables['dtime'].values, reference_variables['lat'].values, reference_variables['lon'].values,
+        #     var_name=var_name, np_input_units=str(data.units),
+        # )
         return stda_data
 
     elif isinstance(reference_variables, pd.DataFrame):
