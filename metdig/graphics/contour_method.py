@@ -24,7 +24,7 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
 
     Args:
         ax ([type]): [description]
-        stda ([type]): [u矢量 stda标准格式]
+        stda ([type]): [stda标准格式]
         xdim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lon'.
         ydim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lat'.
         add_clabel (bool, optional): [是否调用plt.clabel]. Defaults to True.

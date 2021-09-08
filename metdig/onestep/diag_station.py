@@ -41,11 +41,6 @@ def rain_ens_boxplot(data_source='cassandra', data_name='ecmwf_ens', init_time=N
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    rain_ens_boxplot(init_time='2021081020')
-    plt.show()
-
 @date_init('init_time')
 def t2m_ens_boxplot(data_source='cassandra', data_name='ecmwf_ens', init_time=None, fhours=np.arange(0, 72, 3), points={'lon': [110], 'lat': [20],'id':['任意点']},
                    is_return_data=False, is_draw=True, **products_kwargs):
@@ -65,6 +60,11 @@ def t2m_ens_boxplot(data_source='cassandra', data_name='ecmwf_ens', init_time=No
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    t2m_ens_boxplot(init_time='2021090708', fhours=np.arange(0, 243, 3),t2m_boxplot_kwargs=dict(medianline=True,label_gap=3))
+    plt.show()
 
 @date_init('init_time')
 def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20]},

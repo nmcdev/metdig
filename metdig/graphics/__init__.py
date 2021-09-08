@@ -1,3 +1,4 @@
+from . import boxplot_method
 from . import barbs_method
 from . import scatter_method
 from . import streamplot_method

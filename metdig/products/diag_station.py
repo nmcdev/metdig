@@ -16,13 +16,22 @@ import metdig.graphics.pallete_set as pallete_set
 from metdig.graphics.lib.utility import save
 
 from metdig.graphics.draw_compose import skewt_compose
+from metdig.graphics.boxplot_method import boxplot_1D
 
 import metdig.cal as mdgcal
 import metpy.calc as mpcalc
 from metpy.units import units
 
-def draw_rain_ens_boxplot(rain, **pallete_kwargs):
+def draw_rain_ens_boxplot(rain,rain_boxplot_kwargs={}, **pallete_kwargs):
+    """[画集合预报降水箱线图]
 
+    Args:
+        rain ([type]): [站点类型stda]
+        rain_boxplot_kwargs (dict, optional): [graphics.boxplot_method.boxplot_1D的可选参数]. Defaults to {}.
+
+    Returns:
+        [type]: [description]
+    """
     init_time = pd.to_datetime(rain['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     data_name = rain.stda.member[0].split('-')[0]
     title_left = '{}预报 {} [{},{}]'.format(data_name.upper(), rain['id'].values[0], rain['lon'].values[0], rain['lat'].values[0])
@@ -37,13 +46,9 @@ def draw_rain_ens_boxplot(rain, **pallete_kwargs):
     )
 
     ax_rain=fig[1]
-    # rain
-    rain_x = list(map(lambda x: pd.to_datetime(x).strftime('%m月%d日%H时'), rain.stda.fcst_time.values))
-    rain_y = rain.stda.get_value()
-    curve_rain = ax_rain.boxplot(np.transpose(rain_y), labels=rain_x,meanline=True, showmeans=True, showfliers=False, whis=(0,100))
-    # curve_rain2 = ax_rain.boxplot(np.transpose(rain_y)[:,3:],manage_ticks=False ,positions=np.arange(3,3+len(rain_x[3:])),meanline=True, showmeans=True, showfliers=False, whis=(0,100))
+    boxplot_1D(ax_rain,rain,kwargs=rain_boxplot_kwargs)
 
-    ax_rain.set_ylim(0,np.ceil(rain_y.max() / 5) * 5)
+    ax_rain.set_ylim(0,np.ceil(np.nanmax(rain.stda.get_value()) / 5) * 5)
     plt.xticks(rotation=30)
     ax_rain.grid(axis='x', ls='--')    
     output_dir = pallete_kwargs.pop('output_dir', None)
@@ -54,7 +59,7 @@ def draw_rain_ens_boxplot(rain, **pallete_kwargs):
     return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
 
 
-def draw_t2m_ens_boxplot(t2m, **pallete_kwargs):
+def draw_t2m_ens_boxplot(t2m,t2m_boxplot_kwargs={}, **pallete_kwargs):
 
     init_time = pd.to_datetime(t2m['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     data_name = t2m.stda.member[0].split('-')[0]
@@ -70,13 +75,9 @@ def draw_t2m_ens_boxplot(t2m, **pallete_kwargs):
     )
 
     ax_t2m=fig[1]
-    # t2m
-    t2m_x = list(map(lambda x: pd.to_datetime(x).strftime('%m月%d日%H时'), t2m.stda.fcst_time.values))
-    t2m_y = t2m.stda.get_value()
-    curve_t2m = ax_t2m.boxplot(np.transpose(t2m_y), labels=t2m_x,meanline=True, showmeans=True, showfliers=False, whis=(0,100))
-    # curve_t2m2 = ax_t2m.boxplot(np.transpose(t2m_y)[:,3:],manage_ticks=False ,positions=np.arange(3,3+len(t2m_x[3:])),meanline=True, showmeans=True, showfliers=False, whis=(0,100))
+    boxplot_1D(ax_t2m,t2m,kwargs=t2m_boxplot_kwargs)
 
-    ax_t2m.set_ylim(np.floor(t2m_y.min() / 5) * 5 - 2,np.ceil(t2m_y.max() / 5) * 5)
+    ax_t2m.set_ylim(np.floor(np.nanmin(t2m.stda.get_value()) / 5) * 5 - 2,np.ceil(np.nanmax(t2m.stda.get_value()) / 5) * 5)
     plt.xticks(rotation=30)
     ax_t2m.grid(axis='x', ls='--')    
     output_dir = pallete_kwargs.pop('output_dir', None)
