@@ -38,7 +38,7 @@ setup(
 
     install_requires=[
                       'matplotlib',
-                      'cartopy>=0.19.0',
+                      'cartopy',
                       'nmc_met_io>=0.1.0',
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
