@@ -9,6 +9,7 @@ from metdig.graphics.barbs_method import *
 from metdig.graphics.contour_method import *
 from metdig.graphics.contourf_method import *
 from metdig.graphics.pcolormesh_method import *
+from metdig.graphics.text_method import *
 from metdig.graphics.draw_compose import *
 
 def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
@@ -29,9 +30,11 @@ def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
     cref_contourf(obj.ax, cref,  kwargs=ref_pcolormesh_kwargs)
     return obj.save()
 
-def draw_rain(rain, map_extent=(60, 145, 15, 55),
+def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,
                   hgt_contour_kwargs={},
                   rain_contourf_kwargs={},
+                  rain_contour_kwargs={},
+                  extrema_text_kwargs={},
                   **pallete_kwargs):
     init_time = pd.to_datetime(rain.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(rain['dtime'].values[0])
@@ -48,7 +51,12 @@ def draw_rain(rain, map_extent=(60, 145, 15, 55),
     png_name = '{2}_降水_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+
     qpf_contourf(obj.ax, rain, valid_time=valid_time, kwargs=rain_contourf_kwargs)
+    rain_contour(obj.ax,rain,kwargs=rain_contour_kwargs)
+    if(add_extrema):
+        extrma_text=add_extrema(obj.ax,rain,kwargs=extrema_text_kwargs)
+        
     return obj.save()
 
 def draw_hgt_rain(hgt, rain, map_extent=(60, 145, 15, 55),

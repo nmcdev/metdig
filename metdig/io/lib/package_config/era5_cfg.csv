@@ -1,11 +1,11 @@
 #,,,,,
 # 注意事项,,,,,
-#    1. var_name为stda要素名
-#    2. var_units为当前数据的在era5中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数
-#    3. era5_var_name为era5上数据接口需要的要素名
-#    4. era5_discription为描述信息，目前不进行任何使用，可看作为配置行的说明
-#    5. era5_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any
-#    6. 以var_name,level_type列作为查询列，保证能确定唯一一行
+#    1. var_name为stda要素名,,,,,
+#    2. var_units为当前数据的在era5中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,
+#    3. era5_var_name为era5上数据接口需要的要素名,,,,,
+#    4. era5_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,
+#    5. era5_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,
+#    6. 以var_name,level_type列作为查询列，保证能确定唯一一行,,,,
 #,,,,,
 var_name,level_type,var_units,era5_var_name,era5_discription,era5_level
 hgt,high,1/9.8*gpm,geopotential,,any
@@ -30,3 +30,8 @@ qice,high,kg/kg,specific_cloud_ice_water_content,,any
 qcld,high,kg/kg,specific_cloud_liquid_water_content,,any
 qsn,high,kg/kg,specific_snow_water_content,,any
 qrn,high,kg/kg,specific_rain_water_content,,any
+vort,high,1/s,vorticity,,any
+cape,surface,J/kg,convective_available_potential_energy,,0
+cin,surface,J/kg,convective_inhibition,,0
+k_idx,surface,K,k_index,,0
+rain01,surface,m,total_precipitation,,0

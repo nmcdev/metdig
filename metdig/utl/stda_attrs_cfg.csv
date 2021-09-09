@@ -78,3 +78,5 @@ snow_density,雪密度,kg/m**3,0
 snow_depth,积雪深度,cm,0
 sst,海表温度,degC,0
 albedo,反照率,percent,0
+cin,对流抑制能量,J/kg,0
+k_idx,K指数,K,0

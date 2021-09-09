@@ -281,35 +281,44 @@ def pres_contourf(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                    add_colorbar=True,
-                   transform=ccrs.PlateCarree(), alpha=1,levels=None,cmap='met/qpf_nws',
+                   transform=ccrs.PlateCarree(), alpha=0.8,levels=None,ticks=None,
+                   cmap='met/rain',
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # mm
 
+    # if levels is None:
+    #     if (valid_time == 6 or valid_time == 3 or valid_time==1):
+    #         levels = np.concatenate(
+    #             (np.array([0, 0.1, 0.5]), np.arange(1, 4, 1),
+    #             np.arange(4, 13, 1.5), np.arange(13, 25, 2),
+    #             np.arange(25, 60, 2.5), np.arange(60, 105, 5)))
+    #         if(ticks==None):
+    #             ticks=[0.1,2.5,5,10,25,50,100]
+    #     else:
+    #         levels = np.concatenate((
+    #             np.array([0, 0.1, 0.5, 1]), np.arange(2.5, 25, 2.5),
+    #             np.arange(25, 50, 5), np.arange(50, 150, 10),
+    #             np.arange(150, 475, 25)))
+    #         if(ticks==None):
+    #             ticks=[0.1,10,25,50,100,250]
+            
     if levels is None:
-        if valid_time == 24:
-            levels = np.concatenate((
-                np.array([0, 0.1, 0.5, 1]), np.arange(2.5, 25, 2.5),
-                np.arange(25, 50, 5), np.arange(50, 150, 10),
-                np.arange(150, 475, 25)))
-        elif valid_time == 6:
-            levels = np.concatenate(
-                (np.array([0, 0.1, 0.5]), np.arange(1, 4, 1),
-                np.arange(4, 13, 1.5), np.arange(13, 25, 2),
-                np.arange(25, 60, 2.5), np.arange(60, 105, 5)))
-        else:
-            levels = np.concatenate(
-                (np.array([0, 0.01, 0.1]), np.arange(0.5, 2, 0.5),
-                np.arange(2, 8, 1), np.arange(8, 20, 2),
-                np.arange(20, 55, 2.5), np.arange(55, 100, 5)))
-    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
+        levels = np.concatenate(
+                (np.arange(0, 10, 0.5), np.arange(10, 25, 0.75),
+                np.arange(25, 50, 1.25), np.arange(50, 100, 2.5),
+                np.arange(100, 250, 7.5),np.arange(250, 500, 12.5)))#
+    if(ticks==None):
+        ticks=[0, 2.5, 5, 10, 25, 50, 100, 250]
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels,isLinear=True)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     z = np.where(z < 0.1, np.nan, z)
-    img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, extend='max', **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='{}h precipitation (mm)'.format(valid_time), extend='max')
+        utl.add_colorbar(ax, img, ticks=ticks, label='{}h precipitation (mm)'.format(valid_time), extend='max')
 
 @kwargs_wrapper
 def rain_contourf(ax, stda, xdim='lon', ydim='lat',

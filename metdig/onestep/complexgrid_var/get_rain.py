@@ -3,7 +3,7 @@
 
 import numpy as np
 import xarray as xr
-
+from datetime import datetime,timedelta
 from metdig.io import get_model_grid
 
 import metdig.utl as mdgstda
@@ -46,14 +46,21 @@ def _by_rain01(data_source=None, init_time=None, fhour=None, data_name=None, ati
 
     rain01=[]
     for iatime in range(0,atime):
-        temp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+        if(data_name=='era5' or data_name == 'cldas'):  #此处为临时设置，未来需要考虑下架构改进
+            temp = get_model_grid(data_source=data_source, init_time=init_time-timedelta(hours=iatime), fhour=0, data_name=data_name,
+                            var_name='rain01', extent=extent, x_percent=0, y_percent=0, throwexp=False)
+        else:
+            temp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour-iatime, data_name=data_name,
                             var_name='rain01', extent=extent, x_percent=0, y_percent=0, throwexp=False)
         if temp is None:
             return None
 
         rain01.append(temp)
     attrs=temp.attrs
-    rain=xr.concat(rain01,dim='dtime').sum('dtime').expand_dims({'dtime':[atime]})
+    if(data_name=='era5' or data_name == 'cldas'):  #此处为临时设置，未来需要考虑下架构改进
+        rain=xr.concat(rain01,dim='time').sum('time').expand_dims({'time':[init_time]})
+    else:
+        rain=xr.concat(rain01,dim='dtime').sum('dtime').expand_dims({'dtime':[atime]})
     rain.attrs=attrs
     rain.attrs['valid_time']=atime
     rain.attrs['var_cn_name']=str(atime)+'小时降水'

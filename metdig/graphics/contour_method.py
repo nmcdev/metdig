@@ -62,6 +62,24 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
+
+@kwargs_wrapper
+def rain_contour(ax, stda,  xdim='lon', ydim='lat',
+                add_clabel=False,
+                levels=[1,10,25,50,100,250],
+                cmap='met/rain',
+                transform=ccrs.PlateCarree(), linewidths=0.7,
+                **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) # dagpm
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels,isLinear=True)
+
+    img = ax.contour(x, y, z, levels=levels, transform=transform, norm=norm, cmap=cmap, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+    return img
+
 @kwargs_wrapper
 def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=True,

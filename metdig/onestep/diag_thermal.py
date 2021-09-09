@@ -142,7 +142,7 @@ def hgt_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
 @date_init('init_time')
 def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                  hgt_lev=500, tmp_lev=500, is_mask_terrain=True,
+                  hgt_lev=500, tmp_lev=500, smth_stp=1,is_mask_terrain=True,
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -161,8 +161,8 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'tmpadv': tmpadv}
         ret.update({'data': dataret})
 
-    tmp = mdgcal.gaussian_filter(tmp, 1)
-    tmpadv = mdgcal.gaussian_filter(tmpadv, 1)
+    tmp = mdgcal.gaussian_filter(tmp, smth_stp)
+    tmpadv = mdgcal.gaussian_filter(tmpadv, smth_stp)
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:

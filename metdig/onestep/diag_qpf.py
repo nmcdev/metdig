@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from metdig.graphics.lib.utility import extrema
+from metdig.graphics.contourf_method import rain_contourf
 import numpy as np
 import xarray as xr
 import datetime
@@ -17,6 +19,7 @@ from metdig.products import observation_radar as draw_obsradar
 import metdig.cal as mdgcal
 
 __all__ = [
+    'rain',
     'hgt_rain',
     'mslp_rain_snow',
     'model_cref'
@@ -77,7 +80,8 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import metdig
     metdig.set_loglevel('debug')
-    rain(data_name='grapes_meso_3km',fhour=5, atime=4,data_source='cmadaas')
+    # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',atime=24,data_source='cds',area='黄淮',rain_contourf_kwargs={'cmap':'met/rain'})
+    metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',data_source='cds',area='黄淮',atime=24,extrema_text_kwargs={'size':20})
     plt.show()
 
 @date_init('init_time')
