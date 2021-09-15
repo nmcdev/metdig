@@ -134,8 +134,7 @@ def cal_ivt_singlelevel(spfh, wsp):
     spfh_p = utl.stda_to_quantity(spfh)  # g/kg
     wsp_p = utl.stda_to_quantity(wsp)  # m/s
 
-    iq = np.array(wsp_p) * np.array(spfh_p) / 9.8
-    iq = iq * units('g/(cm*hPa*s)')
+    iq = wsp_p * spfh_p / (9.8*units('m/s**2'))
 
     iq = utl.quantity_to_stda_byreference('wvfl', iq, spfh)  # g/(cm*hPa*s)
 
