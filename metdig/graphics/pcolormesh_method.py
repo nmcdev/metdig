@@ -377,17 +377,17 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
     z = stda.stda.get_value(ydim, xdim)  # mm
 
     if valid_time == 24:
-        levels = [0.1, 10, 25, 50, 100, 250, 800]
+        levels = [0.1, 10, 25, 50, 100, 250]
     elif valid_time == 6:
-        levels = [0.1, 4, 13, 25, 60, 120, 800]
+        levels = [0.1, 4, 13, 25, 60, 120]
     else:
-        levels = [0.01, 2, 7, 13, 30, 60, 800]
-    cmap, norm = cm_collected.get_cmap('met/rain_nws', extend='neither', levels=levels)
+        levels = [0.01, 2, 7, 13, 30, 60]
+    cmap, norm = cm_collected.get_cmap('met/rain_nws', extend='max', levels=levels)
 
     imgrain = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         l, b, w, h = ax.get_position().bounds
-        utl.add_colorbar(ax, imgrain, label='雨 (mm)', rect=[l + w * 0.75, b - 0.04, w * 0.25, .02])
+        utl.add_colorbar(ax, imgrain, label='雨 (mm)', rect=[l + w * 0.7, b - 0.04, w * 0.30, .02], extend='max')
 
     # 雪
     stda = rain_snow_sleet_stdas[1]
@@ -406,7 +406,7 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
     imgsnow = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
         l, b, w, h = ax.get_position().bounds
-        utl.add_colorbar(ax, imgsnow, label='雪 (mm)', rect=[l + w * 0.38, b - 0.04, w * 0.25, .02], extend='max')
+        utl.add_colorbar(ax, imgsnow, label='雪 (mm)', rect=[l + w * 0.33, b - 0.04, w * 0.30, .02], extend='max')
 
     # 雨夹雪
     stda = rain_snow_sleet_stdas[2]
@@ -424,7 +424,7 @@ def rain_snow_sleet_pcolormesh(ax, rain_snow_sleet_stdas,  xdim='lon', ydim='lat
 
     imgsleet = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, imgsleet, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.25, .02], extend='max')
+        utl.add_colorbar(ax, imgsleet, label='雨夹雪 (mm)', rect=[l, b - 0.04, w * 0.30, .02], extend='max')
     return imgrain, imgsnow, imgsleet
 
 

@@ -52,7 +52,7 @@ class cmadaas_model_cfg(metaclass=SingletonMetaClass):
         if(temp == 999):  # 表内不好储存字符型符号
             return '-'
         else:
-            return temp
+            return int(temp) #有时met_io 中cmadaas_model_grid会报错ValueError: Unknown format code 'd' for object of type 'float'
 
     def model_cmadaas_units(self, data_name=None, var_name=None, level_type=None, data_code=None):
         return self.get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=data_code)['var_units']

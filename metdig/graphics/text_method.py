@@ -7,7 +7,7 @@ import metdig.graphics.lib.utility as  utl
 from  metdig.graphics.lib.utility import kwargs_wrapper
 
 @kwargs_wrapper
-def add_extrema(ax, stda, transform=ccrs.PlateCarree(), size=20,zorder=12, color='red',va='bottom',ha='right',**kwargs):
+def add_extrema_on_ax(ax, stda, transform=ccrs.PlateCarree(), size=20,zorder=12, color='red',va='bottom',ha='right',**kwargs):
     extrema=stda.where(stda==stda.max(),drop=True)
     img = ax.text(extrema.lon,extrema.lat,
                 'Max: '+'%.1f' % np.squeeze(extrema.values),

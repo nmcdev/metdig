@@ -12,6 +12,7 @@ from metdig.io import get_model_grids
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.get_rain import read_rain
+from metdig.onestep.complexgrid_var.get_snow import read_snow
 
 from metdig.products import diag_qpf as draw_qpf
 from metdig.products import observation_radar as draw_obsradar
@@ -80,8 +81,9 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import metdig
     metdig.set_loglevel('debug')
+    metdig.onestep.diag_qpf.rain(init_time='2021071908',fhour=36,data_name='ncep_gfs',data_source='cmadaas',area='黄淮',atime=24)
     # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',atime=24,data_source='cds',area='黄淮',rain_contourf_kwargs={'cmap':'met/rain'})
-    metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',data_source='cds',area='黄淮',atime=24,extrema_text_kwargs={'size':20})
+    # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',data_source='cds',area='黄淮',atime=24,extrema_text_kwargs={'size':20})
     plt.show()
 
 @date_init('init_time')
@@ -98,8 +100,11 @@ def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=2
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour_gh, data_name=data_name, level=hgt_lev,
                          var_name='hgt', extent=map_extent)
 
-    rain = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='rain{:02d}'.format(atime), extent=map_extent)
+    rain = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          atime=atime, extent=map_extent)
+
+    # rain = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+    #                       var_name='rain{:02d}'.format(atime), extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt': hgt, 'rain': rain}
@@ -120,10 +125,10 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     map_extent = get_map_area(area)
 
-    rain_data = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                               var_name='rain{:02d}'.format(atime), extent=map_extent)
-    snow_data = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                               var_name='snow{:02d}'.format(atime), extent=map_extent)
+    rain_data = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          atime=atime, extent=map_extent)
+    snow_data = read_snow(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          atime=atime, extent=map_extent)
     prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                            var_name='prmsl', extent=map_extent)
 

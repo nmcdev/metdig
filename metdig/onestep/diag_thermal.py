@@ -50,7 +50,7 @@ def hgt_uv_cape(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     # plot
     if is_draw:
-        drawret = draw_thermal.draw_hgt_uv_cape(hgt, u, v, cape, map_extent=map_extent,add_background_style='terrain', **products_kwargs)
+        drawret = draw_thermal.draw_hgt_uv_cape(hgt, u, v, cape, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
     if ret:

@@ -55,7 +55,7 @@ def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,
     qpf_contourf(obj.ax, rain, valid_time=valid_time, kwargs=rain_contourf_kwargs)
     rain_contour(obj.ax,rain,kwargs=rain_contour_kwargs)
     if(add_extrema):
-        extrma_text=add_extrema(obj.ax,rain,kwargs=extrema_text_kwargs)
+        extrma_text=add_extrema_on_ax(obj.ax,rain,kwargs=extrema_text_kwargs)
         
     return obj.save()
 
