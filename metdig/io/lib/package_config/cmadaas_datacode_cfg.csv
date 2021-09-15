@@ -19,3 +19,5 @@ ecmwf,0,any
 ecmwf,1,any
 cldas,0,NAFP_CLDAS2.0_RT_HOR_ASI
 cldas,1,NAFP_CLDAS2.0_RT_HOR_ASI
+ncep_gfs,0,NAFP_FOR_FTM_KWBC_NHEJ
+ncep_gfs,1,NAFP_FOR_FTM_KWBC_NHEJ
