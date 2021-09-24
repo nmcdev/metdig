@@ -64,6 +64,9 @@ class cmadaas_model_cfg(metaclass=SingletonMetaClass):
             return level
         else:
             return int(models_level)
+    
+    def model_cmadaas_prod_type(self, data_name=None, var_name=None, level_type=None, data_code=None):
+        return self.get_model_cfg(data_name=data_name, var_name=var_name, level_type=level_type, data_code=data_code)['cmadaas_prod_type']
 
 if __name__ == '__main__':
 
@@ -75,3 +78,6 @@ if __name__ == '__main__':
 
     level = cmadaas_model_cfg().model_cmadaas_level(data_name='ecmwf', var_name='tmp', level_type='high', data_code=data_code, level=2)
     print(level)
+
+    prod_type = cmadaas_model_cfg().model_cmadaas_prod_type(data_name='ecmwf', var_name='tmp', level_type='high', data_code=data_code)
+    print(prod_type)

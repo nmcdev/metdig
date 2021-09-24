@@ -51,23 +51,25 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         cmadaas_level = cmadaas_model_cfg().model_cmadaas_level(level_type=level_type, var_name=var_name,
                                                         data_name=data_name, data_code=cmadaas_data_code, level=level)
         cmadaas_units = cmadaas_model_cfg().model_cmadaas_units(level_type=level_type, var_name=var_name, data_name=data_name, data_code=cmadaas_data_code)
+        cmadaas_prod_type = cmadaas_model_cfg().model_cmadaas_prod_type(
+            data_name=data_name, var_name=var_name, level_type=level_type, data_code=cmadaas_data_code)
         _log.debug('cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, fhour={}'.format(cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, fhour))
     except Exception as e:
         raise Exception(str(e))
 
     timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
     
-    # if cmadaas_data_code == 'NAFP_CLDAS2.0_NRT_ASI_NC':
-    if cmadaas_data_code == 'NAFP_CLDAS2.0_RT_HOR_ASI':
+    if cmadaas_prod_type == 'analysis':
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
                                              time_str=timestr+'0000', level_type=cmadaas_level_type,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
-    else:
+    elif cmadaas_prod_type == 'model':
         data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                                 init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
                                                 fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
-  
+    else:
+        raise Exception('cmadaas_prod_type error!')
 
     # 建议这里修改为warning
     if data is None:
