@@ -522,6 +522,47 @@ class __STDADataArrayAccessor(object):
         '''
         return self._xr.where(conditon, other=other)
 
+    def min(self, dim=None, skipna=True, return_number=True):
+        """[Return data by applying min along some dimension(s)]
+
+        Args:
+            dim ([str], optional): [Dimension(s) over which to apply min]. Defaults to None.
+            skipna ([str], optional): [skip missing values (as marked by NaN)]. Defaults to True.
+            return_number ([bool], optional): [是否返回数值，默认仅返回numpy数值，若想返回DataArray请设置为False]. Defaults to True.
+            **kwargs {[dict]} -- [Additional keyword arguments passed on to the appropriate array function for calculating min on this object’s data]
+        """
+        ret = self._xr.min(dim=dim, skipna=skipna)
+        if return_number:
+            return ret.values.squeeze() 
+        return ret.squeeze() 
+
+    def max(self, dim=None, skipna=True, return_number=True):
+        """[Return data by applying max along some dimension(s)]
+
+        Args:
+            dim ([str], optional): [Dimension(s) over which to apply max]. Defaults to None.
+            skipna ([str], optional): [skip missing values (as marked by NaN)]. Defaults to True.
+            return_number ([bool], optional): [是否返回数值，默认仅返回numpy数值，若想返回DataArray请设置为False]. Defaults to True.
+        """
+        ret = self._xr.max(dim=dim, skipna=skipna)
+        if return_number:
+            return ret.values.squeeze() 
+        return ret.squeeze() 
+    
+
+    def mean(self, dim=None, skipna=True, return_number=True):
+        """[Return data by applying mean along some dimension(s)]
+
+        Args:
+            dim ([str], optional): [Dimension(s) over which to apply mean]. Defaults to None.
+            skipna ([str], optional): [skip missing values (as marked by NaN)]. Defaults to True.
+            return_number ([bool], optional): [是否返回数值，默认仅返回numpy数值，若想返回DataArray请设置为False]. Defaults to True.
+        """
+        ret = self._xr.mean(dim=dim, skipna=skipna)
+        if return_number:
+            return ret.values.squeeze() 
+        return ret.squeeze() 
+
 
 if __name__ == '__main__':
     pass
