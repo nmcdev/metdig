@@ -1,4 +1,5 @@
 import os
+import sys
 
 import numpy as np
 
@@ -8,6 +9,7 @@ from metdig.graphics import pallete_set
 from metdig.graphics.lib.utility import save
 
 import matplotlib.pyplot as plt
+import glob
 
 
 class horizontal_compose(object):
@@ -15,6 +17,8 @@ class horizontal_compose(object):
 
         self.png_name = png_name
         self.output_dir = output_dir
+        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
@@ -39,6 +43,8 @@ class cross_lonpres_compose(object):
 
         self.png_name = png_name
         self.output_dir = output_dir
+        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
@@ -55,6 +61,8 @@ class cross_timepres_compose(object):
 
         self.png_name = png_name
         self.output_dir = output_dir
+        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
@@ -73,6 +81,8 @@ class cross_timeheight_compose(object):
 
         self.png_name = png_name
         self.output_dir = output_dir
+        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
@@ -90,6 +100,8 @@ class skewt_compose(object):
 
         self.png_name = png_name
         self.output_dir = output_dir
+        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))      
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)

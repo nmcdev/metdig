@@ -202,7 +202,7 @@ def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e8  # 1e-8/s
     if if_mask:
-        z[np.abs(z)<1]=np.nan
+        z[np.abs(z)<np.sort(np.abs(levels))[1]]=np.nan
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
@@ -319,7 +319,8 @@ def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
     img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, extend='max', **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=ticks, label='{}h precipitation (mm)'.format(valid_time), extend='max')
-
+    return img
+    
 @kwargs_wrapper
 def rain_contourf(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,

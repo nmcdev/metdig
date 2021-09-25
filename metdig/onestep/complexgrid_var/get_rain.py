@@ -53,6 +53,7 @@ def _by_rain01(data_source=None, init_time=None, fhour=None, data_name=None, ati
             temp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour-iatime, data_name=data_name,
                             var_name='rain01', extent=extent, x_percent=0, y_percent=0, throwexp=False)
         if temp is None:
+            print('计算累积降水时缺少'+(init_time-timedelta(hours=iatime)).strftime('%Y年%m月%d日%H时数据'))
             return None
 
         rain01.append(temp)

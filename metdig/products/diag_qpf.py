@@ -12,6 +12,8 @@ from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.text_method import *
 from metdig.graphics.draw_compose import *
 
+import meteva.base as meb
+
 def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
                 ref_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={},
                 **pallete_kwargs):
@@ -30,7 +32,7 @@ def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
     cref_contourf(obj.ax, cref,  kwargs=ref_pcolormesh_kwargs)
     return obj.save()
 
-def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,
+def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,clip_area=None,
                   hgt_contour_kwargs={},
                   rain_contourf_kwargs={},
                   rain_contour_kwargs={},
@@ -52,8 +54,13 @@ def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
 
-    qpf_contourf(obj.ax, rain, valid_time=valid_time, kwargs=rain_contourf_kwargs)
-    rain_contour(obj.ax,rain,kwargs=rain_contour_kwargs)
+    img_qpf=qpf_contourf(obj.ax, rain, valid_time=valid_time, kwargs=rain_contourf_kwargs)
+    img_rain=rain_contour(obj.ax,rain,kwargs=rain_contour_kwargs)
+
+    if (clip_area != None):
+        meb.tool.maskout.shp2clip_by_region_name(img_qpf, obj.ax, clip_area)
+        meb.tool.maskout.shp2clip_by_region_name(img_rain, obj.ax, clip_area)
+
     if(add_extrema):
         extrma_text=add_extrema_on_ax(obj.ax,rain,kwargs=extrema_text_kwargs)
         

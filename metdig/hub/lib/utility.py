@@ -76,7 +76,7 @@ def get_nearest_init_time(fhour, data_source='', data_name='', func=None, func_o
     return None
 
 
-def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=False):
+def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=True):
     '''
 
     [多进程绘图]
@@ -184,6 +184,8 @@ def save_list(img_bufs, output_dir, png_paths, list_size=(16, 9), is_clean_plt=T
         plt.tight_layout()  # 调整整体空白
         plt.subplots_adjust(wspace=0.02, hspace=0.02)  # 调整子图间距# 输出
         if output_dir:
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
             outpng = os.path.join(output_dir, png_path)
             png_path_list.append(outpng)
             plt.savefig(outpng, dpi=200, bbox_inches='tight')

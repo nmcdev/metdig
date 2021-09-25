@@ -22,7 +22,7 @@ from metdig.graphics.draw_compose import *
 def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hgt,
                          st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
-                         w_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},
+                         w_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -43,7 +43,7 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     cross_w_contourf(obj.ax, cross_w, kwargs=w_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -78,7 +78,7 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     return obj.save()
 
 def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
-                                 qcld_contour_kwargs={},qice_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},
+                                 qcld_contour_kwargs={},qice_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                                  **pallete_kwargs):
 
     init_time = pd.to_datetime(qcld['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -108,7 +108,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -116,7 +116,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     return obj.save()
 
 def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
-                                 qcld_contour_kwargs={},qice_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},
+                                 qcld_contour_kwargs={},qice_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                                  **pallete_kwargs):
 
     init_time = pd.to_datetime(qcld['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -146,7 +146,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -157,7 +157,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
 def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terrain, hgt,
                            st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                            h_pos=[0.125, 0.665, 0.25, 0.2],
-                           tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, wind_quiver_kwargs={},
+                           tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, wind_quiver_kwargs={},terrain_contourf_kwargs={},
                            **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -178,7 +178,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
     tmpadv_contourf(obj.ax, cross_tmpadv, xdim='lon', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     uv_quiver(obj.ax, cross_t, cross_w, xdim='lon', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -186,7 +186,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
 def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
-                         tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
+                         tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -207,7 +207,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     tmpadv_contourf(obj.ax, cross_tmpadv, xdim='lon', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -215,7 +215,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
 def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                           st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                           h_pos=[0.125, 0.665, 0.25, 0.2],
-                          vortadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
+                          vortadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                           **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -237,7 +237,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
                      colorbar_kwargs={'pos': 'right'}, kwargs=vortadv_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -245,7 +245,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
 def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                         h_pos=[0.125, 0.665, 0.25, 0.2],
-                        mpv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},
+                        mpv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                         **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -266,7 +266,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     cross_mpv_contourf(obj.ax, cross_mpv, kwargs=mpv_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -305,7 +305,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
 def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                        st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                        h_pos=[0.125, 0.665, 0.25, 0.2],
-                       rh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},
+                       rh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                        **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -326,14 +326,14 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 106, 5), kwargs=rh_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
 def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, hgt,
                          st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
-                         spfh_contourf_kwargs={}, theta_contour_kwargs={}, wind_quiver_kwargs={},
+                         spfh_contourf_kwargs={}, theta_contour_kwargs={}, wind_quiver_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -355,14 +355,14 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     # barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     uv_quiver(obj.ax, cross_t, cross_w, xdim='lon', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
 def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
-                         spfh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},
+                         spfh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -383,7 +383,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     cross_spfh_contourf(obj.ax, cross_spfh, levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -391,7 +391,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
 def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n, cross_terrain, hgt,
                      st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                      h_pos=[0.125, 0.665, 0.25, 0.2],
-                     rh_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
+                     rh_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                      **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -412,12 +412,12 @@ def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n
     cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 101, 0.5), kwargs=rh_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     barbs_2d(obj.ax, cross_u_t, cross_v_n, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
 
-def draw_time_rh_uv_theta(rh, u, v, theta, rh_contourf_kwargs={}, uv_barbs_kwargs={}, theta_contour_kwargs={}, **pallete_kwargs):
+def draw_time_rh_uv_theta(rh, u, v, theta, rh_contourf_kwargs={}, uv_barbs_kwargs={}, theta_contour_kwargs={},terrain_contourf_kwargs={}, **pallete_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
     times = rh.stda.fcst_time

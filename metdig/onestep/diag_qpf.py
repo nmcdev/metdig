@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from metdig.graphics.text_method import add_extrema_on_ax
 from metdig.graphics.lib.utility import extrema
 from metdig.graphics.contourf_method import rain_contourf
 import numpy as np
@@ -80,8 +81,14 @@ def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, a
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import metdig
+    from datetime import datetime,timedelta
     metdig.set_loglevel('debug')
-    metdig.onestep.diag_qpf.rain(init_time='2021071908',fhour=36,data_name='ncep_gfs',data_source='cmadaas',area='黄淮',atime=24)
+
+    metdig.onestep.diag_qpf.rain(init_time=datetime(2017,11,7,8),atime=6,
+                            data_source='cmadaas',data_name='cldas',add_extrema=False,area='华南',clip_area=['china'],
+                            output_dir=r'\\10.28.49.183\classicProcess\diagnose_pics\海南暴雨\precipitation/')
+
+    # metdig.onestep.diag_qpf.rain(init_time='2021071908',fhour=36,data_name='ecmwf',data_source='cmadaas',area='黄淮',clip_area=['china'],atime=24)
     # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',atime=24,data_source='cds',area='黄淮',rain_contourf_kwargs={'cmap':'met/rain'})
     # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',data_source='cds',area='黄淮',atime=24,extrema_text_kwargs={'size':20})
     plt.show()

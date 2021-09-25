@@ -230,7 +230,7 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v1
         _split_sfc(savefile, var_name, extent)
 
 
-def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div','spfh'],
+def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div','spfh','vort'],
                               pressure_level=[200,225,250,300,350,400,450,500,550,600,650,700,
                               750,775,800,825,850,875,900,925,950,975,1000],
                               hour=np.arange(0,24,1).tolist(),
@@ -247,7 +247,7 @@ def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u',
     pool.join()
 
 
-def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v10m','v100m', 'psfc', 'tcwv', 'prmsl','t2m','td2m'],
+def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v10m','v100m', 'psfc', 'tcwv', 'prmsl','t2m','td2m','rain01','cape','cin','k_idx'],
                               hour=np.arange(0,24,1).tolist(),
                               extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite = True):
     '''
