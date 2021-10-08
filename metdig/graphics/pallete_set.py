@@ -360,8 +360,7 @@ def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add
     return fig, ax_left, ax_right, ax_bottom
 
 
-
-def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax=''):
+def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='',**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 

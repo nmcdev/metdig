@@ -18,7 +18,8 @@ import metpy.calc as mpcalc
 from metpy.units import units
 
 
-def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
+def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp,
+                            **pallete_kwargs):
     init_time = pd.to_datetime(tmp['time'].values[0]).replace(tzinfo=None).to_pydatetime()
 
     title_left = '{} [{:.2f},{:.2f}]'.format(tmp['id'].values[0], tmp['lon'].values[0], tmp['lat'].values[0])
@@ -49,7 +50,7 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
     # wsp
     wsp_x = wsp.stda.fcst_time.values
     wsp_y = wsp.stda.values
-    curve_wsp = ax_tmp.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='风')
+    curve_wsp = ax_tmp.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='风速')
 
     if(rain is not None):
         # rain
@@ -83,6 +84,7 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
         uv_x = u.stda.fcst_time.values
         u_y = u.stda.values
         v_y = v.stda.values
+        
         ax_uv.barbs(uv_x, np.zeros(len(uv_x)), u_y, v_y,
                     fill_empty=True, color='gray', barb_increments={'half': 2, 'full': 4, 'flag': 20},
                     length=5.8, linewidth=1.5, zorder=100)
@@ -101,4 +103,5 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp, **pallete_kwargs):
     is_clean_plt = pallete_kwargs.pop('is_clean_plt', False)
     is_return_figax = pallete_kwargs.pop('is_return_figax', False)
     is_return_pngname = pallete_kwargs.pop('is_return_pngname', False)
-    return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
+    return save(fig, [ax_tmp, ax_rh, ax_uv], png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
+    

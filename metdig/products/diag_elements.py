@@ -35,7 +35,8 @@ def draw_tmp(t, map_extent=(60, 145, 15, 55),
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
     tmp_pcolormesh(obj.ax, t, kwargs=tmx_pcolormesh_kwargs)
-    city_text(obj.ax, t)
+    if (('add_city' in pallete_kwargs.keys()) and (pallete_kwargs['add_city'] == True)):
+        city_text(obj.ax, t)
     tmp_contour(obj.ax, t_filter, kwargs=tmx_contour_kwargs)
     tmp_contour(obj.ax, t_filter, levels=[0], colors=['#232B99'])
     return obj.save()
