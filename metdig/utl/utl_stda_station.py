@@ -422,6 +422,47 @@ class __STDADataFrameAccessor(object):
         示例: 过滤小于100且大于200的值，mydf.stda.where((mydf.stda.values > 100) & (mydf.stda.values > 200), np.nan)
         '''
         self._df.loc[:, self.member] = np.where(conditon, self.values, other)
+    
+    def min(self, dim=None, skipna=True, return_number=True):
+        """[Return min data，站点stda多个成员的时候会返回各个成员的min]
+
+        Args:
+            dim ([str], optional): [该参数无意义，因为站点stda为pd.DataFrame，故忽略]. Defaults to None.
+            skipna ([str], optional): [skip missing values (as marked by NaN)]. Defaults to True.
+            return_number ([bool], optional): [是否返回数值，默认仅返回numpy数值，若想返回DataFrame请设置为False]. Defaults to True.
+        """
+        colname = self.member
+        if len(colname) == 1 and return_number == False:
+            # 只有当只有一个成员的时候，才可以返回所在行的DataFrame
+            idx = self._df[colname].idxmin(skipna=skipna)
+            return self._df.iloc[idx]
+        return self._df[colname].min(skipna=skipna).values.squeeze() 
+
+    def max(self, dim=None, skipna=True, return_number=True):
+        """[Return max data，站点stda多个成员的时候会返回各个成员的max]
+
+        Args:
+            dim ([str], optional): [该参数无意义，因为站点stda为pd.DataFrame，故忽略]. Defaults to None.
+            skipna ([str], optional): [skip missing values (as marked by NaN)]. Defaults to True.
+            return_number ([bool], optional): [是否返回数值，默认仅返回numpy数值，若想返回DataFrame请设置为False]. Defaults to True.
+        """
+        colname = self.member
+        if len(colname) == 1 and return_number == False:
+            # 只有当只有一个成员的时候，才可以返回所在行的DataFrame
+            idx = self._df[colname].idxmax(skipna=skipna)
+            return self._df.iloc[idx]
+        return self._df[colname].max(skipna=skipna).values.squeeze() 
+    
+    def mean(self, dim=None, skipna=True, return_number=True):
+        """[Return mean data，站点stda多个成员的时候会返回各个成员的mean]
+
+        Args:
+            dim ([str], optional): [该参数无意义，因为站点stda为pd.DataFrame，故忽略]. Defaults to None.
+            skipna ([str], optional): [skip missing values (as marked by NaN)]. Defaults to True.
+            return_number ([bool], optional): [该参数无意义，因为站点stda为pd.DataFrame，故忽略]. Defaults to True.
+        """
+        colname = self.member
+        return self._df[colname].mean(skipna=skipna).values.squeeze() 
 
 
 if __name__ == '__main__':
