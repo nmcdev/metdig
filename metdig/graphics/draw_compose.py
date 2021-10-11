@@ -7,6 +7,7 @@ import cartopy.crs as ccrs
 
 from metdig.graphics import pallete_set
 from metdig.graphics.lib.utility import save
+from  metdig.graphics.lib.utility import kwargs_wrapper
 
 import matplotlib.pyplot as plt
 import glob
@@ -111,3 +112,23 @@ class skewt_compose(object):
 
     def save(self):
         return save(self.fig, self.skew.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+
+@kwargs_wrapper
+class time_series_left_right_bottom_compose(object):
+    @kwargs_wrapper
+    def __init__(self, title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='', output_dir=None, png_name='', **kwargs):
+
+        self.png_name = png_name
+        self.output_dir = output_dir
+        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
+        self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
+        self.is_clean_plt = kwargs.pop('is_clean_plt', False)
+        self.is_return_figax = kwargs.pop('is_return_figax', False)
+        self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+
+        self.fig, self.ax_tmp, self.ax_rh, self.ax_uv = pallete_set.time_series_left_right_bottom(
+            figsize=(16, 4.5), title_left=title_left, title_right=title_right, label_leftax=label_leftax, label_rightax=label_rightax, label_bottomax=label_bottomax,**kwargs)
+
+    def save(self):
+        return save(self.fig, [self.ax_tmp, self.ax_rh, self.ax_uv], self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)

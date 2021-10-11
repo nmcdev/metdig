@@ -44,3 +44,8 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='sfc_chn_hor', obs_tim
     if ret:
         return ret
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    obs_uv_tmp_rh_rain(label_bottomax='平均风',wsp_plot_kwargs={'label':'阵风'})
+    plt.show()
+

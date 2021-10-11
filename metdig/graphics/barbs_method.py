@@ -16,7 +16,7 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 @kwargs_wrapper
 def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
              transform=ccrs.PlateCarree(), regrid_shape=20,
-             color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),
+             color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20},
              **kwargs):
     """[graphics层绘制bars平面图通用方法]
 
@@ -41,12 +41,12 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
     u = ustda.stda.get_value(ydim, xdim) * 2.5
     v = vstda.stda.get_value(ydim, xdim) * 2.5
 
-    if regrid_shape is None or transform is None or (xdim != 'lon' and ydim != 'lat'):
+    if regrid_shape is None or transform is None or (xdim != 'lon' or ydim != 'lat'):
         # matplotlib
-        img = ax.barbs(x, y, u, v, color=color, length=length,  fill_empty=fill_empty, sizes=sizes, **kwargs)
+        img = ax.barbs(x, y, u, v, color=color, length=length,  fill_empty=fill_empty, sizes=sizes, barb_increments=barb_increments,**kwargs)
     else:
         # cartopy 含transform，regrid_shape的两个参数
-        img = ax.barbs(x, y, u, v, transform=transform, regrid_shape=regrid_shape,
+        img = ax.barbs(x, y, u, v, transform=transform, regrid_shape=regrid_shape,barb_increments=barb_increments,
                        color=color, length=length,  fill_empty=fill_empty, sizes=sizes, **kwargs)
     
     return img
