@@ -59,7 +59,10 @@ def get_map_area(area):
 
 def mask_terrian(psfc, level, stda_input, keep_terrian=False):
     #输入的任何维度气压坐标系的stda均能够mask
-    psfc_new = psfc.interp(lon=stda_input['lon'].values,
+    if((stda_input.lon.shape[0]==1) and (stda_input.lat.shape[0]==1)):
+        psfc_new=psfc.values.repeat(stda_input['level'].size, axis=1)
+    else:
+        psfc_new = psfc.interp(lon=stda_input['lon'].values,
                            lat=stda_input['lat'].values,
                            kwargs={'fill_value': None},
                            ).values.repeat(stda_input['level'].size, axis=1)

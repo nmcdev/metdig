@@ -56,14 +56,14 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
-def uv_barbs(ax, ustda, vstda, color='black', transform=ccrs.PlateCarree(),
+def uv_barbs(ax, ustda, vstda, xdim='lon', ydim='lat',color='black', transform=ccrs.PlateCarree(),
              length=6, regrid_shape=20, fill_empty=False, sizes=dict(emptybarb=0.05),
              **kwargs):
     # 数据准备
-    x = ustda['lon'].values
-    y = ustda['lat'].values
-    u = ustda.values.squeeze() * 2.5
-    v = vstda.values.squeeze() * 2.5
+    x = ustda.stda.get_dim_value(xdim)
+    y = ustda.stda.get_dim_value(ydim)
+    u = ustda.stda.get_value(ydim, xdim) * 2.5
+    v = vstda.stda.get_value(ydim, xdim) * 2.5
 
     # 绘制
     img = ax.barbs(x, y, u, v, color=color, transform=transform, length=length,

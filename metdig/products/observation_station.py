@@ -46,14 +46,14 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp,
 
     # rh2m
     curve_rh = plot_1d(obj.ax_rh, rh, c='#067907', linewidth=3, label='相对湿度',kwargs=rh_plot_kwargs)
-
     # 10米风
     if(u is None or v is None):
         obj.ax_uv.set_axis_off()
     else:
-        uvbarbs=barbs_2d(obj.ax_uv,u,v,xdim='fcst_time',ydim='lat',
+        uv_barbs=barbs_2d(obj.ax_uv,u,v,xdim='fcst_time',ydim='lon',
                     fill_empty=True, color='gray', 
                     length=5.8, linewidth=1.5, kwargs=uv_barb_kwargs)
+        
         obj.ax_uv.set_xlim(u.stda.fcst_time.values[0] - pd.Timedelta(hours=1), u.stda.fcst_time.values[-1] + pd.Timedelta(hours=1))
         for label in obj.ax_uv.get_xticklabels():
             label.set_rotation(30)

@@ -436,6 +436,8 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     if ret:
         return ret
 
+if __name__ == '__main__':
+    time_div_vort_rh_uv()
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),

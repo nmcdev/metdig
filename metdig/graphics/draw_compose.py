@@ -12,8 +12,9 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 import matplotlib.pyplot as plt
 import glob
 
-
+@kwargs_wrapper
 class horizontal_compose(object):
+    @kwargs_wrapper
     def __init__(self, title='', description='', map_extent=(60, 145, 15, 55), output_dir=None, png_name='', **kwargs):
 
         self.png_name = png_name

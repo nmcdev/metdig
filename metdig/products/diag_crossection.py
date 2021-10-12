@@ -508,7 +508,7 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
 
 
 def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
-                               vortadv_contour_kwargs={}, tmp_contourf_kwargs={}, uv_barbs_kwargs={},
+                               vortadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
                                **pallete_kwargs):
 
     init_time = pd.to_datetime(vortadv['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -533,9 +533,9 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
-    vortadv_contourf(obj.ax, vortadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, if_mask=False,kwargs=vortadv_contour_kwargs)
+    vortadv_contourf(obj.ax, vortadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, if_mask=False,kwargs=vortadv_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contourf_kwargs)
+    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
     if terrain.max() > 0:
         cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='temperature')
