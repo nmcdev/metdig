@@ -958,6 +958,7 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels)
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc')
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp}
@@ -967,13 +968,18 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
     u = u.interp(lon=points['lon'], lat=points['lat'])
     v = v.interp(lon=points['lon'], lat=points['lat'])
     rh = rh.interp(lon=points['lon'], lat=points['lat'])
+    psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
     pressure = mdgstda.gridstda_full_like_by_levels(rh, rh['level'].values)
     theta = mdgcal.equivalent_potential_temperature(pressure, tmp, td)
 
+    _, pressure = xr.broadcast(v, v['level'])
+    terrain= mask_terrian(psfc, levels, pressure,keep_terrian=True)
+    terrain.attrs['var_units'] = ''
+
     if is_draw:
-        drawret = draw_cross.draw_time_rh_uv_theta(rh, u, v, theta, **products_kwargs)
+        drawret = draw_cross.draw_time_rh_uv_theta(rh, u, v, theta,terrain, **products_kwargs)
         ret.update(drawret)
 
     if ret:
