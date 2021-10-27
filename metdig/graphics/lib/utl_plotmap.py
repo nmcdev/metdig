@@ -61,7 +61,7 @@ def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
 
     # add map
     ax.add_geometries(
-        Reader(shpfile).geometries(), ccrs.PlateCarree(),
+        Reader(shpfile).geometries(), 
         facecolor=facecolor, edgecolor=edgecolor, lw=lw, **kwargs)
 
 

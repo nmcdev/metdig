@@ -37,7 +37,8 @@ def plt_base_env():
 
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=18, forcast_info='', nmc_logo=False,
-                       add_china=True, add_city=True,add_county=False,  add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
+                       add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=True, add_county_city=False, 
+                       add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
                        background_zoom_level=5,add_tag=True,**kwargs):
     """[水平分布图画板设置]]
 
@@ -81,17 +82,22 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     # add grid lines
     if add_grid:
         gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
-        gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 360, 10))
+        gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 361, 10))
         gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
 
     # 海岸线，省界，河流等中国边界信息
+    if add_coastline:
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.3, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
     if add_china:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.3, zorder=0, alpha=0.5)
-        # utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=0.5, zorder=0)
-        # utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=0)
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='river', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5)
-        add_china_map_2basemap(ax, name="province", edgecolor='gray', lw=0.5, encoding='gbk', zorder=0) 
-        add_china_map_2basemap(ax, name="nation", edgecolor='black', lw=0.8, encoding='gbk', zorder=0) 
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=0,crs=ccrs.PlateCarree())
+    if add_province:
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=0.5, zorder=0,crs=ccrs.PlateCarree())
+    
+    if add_river:
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='river', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
+        # add_china_map_2basemap(ax, name="province", edgecolor='gray', lw=0.5, encoding='gbk', zorder=0) 
+        # add_china_map_2basemap(ax, name="nation", edgecolor='black', lw=0.8, encoding='gbk', zorder=0) 
+    if add_county:
         add_china_map_2basemap(ax, name="county", edgecolor='#D9D9D9', lw=0.1, encoding='gbk',zorder=0) 
         # add_china_map_2basemap(ax, name="river", edgecolor='#74b9ff', lw=0.8, encoding='gbk', zorder=1) 
         pass
@@ -103,7 +109,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         #     small_city = True
         utl_plotmap.add_city_on_map(ax, map_extent=map_extent, transform=ccrs.PlateCarree(),
                                     zorder=101, size=13)
-    if add_county:
+    if add_county_city:
         # small_city = False
         # if(map_extent[1] - map_extent[0] < 25):
         #     small_city = True
