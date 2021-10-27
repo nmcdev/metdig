@@ -237,7 +237,11 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
 
     cmap = cm_collected.get_cmap(cmap)
 
-    img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
+    try: 
+        img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
+    except:
+        print('nothing to contourf')
+        return
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,**colorbar_kwargs)
     return img
