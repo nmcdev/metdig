@@ -1,10 +1,10 @@
 #,,,,,,
-# 注锟斤拷锟斤拷锟斤拷,,,,,,
-#    1. var_name为stda要锟斤拷锟斤拷,,,,,,
-#    2. var_units为锟斤拷前锟斤拷锟捷碉拷锟斤拷cassandra锟叫的碉拷位锟斤拷锟斤拷位锟斤拷锟轿匡拷metpy.units锟斤拷锟斤拷pint锟解）锟斤拷未知锟斤拷锟竭诧拷确锟斤拷锟斤拷锟斤拷写锟斤拷锟脚硷拷锟缴ｏ拷锟缴达拷锟斤拷锟斤拷,,,,,,
-#    3. cassandra_discription为锟斤拷锟斤拷锟斤拷息锟斤拷目前锟斤拷锟斤拷锟斤拷锟轿猴拷使锟矫ｏ拷锟缴匡拷锟斤拷为锟斤拷锟斤拷锟叫碉拷说锟斤拷,,,,,,
-#    4. cassandra_level锟竭匡拷锟斤拷锟斤拷写any锟斤拷锟斤拷锟斤拷锟斤拷悖拷锟斤拷锟斤拷锟斤拷锟斤拷锟解单锟斤拷锟斤拷锟斤拷写锟斤拷锟斤拷某一锟姐，未知锟斤拷锟竭诧拷确锟斤拷锟斤拷锟斤拷写any,,,,,,
-#    5. 锟斤拷data_name,var_name,level_type锟斤拷锟斤拷为锟斤拷询锟叫ｏ拷锟斤拷证锟斤拷确锟斤拷唯一一锟斤拷,,,,
+# 注意事项,,,,,,
+#    1. var_name为stda要素名,,,,,,
+#    2. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,,
+#    3. cassandra_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,,
+#    4. cassandra_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,,
+#    5. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行,,,,
 # ,,,,,,
 data_name,var_name,level_type,var_units,cassandra_discription,cassandra_level,cassandra_path
 ecmwf,hgt,high,dagpm,,any,ECMWF_HR/HGT/
