@@ -51,9 +51,9 @@ def uvstream_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        u = mask_terrian(psfc, uv_lev, u)
-        v = mask_terrian(psfc, uv_lev, v)
-        wsp = mask_terrian(psfc, uv_lev, wsp)
+        u = mask_terrian(psfc, u)
+        v = mask_terrian(psfc, v)
+        wsp = mask_terrian(psfc, wsp)
 
     # plot
     if is_draw:
@@ -94,10 +94,10 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt500 = mask_terrian(psfc, 500, hgt500)
-        vort500 = mask_terrian(psfc, 500, vort500)
-        u850 = mask_terrian(psfc, 850, u850)
-        v850 = mask_terrian(psfc, 850, v850)
+        hgt500 = mask_terrian(psfc, hgt500)
+        vort500 = mask_terrian(psfc, vort500)
+        u850 = mask_terrian(psfc, u850)
+        v850 = mask_terrian(psfc, v850)
 
     prmsl_attrs = prmsl.attrs
     prmsl = prmsl.rolling(lon=10, lat=10, min_periods=1, center=True).mean()
@@ -145,9 +145,9 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt = mask_terrian(psfc, hgt_lev, hgt)
-        u = mask_terrian(psfc, uv_lev, u)
-        v = mask_terrian(psfc, uv_lev, v)
+        hgt = mask_terrian(psfc, hgt)
+        u = mask_terrian(psfc, u)
+        v = mask_terrian(psfc, v)
 
     # plot
     if is_draw:
@@ -182,9 +182,9 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt = mask_terrian(psfc, hgt_lev, hgt)
-        u = mask_terrian(psfc, uv_lev, u)
-        v = mask_terrian(psfc, uv_lev, v)
+        hgt = mask_terrian(psfc, hgt)
+        u = mask_terrian(psfc, u)
+        v = mask_terrian(psfc, v)
 
     # plot
     if is_draw:
@@ -219,10 +219,10 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt = mask_terrian(psfc, hgt_lev, hgt)
-        u = mask_terrian(psfc, uv_lev, u)
-        v = mask_terrian(psfc, uv_lev, v)
-        wsp = mask_terrian(psfc, uv_lev, wsp)
+        hgt = mask_terrian(psfc, hgt)
+        u = mask_terrian(psfc, u)
+        v = mask_terrian(psfc, v)
+        wsp = mask_terrian(psfc, wsp)
 
     # plot
     if is_draw:
@@ -253,10 +253,10 @@ def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        pv = mask_terrian(psfc, lvl_ana, pv)
-        div = mask_terrian(psfc, lvl_ana, div)
-        u = mask_terrian(psfc, lvl_ana, u)
-        v = mask_terrian(psfc, lvl_ana, v)
+        pv = mask_terrian(psfc, pv)
+        div = mask_terrian(psfc, div)
+        u = mask_terrian(psfc, u)
+        v = mask_terrian(psfc, v)
 
     # smooth
     pv = mdgcal.smooth_n_point(pv, 9, 2)

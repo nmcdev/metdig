@@ -33,7 +33,6 @@ def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
     return obj.save()
 
 def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,clip_area=None,
-                  hgt_contour_kwargs={},
                   rain_contourf_kwargs={},
                   rain_contour_kwargs={},
                   extrema_text_kwargs={},

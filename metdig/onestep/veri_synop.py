@@ -48,14 +48,14 @@ def compare_gh_uv(data_source='cassandra',
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt_ana = mask_terrian(psfc_ana, hgt_lev, hgt_ana)
-        u_ana = mask_terrian(psfc_ana, uv_lev, u_ana)
-        v_ana = mask_terrian(psfc_ana, uv_lev, v_ana)
+        hgt_ana = mask_terrian(psfc_ana, hgt_ana)
+        u_ana = mask_terrian(psfc_ana, u_ana)
+        v_ana = mask_terrian(psfc_ana, v_ana)
 
         psfc_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
-        hgt_fcst = mask_terrian(psfc_fcst, hgt_lev, hgt_fcst)
-        u_fcst = mask_terrian(psfc_fcst, uv_lev, u_fcst)
-        v_fcst = mask_terrian(psfc_fcst, uv_lev, v_fcst)
+        hgt_fcst = mask_terrian(psfc_fcst, hgt_fcst)
+        u_fcst = mask_terrian(psfc_fcst, u_fcst)
+        v_fcst = mask_terrian(psfc_fcst, v_fcst)
 
     if is_draw:
         drawret = draw_veri_synop.draw_compare_gh_uv(
