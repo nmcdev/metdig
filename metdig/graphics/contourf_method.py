@@ -310,21 +310,26 @@ def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
             
     if levels is None:
         levels = np.concatenate(
-                (np.arange(0, 10, 0.5), np.arange(10, 25, 0.75),
+                (np.arange(0.1, 10, 0.5), np.arange(10, 25, 0.75),
                 np.arange(25, 50, 1.25), np.arange(50, 100, 2.5),
                 np.arange(100, 250, 7.5),np.arange(250, 500, 12.5)))#
     if(ticks==None):
-        ticks=[0, 2.5, 5, 10, 25, 50, 100, 250]
+        ticks=[0.1, 2.5, 5, 10, 25, 50, 100, 250]
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels,isLinear=True)
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
-    z = np.where(z < 0.1, np.nan, z)
-    img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, extend='max', **kwargs)
-    if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=ticks, label='{}h precipitation (mm)'.format(valid_time), extend='max')
-    return img
-    
+    #暂时规范，应对如果所画范围内没有值可画的报错
+    try:
+        img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, extend='max', **kwargs)
+
+        if add_colorbar:
+            utl.add_colorbar(ax, img, ticks=ticks, label='{}h precipitation (mm)'.format(valid_time), extend='max')
+        return img
+    except:
+        print('nothing to contourf')
+        return
+
 @kwargs_wrapper
 def rain_contourf(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
