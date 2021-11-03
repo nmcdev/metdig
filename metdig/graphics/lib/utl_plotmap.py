@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 from cartopy.io.shapereader import Reader
 import cartopy.crs as ccrs
@@ -19,6 +20,15 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 import metdig.graphics.lib.utility as utl
 
 pkg_name = 'metdig.graphics'
+
+def time_ticks_formatter(ax,times):
+    times=pd.to_datetime(times)
+    hours_total=(times[-1]-times[0]).total_seconds()/3600.
+    if(hours_total > 84):
+        ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
+    else:
+        ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 14, 20, 2)))  # 单位是小时
+
 
 def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False ,**kwargs):
     if xticks is not None:
@@ -37,7 +47,7 @@ def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree()
     
 
 def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
-                                  edgecolor='c', lw=2, **kwargs):
+                                  edgecolor='c', lw=2,crs=ccrs.PlateCarree(), **kwargs):
     """
     Draw china boundary on cartopy map.
     :param ax: matplotlib axes instance.
@@ -62,7 +72,7 @@ def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
     # add map
     ax.add_geometries(
         Reader(shpfile).geometries(), 
-        facecolor=facecolor, edgecolor=edgecolor, lw=lw, **kwargs)
+        facecolor=facecolor, edgecolor=edgecolor, lw=lw,crs=crs, **kwargs)
 
 
 def adjust_map_ratio(ax, map_extent=None, datacrs=None):
@@ -126,28 +136,6 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10,cit
     dlon = map_extent[1] - map_extent[0]
     dlat = map_extent[3] - map_extent[2]
 
-    # small city
-    # if(small_city):
-    #     try:
-    #         fname = 'small_city.000'
-    #         fpath = "resources/" + fname
-    #     except KeyError:
-    #         raise ValueError('can not find the file small_city.000 in the resources')
-    #     city = read_micaps_17(pkg_resources.resource_filename(
-    #         pkg_name, fpath))
-
-    #     lon=city['lon'].values.astype(np.float)
-    #     lat=city['lat'].values.astype(np.float)
-    #     city_names=city['Name'].values
-
-    #     for i in range(0,len(city_names)):
-    #         if((lon[i] > map_extent[0]+dlon*0.05) and (lon[i] < map_extent[1]-dlon*0.05) and
-    #         (lat[i] > map_extent[2]+dlat*0.05) and (lat[i] < map_extent[3]-dlat*0.05)):
-    #                 #ax.text(lon[i],lat[i],city_names[i], family='SimHei-Bold',ha='right',va='top',size=size-4,color='w',zorder=zorder,**kwargs)
-    #             ax.text(lon[i],lat[i],city_names[i], family='SimHei',ha='right',va='top',size=size-4,color='black',zorder=zorder,**kwargs)
-    #         ax.scatter(lon[i], lat[i], c='black', s=25, alpha=0.5,zorder=zorder, **kwargs)
-    # province city
-
     fnames={'provincial_capital':'city_province.csv',
            'county':'county.csv'}
     try:
@@ -156,12 +144,10 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10,cit
     except KeyError:
         raise ValueError('can not find the file city_province.000 in the resources')
 
-    #city = utl.read_micaps_17(pkg_resources.resource_filename(pkg_name, fpath))
-
     city = pd.read_csv(pkg_resources.resource_filename(pkg_name, fpath), encoding='gbk', comment='#')
 
-    lon = city['lon'].values.astype(np.float) / 100.
-    lat = city['lat'].values.astype(np.float) / 100.
+    lon = city['lon'].values
+    lat = city['lat'].values
     city_names = city['Name'].values
 
     # 步骤一（替换sans-serif字体） #得删除C:\Users\HeyGY\.matplotlib 然后重启vs，刷新该缓存目录获得新的字体
@@ -180,14 +166,14 @@ def add_city_on_map(ax, map_extent=None, size=7, small_city=False, zorder=10,cit
                         t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
                     t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
                                         mpatheffects.Normal()])
-                    ax.scatter(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60., int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60., c='black', s=25, zorder=zorder, **kwargs)
+                    ax.scatter(lon[i],lat[i], c='black', s=25, zorder=zorder, **kwargs)
                 else:
                     for islt in city_slt:
                         if(city_names[i]==islt):
                             t = ax.text(lon[i], lat[i], city_names[i], family='SimHei', ha='left', va='top', size=size, zorder=zorder, **kwargs)
                             t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
                                         mpatheffects.Normal()])
-                            ax.scatter(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60., int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60., c='black', s=25, zorder=zorder, **kwargs)
+                            ax.scatter(lon[i],lat[i], c='black', s=25, zorder=zorder, **kwargs)
     else:
         for i in range(0, len(city_names)):
             if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
@@ -267,7 +253,7 @@ def create_south_china_png(outfile='./south_china.png'):
     plt.close()
 
 
-def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=None, transform=ccrs.PlateCarree(), **kwargs):
+def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=None, transform=ccrs.PlateCarree(), small_city=False,**kwargs):
     
     if map_extent is None:
         map_extent = list(ax.get_xlim()) + list(ax.get_ylim())
@@ -276,16 +262,18 @@ def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=N
     dlat = map_extent[3] - map_extent[2]
     # province city
     try:
-        fname = 'city_province.csv'
+        if(small_city):
+            fname = 'county.csv'
+        else:
+            fname = 'city_province.csv'
         fpath = "resources/stations/" + fname
     except KeyError:
         raise ValueError('can not find the file city_province.csv in the resources')
 
     city = pd.read_csv(pkg_resources.resource_filename(pkg_name, fpath), encoding='gbk', comment='#')
-    # city = utl.read_micaps_17(pkg_resources.resource_filename(pkg_name, fpath))
 
-    lon = city['lon'].values.astype(np.float) / 100.
-    lat = city['lat'].values.astype(np.float) / 100.
+    lon = city['lon'].values
+    lat = city['lat'].values
     city_names = city['Name'].values
 
     number_city = data.interp(lon=('points', lon), lat=('points', lat))
@@ -293,20 +281,28 @@ def add_city_values_on_map(ax, data, map_extent=None, size=13, zorder=10, cmap=N
     # 步骤一（替换sans-serif字体） #得删除C:\Users\HeyGY\.matplotlib 然后重启vs，刷新该缓存目录获得新的字体
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False  # 步骤二（解决坐标轴负数的负号显示问题）
-    for i in range(0, len(city_names)):
-        if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
-           (lat[i] > map_extent[2] + dlat * 0.05) and (lat[i] < map_extent[3] - dlat * 0.05)):
-            if((np.array(['香港', '南京', '石家庄', '天津', '济南', '上海']) != city_names[i]).all()):
-                r = city_names[i]
-                num = ax.text(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60.,
-                              int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60.,
-                              '%.1f' % np.squeeze(number_city.values)[i],
-                              family='SimHei', ha='right', va='bottom', size=size, zorder=zorder, transform=transform, **kwargs)
-            else:
-                num = ax.text(int(lon[i]) + 100 * (lon[i] - int(lon[i])) / 60.,
-                              int(lat[i]) + 100 * (lat[i] - int(lat[i])) / 60.,
-                              '%.1f' % np.squeeze(number_city.values)[i],
-                              family='SimHei', ha='left', va='bottom', size=size, zorder=zorder, transform=transform, **kwargs)
-            num.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
-                                  mpatheffects.Normal()])
+    if(small_city):
+        for i in range(0, len(city_names)):
+            if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
+            (lat[i] > map_extent[2] + dlat * 0.05) and (lat[i] < map_extent[3] - dlat * 0.05)):
+                num = ax.text(lon[i],lat[i],
+                            '%.1f' % np.squeeze(number_city.values)[i],
+                            family='SimHei', ha='left', va='bottom', size=size, zorder=zorder, transform=transform, **kwargs)
+                num.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                    mpatheffects.Normal()])
+    else:                                
+        for i in range(0, len(city_names)):
+            if((lon[i] > map_extent[0] + dlon * 0.05) and (lon[i] < map_extent[1] - dlon * 0.05) and
+            (lat[i] > map_extent[2] + dlat * 0.05) and (lat[i] < map_extent[3] - dlat * 0.05)):
+                if((np.array(['香港', '南京', '石家庄', '天津', '济南', '上海']) != city_names[i]).all()):
+                    r = city_names[i]
+                    num = ax.text(lon[i],lat[i],
+                                '%.1f' % np.squeeze(number_city.values)[i],
+                                family='SimHei', ha='right', va='bottom', size=size, zorder=zorder, transform=transform, **kwargs)
+                else:
+                    num = ax.text(lon[i],lat[i],
+                                '%.1f' % np.squeeze(number_city.values)[i],
+                                family='SimHei', ha='left', va='bottom', size=size, zorder=zorder, transform=transform, **kwargs)
+                num.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                    mpatheffects.Normal()])
     return

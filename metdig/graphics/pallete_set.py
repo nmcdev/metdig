@@ -158,7 +158,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     # 预报/分析描述信息
     if forcast_info:
         ax.text(0.01, 0.99, forcast_info, transform=ax.transAxes, size=12, va='top',
-                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=10)
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20)
 
     # logo
 
@@ -182,7 +182,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     return fig, ax
 
 
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True):
+def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=True):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -192,7 +192,8 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     ax.set_title(title, loc='right', fontsize=25)
 
     # Adjust the y-axis to be logarithmic
-    ax.set_yscale('symlog')
+    if(logyaxis):
+        ax.set_yscale('symlog')
     ax.set_yticklabels(np.arange(levels[0], levels[-1], -100))
     ax.set_ylim(levels[0], levels[-1])
     ax.set_yticks(np.arange(levels[0], levels[-1], -100))
@@ -215,7 +216,7 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     return fig, ax
 
 
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True):
+def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,logyaxis=True):
     """[时间剖面画板初始化]
 
     Args:
@@ -241,15 +242,20 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
 
     xstklbls = mpl.dates.DateFormatter('%m月%d日%H时')
     ax.xaxis.set_major_formatter(xstklbls)
+
     for label in ax.get_xticklabels():
         label.set_rotation(30)
         label.set_fontsize(15)
         label.set_horizontalalignment('right')
 
+    #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
+    utl_plotmap.time_ticks_formatter(ax,times)
+
     for label in ax.get_yticklabels():
         label.set_fontsize(15)
 
-    ax.set_yscale('symlog')
+    if(logyaxis):
+        ax.set_yscale('symlog')
     ax.set_ylabel('高度 （hPa）', fontsize=15)
     ax.set_yticklabels([100, 925, 850, 700, 600, 500, 400, 300])
     ax.set_yticks([100, 925, 850, 700, 600, 500, 400, 300])
@@ -288,6 +294,8 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
         label.set_rotation(30)
         label.set_fontsize(15)
         label.set_horizontalalignment('right')
+    #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
+    utl_plotmap.time_ticks_formatter(ax,times)
 
     for label in ax.get_yticklabels():
         label.set_fontsize(15)
