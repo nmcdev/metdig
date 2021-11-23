@@ -357,11 +357,3 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
 
     return None
 
-
-if __name__ == '__main__':
-    init_time = datetime.datetime(2021, 6, 1, 8)
-    fhour = 24
-    data_name = 'grapes_gfs'
-    var_name = 'hgt'
-    level = 500
-    get_model_grid(init_time=init_time, fhour=fhour, data_name=data_name, var_name=var_name, level=level)

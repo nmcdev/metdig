@@ -625,25 +625,3 @@ def get_station_dataset(init_time, fhours, data_name, var_name):
 '''
 
 
-if __name__ == '__main__':
-    # init_time = datetime.datetime(2020, 7, 25, 8)
-    # x = get_model_grid(init_time=init_time, fhour=0, data_name='ecmwf', var_name='tmp', level=850)
-    # init_time = datetime.datetime(2020, 8 , 3, 8)
-    # x = get_model_grid(init_time=init_time, fhour=6, data_name='grapes_gfs', var_name='theta', level=850)
-    # init_time = datetime.datetime(2020, 8, 8, 8)
-    # x = get_model_grid(init_time=init_time, fhour=0, data_name='ecmwf', var_name='td2m')
-    # print(np.min(x.values), np.max(x.values), np.mean(x.values))
-    # print(x)
-
-    obs_time = datetime.datetime(2021, 6, 6, 5, 6, 0)
-    df = get_wind_profiler_bytime(obs_time=obs_time, id_selected=51463, data_name='wind_profiler', var_name='wdir')
-    print(df)
-
-    # obs_time = datetime.datetime(2021, 6, 8, 8, 10, 1)
-    # df = get_radar_mosaic(obs_time=obs_time, data_name='achn', var_name='cref', isnearesttime=True)
-    # print(df)
-
-    # obs_st_time = datetime.datetime(2021, 6, 6, 5)
-    # obs_ed_time = datetime.datetime(2021, 6, 8, 8)
-    # df = get_wind_profiler_bytimerange(obs_st_time, obs_ed_time, id_selected='51463', data_name='wind_profiler', var_name='wdir')
-    # print(df)
