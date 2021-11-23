@@ -47,7 +47,7 @@ def barbs_2d(ax, ustda, vstda, xdim='lon', ydim='lat',
     else:
         # cartopy 含transform，regrid_shape的两个参数
         img = ax.barbs(x, y, u, v, transform=transform, regrid_shape=regrid_shape,barb_increments=barb_increments,
-                       color=color, length=length,  fill_empty=fill_empty, sizes=sizes, **kwargs)
+                       color=color, length=length,  fill_empty=fill_empty, sizes=sizes,**kwargs)
     
     return img
 
