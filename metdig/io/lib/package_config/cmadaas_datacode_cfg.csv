@@ -5,12 +5,12 @@
 #    2. 以data_name,fhour_flag,列作为查询列，保证能确定一一行
 # ,,
 data_name,fhour_flag,data_code
-grapes_gfs,0,NAFP_ANA_FTM_GRAPES_GFS_NEHE
-grapes_gfs,1,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE
-grapes_meso_3km,0,NAFP_GRAPES_MESO_ANA_3KM
-grapes_meso_3km,1,NAFP_GRAPES_MESO_FOR_3KM
-grapes_rafs_3km,0,NAFP_ANA_GRAPES_RAFS_3KM
-grapes_rafs_3km,1,NAFP_FOR_GRAPES_RAFS_3KM
+cma_gfs,0,NAFP_ANA_FTM_GRAPES_GFS_NEHE
+cma_gfs,1,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE
+cma_meso_3km,0,NAFP_GRAPES_MESO_ANA_3KM
+cma_meso_3km,1,NAFP_GRAPES_MESO_FOR_3KM
+cma_rafs_3km,0,NAFP_ANA_GRAPES_RAFS_3KM
+cma_rafs_3km,1,NAFP_FOR_GRAPES_RAFS_3KM
 rmaps_st_9km,0,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_9km,1,NAFP_RMAPS_ST_9KM_CHN
 rmaps_st_3km,0,NAFP_RMAPS_ST_3KM_NCN

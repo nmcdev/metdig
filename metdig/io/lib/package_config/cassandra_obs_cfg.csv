@@ -12,8 +12,8 @@ sfc_chn_hor,rain12,mm,,SURFACE/RAIN12_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 sfc_chn_hor,rain06,mm,,SURFACE/RAIN06_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 sfc_chn_hor,rain03,mm,,SURFACE/RAIN03_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 sfc_chn_hor,rain01,mm,,SURFACE/RAIN01_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
-sfc_chn_hor,wdir,degree,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
-sfc_chn_hor,wsp,m/s,,SURFACE/WIND_AVERAGE_10MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
+sfc_chn_hor,wdir,degree,,SURFACE/WIND_AVERAGE_2MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
+sfc_chn_hor,wsp,m/s,,SURFACE/WIND_AVERAGE_2MIN_ALL_STATION/{Y}{m}{d}{H}{M}{S}.000
 sfc_chn_hor,rh,percent,,SURFACE/RH_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 sfc_chn_hor,tmx,degC,,SURFACE/TMP_MAX_NATIONAL/{Y}{m}{d}{H}{M}{S}.000
 sfc_chn_hor,tmn,degC,,SURFACE/TMP_MIN_NATIONAL/{Y}{m}{d}{H}{M}{S}.000

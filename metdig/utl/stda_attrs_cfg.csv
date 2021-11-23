@@ -46,6 +46,8 @@ psfc,地面气压,hPa,0
 tcdc,低云量,percent,0
 lcdc,总云量,percent,0
 vis,能见度,km ,0
+gust10m,1小时10米阵风,m/s,1
+gustdir10m,3小时10米阵风风向,degree,1
 gust10m_3h,3小时10米阵风,m/s,3
 gust10m_6h,6小时10米阵风,m/s,6
 p_vapor,水汽压,Pa,0
@@ -83,3 +85,5 @@ albedo,反照率,percent,0
 cin,对流抑制能量,J/kg,0
 k_idx,K指数,K,0
 capes,对流有效位能切变,m**2*s**-2,0
+wsp10min,10分钟平均风速,m/s,0
+wdir10min,10分钟平均风向,degree,0
