@@ -24,14 +24,16 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp,
     rh_ylabel = '相对湿度(%)'
     uv_ylabel = '风'
 
-    obj=time_series_left_right_bottom_compose(title_left=title_left, title_right=title_right,
+    obj=time_series_left_right_bottom_compose(times=pd.to_datetime(tmp.stda.fcst_time.values),title_left=title_left, title_right=title_right,
         abel_leftax=t2m_ylabel, label_rightax=rh_ylabel, label_bottomax=uv_ylabel,
         png_name=png_name,kwargs=pallete_kwargs)
 
     # tmp
     curve_t2m = plot_1d(obj.ax_tmp, tmp, c='#FF6600', linewidth=3, label='气温',kwargs=tmp_plot_kwargs)
     obj.ax_tmp.set_xlim(tmp.stda.fcst_time.values[0] - pd.Timedelta(hours=1),tmp.stda.fcst_time.values[-1]+pd.Timedelta(hours=1))
-    obj.ax_tmp.set_ylim(np.min([np.floor(tmp.stda.get_value().min() / 5) * 5 - 2, 0]),np.max([np.ceil(tmp.stda.get_value().max() / 5) * 5, 40]))
+    # obj.ax_tmp.set_ylim(np.min([np.floor(tmp.stda.get_value().min() / 5) * 5 - 2, 0]),np.max([np.ceil(tmp.stda.get_value().max() / 5) * 5, 40]))
+    obj.ax_tmp.set_ylim(np.min([tmp.stda.get_value().min(),wsp.stda.get_value().min()])-2,
+                        np.max([tmp.stda.get_value().max(), wsp.stda.get_value().max()])+2)
 
     # wsp
     curve_wsp = plot_1d(obj.ax_tmp, wsp, c='#282C5A', linewidth=3, label='风速',kwargs=wsp_plot_kwargs)

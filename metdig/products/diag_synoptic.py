@@ -58,7 +58,7 @@ def draw_syn_composite(
     png_name = '{2}_天气尺度综合分析图_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
-    tcwv_contourf(obj.ax, tcwv, alpha=1, cmap='ncl/WhiteGreen', levels=np.arange(20, 70, 4),
+    tcwv_contourf(obj.ax, tcwv, alpha=0.6, cmap='ncl/WhiteGreen', levels=np.arange(20, 70, 4),
                   colorbar_kwargs={'pos': 'right center', 'orientation': 'vertical', 'tick_size':10,'label_size': 10}, kwargs=tcwv_contourf_kwargs)
     uv_quiver(obj.ax, u850, v850, color='#404040', label='850hPa wind', kwargs=uv_quiver_kwargs)
     ulj_contourf(obj.ax, wsp200, alpha=0.6, colorbar_kwargs={'pos': 'right top',

@@ -454,7 +454,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
     title = '散度, 垂直涡度, 比湿, 水平风'
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}, {3}'.format(
         init_time, data_name, points['lon'], points['lat'])
-    png_name = '{3}_散度_垂直涡度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
+    png_name = '{3}_散度_垂直涡度_比湿_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
