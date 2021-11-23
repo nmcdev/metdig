@@ -291,7 +291,12 @@ class __STDADataFrameAccessor(object):
         Returns:
             [pd.series]: [member]
         """
-        member = self._df.columns[self._df.attrs['data_start_columns']:]
+        try:
+            data_start_columns=self._df.attrs['data_start_columns']
+        except:
+            data_start_columns=6
+        member = self._df.columns[data_start_columns:]
+        # member = self._df.columns[self._df.attrs['data_start_columns']:]
         return pd.Series(member)
 
     @property
