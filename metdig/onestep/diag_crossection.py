@@ -230,7 +230,7 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
 
 @date_init('init_time', method=date_init.special_series_set)
-def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhours=range(0, 48, 3),
+def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                          points={'lon': [118], 'lat': [34]}, mean_area=None,
                          is_return_data=False, is_draw=True, **products_kwargs):
@@ -270,7 +270,7 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='grapes_gfs', init
 
 
 @date_init('init_time', method=date_init.special_series_set)
-def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhours=range(0, 48, 3),
+def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                          points={'lon': [118], 'lat': [34]}, mean_area=None,
                          is_return_data=False, is_draw=True, **products_kwargs):
@@ -395,7 +395,7 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
     spfh = spfh.interp(lon=points['lon'], lat=points['lat'])
     psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrian=True)
+    terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
     if is_draw:
         drawret = draw_cross.draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain, **products_kwargs)
@@ -427,7 +427,7 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     rh = rh.interp(lon=points['lon'], lat=points['lat'])
     psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrian=True)
+    terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
     if is_draw:
         drawret = draw_cross.draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain, **products_kwargs)
@@ -1011,7 +1011,7 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrian=True)
+    terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100

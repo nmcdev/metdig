@@ -177,7 +177,7 @@ if __name__ == '__main__':
 
 
 @date_init('init_time')
-def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=48, area='全国',
+def dt2m_mx24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhour=48, area='全国',
               is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -231,7 +231,7 @@ def dt2m_mx24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
 
 
 @date_init('init_time')
-def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=24, area='全国',
+def dt2m_mn24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhour=24, area='全国',
               is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -285,7 +285,7 @@ def dt2m_mn24(data_source='cassandra', data_name='grapes_gfs', init_time=None, f
 
 
 @date_init('init_time')
-def dt2m_mean24(data_source='cassandra', data_name='grapes_gfs', init_time=None, fhour=24, area='全国',
+def dt2m_mean24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhour=24, area='全国',
                 is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
