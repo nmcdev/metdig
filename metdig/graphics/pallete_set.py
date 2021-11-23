@@ -25,6 +25,8 @@ from meteva.base.tool.plot_tools import add_china_map_2basemap
 
 import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
+from  metdig.graphics.lib.utility import kwargs_wrapper
+
 
 def plt_base_env():
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
@@ -34,7 +36,8 @@ def plt_base_env():
         locale.setlocale(locale.LC_CTYPE, 'zh_CN.utf8')
     if(sys.platform[0:3] == 'win'):
         locale.setlocale(locale.LC_CTYPE, 'chinese')
-
+        
+@kwargs_wrapper
 def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=18, forcast_info='', nmc_logo=False,
                        add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=True, add_county_city=False, 
@@ -75,9 +78,6 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     else:
         # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
         ax.set_extent(map_extent, crs=ccrs.PlateCarree())
-
-
-
 
     # add grid lines
     if add_grid:
@@ -120,9 +120,9 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     if add_background_style is None:
         # ax.add_feature(cfeature.OCEAN, facecolor='#EDFBFE')
         # ax.add_feature(cfeature.LAND, facecolor='#FCF6EA')
-        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=0) 
+        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=19) 
     elif add_background_style == 'RD':
-        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.5, encoding='gbk',zorder=0) 
+        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.5, encoding='gbk',zorder=19) 
         # ax.add_feature(cfeature.OCEAN)
         utl_plotmap.add_cartopy_background(ax, name='RD')
     elif add_background_style == 'YB':
@@ -379,8 +379,7 @@ def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add
         ax_bottom=None
     return fig, ax_left, ax_right, ax_bottom
 
-
-def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='',add_tag=True,**kwargs):
+def time_series_left_right_bottom(times=None,figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='',add_tag=True,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -393,7 +392,7 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
     ax_left.parasites.append(ax_right)
 
     # invisible right axis of ax
-    ax_left.grid(axis='x', which='minor', ls='--')
+
     ax_left.axis['right'].set_visible(False)
     ax_left.axis['right'].set_visible(False)
     ax_left.axis['left'].label.set_fontsize(15)
@@ -403,33 +402,43 @@ def time_series_left_right_bottom(figsize=(16, 4.5), title_left='', title_right=
     ax_left.set_ylabel(label_leftax)
     ax_left.set_xticklabels([' '])
     ax_left.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
-    ax_left.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
-    ax_left.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+    
+    utl_plotmap.time_ticks_formatter(ax_left,times,if_minor=True)
     ax_left.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(1))  # 将此y轴次刻度标签设置为1的倍数
     ax_left.yaxis.set_major_locator(mpl.ticker.MultipleLocator(5))  # 将此y轴主刻度标签设置为5的倍数
+    # ax_left.grid(axis='y', which='major', linewidth=0.8)
+    # ax_left.grid(axis='both', which='both', linewidth=0.8)
+    ax_left.grid(axis='both', which='major', linewidth=1)
+
     fig.add_axes(ax_left)
+
+    utl_plotmap.time_ticks_formatter(ax_right,times,if_minor=True)
 
     ax_right.axis['right'].set_visible(True)
     ax_right.axis['right'].major_ticklabels.set_visible(True)
     ax_right.axis['right'].label.set_visible(True)
     ax_right.axis['right'].label.set_fontsize(15)
     ax_right.axis['right'].major_ticklabels.set_fontsize(15)
-    ax_right.set_ylabel(label_rightax)
+    ax_right.axis['right'].major_ticklabels.set_color('#067907')
+    ax_right.set_ylabel(label_rightax,color='#067907')
+    ax_right.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(5))  # 将此y轴次刻度标签设置为1的倍数
+    ax_right.yaxis.set_major_locator(mpl.ticker.MultipleLocator(10))  # 将此y轴主刻度标签设置为5的倍数
+    # ax_right.grid(axis='y', which='major', linewidth=0.8,color='#067907')
+    ax_right.grid(axis='both', which='minor', ls='--',linewidth=0.4)
 
     plt.title(title_left, loc='left', fontsize=21)
     plt.title(title_right, loc='right', fontsize=15)
 
     ax_bottom = plt.axes([0.1, 0.16, .8, .12])
-    ax_bottom.grid(axis='x', which='both', ls='--')
+    ax_bottom.grid(axis='x', which='major', linewidth=1)
+    ax_bottom.grid(axis='x', which='minor', ls='--',linewidth=0.4)
     ax_bottom.tick_params(length=5, axis='x')
     ax_bottom.tick_params(length=0, axis='y')
     ax_bottom.tick_params(axis='x', labelsize=15)
     ax_bottom.set_ylabel(label_bottomax, fontsize=15)
-    # ax_bottom.axis('off')
     ax_bottom.set_yticklabels([' '])
     ax_bottom.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
-    ax_bottom.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
-    ax_bottom.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+    utl_plotmap.time_ticks_formatter(ax_bottom,times,if_minor=True)
 
     if(add_tag):
         ax_bottom.text(0.00, -1.2, 'Powered by MetDig', transform=ax_bottom.transAxes, size=14,

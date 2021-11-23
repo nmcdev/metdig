@@ -21,13 +21,18 @@ import metdig.graphics.lib.utility as utl
 
 pkg_name = 'metdig.graphics'
 
-def time_ticks_formatter(ax,times):
+def time_ticks_formatter(ax,times,if_minor=False):
     times=pd.to_datetime(times)
     hours_total=(times[-1]-times[0]).total_seconds()/3600.
     if(hours_total > 84):
         ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
+        if if_minor:
+            ax.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 14, 20, 2)))  # 单位是小时
     else:
         ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 14, 20, 2)))  # 单位是小时
+        if if_minor:
+            ax.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+
 
 
 def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False ,**kwargs):
