@@ -33,7 +33,7 @@ def draw_tmp(t, map_extent=(60, 145, 15, 55),
 
     t_filter = mdgcal.gaussian_filter(t, 5)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     tmp_pcolormesh(obj.ax, t, kwargs=tmx_pcolormesh_kwargs)
     if (('add_city' in pallete_kwargs.keys()) and (pallete_kwargs['add_city'] == True)):
         city_text(obj.ax, t)
@@ -55,7 +55,7 @@ def draw_mslp_gust(gust, prmsl, map_extent=(60, 145, 15, 55),
     forcast_info = gust.stda.description()
     png_name = '{2}_海平面气压_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     gust_pcolormesh(obj.ax, gust, kwargs=gust_pcolormesh_kwargs)
     prmsl_contour(obj.ax, prmsl, kwargs=prmsl_contour_kwargs)
     return obj.save()
@@ -75,7 +75,7 @@ def draw_mslp_gust_uv10m(gust, prmsl, u10m, v10m, map_extent=(60, 145, 15, 55),
     forcast_info = gust.stda.description()
     png_name = '{2}_海平面气压_{3}和10米平均风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     gust_pcolormesh(obj.ax, gust, kwargs=gust_pcolormesh_kwargs)
     uv_quiver(obj.ax, u10m, v10m, regrid_shape=40, width=0.001, scale=None, kwargs=uv_quiver_kwargs)
     prmsl_contour(obj.ax, prmsl, kwargs=prmsl_contour_kwargs)
@@ -99,7 +99,7 @@ def draw_dt2m(dt2m, map_extent=(60, 145, 15, 55),
 
     dt2m_filter = mdgcal.gaussian_filter(dt2m, 5)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     dt2m_pcolormesh(obj.ax, dt2m, kwargs=dt2m_pcolormesh_kwargs)
     dt2m_contour(obj.ax, dt2m_filter, kwargs=dt2m_contour_kwargs)
     return obj.save()

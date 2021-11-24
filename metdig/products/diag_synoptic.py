@@ -31,7 +31,7 @@ def draw_uvstream_wsp(u, v, wsp, map_extent=(60, 145, 15, 55),
     forcast_info = u.stda.description()
     png_name = '{2}_流线_风速_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     wsp_pcolormesh(obj.ax, wsp,levels=np.arange(30,70,4) ,kwargs=wsp_pcolormesh_kwargs)
     uv_streamplot(obj.ax, u, v, kwargs=uv_streamplot_kwargs)
     return obj.save()
@@ -57,7 +57,7 @@ def draw_syn_composite(
     forcast_info = hgt500.stda.description()
     png_name = '{2}_天气尺度综合分析图_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     tcwv_contourf(obj.ax, tcwv, alpha=0.6, cmap='ncl/WhiteGreen', levels=np.arange(20, 70, 4),
                   colorbar_kwargs={'pos': 'right center', 'orientation': 'vertical', 'tick_size':10,'label_size': 10}, kwargs=tcwv_contourf_kwargs)
     uv_quiver(obj.ax, u850, v850, color='#404040', label='850hPa wind', kwargs=uv_quiver_kwargs)
@@ -91,7 +91,7 @@ def draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
     forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_海平面气压场_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     prmsl_contourf(obj.ax, prmsl, kwargs=prmsl_contourf_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
@@ -115,7 +115,7 @@ def draw_hgt_uv_wsp(hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
     forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.jpg'.format(init_time, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     wsp_pcolormesh(obj.ax, wsp, kwargs=wsp_pcolormesh_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
@@ -137,7 +137,7 @@ def draw_pv_div_uv(pv, div, u, v, map_extent=(60, 145, 15, 55),
     forcast_info = u.stda.description()
     png_name = '{2}_位涡_风场_散度_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     div_contourf(obj.ax, div, levels=np.arange(-10, 11, 1), cmap='PuOr', extend='both', alpha=0.5, kwargs=div_contourf_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     pv_contour(obj.ax, pv, kwargs=pv_contour_kwargs)
@@ -160,7 +160,7 @@ def draw_hgt_uv_rain06(hgt, u, v, rain06, map_extent=(60, 145, 15, 55),
     forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_降水_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     rain_contourf(obj.ax, rain06, kwargs=rain_contourf_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)

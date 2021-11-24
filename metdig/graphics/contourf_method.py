@@ -53,7 +53,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 
     if add_colorbar:
         cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
-        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, **colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, kwargs=colorbar_kwargs)
     
     return img
 
@@ -76,7 +76,7 @@ def cref_contourf(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(dbz)', extend='max', **colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='(dbz)', extend='max', kwargs=colorbar_kwargs)
 
 @kwargs_wrapper
 def heatwave_contourf(ax, stda, xdim='lon', ydim='lat', 
@@ -92,7 +92,7 @@ def heatwave_contourf(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z,levels=levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='Temperature ($^\circ$C)', extendrect=False, **colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='Temperature ($^\circ$C)', extendrect=False, kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -107,7 +107,7 @@ def qcld_contourf(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='QCLD (g kg$^{-1}$)',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='QCLD (g kg$^{-1}$)',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -122,7 +122,7 @@ def qsn_contourf(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='QSNOW (g kg$^{-1}$)',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='QSNOW (g kg$^{-1}$)',kwargs=colorbar_kwargs)
     return img
 
 
@@ -138,7 +138,7 @@ def qice_contourf(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='QICE (g kg$^{-1}$)',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='QICE (g kg$^{-1}$)',kwargs=colorbar_kwargs)
     return img
 
 
@@ -155,7 +155,7 @@ def tcwv_contourf(ax, stda, xdim='lon', ydim='lat',
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='total column water(mm)', extend='max',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='total column water(mm)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -171,7 +171,7 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label=str(stda.level.values[0])+'hPa wind speed (m/s)', extend='max',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label=str(stda.level.values[0])+'hPa wind speed (m/s)', extend='max',kwargs=colorbar_kwargs)
     return img
     
 @kwargs_wrapper
@@ -188,7 +188,7 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='temperature advection (10' + '$^{-4}$K*s$^{-1}$)',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='temperature advection (10' + '$^{-4}$K*s$^{-1}$)',kwargs=colorbar_kwargs)
     return img
 
 
@@ -206,7 +206,7 @@ def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='vorticity advection (10' + '$^{-8}$s$^{-1}$)',extend=extend,**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='vorticity advection (10' + '$^{-8}$s$^{-1}$)',extend=extend,kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -222,7 +222,7 @@ def vort_contourf(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label=str(stda.level.values[0])+'hPa vorticity (10' + '$^{-5}$s$^{-1}$)',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label=str(stda.level.values[0])+'hPa vorticity (10' + '$^{-5}$s$^{-1}$)',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -243,7 +243,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
         print('nothing to contourf')
         return
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,**colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,kwargs=colorbar_kwargs)
     return img
 
 

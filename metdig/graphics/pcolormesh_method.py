@@ -54,7 +54,7 @@ def pcolormesh_2d(ax, stda, xdim='lon', ydim='lat',
 
     if add_colorbar:
         cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
-        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, **colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, kwargs=colorbar_kwargs)
     
     return img
 
@@ -76,7 +76,7 @@ def ulj_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -189,7 +189,7 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='total column water(mm)', extend='max',**colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='total column water(mm)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 
@@ -442,7 +442,7 @@ def ir_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(K)', extend='neither', **colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='(K)', extend='neither', kwargs=colorbar_kwargs)
     return img
         
 @kwargs_wrapper
@@ -460,5 +460,5 @@ def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(dbz)', **colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='(dbz)', kwargs=colorbar_kwargs)
     return img

@@ -42,7 +42,7 @@ def draw_rain_ens_boxplot(rain,rain_boxplot_kwargs={}, **pallete_kwargs):
     fig = pallete_set.time_series_left_right_bottom_v2(
         figsize=(16, 4.5),if_add_bottom=False,if_add_right=False,
         title_left=title_left,title_right=title_right,
-        label_leftax=rain_ylabel
+        label_leftax=rain_ylabel,kwargs=pallete_kwargs
     )
 
     ax_rain=fig[1]
@@ -71,7 +71,7 @@ def draw_t2m_ens_boxplot(t2m,t2m_boxplot_kwargs={}, **pallete_kwargs):
     fig = pallete_set.time_series_left_right_bottom_v2(
         figsize=(16, 4.5),if_add_bottom=False,if_add_right=False,
         title_left=title_left,title_right=title_right,
-        label_leftax=t2m_ylabel
+        label_leftax=t2m_ylabel,kwargs=pallete_kwargs
     )
 
     ax_t2m=fig[1]
@@ -104,7 +104,7 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
     fig, ax_t2m, ax_rh2m, ax_uv = pallete_set.time_series_left_right_bottom_v2(
         (16, 4.5),
         title_left=title_left, title_right=title_right,
-        label_leftax=t2m_ylabel, label_rightax=rh_ylabel, label_bottomax=uv_ylabel
+        label_leftax=t2m_ylabel, label_rightax=rh_ylabel, label_bottomax=uv_ylabel,kwargs=pallete_kwargs
     )
 
     # t2m
@@ -190,7 +190,7 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     td = td.stda.quantity
 
     # draw
-    obj = skewt_compose(title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = skewt_compose(title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
 
     obj.skew.plot(pres, tmp, 'r')
     obj.skew.plot(pres, td, 'g')

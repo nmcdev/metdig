@@ -91,7 +91,7 @@ def draw_veri_heatwave(tmx24_2m_fcst, tmx24_2m_obs,
     png_name = '{2}_高温天气_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper())
 
     
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     heatwave_contourf(obj.ax, tmx24_2m_fcst, kwargs=heatwave_contourf_kwargs)
 
     col_data=tmx24_2m_obs.attrs['data_start_columns']
@@ -123,7 +123,7 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n分析时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(init_time, fcstTime, fhour)
     png_name = '{2}_位势高度_风_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper())
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     
     uv_barbs(obj.ax, u_ana, v_ana, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt_ana, kwargs=hgt_contour_kwargs)

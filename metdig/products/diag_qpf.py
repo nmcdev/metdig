@@ -28,7 +28,7 @@ def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
     forcast_info = cref.stda.description()
     png_name = '{2}_降水_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     cref_contourf(obj.ax, cref,  kwargs=ref_pcolormesh_kwargs)
     return obj.save()
 
@@ -51,7 +51,7 @@ def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,clip_area=None
     forcast_info = rain.stda.description()
     png_name = '{2}_降水_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
 
     img_qpf=qpf_contourf(obj.ax, rain, valid_time=valid_time, kwargs=rain_contourf_kwargs)
     img_rain=rain_contour(obj.ax,rain,kwargs=rain_contour_kwargs)
@@ -82,7 +82,7 @@ def draw_hgt_rain(hgt, rain, map_extent=(60, 145, 15, 55),
         init_time, fcst_time, fhour, fhour + 12)
     png_name = '{2}_高度场_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     qpf_pcolormesh(obj.ax, rain, valid_time=valid_time)
     return obj.save()
@@ -102,7 +102,7 @@ def draw_mslp_rain_snow(rain, snow, sleet, prmsl, map_extent=(60, 145, 15, 55),
     forcast_info = rain.stda.description()
     png_name = '{2}_海平面气压_{3}小时降水_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), valid_time)
 
-    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, **pallete_kwargs)
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     rain_snow_sleet_pcolormesh(obj.ax, (rain, snow, sleet), valid_time=valid_time)
     prmsl_contour(obj.ax, prmsl, kwargs=prmsl_contour_kwargs)
     return obj.save()

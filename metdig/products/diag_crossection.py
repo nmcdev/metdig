@@ -39,7 +39,7 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_w_contourf(obj.ax, cross_w, kwargs=w_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -67,7 +67,7 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     div_contourf(obj.ax, cross_div, ydim='level',levels=np.arange(-10, 10,1),extend='both',
                  cmap='RdBu',transform=None,colorbar_kwargs=dict(pos='right',orientation='vertical'),kwargs=div_contourf_kwargs,
                 )
@@ -102,7 +102,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     qcld_contourf(obj.ax, qcld, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right top'}, transform=None, kwargs=qcld_contour_kwargs)
     qsn_contourf(obj.ax, qsn, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -140,7 +140,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
     tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     qcld_contourf(obj.ax, qcld, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right top'}, transform=None, kwargs=qcld_contour_kwargs)
     qice_contourf(obj.ax, qice, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -174,7 +174,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     tmpadv_contourf(obj.ax, cross_tmpadv, xdim='lon', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     uv_quiver(obj.ax, cross_t, cross_w, xdim='lon', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
@@ -203,7 +203,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     tmpadv_contourf(obj.ax, cross_tmpadv, xdim='lon', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -232,7 +232,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     vortadv_contourf(obj.ax, cross_vortadv, xdim='lon', ydim='level', transform=None,if_mask=False,
                      colorbar_kwargs={'pos': 'right'}, kwargs=vortadv_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
@@ -262,7 +262,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_mpv_contourf(obj.ax, cross_mpv, kwargs=mpv_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -291,7 +291,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_absv_contourf(obj.ax, cross_absv, kwargs=absv_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     wind_slc_vert = list(range(0, len(levels), 1))
@@ -322,7 +322,7 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 106, 5), kwargs=rh_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -350,7 +350,7 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_spfh_contourf(obj.ax, cross_spfh, levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     # barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -379,7 +379,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_spfh_contourf(obj.ax, cross_spfh, levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
     cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
     barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -408,7 +408,7 @@ def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n
     cross_u_t = cross_u_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v_n = cross_v_n.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 101, 0.5), kwargs=rh_contourf_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
     barbs_2d(obj.ax, cross_u_t, cross_v_n, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -431,7 +431,7 @@ def draw_time_rh_uv_theta(rh, u, v, theta, terrain,rh_contourf_kwargs={}, uv_bar
     png_name = '{3}_相当位温_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 100.5, 5), extend='max', kwargs=rh_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_theta_contour(obj.ax, theta, xdim='fcst_time', ydim='level', levels=np.arange(250, 450, 5), colors='#A0522D', kwargs=theta_contour_kwargs)
@@ -457,7 +457,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
     png_name = '{3}_散度_垂直涡度_比湿_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_spfh_contourf(obj.ax, spfh, xdim='fcst_time', ydim='level', extend='max', kwargs=spfh_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
@@ -496,7 +496,7 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     tmpadv_contourf(obj.ax, tmpadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=tmpadv_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
@@ -534,7 +534,7 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     vortadv_contourf(obj.ax, vortadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, if_mask=False,kwargs=vortadv_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
@@ -564,7 +564,7 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
     png_name = '{3}_散度_垂直涡度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 100, 5), extend='max', kwargs=rh_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
@@ -601,7 +601,7 @@ def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  rh_contourf_kwargs={}, uv_barbs
     tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
     terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
-    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, **pallete_kwargs)
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 101, 0.5), extend='max', kwargs=rh_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
