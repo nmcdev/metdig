@@ -159,7 +159,7 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     tmpadv = mdgcal.var_advect(tmp, u, v)
 
     if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'tmpadv': tmpadv}
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'tmpadv': tmpadv,'tmp':tmp}
         ret.update({'data': dataret})
 
     tmp = mdgcal.gaussian_filter(tmp, smth_stp)
@@ -174,10 +174,11 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
         tmpadv = mask_terrian(psfc, tmpadv)
         tmp = mask_terrian(psfc, tmp)
 
+    if ret:
+        return ret
+
     # plot
     if is_draw:
         drawret = draw_thermal.draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
-    if ret:
-        return ret

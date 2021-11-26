@@ -78,21 +78,6 @@ def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, a
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    import metdig
-    from datetime import datetime,timedelta
-    metdig.set_loglevel('debug')
-
-    metdig.onestep.diag_qpf.rain(init_time=datetime(2017,11,7,8),atime=6,
-                            data_source='cmadaas',data_name='cldas',add_extrema=False,area='华南',clip_area=['china'],
-                            output_dir=r'\\10.28.49.183\classicProcess\diagnose_pics\海南暴雨\precipitation/')
-
-    # metdig.onestep.diag_qpf.rain(init_time='2021071908',fhour=36,data_name='ecmwf',data_source='cmadaas',area='黄淮',clip_area=['china'],atime=24)
-    # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',atime=24,data_source='cds',area='黄淮',rain_contourf_kwargs={'cmap':'met/rain'})
-    # metdig.onestep.diag_qpf.rain(init_time='2021072020',data_name='era5',data_source='cds',area='黄淮',atime=24,extrema_text_kwargs={'size':20})
-    plt.show()
-
 @date_init('init_time')
 def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',
              is_return_data=False, is_draw=True, **products_kwargs):
@@ -140,12 +125,6 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
                            var_name='prmsl', extent=map_extent)
 
     snow, sleet, rain = mdgcal.cal_snow_sleet_rain(rain_data, snow_data)
-    snow.attrs['data_name'] = data_name
-    snow.attrs['valid_time'] = atime
-    sleet.attrs['data_name'] = data_name
-    sleet.attrs['valid_time'] = atime
-    rain.attrs['data_name'] = data_name
-    rain.attrs['valid_time'] = atime
 
     if is_return_data:
         dataret = {'rain': rain, 'snow': snow, 'sleet': sleet, 'prmsl': prmsl}
@@ -159,8 +138,10 @@ def mslp_rain_snow(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     if ret:
         return ret
-
-
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    mslp_rain_snow(fhour=96,area='华北')
+    plt.show()
 '''
 def cumulated_precip(data_source='cassandra', data_name='ecmwf', init_time=None, t_gap=6, t_range=[6, 36], area='全国', **products_kwargs):
     map_extent = get_map_area(area)
