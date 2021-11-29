@@ -38,7 +38,7 @@ def plt_base_env():
         locale.setlocale(locale.LC_CTYPE, 'chinese')
         
 @kwargs_wrapper
-def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
+def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=18, forcast_info='', nmc_logo=False,
                        add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=True, add_county_city=False, 
                        add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
@@ -46,6 +46,7 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
     """[水平分布图画板设置]]
 
     Args:
+        ax ():[绘图对象].用于用户传入自己的ax绘图拓展
         figsize (tuple, optional): [画板大小]. Defaults to (16, 9).
         crs ([type], optional): [画板投影类型投影]. Defaults to ccrs.PlateCarree().
         map_extent (tuple, optional): [绘图区域]. Defaults to (60, 145, 15, 55).
@@ -66,9 +67,11 @@ def horizontal_pallete(figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 
         [type]: [description]
     """    
     plt_base_env()  # 初始化字体中文等
-
-    fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot(projection=crs)
+    if(ax is None): # 
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_subplot(projection=crs)
+    else:
+        fig=None
     # 标题
     ax.set_title(title, loc='left', fontsize=title_fontsize)
 
