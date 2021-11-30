@@ -90,11 +90,11 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     # 海岸线，省界，河流等中国边界信息
     if add_coastline:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.3, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.3, zorder=19, alpha=0.5,crs=ccrs.PlateCarree())
     if add_china:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=0,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=19,crs=ccrs.PlateCarree())
     if add_province:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=0.5, zorder=0,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=0.5, zorder=19,crs=ccrs.PlateCarree())
     
     if add_river:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='river', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
