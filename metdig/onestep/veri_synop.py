@@ -15,6 +15,9 @@ import numpy as np
 __all__ = [
     'compare_gh_uv',
     'veri_heatwave',
+    'veri_gust10m',
+    'veri_wsp',
+
 ]
 
 

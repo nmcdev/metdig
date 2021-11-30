@@ -28,7 +28,7 @@ __all__ = [
 ]
 
 @date_init('init_time')
-def model_cref(data_source='cassandra', data_name='grapes_meso_3km', init_time=None, fhour=24, area='全国',
+def model_cref(data_source='cassandra', data_name='cma_meso_3km', init_time=None, fhour=24, area='全国',
              is_return_data=False, is_draw=True, **products_kwargs):
 
     ret = {}
