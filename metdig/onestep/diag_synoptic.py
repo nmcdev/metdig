@@ -20,6 +20,7 @@ import metdig.utl.utl_stda_grid as utl_stda_grid
 import metdig.cal as mdgcal
 
 __all__ = [
+    'uvstream_wsp',
     'syn_composite',
     'hgt_uv_prmsl',
     'hgt_uv_rain06',

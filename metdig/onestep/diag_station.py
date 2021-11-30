@@ -67,7 +67,7 @@ if __name__ == '__main__':
     plt.show()
 
 @date_init('init_time')
-def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20]},
+def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20] ,'id':['任意点']},
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -95,7 +95,7 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
               levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 150, 100],
-              points={'lon': [116.3833], 'lat': [39.9]},
+              points={'lon': [116.3833], 'lat': [39.9] ,'id':['任意点']},
               is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
