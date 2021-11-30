@@ -43,6 +43,7 @@ setup(
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
                       'cdsapi',
+                      'numba',
                       'folium'],
     python_requires='>=3',
     zip_safe = False

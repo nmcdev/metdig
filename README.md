@@ -10,6 +10,7 @@ Other required packages:
 - meteva >=1.3.*
 - cdsapi
 - nmc_met_io
+- numba
 - folium
 ## Install
 please install metdig under anaconda enviroment.
@@ -17,7 +18,7 @@ since Cartopy is hard to install,
 it is recommanded creating new env via conda and installing Cartopy first when the env is not complex yet.
 
 ``` install via pip
-conda install -c conda-forge cartopy
+conda install -c conda-forge cartopy=0.19.0
 pip install metdig
 ```
 Using the following command to install packages:
