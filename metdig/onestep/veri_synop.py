@@ -232,7 +232,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     # anl_time=datetime.datetime(2020,7,16,8)
     # output_dir = './test_output'
-    veri_wsp(init_time='2021110608',fhour=24,area='华北',data_source='cmadaas',data_name='ecmwf',title='test',
-                add_city=False,obs_ver='wsp10min',obsdir_ver='wdir10min'
+    veri_gust10m(init_time='2021112908',fhour=24,area='华北',data_source='cassandra',data_name='ecmwf',title='test',
+                add_city=False
             )
     plt.show()        
