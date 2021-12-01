@@ -146,6 +146,9 @@ def veri_gust10m(data_source='cassandra',
         obs_time=init_time+datetime.timedelta(hours=fhour-ivld)
         temp = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name=obs_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
         tempdir = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name=obsdir_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
+        temp=temp.where(temp['id'].isin(list(set(temp['id']).intersection(tempdir['id'])))).dropna().sort_values('lon').reset_index(drop=True)
+        tempdir=tempdir.where(tempdir['id'].isin(list(set(tempdir['id']).intersection(temp['id'])))).dropna().sort_values('lon').reset_index(drop=True)
+
         if (ivld==0):
             gust10m_obs=temp
             gustdir10m_obs=tempdir
@@ -153,8 +156,8 @@ def veri_gust10m(data_source='cassandra',
             gust10m_obs=gust10m_obs.where(gust10m_obs['id'].isin(list(set(gust10m_obs['id']).intersection(temp['id'])))).dropna().sort_values('lon').reset_index(drop=True)
             temp=temp.where(temp['id'].isin(list(set(temp['id']).intersection(gust10m_obs['id'])))).dropna().sort_values('lon').reset_index(drop=True)
 
-            gustdir10m_obs=gustdir10m_obs.where(gustdir10m_obs['id'].isin(list(set(gustdir10m_obs['id']).intersection(temp['id'])))).dropna().sort_values('lon').reset_index(drop=True)
-            tempdir=tempdir.where(tempdir['id'].isin(list(set(tempdir['id']).intersection(temp['id'])))).dropna().sort_values('lon').reset_index(drop=True)
+            gustdir10m_obs=gustdir10m_obs.where(gustdir10m_obs['id'].isin(list(set(gustdir10m_obs['id']).intersection(gust10m_obs['id'])))).dropna().sort_values('lon').reset_index(drop=True)
+            tempdir=tempdir.where(tempdir['id'].isin(list(set(tempdir['id']).intersection(gust10m_obs['id'])))).dropna().sort_values('lon').reset_index(drop=True)
 
             cond=(temp.iloc[:,6]>gust10m_obs.iloc[:,6])
             gust10m_obs.iloc[:,6][cond]=temp.iloc[:,6][cond]
@@ -235,7 +238,5 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     # anl_time=datetime.datetime(2020,7,16,8)
     # output_dir = './test_output'
-    veri_gust10m(init_time='2021112908',fhour=24,area='华北',data_source='cassandra',data_name='ecmwf',title='test',
-                add_city=False
-            )
-    plt.show()        
+    veri_gust10m(init_time='2021112908',fhour=24,data_source='cassandra',data_name='ecmwf',title='test',area=[100,110,30,40])
+    plt.show() 
