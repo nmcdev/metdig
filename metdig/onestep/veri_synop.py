@@ -117,9 +117,9 @@ def veri_heatwave(data_source='cassandra',
 
 @date_init('init_time')
 def veri_gust10m(data_source='cassandra',
-                init_time=None,
+                init_time=None,fhour=24,
                 obs_time=None,
-                data_name='ecmwf',fhour=24,
+                data_name='ecmwf',data_name_obs='sfc_chn_hor',
                 area='全国', 
                 md_ver='gust10m',obs_ver='gust10m',obsdir_ver='gustdir10m',
                 mingust_obs=0,
@@ -144,8 +144,8 @@ def veri_gust10m(data_source='cassandra',
 
     for ivld in range(0,gust10m_fcst.attrs['valid_time']):
         obs_time=init_time+datetime.timedelta(hours=fhour-ivld)
-        temp = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name=obs_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
-        tempdir = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name=obsdir_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
+        temp = get_obs_stations(obs_time=obs_time,data_name=data_name_obs,var_name=obs_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
+        tempdir = get_obs_stations(obs_time=obs_time,data_name=data_name_obs,var_name=obsdir_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
         temp=temp.where(temp['id'].isin(list(set(temp['id']).intersection(tempdir['id'])))).dropna().sort_values('lon').reset_index(drop=True)
         tempdir=tempdir.where(tempdir['id'].isin(list(set(tempdir['id']).intersection(temp['id'])))).dropna().sort_values('lon').reset_index(drop=True)
 
@@ -184,11 +184,20 @@ def veri_gust10m(data_source='cassandra',
     if ret:
         return ret
 
+if __name__ == '__main__':
+    import datetime
+    import matplotlib.pyplot as plt
+    # anl_time=datetime.datetime(2020,7,16,8)
+    # output_dir = './test_output'
+    veri_gust10m(init_time='2021112908',fhour=24,data_source='cassandra',
+                data_name='ecmwf',data_name_obs='sfc_chn_hor_auto',area=[100,110,30,40])
+    plt.show() 
+
 @date_init('init_time')
 def veri_wsp(data_source='cassandra',
-                init_time=None,
+                init_time=None,fhour=24,
                 obs_time=None,
-                data_name='ecmwf',fhour=24,
+                data_name='ecmwf',data_name_obs='sfc_chn_hor',
                 area='全国', 
                 obs_ver='wsp',obsdir_ver='wdir',
                 mingust_obs=0,
@@ -211,8 +220,8 @@ def veri_wsp(data_source='cassandra',
     wsp_fcst=mdgcal.other.wind_speed(u10m_fcst,v10m_fcst)
 
     obs_time=init_time+datetime.timedelta(hours=fhour)
-    wsp_obs = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name=obs_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
-    wspdir_obs = get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name=obsdir_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
+    wsp_obs = get_obs_stations(obs_time=obs_time,data_name=data_name_obs,var_name=obs_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
+    wspdir_obs = get_obs_stations(obs_time=obs_time,data_name=data_name_obs,var_name=obsdir_ver,data_source=data_source,level=None,extent=map_extent,is_save_other_info=None).dropna()
     wsp_obs=wsp_obs.where(wsp_obs['id'].isin(list(set(wsp_obs['id']).intersection(wsp_obs['id'])))).dropna().sort_values('lon').reset_index(drop=True)
     wspdir_obs=wspdir_obs.where(wspdir_obs['id'].isin(list(set(wspdir_obs['id']).intersection(wsp_obs['id'])))).dropna().sort_values('lon').reset_index(drop=True)
 
@@ -231,12 +240,3 @@ def veri_wsp(data_source='cassandra',
 
     if ret:
         return ret
-
-
-if __name__ == '__main__':
-    import datetime
-    import matplotlib.pyplot as plt
-    # anl_time=datetime.datetime(2020,7,16,8)
-    # output_dir = './test_output'
-    veri_gust10m(init_time='2021112908',fhour=24,data_source='cassandra',data_name='ecmwf',title='test',area=[100,110,30,40])
-    plt.show() 
