@@ -8,6 +8,7 @@ import matplotlib.colors as col
 import matplotlib.cm as cm
 from matplotlib.colors import BoundaryNorm, ListedColormap
 import matplotlib.patheffects as mpatheffects
+import matplotlib.lines as lines
 
 import metdig.graphics.lib.utility as utl
 import metdig.graphics.cmap.cm as cm_collected
@@ -78,6 +79,34 @@ def rain_contour(ax, stda,  xdim='lon', ydim='lat',
     img = ax.contour(x, y, z, levels=levels, transform=transform, norm=norm, cmap=cmap, linewidths=linewidths, **kwargs)
     if add_clabel:
         plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+    return img
+
+@kwargs_wrapper
+def hgt_spaghetti_contour(ax, stda,  xdim='lon', ydim='lat',
+        add_clabel=True,
+        levels=[508,548,588],
+        colors=['#F8A1A4','#6BD089','#60C5F1'],
+        transform=ccrs.PlateCarree(), linewidths=2,
+        **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    m = stda.stda.get_dim_value('member')
+    
+    img=[]
+    for im in m:
+        z=stda.sel(member=im).stda.get_value(ydim, xdim)
+        img.append(ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs))
+    
+    #控制预报
+    z=stda.isel(member=0).stda.get_value(ydim, xdim)
+    img.append(ax.contour(x, y, z, levels=levels, transform=transform, colors='black', linewidths=linewidths,linestyles='dashed',label='控制预报', **kwargs))
+
+    #集合平均
+    z=stda.mean('member').stda.get_value(ydim, xdim)
+    img.append(ax.contour(x, y, z, levels=levels, transform=transform, colors='black', linewidths=linewidths,label='集合平均', **kwargs))
+    if add_clabel:
+        plt.clabel(img[-1], inline=1, fontsize=20, fmt='%.0f', colors='black')
+
     return img
 
 @kwargs_wrapper
