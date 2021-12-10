@@ -117,7 +117,7 @@ def veri_heatwave(data_source='cassandra',
 
 @date_init('init_time')
 def veri_gust10m(data_source='cassandra',
-                init_time=None,fhour=24,
+                init_time=None,fhour=6,
                 obs_time=None,
                 data_name='ecmwf',data_name_obs='sfc_chn_hor',
                 area='全国', 
@@ -189,13 +189,13 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     # anl_time=datetime.datetime(2020,7,16,8)
     # output_dir = './test_output'
-    veri_gust10m(init_time='2021112908',fhour=24,data_source='cassandra',
+    veri_gust10m(init_time='2021120908',fhour=24,data_source='cassandra',
                 data_name='ecmwf',data_name_obs='sfc_chn_hor_auto',area=[100,110,30,40])
     plt.show() 
 
 @date_init('init_time')
 def veri_wsp(data_source='cassandra',
-                init_time=None,fhour=24,
+                init_time=None,fhour=6,
                 obs_time=None,
                 data_name='ecmwf',data_name_obs='sfc_chn_hor',
                 area='全国', 

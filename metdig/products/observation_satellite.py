@@ -25,7 +25,7 @@ def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 14
 
     if ir_channel == 9:
         ir_name = '水汽图像'
-        ir_cmap = 'met/wv_enhancement'
+        ir_cmap = 'met/wv_enhancement_r'
         uv_color = 'black'
     elif ir_channel == 12:
         ir_name = '红外(10.8微米)'

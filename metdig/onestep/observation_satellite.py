@@ -11,7 +11,7 @@ from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 
-from metdig.products import observation_satelite as draw_obssate
+from metdig.products import observation_satellite as draw_obssate
 
 import metdig.cal as mdgcal
 
@@ -55,3 +55,7 @@ def fy4air_sounding_hgt(ir_obs_time=None, ir_channel=9,
 
     if ret:
         return ret
+
+
+if __name__ == '__main__':
+    fy4air_sounding_hgt(ir_obs_time=datetime.datetime(2021,12,7,8),sounding_obs_time=datetime.datetime(2021,12,7,8),hgt_init_time=datetime.datetime(2021,12,7,8))

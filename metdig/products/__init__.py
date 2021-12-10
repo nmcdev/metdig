@@ -7,7 +7,7 @@ from . import diag_synoptic
 from . import diag_thermal
 from . import diag_station
 from . import observation_radar
-from . import observation_satelite
+from . import observation_satellite
 from . import observation_station
 from . import observation_unusual
 from . import veri_synop

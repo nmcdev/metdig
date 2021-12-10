@@ -7,7 +7,7 @@ from .diag_station import *
 from .diag_synoptic import *
 from .diag_thermal import *
 from .observation_radar import *
-from .observation_satelite import *
+from .observation_satellite import *
 from .observation_station import *
 from .observation_unusual import *
 from .veri_synop import *

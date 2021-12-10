@@ -13,16 +13,17 @@ from metdig.hub.lib.utility import mult_process
 from metdig.hub.lib.utility import get_onestep_ret_imgbufs
 from metdig.hub.lib.utility import get_onestep_ret_pngnames
 from metdig.hub.lib.utility import strparsetime
+from metdig.onestep.lib.utility import date_init
 
 __all__ = [
     'model_evolution',
     'analysis_evolution'
 ]
 
-
-def model_evolution(init_time=None, fhours=[12, 18, 24, 30, 36], data_name='ecmwf',
+@date_init('init_time')
+def model_evolution(init_time=None, fhours=[ 18, 24, 30, 36], data_name='ecmwf',
                    func=None, func_other_args={}, max_workers=6,fps=2,
-                   output_dir=None, show='list',tab_size=(30, 18), list_size=(16, 9), 
+                   output_dir=None, show='tab',tab_size=(27,18), list_size=(16, 9), 
                    is_clean_plt=False): 
     '''
     

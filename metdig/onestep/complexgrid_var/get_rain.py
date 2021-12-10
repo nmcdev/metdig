@@ -71,16 +71,25 @@ def _by_rain01(data_source=None, init_time=None, fhour=None, data_name=None, ati
 def read_rain(data_source=None, init_time=None, fhour=None, extent=(50, 150, 0, 65),data_name=None, atime=6):
     rain=_by_self(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='rain'+'%02d'%atime, extent=extent)
     if rain is not None:
+        attrs=rain.attrs
+        rain=xr.where(rain<9999.0,rain,np.nan)
+        rain.attrs=attrs
         return rain
 
     _log.info('cal rain'+'%02d'%atime+' _by_rain')
     rain = _by_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=atime, extent=extent)
     if rain is not None:
+        attrs=rain.attrs
+        rain=xr.where(rain<9999.0,rain,np.nan)
+        rain.attrs=attrs
         return rain
 
     _log.info('cal rain'+'%02d'%atime+' _by_rain01')
     rain = _by_rain01(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=atime, extent=extent)
     if rain is not None:
+        attrs=rain.attrs
+        rain=xr.where(rain<9999.0,rain,np.nan)
+        rain.attrs=attrs
         return rain
 
     raise Exception('Can not get any data!')

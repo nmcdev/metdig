@@ -78,6 +78,7 @@ def draw_hgt_uv_tmp(hgt, u, v, tmp, map_extent=(60, 145, 15, 55),
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     tmp_pcolormesh(obj.ax, tmp, kwargs=tmp_pcolormesh_kwargs)
+    tmp_contour(obj.ax,tmp,levels=[-4],colors='red')
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     return obj.save()
