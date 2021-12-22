@@ -11,3 +11,4 @@ from .observation_satellite import *
 from .observation_station import *
 from .observation_unusual import *
 from .veri_synop import *
+from .diag_ensemble import *

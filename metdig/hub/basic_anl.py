@@ -24,7 +24,7 @@ __all__ = [
 ]
 
 def model_basic_anl(func=None, func_other_args=None, max_workers=6,fps=2,
-                   output_dir=None, output_name=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
+                   output_dir=None, output_name=None, show='tab', tab_size=(30, 18),tab_dist=None,list_size=(16, 9),
                    is_clean_plt=False):
     '''
 
@@ -41,7 +41,8 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,fps=2,
                        'tab', show one plot in each tab page. 
                        'animation', show gif animation.] (default: {'tab'})
         tab_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(30, 18)})
-        list_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(16, 9)})
+        tab_dist {tuple} -- [如果show='tab'时生效，输出图片分布排列形式，如（nrows,ncols）] (default: None,即自动给出)
+        list_size {tuple} -- [如果show='list'时生效，输出图片分辨率] (default: {(16, 9)})
         is_clean_plt {bool} -- [description] (default: {True})
     '''
     if func is None or func_other_args is None:
@@ -105,7 +106,7 @@ def model_basic_anl(func=None, func_other_args=None, max_workers=6,fps=2,
     elif show == 'tab':
         if not output_name:
             output_name = 'basic_analysis.png'
-        ret = save_tab(all_img_bufs, output_dir, output_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        ret = save_tab(all_img_bufs, output_dir, output_name, tab_size=tab_size, tab_dist=tab_dist,is_clean_plt=is_clean_plt)
 
     if ret:
         return ret

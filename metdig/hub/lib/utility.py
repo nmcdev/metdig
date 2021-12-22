@@ -143,7 +143,7 @@ def save_animation(img_bufs, output_dir, gif_name, fps=2, is_clean_plt=True):
     return gif_path
 
 
-def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=True):
+def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18),tab_dist=None, is_clean_plt=True):
     '''
     保存成tab，多图叠加
     '''
@@ -151,7 +151,11 @@ def save_tab(img_bufs, output_dir, png_name, tab_size=(30, 18), is_clean_plt=Tru
         return None
     # 开始绘图
     fig = plt.figure(figsize=tab_size)
-    nrows, ncols = get_labels_dist(len(img_bufs))
+    if(tab_dist is None):
+        nrows, ncols = get_labels_dist(len(img_bufs))
+    else:
+        nrows=tab_dist[0]
+        ncols=tab_dist[1]
     for i, imgbuf in enumerate(img_bufs):
         ax = fig.add_subplot(nrows, ncols, i + 1)
         ax.axis('off')

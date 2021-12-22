@@ -87,3 +87,4 @@ k_idx,K指数,K,0
 capes,对流有效位能切变,m**2*s**-2,0
 wsp10min,10分钟平均风速,m/s,0
 wdir10min,10分钟平均风向,degree,0
+spfh2m,2m绝对湿度,g/kg,0
