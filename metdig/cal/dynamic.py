@@ -14,6 +14,7 @@ from metdig.cal.lib import utility as utl
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
 __all__ = [
+    'vertical_velocity_pressure',
     'vertical_velocity',
     'var_advect',
     'vorticity',
@@ -24,6 +25,23 @@ __all__ = [
 
 ]
 
+def vertical_velocity_pressure(w, tmp, mir=0):
+    '''
+
+    [Calculate vvel from w assuming hydrostatic conditions.]
+
+    Arguments:
+        w  {[stda]} -- [ Vertical velocity in terms of height.]
+        temperature {[stda]} -- [x component of the wind.]
+        mir {[stda]} -- [y component of the wind. ]
+    '''
+    omega = utl.stda_to_quantity(w)
+    temperature = utl.stda_to_quantity(tmp)
+    pressure = utl_stda_grid.gridstda_full_like_by_levels(tmp, tmp.level.values.tolist())
+    pressure = utl.stda_to_quantity(pressure)
+    vvel = mpcalc.vertical_velocity_pressure(omega, pressure, temperature, mir)
+    vvel = utl.quantity_to_stda_byreference('vvel', vvel, w)
+    return vvel
 
 def vertical_velocity(vvel, tmp, mir=0):
     '''
@@ -42,7 +60,6 @@ def vertical_velocity(vvel, tmp, mir=0):
     w = mpcalc.vertical_velocity(omega, pressure, temperature, mir)
     w = utl.quantity_to_stda_byreference('w', w, vvel)
     return w
-
 
 def var_advect(var, u, v):
     '''
