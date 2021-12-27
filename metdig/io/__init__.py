@@ -4,6 +4,7 @@ from . import cassandra
 from . import cimiss
 from . import cmadaas
 from . import era5_manual_download
+from . import cmadass_manual_download
 from . import era5
 from . import nmc_micaps_helper
 from . import thredds
