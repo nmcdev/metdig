@@ -42,6 +42,7 @@ setup(
                       'nmc_met_io>=0.1.0',
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
+                      'xarray <= 0.19.0'
                       'cdsapi',
                       'numba',
                       'folium'],
