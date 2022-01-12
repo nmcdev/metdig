@@ -14,6 +14,7 @@ from metdig.cal.lib import utility as utl
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
 __all__ = [
+    'geostrophic_wind',
     'vertical_velocity_pressure',
     'vertical_velocity',
     'var_advect',
@@ -24,6 +25,26 @@ __all__ = [
     'divergence',
 
 ]
+
+def geostrophic_wind(hgt):
+    ug=hgt.copy()
+    vg=hgt.copy()
+    for ilvl in hgt['level'].values:
+        for it in hgt['time'].values:
+            for idt in hgt['dtime'].values:
+                for imdl in hgt['member'].values:
+                    hgt_pp = hgt.sel(level=ilvl,time=it,dtime=idt,member=imdl).stda.quantity
+                    dx, dy = mpcalc.lat_lon_grid_deltas(hgt['lon'].values, hgt['lat'].values)
+                    x, y = np.meshgrid(hgt['lon'].values, hgt['lat'].values)
+                    y = y * units('degrees')
+                    ug2d, vg2d = mpcalc.geostrophic_wind(hgt_pp,dx, dy,y)#,dx,dy,lat_2d*units('degree'))
+                    # absv2d = mpcalc.absolute_vorticity(ug, vg, dx, dy, y)  # 绝对涡度  '1 / second'
+                    ug.loc[dict(level=ilvl, time=it, dtime=idt, member=imdl)] = np.array(ug2d)
+                    vg.loc[dict(level=ilvl, time=it, dtime=idt, member=imdl)] = np.array(vg2d)
+
+    ug = utl.quantity_to_stda_byreference('ug', ug.values * vg2d.units, ug)
+    vg = utl.quantity_to_stda_byreference('vg', vg.values *  ug2d.units, vg)
+    return ug,vg
 
 def vertical_velocity_pressure(w, tmp, mir=0):
     '''

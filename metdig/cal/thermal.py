@@ -38,6 +38,36 @@ def potential_temperature(pres, tmp):
 
     return thta
 
+def saturation_equivalent_potential_temperature(pres, tmp):
+    '''
+
+    [Calculate equivalent potential temperature.]
+
+    Arguments:
+        pres {[stda]} -- [Total atmospheric pressure]
+        tmp {[stda]} -- [temperature of parcel]
+
+    Returns:
+        [stda] -- [The equivalent potential temperature of the parcel]
+    '''
+    pres_p = utl.stda_to_quantity(pres)  # hPa
+    tmp_p = utl.stda_to_quantity(tmp)  # degC
+
+    thetaes_p = mpcalc.saturation_equivalent_potential_temperature(pres_p, tmp_p)  # kelvin
+
+    thetaes = utl.quantity_to_stda_byreference('thetaes', thetaes_p, tmp)  # kelvin
+
+    return thetaes
+
+if __name__=='__main__':
+    import metdig
+    from datetime import datetime
+    import metdig.utl.utl_stda_grid as utl_stda_grid
+    tmp=metdig.io.get_model_grids(init_time=datetime(2022,1,7,8),fhours=[12,18],
+                            data_source='cassandra',data_name='ecmwf',var_name='tmp',level=500)
+    pressure = utl_stda_grid.gridstda_full_like_by_levels(tmp, tmp.level.values.tolist())
+    thetaes=saturation_equivalent_potential_temperature(pressure,tmp)
+    print(thetaes)
 
 def equivalent_potential_temperature(pres, tmp, td):
     '''

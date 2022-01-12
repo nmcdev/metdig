@@ -19,8 +19,18 @@ __all__ = [
     'specific_humidity_from_dewpoint',
     'cal_ivt_singlelevel',
     'cal_p_vapor',
+    'relative_humidity_from_dewpoint',
 ]
 
+def relative_humidity_from_dewpoint(tmp,td):
+    tmp_p = utl.stda_to_quantity(tmp)  # degC
+    td_p = utl.stda_to_quantity(td)  # degC
+
+    rh_p = mpcalc.relative_humidity_from_dewpoint(tmp_p, td_p)  # percent
+
+    rh = utl.quantity_to_stda_byreference('rh', rh_p, tmp)
+
+    return rh
 
 def dewpoint_from_relative_humidity(tmp, rh):
     '''

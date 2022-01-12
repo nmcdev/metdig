@@ -25,6 +25,7 @@ import metdig.cal as mdgcal
 import metdig.utl as mdgstda
 
 __all__ = [
+    'wind_thetaes_mpvg',
     'wind_theta_w',
     'time_wind_qcld_qsn_tmp',
     'time_wind_qcld_qice_tmp',
@@ -45,6 +46,71 @@ __all__ = [
     'time_rh_uv_tmp',
     'wind_theta_div'
 ]
+
+@date_init('init_time')
+def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    theta = read_theta3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
+    # mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
+    #                                  data_name=data_name, lvl_ana=levels, levels=levels, extent=map_extent)
+
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=map_extent)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=map_extent)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='tmp', levels=levels, extent=map_extent)
+    hgt = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='hgt', levels=levels, extent=map_extent)
+    ug,vg=mdgcal.dynamic.geostrophic_wind(hgt)
+    pressure = mdgstda.gridstda_full_like_by_levels(hgt, hgt.level.values.tolist())
+    thetaes=mdgcal.thermal.saturation_equivalent_potential_temperature(pressure,tmp)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='psfc', extent=map_extent)
+    mpvg=mdgcal.dynamic.potential_vorticity_baroclinic(thetaes,pressure,ug,vg)
+    
+    if is_return_data:
+        dataret = {'theta': theta, 'u': u, 'v': v, 'mpvg': mpvg, 'hgt': hgt, 'psfc': psfc}
+        ret.update({'data': dataret})
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(theta, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    cross_theta = mdgcal.cross_section(theta, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_mpvg = mdgcal.cross_section(mpvg, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_theta, cross_theta['level'].values)
+    cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
+
+    if is_draw:
+        drawret = draw_cross.draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terrain, hgt.sel(level=[500]),
+                                      st_point=st_point, ed_point=ed_point,
+                                      lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                      map_extent=map_extent, h_pos=h_pos,
+                                      **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_thetaes_mpvg()
+    plt.show()
+
 
 @date_init('init_time')
 def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -295,7 +361,7 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.abs(cross_n.values).max()/np.abs(cross_w.values).max()
+    ratio = np.nanmax(np.abs(cross_n.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
         dataret = {'rh': rh, 'wind_n': cross_n, 'w': cross_w, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
         ret.update({'data': dataret})
@@ -310,6 +376,19 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    wind_w_theta_spfh(data_name='ecmwf',data_source='cmadaas',
+    # init_time=datetime.datetime(2021,12,25,20),fhour=36,st_point=[18,105],ed_point=[38,105.1],
+    fhour=36,st_point=[18,105],ed_point=[38,105.1],
+                                            area=[95,121,18,38],                                                                    
+                                                  wind_quiver_kwargs={'xdim':'lat_cross'},
+                                                                    theta_contour_kwargs={'xdim':'lat_cross'},
+                                                                    spfh_contourf_kwargs={'xdim':'lat_cross'},
+                                                                    terrain_contourf_kwargs={'xdim':'lat_cross'})
+    plt.show()
+
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -504,7 +583,7 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.abs(cross_n.values).max()/np.abs(cross_w.values).max()
+    ratio = np.nanmax(np.abs(cross_n.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
         dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'psfc': cross_psfc}
         ret.update({'data': dataret})

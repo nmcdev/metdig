@@ -88,3 +88,9 @@ capes,对流有效位能切变,m**2*s**-2,0
 wsp10min,10分钟平均风速,m/s,0
 wdir10min,10分钟平均风向,degree,0
 spfh2m,2m绝对湿度,g/kg,0
+alt,海拔高度,m,0
+ptype,降水相态,,0
+tcw,气柱总水含量,mm,0
+ug,纬向地转风,m/s,0
+vg,经向地转风,m/s,0
+thetaes,饱和相当位温,kelvin,0
