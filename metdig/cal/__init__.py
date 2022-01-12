@@ -6,4 +6,5 @@ from .other import *
 from .qpf import *
 from .thermal import *
 from .sounding import *
+from .interpolate import *
 
