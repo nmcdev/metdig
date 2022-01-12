@@ -75,7 +75,7 @@ def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons,
     return df
 
 
-def gridstda_to_stastda(grid_stda_data, points={}):
+def gridstda_to_stastda(grid_stda_data, points={},method='linear'):
     '''
 
     [stda网格数据，插值到站点上，返回stda格点数据]
@@ -101,7 +101,7 @@ def gridstda_to_stastda(grid_stda_data, points={}):
     other = list(set(points.keys()).difference(set(['lon', 'lat', 'id'])))  # points中除去lon lat id之外的其它坐标信息名称
 
     # get points data
-    points_xr = grid_stda_data.interp(lon=('points', points['lon']), lat=('points', points['lat']))
+    points_xr = grid_stda_data.interp(lon=('points', points['lon']), lat=('points', points['lat']),method=method)
     # print(points_xr)
     # print(points_xr.values.shape)
 

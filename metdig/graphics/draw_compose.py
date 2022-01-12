@@ -69,7 +69,7 @@ class cross_timepres_compose(object):
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
 
         self.fig, self.ax = pallete_set.cross_timepres_pallete(
-            figsize=(16, 9), levels=levels, times=np.array(times), title=title, forcast_info=description, **kwargs)
+            levels=levels, times=np.array(times), title=title, forcast_info=description, **kwargs)
 
     def save(self):
         return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)

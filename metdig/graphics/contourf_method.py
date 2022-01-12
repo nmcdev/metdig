@@ -243,7 +243,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
         print('nothing to contourf')
         return
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='Divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,kwargs=colorbar_kwargs)
     return img
 
 
@@ -419,7 +419,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
 
 @kwargs_wrapper
 def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
-                       add_colorbar=True,
+                       add_colorbar=True,extend='both',
                        levels=np.arange(-10, 10, 1), cmap='ncl/cmp_flux',
                        **kwargs):
     x = stda.stda.get_dim_value(xdim)
@@ -429,10 +429,10 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
 
     cmap = cm_collected.get_cmap(cmap)
 
-    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Moisture Potential Vorticity (10$^{-6}$ K*m**2/(s*kg))',
-                         label_size=15, orientation='vertical', extend='max', pos='right')
+                         label_size=15, orientation='vertical', extend=extend, pos='right')
     return img
 
 

@@ -2,6 +2,7 @@
 
 from metdig.io import get_model_grid
 from metdig.io import get_model_3D_grids
+from metdig.onestep.complexgrid_var.vvel import read_vvel
 
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
@@ -38,8 +39,11 @@ def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
-    vvel = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
-                          data_name=data_name, var_name='vvel', level=vvel_lev, extent=map_extent)
+    # vvel = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+    #                       data_name=data_name, var_name='vvel', level=vvel_lev, extent=map_extent)
+
+    vvel=read_vvel(data_source=data_source, init_time=init_time, fhour=fhour,
+                          data_name=data_name, level=vvel_lev, extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'vvel': vvel}
@@ -66,7 +70,7 @@ def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
 @date_init('init_time')
 def hgt_uv_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-               hgt_lev=500, div_lev=850, is_mask_terrain=True,
+               hgt_lev=500, div_lev=850, is_mask_terrain=True,smth_stp=5,
                area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -79,7 +83,7 @@ def hgt_uv_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
     div, u, v = read_div_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=div_lev, extent=map_extent)
 
     div_attrs = div.attrs
-    div = div.rolling(lon=5, lat=5, min_periods=1, center=True).mean()
+    div = div.rolling(lon=smth_stp, lat=smth_stp, min_periods=1, center=True).mean()
     div.attrs = div_attrs
 
     # 隐藏被地形遮挡地区
@@ -142,7 +146,7 @@ def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
 @date_init('init_time')
 def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-               fg_lev=500, is_mask_terrain=True,
+               fg_lev=500,smth_stp=5,is_mask_terrain=True,
                area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -156,8 +160,12 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
     pres = utl_stda_grid.gridstda_full_like(tmp, fg_lev, var_name='pres')
     thta = mdgcal.potential_temperature(pres, tmp)
-    fg = mdgcal.frontogenesis(thta, u, v)
-    thta = mdgcal.gaussian_filter(thta, 1)
+    # thta = mdgcal.gaussian_filter(thta, smth_stp)
+    # fg = mdgcal.frontogenesis(mdgcal.gaussian_filter(thta, smth_stp), mdgcal.gaussian_filter(u, smth_stp), mdgcal.gaussian_filter(v, smth_stp))
+    fg=mdgcal.frontogenesis(thta.rolling(lon=smth_stp, lat=smth_stp, min_periods=1, center=True).mean(skipna=True),
+                            u.rolling(lon=smth_stp, lat=smth_stp, min_periods=1, center=True).mean(skipna=True),
+                            v.rolling(lon=smth_stp, lat=smth_stp, min_periods=1, center=True).mean(skipna=True))
+
     if is_return_data:
         dataret = {'u': u, 'v': v, 'thta': thta, 'fg': fg}
         ret.update({'data': dataret})

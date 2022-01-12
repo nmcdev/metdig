@@ -29,19 +29,23 @@ def model_filename(initTime, fhour, UTC=False):
     Arguments:
         initTime {string or datetime object} -- model initial time,
             like 18042008' or datetime(2018, 4, 20, 8).
-        fhour {int} -- model forecast hours.
+        fhour {int or str} -- model forecast hours.
     """
+    if isinstance(fhour,str):
+        fhour_str='.'+fhour
+    else:
+        fhour_str=".{:03d}".format(fhour)
     if(UTC is False):
         if isinstance(initTime, datetime):
-            return initTime.strftime('%y%m%d%H') + ".{:03d}".format(fhour)
+            return initTime.strftime('%y%m%d%H') + fhour_str
         else:
-            return initTime.strip() + ".{:03d}".format(fhour)
+            return initTime.strip() + fhour_str
     else:
         if isinstance(initTime, datetime):
-            return (initTime - timedelta(hours=8)).strftime('%y%m%d%H') + ".{:03d}".format(fhour)
+            return (initTime - timedelta(hours=8)).strftime('%y%m%d%H') + fhour_str
         else:
             time_rel = (datetime.strptime('20' + initTime, '%Y%m%d%H') - timedelta(hours=8)).strftime('%y%m%d%H')
-            return time_rel.strip() + ".{:03d}".format(fhour)
+            return time_rel.strip() + fhour_str
 
 
 def obs_filename(obsTime, UTC=False):

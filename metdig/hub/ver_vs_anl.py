@@ -27,7 +27,7 @@ __all__ = [
 def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='ecmwf',
                     ninit=4, init_interval=12, data_source='cassandra', data_name='ecmwf',
                     func=None, func_other_args={}, max_workers=6,fps=2,
-                    output_dir=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
+                    output_dir=None, show='tab', tab_size=(30, 18),tab_dist=None, list_size=(16, 9),
                     is_clean_plt=False):
     '''
 
@@ -48,6 +48,7 @@ def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='e
                        'tab', show one plot in each tab page. 
                        'animation', show gif animation.] (default: {'animation'})
         tab_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(30, 18)})
+        tab_dist {tuple} -- [如果show='tab'时生效，输出图片分布排列形式，如（nrows,ncols）] (default: None,即自动给出)
         list_size {tuple} -- [如果show='tab'时生效，输出图片分辨率] (default: {(16, 9)})
 
     Returns:
@@ -98,7 +99,7 @@ def modelver_vs_anl(anl_time=None, anl_data_source='cassandra', anl_data_name='e
         ret = save_animation(all_img_bufs, output_dir, gif_name, fps=fps,is_clean_plt=is_clean_plt)
     elif show == 'tab':
         png_name = 'modelver_vs_anl_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.png'.format(func.__name__, data_name, init_time, ninit, init_interval)
-        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, tab_dist=tab_dist,is_clean_plt=is_clean_plt)
 
     if ret:
         return ret
