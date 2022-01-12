@@ -4,7 +4,7 @@ import datetime
 import os
 import sys
 import math
-import multiprocessing
+from concurrent import futures
 
 import cdsapi
 import numpy as np
@@ -13,6 +13,7 @@ import pandas as pd
 
 import sys
 
+import metdig
 import metdig.utl as mdgstda
 
 
@@ -88,6 +89,7 @@ def _era5_download_hourly_single_levels(
     is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
     # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview
+    print(savefile)
     if os.path.exists(savefile) and is_overwrite == False:
         _log.info('{} 存在 不重复下载'.format(savefile))
         return
@@ -238,14 +240,14 @@ def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u',
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
     var_names为stda要素名
-    采用多进程下载
+    采用多线程下载
     '''
-    pool = multiprocessing.Pool(processes=max_pool)
-    for var_name in var_names:
-        pool.apply_async(era5_psl_download, (dt_start, dt_end, [var_name], pressure_level, hour, extent, download_dir, is_overwrite))
-    pool.close()
-    pool.join()
+    with futures.ThreadPoolExecutor(max_workers=max_pool) as executor:
+        tasks = []
+        for var_name in var_names:
+            tasks.append(executor.submit(era5_psl_download, dt_start, dt_end, [var_name], pressure_level, hour, extent, download_dir, is_overwrite))
 
+        futures.wait(tasks, return_when=futures.ALL_COMPLETED)
 
 def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v10m','v100m', 'psfc', 'tcwv', 'prmsl','t2m','td2m','rain01','cape','cin','k_idx'],
                               hour=np.arange(0,24,1).tolist(),
@@ -253,25 +255,30 @@ def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u10
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
     var_names为stda要素名
-    采用多进程下载
+    采用多线程下载
     '''
-    pool = multiprocessing.Pool(processes=max_pool)
-    for var_name in var_names:
-        pool.apply_async(era5_sfc_download, (dt_start, dt_end, [var_name], hour, extent, download_dir, is_overwrite))
-    pool.close()
-    pool.join()
+    with futures.ThreadPoolExecutor(max_workers=max_pool) as executor:
+        tasks = []
+        for var_name in var_names:
+            tasks.append(executor.submit(era5_sfc_download, dt_start, dt_end, [var_name], hour, extent, download_dir, is_overwrite))
 
+        futures.wait(tasks, return_when=futures.ALL_COMPLETED)
 
 def test():
-    dt_start = datetime.datetime(2021,7,17,0)  # 北京时
-    dt_end = datetime.datetime(2020,7,22,0)
+
+    dt_start = datetime.datetime(2020,1,1,0)  # 北京时
+    dt_end = datetime.datetime(2020,1,2,0)
+
+    # dt_start = datetime.datetime(2021,7,17,0)  # 北京时
+    # dt_end = datetime.datetime(2021,7,22,0)
+
     hour = [0, 4, 6, 9, 12]
 
     # era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=hour)
     # era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=hour)
 
-    era5_psl_download(dt_start, dt_end)#, var_names=['hgt', 'u', 'v'], hour=hour)
-    era5_sfc_download(dt_start, dt_end)#, var_names=['u10m', 'v10m'], hour=hour)
+    # era5_psl_download(dt_start, dt_end)#, var_names=['hgt', 'u', 'v'], hour=hour)
+    # era5_sfc_download(dt_start, dt_end)#, var_names=['u10m', 'v10m'], hour=hour)
 
 
 if __name__ == '__main__':
