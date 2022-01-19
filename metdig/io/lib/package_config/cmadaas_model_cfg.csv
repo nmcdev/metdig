@@ -118,6 +118,7 @@ ecmwf,rainnc,surface,m,LPE,大尺度降水,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,lcdc,surface,100*percent,LCC,低云量,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,gust10m_6h,surface,m/s,10FG6,过去6小时10米阵风,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,rainc,surface,m,CPE,对流性降水,1,0,NAFP_ECMF_C1D_GLB_FOR,model
+ecmwf,rainnc,surface,m,LPE,大尺度降水,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,capes,surface,m**2/s**2,CAPES,对流有效位能切变,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,div,high,s**-1,ADI,散度,100,any,NAFP_FOR_FTM_HIGH_EC_ANEA,model
 ecmwf,cape,surface,J*kg**-1,CAPE,对流有效位能,1,0,NAFP_ECMF_C1D_GLB_FOR,model
@@ -126,6 +127,8 @@ ecmwf,tmx6_2m,surface,K,MX2T6,过去6小时2米最高温度,1,0,NAFP_ECMF_C1D_GLB_FOR,mod
 ecmwf,tmn6_2m,surface,K,MN2T6,过去6小时2米最低温度,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,pv,high,K*m**2*kg**-1*s**-1,POV,位势涡度,100,any,NAFP_FOR_FTM_HIGH_EC_ANEA,model
 ecmwf,snow,surface,m,TTSP,降雪量,1,0,NAFP_ECMF_C1D_GLB_FOR,model
+ecmwf,snow_density,surface,kg*m**-3,SNDE,雪密度,1,0,NAFP_ECMF_C1D_GLB_FOR,model
+ecmwf,snow_depth,surface,m,SDE,雪深,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 #,,,,,,,,,
 cldas,rain01,surface,mm,PRE,小时降水,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
 # ncep_gfs模式数据,,,,,,,,,

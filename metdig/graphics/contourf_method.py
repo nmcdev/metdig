@@ -62,6 +62,22 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
+def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
+                        add_colorbar=True,
+                        levels=np.arange(-10, 10.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',
+                        **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)
+    z = z * 1e9      
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='both', **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Frontogenesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)',  orientation='vertical', extend='both', pos='right')
+    return img
+
+@kwargs_wrapper
 def cref_contourf(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels=[10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70], 

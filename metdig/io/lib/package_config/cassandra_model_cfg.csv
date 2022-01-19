@@ -174,6 +174,7 @@ cma_meso_3km,cref,surface,,,0,GRAPES_3KM/RADAR_COMBINATION_REFLECTIVITY/
 cma_meso_1km,cref,surface,,,0,GRAPES_1KM/RADAR_COMBINATION_REFLECTIVITY/
 cma_meso_1km,rain01,surface,mm,,0,GRAPES_1KM/RAIN01/
 cma_meso_1km,rain03,surface,mm,,0,GRAPES_1KM/RAIN03/
+cma_meso_1km,gust10m,surface,m/s,,10,GRAPES_3KM/MAX_WIND/
 ecmwf_ens,u10m,surface,m/s,,10,ECMWF_ENSEMBLE/RAW/UGRD_10M/
 ecmwf_ens,v10m,surface,m/s,,10,ECMWF_ENSEMBLE/RAW/VGRD_10M/
 ecmwf_ens,u100m,surface,m/s,,100,ECMWF_ENSEMBLE/RAW/UGRD_100M/
