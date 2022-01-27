@@ -5,6 +5,7 @@ import datetime
 import xarray as xr
 import numpy as np
 import pandas as pd
+from copy import deepcopy
 from metpy.units import units
 
 import metdig.utl as mdgstda
@@ -24,7 +25,7 @@ def xrda_to_gridstda(xrda,
                      np_input_units='', var_name='',
                      **attrs_kwargs):
     """[将一个xarray数据，转换成网格stda标准格式数据
-    
+
     通过给出('member', 'level', 'time', 'dtime', 'lat', 'lon')在原始xrda中的维度名称，将xrda转成stda（如果不给出缺失的维度数据，默认填0）
 
     Example:
@@ -132,7 +133,7 @@ def npda_to_gridstda(npda,
                      np_input_units='', var_name='',
                      **attrs_kwargs):
     """[将一个numpy数据，转换成网格stda标准格式数据
-    
+
     通过给出npda的维度信息及其维度数据，('member', 'level', 'time', 'dtime', 'lat', 'lon')，将npda转成stda（如果不给出缺失的维度数据，默认填0）
 
     Example:
@@ -449,7 +450,7 @@ class __STDADataArrayAccessor(object):
             return self.time.values
         return self._xr[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon'):        
+    def get_value(self, ydim='lat', xdim='lon'):
         """[根据维度名获取stda数据，
         注： 
         1、网格stda仅支持二维，非二维stda调用该函数会报错
@@ -468,8 +469,8 @@ class __STDADataArrayAccessor(object):
                 ydim = 'dtime'
             else:
                 ydim = 'time'
-        xdim2=self._xr.coords[xdim].dims[0] #一个dim可能对应多个coord,所以要取到对应的dim
-        ydim2=self._xr.coords[ydim].dims[0] #一个dim可能对应多个coord,所以要取到对应的dim
+        xdim2 = self._xr.coords[xdim].dims[0]  # 一个dim可能对应多个coord,所以要取到对应的dim
+        ydim2 = self._xr.coords[ydim].dims[0]  # 一个dim可能对应多个coord,所以要取到对应的dim
         data = self._xr.squeeze().transpose(ydim2, xdim2).values
         return data
 
@@ -533,8 +534,8 @@ class __STDADataArrayAccessor(object):
         """
         ret = self._xr.min(dim=dim, skipna=skipna)
         if return_number:
-            return ret.values.squeeze() 
-        return ret.squeeze() 
+            return ret.values.squeeze()
+        return ret.squeeze()
 
     def max(self, dim=None, skipna=True, return_number=True):
         """[Return data by applying max along some dimension(s)]
@@ -546,9 +547,8 @@ class __STDADataArrayAccessor(object):
         """
         ret = self._xr.max(dim=dim, skipna=skipna)
         if return_number:
-            return ret.values.squeeze() 
-        return ret.squeeze() 
-    
+            return ret.values.squeeze()
+        return ret.squeeze()
 
     def mean(self, dim=None, skipna=True, return_number=True):
         """[Return data by applying mean along some dimension(s)]
@@ -560,8 +560,67 @@ class __STDADataArrayAccessor(object):
         """
         ret = self._xr.mean(dim=dim, skipna=skipna)
         if return_number:
-            return ret.values.squeeze() 
-        return ret.squeeze() 
+            return ret.values.squeeze()
+        return ret.squeeze()
+
+    def interp_tosta(self, lon, lat, id=None, other={}, method='linear'):
+        """[插值到站点上，返回stda站点数据]
+
+        Args:
+            lon ([number or list], optional): [站点经度]
+            lat ([number or list], optional): [站点纬度]
+            id ([number or str or list], optional): [站号，不填站号则默认从1开始递增]
+            other ([dict], optional): [其它坐标信息，以字典方式传参，值可以是列表可以是值，如：other={'city': '北京', 'province': '北京'}]. Defaults to {}.
+            method ([str], optional): [interp function(linear or nearest) ]. Defaults to linear.
+        """
+        def _to_list(parm):
+            if isinstance(parm, list):
+                return parm
+            if isinstance(parm, str):
+                return [parm]  # 字符串不能用list()，直接转成list
+            try:
+                return list(parm)  # numpy or pandas.series
+            except:
+                return [parm]  # 单项转
+
+        lon = np.array(_to_list(lon))
+        lat = np.array(_to_list(lat))
+
+        if id is None:
+            id = np.arange(1, lon.size + 1)
+
+        # 其它坐标信息名称
+        points_keys = list(set(other.keys()).difference(set(['lon', 'lat', 'id'])))
+        points = {k: _to_list(other[k]) for k in points_keys}
+
+        # get points data
+        points_xr = self._xr.interp(lon=('points', lon), lat=('points', lat), method=method)
+        # print(points_xr)
+        # print(points_xr.values.shape)
+
+        # get attrs
+        attrs = deepcopy(self._xr.attrs)
+        attrs['data_start_columns'] = 6 + len(points_keys)
+
+        # points data to pd.DataFrame
+        columns = ['level', 'time', 'dtime', 'id', 'lon', 'lat'] + points_keys + list(self._xr['member'].values)
+        lines = []
+        for i_lv, _lv in enumerate(points_xr['level'].values):
+            for i_t, _t in enumerate(points_xr['time'].values):
+                for i_d, _d in enumerate(points_xr['dtime'].values):
+                    _d = int(_d)
+                    for i_id, _id in enumerate(id):
+                        _other = [points[_o][i_id] for _o in points_keys]  # 除去lon lat id之外的其它坐标信息名称对应的数据
+                        _lon = lon[i_id]
+                        _lat = lat[i_id]
+                        _data = points_xr.values[:, i_lv, i_t, i_d, i_id]
+                        line = [_lv, _t, _d, _id, _lon, _lat] + _other + list(_data)
+                        lines.append(line)
+
+        df = pd.DataFrame(lines, columns=columns)
+        df.attrs = attrs
+
+        return df
 
 
 if __name__ == '__main__':
