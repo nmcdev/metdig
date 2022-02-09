@@ -312,3 +312,7 @@ ecmwf_ext_ens,vvel,high,0.01*Pa/s,,any,ECMWF_EXT_ENSEMBLE/RAW/VVEL/
 ecmwf_ext_ens,rh,high,percent,,any,ECMWF_EXT_ENSEMBLE/RAW/RH/
 ecmwf_ext_ens,spfh,high,g/kg,,any,ECMWF_EXT_ENSEMBLE/RAW/SPFH/
 ecmwf_ext_ens,tmp,high,degC,,any,ECMWF_EXT_ENSEMBLE/RAW/TMP/
+gmosrr_1km,t2m,surface,degC,,2,GMOSRR/ROLLING_UPDATE_1KM/TMP/2M_ABOVE_GROUND/
+gmosrr_1km,u10m,surface,m/s,,10,GMOSRR/ROLLING_UPDATE_1KM/UGRD/10M_ABOVE_GROUND/
+gmosrr_1km,v10m,surface,m/s,,10,GMOSRR/ROLLING_UPDATE_1KM/VGRD/10M_ABOVE_GROUND/
+gmosrr_1km,rh2m,surface,percent,,2,GMOSRR/ROLLING_UPDATE_1KM/RH/2M_ABOVE_GROUND/
