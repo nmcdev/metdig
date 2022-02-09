@@ -42,3 +42,9 @@ def wind_profiler(obs_st_time=None, obs_ed_time=None, id_selected=51463, is_retu
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    from datetime import datetime
+    wind_profiler(obs_st_time=datetime(2022,2,8,16),obs_ed_time=datetime(2022,2,9,1))
+    plt.show()

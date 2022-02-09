@@ -26,7 +26,7 @@ def relative_humidity_from_dewpoint(tmp,td):
     tmp_p = utl.stda_to_quantity(tmp)  # degC
     td_p = utl.stda_to_quantity(td)  # degC
 
-    rh_p = mpcalc.relative_humidity_from_dewpoint(tmp_p, td_p)  # percent
+    rh_p = mpcalc.relative_humidity_from_dewpoint(tmp_p, td_p)*100*units('percent')  # percent
 
     rh = utl.quantity_to_stda_byreference('rh', rh_p, tmp)
 

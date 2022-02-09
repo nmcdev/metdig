@@ -100,7 +100,6 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=T
     _log.debug('cpu_count={}, use max_workers={}'.format(os.cpu_count(), max_workers))
 
     all_ret = []
-
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executer:
         # 提交所有绘图任务
         all_task = [executer.submit(func, **_) for _ in func_args_all]

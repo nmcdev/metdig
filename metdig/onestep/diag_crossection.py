@@ -110,10 +110,10 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_theta_fg()
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     wind_theta_fg()
+#     plt.show()
 
 
 @date_init('init_time')
@@ -440,17 +440,17 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_w_theta_spfh(data_name='ecmwf',data_source='cmadaas',
-    # init_time=datetime.datetime(2021,12,25,20),fhour=36,st_point=[18,105],ed_point=[38,105.1],
-    fhour=36,st_point=[18,105],ed_point=[38,105.1],
-                                            area=[95,121,18,38],                                                                    
-                                                  wind_quiver_kwargs={'xdim':'lat_cross'},
-                                                                    theta_contour_kwargs={'xdim':'lat_cross'},
-                                                                    spfh_contourf_kwargs={'xdim':'lat_cross'},
-                                                                    terrain_contourf_kwargs={'xdim':'lat_cross'})
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     wind_w_theta_spfh(data_name='ecmwf',data_source='cmadaas',
+#     # init_time=datetime.datetime(2021,12,25,20),fhour=36,st_point=[18,105],ed_point=[38,105.1],
+#     fhour=36,st_point=[18,105],ed_point=[38,105.1],
+#                                             area=[95,121,18,38],                                                                    
+#                                                   wind_quiver_kwargs={'xdim':'lat_cross'},
+#                                                                     theta_contour_kwargs={'xdim':'lat_cross'},
+#                                                                     spfh_contourf_kwargs={'xdim':'lat_cross'},
+#                                                                     terrain_contourf_kwargs={'xdim':'lat_cross'})
+#     plt.show()
 
 
 @date_init('init_time', method=date_init.special_series_set)

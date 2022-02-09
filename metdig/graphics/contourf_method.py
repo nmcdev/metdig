@@ -385,7 +385,7 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
                       add_colorbar=True,
-                      levels=np.arange(0, 101, 0.5), cmap=None,extend='max',
+                      levels=np.arange(0, 101, 0.5), cmap=None,extend='max',colorbar_kwargs={},
                       **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -398,7 +398,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, extend=extend,**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend=extend, pos='right')
+        utl.add_colorbar(ax, img, ticks=[20, 40, 60, 80, 100], label='Relative Humidity',  orientation='vertical', extend=extend, pos='right',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper

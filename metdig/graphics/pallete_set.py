@@ -305,8 +305,8 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
 
     ax.set_ylabel('高度/m', fontsize=15)
     ax.set_yticklabels([0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000])
-    if heights is not None:
-        ax.set_ylim(heights.max(), heights.min())
+    # if heights is not None:
+    #     ax.set_ylim(heights.min(),heights.max())
     ax.set_xlim(times[0], times[-1])
 
     if forcast_info:
