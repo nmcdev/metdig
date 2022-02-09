@@ -78,7 +78,7 @@ def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons,
 def gridstda_to_stastda(grid_stda_data, points={},method='linear'):
     '''
 
-    [stda网格数据，插值到站点上，返回stda格点数据]
+    [stda网格数据，插值到站点上，返回stda站点数据]
 
     Arguments:
         grid_stda_data {[type]} -- [stda网格数据]

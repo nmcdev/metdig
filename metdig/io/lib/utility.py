@@ -26,10 +26,14 @@ def extent2limit(extent, x_percent=0, y_percent=0):
     return limit
 
 def parm_tolist(parm):
+    if isinstance(parm, list):
+        return parm
+    if isinstance(parm, str):
+        return [parm] # 字符串不能用list()，直接转成list
     try:
-        return list(parm)
+        return list(parm) # numpy or pandas.series
     except:
-        return [parm]
+        return [parm] # 单项转
 
 
 def model_filename(initTime, fhour, UTC=False):
