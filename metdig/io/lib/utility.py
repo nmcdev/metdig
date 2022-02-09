@@ -15,6 +15,16 @@ import logging
 _log = logging.getLogger(__name__)
 
 
+def extent2limit(extent, x_percent=0, y_percent=0):
+    '''
+    依照extent获取limit
+    '''
+
+    delt_x = (extent[1] - extent[0]) * x_percent
+    delt_y = (extent[3] - extent[2]) * y_percent
+    limit=[extent[2] - delt_y,extent[0] - delt_x, extent[3] + delt_y, extent[1] + delt_x]
+    return limit
+
 def parm_tolist(parm):
     try:
         return list(parm)

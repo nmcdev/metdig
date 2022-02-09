@@ -58,15 +58,18 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         raise Exception(str(e))
 
     timestr = '{:%Y%m%d%H}'.format(init_time-datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
-    
+    if(extent is not None):
+        limit=utl.extent2limit(extent,x_percent=x_percent,y_percent=y_percent)
+    else:
+        limit=None
     if cmadaas_prod_type == 'analysis':
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
-                                             time_str=timestr+'0000', level_type=cmadaas_level_type,
+                                             time_str=timestr+'0000', level_type=cmadaas_level_type,limit=limit,
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     elif cmadaas_prod_type == 'model':
         data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
-                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,
+                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,limit=limit,
                                                 fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     else:
         raise Exception('cmadaas_prod_type error!')
@@ -77,7 +80,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
             cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
 
     # 数据裁剪
-    data = utl.area_cut(data, extent, x_percent, y_percent)
+    # data = utl.area_cut(data, extent, x_percent, y_percent)
 
     # 经纬度从小到大排序好
     data = data.sortby('lat')
