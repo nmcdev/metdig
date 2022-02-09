@@ -198,7 +198,8 @@ def stastda_to_gridstda(df, xdim='lon', ydim='lat'):
     _grid2d_xr = xr.DataArray(_grid2d_data, coords=coords)
     for dim in ('level', 'time', 'dtime', 'lat', 'lon'):
         if dim != xdim and dim != ydim:
-            _grid2d_xr = _grid2d_xr.expand_dims({dim: griddims[col]})
+            _grid2d_xr = _grid2d_xr.expand_dims({dim: griddims[dim]})
+            
     _grid2d_xr = _grid2d_xr.expand_dims({'member': [member]})
     _grid2d_xr = _grid2d_xr.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
     _grid2d_xr.attrs = {'id': griddims['id']}
@@ -356,16 +357,37 @@ class __STDADataFrameAccessor(object):
             return self.time.values
         return self._df[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon'):
+    def get_value(self, ydim='lat', xdim='lon',grid=False):
         """[根据维度名获取stda数据，
+        
         注： 
         1、网格stda仅支持二维，非二维stda调用该函数会报错
         2、站点stda为pd.DataFrame，无意义，故忽略xdim ydim两个参数]
-
+        3、当grid=True,则将pd.DataFrame转换为xarray,再取其values,此时ydim和xdim生效,面向时间剖面中的改进
         Returns:
             [numpy]: [values]
         """
-        return self.values
+        if(grid == True):
+            cols=self._df.columns.tolist()
+            df=self._df.set_index(cols[0:-1])
+            grid_stda=df.to_xarray()[cols[-1]]
+
+            if xdim == 'fcst_time':
+                if grid_stda['time'].values.size == 1:  # 因为是二维，假如time维长度为1，则有维度的肯定在dtime维
+                    xdim = 'dtime'
+                else:
+                    xdim = 'time'
+            if ydim == 'fcst_time':
+                if grid_stda['time'].values.size == 1:
+                    ydim = 'dtime'
+                else:
+                    ydim = 'time'
+            xdim2=grid_stda.coords[xdim].dims[0] #一个dim可能对应多个coord,所以要取到对应的dim
+            ydim2=grid_stda.coords[ydim].dims[0] #一个dim可能对应多个coord,所以要取到对应的dim
+            data = grid_stda.squeeze().transpose(ydim2, xdim2).values
+        else:
+            data=self.values
+        return data
 
     def description(self):
         '''

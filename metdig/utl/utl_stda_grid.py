@@ -449,12 +449,12 @@ class __STDADataArrayAccessor(object):
             return self.time.values
         return self._xr[dim_name].values
 
-    def get_value(self, ydim='lat', xdim='lon'):        
+    def get_value(self, ydim='lat', xdim='lon',grid=False):        
         """[根据维度名获取stda数据，
         注： 
         1、网格stda仅支持二维，非二维stda调用该函数会报错
         2、站点stda为pd.DataFrame，无意义，故忽略xdim ydim两个参数]
-
+        3、grid对于站点类型的stda有效,格点类型忽略
         Returns:
             [numpy]: [values]
         """
