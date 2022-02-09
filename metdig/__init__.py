@@ -1,5 +1,5 @@
 __author__ = "The R & D Center for Weather Forecasting Technology in NMC, CMA"
-__version__ = '0.1.7.9'
+__version__ = '0.1.8.0'
 
 from . import cal
 from . import graphics
