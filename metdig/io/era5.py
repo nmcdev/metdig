@@ -7,6 +7,7 @@ import math
 
 import cdsapi
 import numpy as np
+from sympy import N
 import xarray as xr
 
 import sys
@@ -17,19 +18,22 @@ from metdig.io.lib import utility as utl
 from metdig.io.lib import era5_cfg
 from metdig.io.lib import config as CONFIG
 
+from metdig.io import era5_manual_download
+
 import logging
+logging.basicConfig(format='', level=logging.INFO)  # 此处加这一句代表忽略下属_log作用，直接将_log输出到命令行，测试用
 _log = logging.getLogger(__name__)
 
-
+"""
 class ERA5DataService(object):
-    """
+    '''
 
     [era5 数据下载工具类。 一次只下载单时次单层次数据, init_time为世界时
     备注：
     1.参数variable均为era5网站下的要素名，详细可以看各个函数下网址链接
     2.参数savefile为保存在本地的全路径
          ]
-    """
+    '''
 
     def __init__(self):
         pass
@@ -104,7 +108,77 @@ class ERA5DataService(object):
                 'area': [extent[3], extent[0], extent[2], extent[1]],
             },
             savefile)
+"""
 
+
+
+def _era5download(era5_bjtimes, var_names, levels, extent, x_percent, y_percent):
+    '''
+    调用手动下载部分批量下载，自动拆分到缓存目录下，参数为北京时
+    '''
+    _era5_bjtimes = utl.parm_tolist(era5_bjtimes)
+    _levels = utl.parm_tolist(levels)
+
+    if extent:
+        # 数据预先扩大xy percent
+        delt_x = (extent[1] - extent[0]) * x_percent
+        delt_y = (extent[3] - extent[2]) * y_percent
+        extent = (extent[0] - delt_x, extent[1] + delt_x, extent[2] - delt_y, extent[3] + delt_y)
+        extent = (math.floor(extent[0]), math.ceil(extent[1]), math.floor(extent[2]), math.ceil(extent[3]))
+        extent = (
+            extent[0] if extent[0] >= -180 else -180,
+            extent[1] if extent[1] <= 180 else 180,
+            extent[2] if extent[2] >= -90 else -90,
+            extent[3] if extent[3] <= 90 else 90,
+        )
+    else:
+        extent = [50, 160, 0, 70]  # 数据下载默认范围
+
+    # 获取本次需要下载的年月日参数
+    # 后续还得优化内容包括：
+    # 1.根据实际本地已有的数据再下载
+    # 2.跨年/月/日数据由于era5下载api会导致多下载数据，短期数据影响不大，长时间数据建议
+    def anycache(era5_utctime):
+        # 只要有一个缓存文件不存在，就返回False，如果全存在，则返回True
+        for var_name in var_names:
+            for level in _levels:
+                if level is None:
+                    cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=level, find_area=True)
+                else:
+                    cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=None, find_area=True)
+                if not os.path.exists(cache_file):
+                    return False
+        return True
+    years = []
+    months = []
+    days = []
+    hours = []
+    for era5_bjtime in _era5_bjtimes:
+        era5_utctime = era5_bjtime - datetime.timedelta(hours=8)  # 世界时
+
+        if anycache(era5_utctime) == False:
+            years.append(era5_utctime.year)
+            months.append(era5_utctime.month)
+            days.append(era5_utctime.day)
+            hours.append(era5_utctime.hour)
+
+    years = list(sorted(set(years)))
+    months = list(sorted(set(months)))
+    days = list(sorted(set(days)))
+    hours = list(sorted(set(hours)))
+
+    if len(years) == 0:
+        return
+
+    # 单线程下载
+    if all(_levels) == True:
+        era5_manual_download.era5_psl_download(_era5_bjtimes[0], _era5_bjtimes[-1], var_names, levels, 
+                                               extent=extent, download_dir=None, is_overwrite=False,
+                                               years=years, months=months, days=days, hour=hours)
+    else:
+        era5_manual_download.era5_sfc_download(_era5_bjtimes[0], _era5_bjtimes[-1], var_names, 
+                                               extent=extent, download_dir=None, is_overwrite=False,
+                                               years=years, months=months, days=days, hour=hours)
 
 def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''
@@ -122,6 +196,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     Returns:
         [type] -- [description]
     '''
+    _era5download(init_time, [var_name], level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
 
     init_time_utc = init_time - datetime.timedelta(hours=8)  # 世界时
     if extent:
@@ -154,11 +229,14 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     except Exception as e:
         raise Exception(str(e))
 
+    '''
+    弃用，此处只读取，更改为调用手动下载模块提前下载
     if not os.path.exists(cache_file):
         if level:
             ERA5DataService().download_hourly_pressure_levels(init_time_utc, era5_var, level, cache_file, extent=extent)
         else:
             ERA5DataService().download_hourly_single_levels(init_time_utc, era5_var, cache_file, extent=extent)
+    '''
 
     # 此处读到的dataset应该只有一个数据集，维度=[time=1,latitude,longitude]，因为下载的时候均是单层次下载
     data = xr.open_dataset(cache_file)
@@ -197,6 +275,8 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     Returns:
         [stda] -- [stda格式数据]
     '''
+    _era5download(init_time, [var_name], level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+
     init_times = utl.parm_tolist(init_times)
 
     stda_data = []
@@ -228,6 +308,8 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     Returns:
         [stda] -- [stda格式数据]
     '''
+    _era5download(init_time, [var_name], levels, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+
     levels = utl.parm_tolist(levels)
 
     stda_data = []
@@ -260,6 +342,8 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
     Returns:
         [stda] -- [stda格式数据]
     '''
+    _era5download(init_times, [var_name], levels, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+
     init_times = utl.parm_tolist(init_times)
     levels = utl.parm_tolist(levels)
 
@@ -307,20 +391,14 @@ def get_model_points(init_time=None, var_name=None, levels=None, points={}, **kw
 
 
 if __name__ == '__main__':
-    obj = ERA5DataService()
-    init_time = datetime.datetime(2020, 8, 2, 8)
-    # data = get_model_grid(init_time, 'hgt', level=500, extent=[70, 140, 10, 60])
-    # extent = [50, 160, 0, 70]
-    extent = (70, 140, 15, 55)
-    print(extent)
-    # data = get_model_grid(init_time, 'hgt', level=500, extent=extent) # 587.42365
-    data = get_model_grid(init_time, 'spfh', level=500, extent=extent)  # 587.42365
-    print(extent)
+
+    # data = get_model_3D_grids([
+    #     datetime.datetime(2020, 8, 2, 8),
+    #     datetime.datetime(2020, 8, 3, 8),
+    #     datetime.datetime(2020, 8, 4, 8)
+    # ], 'u10m')
+    # print(data)
+
+    data = get_model_grid(datetime.datetime(2020, 8, 2, 8), 'u10m')
     print(data)
-
-    # C:\Users\Administrator\.metera5\cache\202008030800\hourly\hgt\500\202008030800_56_154_11_59.nc
-    # get_model_grid(init_time, 'hgt', level=100)
-    # get_model_grid(init_time, 'hgt', level=200)
-    # get_model_grid(init_time, 'u', level=100)
-
-    # get_model_grid(init_time, 'u10m')
+    pass
