@@ -187,6 +187,7 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
                       ):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    注意：hour为指定下载的时次，不区分时区
     var_names为stda要素名
     is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
@@ -194,6 +195,8 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
     if years is None or months is None or days is None:
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
+    if len(years) == 0:
+        return
     _log.info('----------------------era5_psl_download--------------------------------')
     savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'ERA5_DATA/manual_download')
     for var_name in var_names:
@@ -215,6 +218,7 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v1
                       ):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    注意：hour为指定下载的时次，不区分时区
     var_names为stda要素名
     is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
@@ -222,7 +226,9 @@ def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v1
     dt_end_utc = dt_end - datetime.timedelta(hours=8)  # 世界时
     if years is None or months is None or days is None:
         years, months, days = _get_ymd(dt_start_utc, dt_end_utc)  # 获取本次需要下载的年月日参数
-    _log.info('----------------------era5_psl_download--------------------------------')
+    if len(years) == 0:
+        return
+    _log.info('----------------------era5_sfc_download--------------------------------')
     savedir = download_dir if download_dir else os.path.join(CONFIG.get_cache_dir(), 'ERA5_DATA/manual_download')
     for var_name in var_names:
         # 按要素一次下载一个要素数据
@@ -243,6 +249,7 @@ def era5_psl_download_usepool(dt_start=None, dt_end=None, var_names=['hgt', 'u',
                               extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite=True):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    注意：hour为指定下载的时次，不区分时区
     var_names为stda要素名
     采用多线程下载
     '''
@@ -258,6 +265,7 @@ def era5_sfc_download_usepool(dt_start=None, dt_end=None, var_names=['u10m','u10
                               extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite = True):
     '''
     参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    注意：hour为指定下载的时次，不区分时区
     var_names为stda要素名
     采用多线程下载
     '''
@@ -276,7 +284,8 @@ def era5_psl_sameperiod_download_usepool(years=np.arange(1980,2022).tolist(), mo
                                          extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite=True):
     '''
     历史同期数据下载
-    参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    参数年月日是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    注意：hour为指定下载的时次，不区分时区
     var_names为stda要素名
     采用多线程下载
     '''
@@ -295,7 +304,8 @@ def era5_sfc_sameperiod_download_usepool(years=np.arange(1980,2022).tolist(), mo
                                          extent=[50, 160, 0, 70], download_dir=None, max_pool=2, is_overwrite = True):
     '''
     历史同期数据下载
-    参数时间是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    参数年月日是北京时，下载时按照世界时下载，然后按照世界时自动拆分到cache目录下
+    注意：hour为指定下载的时次，不区分时区
     var_names为stda要素名
     采用多线程下载
     '''
@@ -314,20 +324,22 @@ def test():
 
     _log.info('mytest')
 
-    dt_start = datetime.datetime(2020,1,1,0)  # 北京时
-    dt_end = datetime.datetime(2020,1,2,0)
+    dt_start = datetime.datetime(2020,1,30,0)  # 北京时
+    dt_end = datetime.datetime(2020,2,2,0)
 
     # dt_start = datetime.datetime(2021,7,17,0)  # 北京时
     # dt_end = datetime.datetime(2021,7,22,0)
 
+    # 遗留问题：
+    # 跨年/月/日数据由于era5下载api会导致多下载数据
 
     # 多线程下载测试
-    # era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0, 4, 6, 9, 12])
-    # era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0, 4, 6, 9, 12])
+    # era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0, 4], pressure_level=[200,500])
+    era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0,4])
 
     # 单线程下载测试
-    # era5_psl_download(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0, 4, 6, 9, 12])
-    # era5_sfc_download(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0, 4, 6, 9, 12])
+    # era5_psl_download(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0,4])
+    # era5_sfc_download(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0,4])
 
     # 历史同期下载测试
     # era5_psl_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['hgt', 'u'], hour=[0,4], pressure_level=[200,500])
