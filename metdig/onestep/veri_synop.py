@@ -22,8 +22,8 @@ __all__ = [
 
 
 @date_init('anl_time')
-def compare_gh_uv(data_source='cassandra',
-                anl_time=None,anamodel='cma_gfs',
+def compare_gh_uv(data_source='cassandra',ana_data_source='cmadaas',
+                anl_time=None,ana_data_name='cma_gfs',
                 data_name='cma_gfs',fhour=24,
                 hgt_lev=500, uv_lev=850,
                 is_mask_terrain=True,area='全国', is_return_data=False, is_draw=True,
@@ -34,9 +34,9 @@ def compare_gh_uv(data_source='cassandra',
     # get area
     map_extent = get_map_area(area)
 
-    hgt_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
-    u_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
-    v_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+    hgt_ana = get_model_grid(data_source=ana_data_source, init_time=anl_time, fhour=0, data_name=ana_data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u_ana = get_model_grid(data_source=ana_data_source, init_time=anl_time, fhour=0, data_name=ana_data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v_ana = get_model_grid(data_source=ana_data_source, init_time=anl_time, fhour=0, data_name=ana_data_name, var_name='v', level=uv_lev, extent=map_extent)
 
     init_time_fcst=anl_time-datetime.timedelta(hours=fhour)
     hgt_fcst = get_model_grid(data_source=data_source, init_time=init_time_fcst, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)

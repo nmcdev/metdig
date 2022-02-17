@@ -40,24 +40,29 @@ def interpolate_3d(stda, hgt, points, stda_sfc=None):
         for idx_dtime,idtime in enumerate(stda.dtime.values):
             temp_df=pd.DataFrame(columns=['level', 'time', 'dtime', 'id', 'lon', 'lat'] + list(stda.member.values))
             for idx_member,imember in enumerate(stda.member.values):
-                data3d=stda.sel(member=imember,time=itime,dtime=idtime)
-                hgt3d=hgt.sel(member=imember,time=itime,dtime=idtime)
-                data3d_np = np.squeeze(data3d.values).flatten()
-                hgt3d_np = (np.squeeze(hgt3d.values)).flatten()*10
+                try: #防止某一数据不全
+                    data3d=stda.sel(member=imember,time=itime,dtime=idtime)
+                    hgt3d=hgt.sel(member=imember,time=itime,dtime=idtime)
+                    data3d_np = np.squeeze(data3d.values).flatten()
+                    hgt3d_np = (np.squeeze(hgt3d.values)).flatten()*10
 
-                coords = np.zeros((data3d['level'].size,data3d['lat'].size,data3d['lon'].size,3))
-                coords[...,1] = data3d['lat'].values.reshape((1,data3d['lat'].size,1))
-                coords[...,2] = data3d['lon'].values.reshape((1,1,data3d['lon'].size))
-                coords = coords.reshape((data3d_np.size,3))
-                coords[:,0]=hgt3d_np
-                interpolator = LinearNDInterpolator(coords,data3d_np,rescale=True)
+                    coords = np.zeros((data3d['level'].size,data3d['lat'].size,data3d['lon'].size,3))
+                    coords[...,1] = data3d['lat'].values.reshape((1,data3d['lat'].size,1))
+                    coords[...,2] = data3d['lon'].values.reshape((1,1,data3d['lon'].size))
+                    coords = coords.reshape((data3d_np.size,3))
+                    coords[:,0]=hgt3d_np
+                    interpolator = LinearNDInterpolator(coords,data3d_np,rescale=True)
 
-                coords2=np.zeros((np.size(points['lon']),3))
-                coords2[:,0]=points['alt']
-                coords2[:,1]=points['lat']
-                coords2[:,2]=points['lon']
-                sta[:,idx_member,idx_time,idx_dtime]=interpolator(coords2)
-                temp_df[imember]=interpolator(coords2)
+                    coords2=np.zeros((np.size(points['lon']),3))
+                    coords2[:,0]=points['alt']
+                    coords2[:,1]=points['lat']
+                    coords2[:,2]=points['lon']
+                    sta[:,idx_member,idx_time,idx_dtime]=interpolator(coords2)
+                    temp_df[imember]=interpolator(coords2)
+                except:#防止某一数据不全
+                    print('高空数据不全 起报时间'+str(itime)+' 预报时效'+str(idtime)+' 成员'+str(imember))
+                    temp_df[imember]=np.nan
+
             temp_df['level']=points['alt']
             temp_df['time']=itime
             temp_df['dtime']=idtime
@@ -73,12 +78,17 @@ def interpolate_3d(stda, hgt, points, stda_sfc=None):
     if (stda_sfc is not None):
         stda_sfc_sta=stda_sfc.interp({'lon':('id',points['lon']),'lat':('id',points['lat'])}).assign_coords({'id':points['id']})
         hgt_sta=hgt.interp({'lon':('id',points['lon']),'lat':('id',points['lat'])}).assign_coords({'id':ids})*10
-        for idx,iid in enumerate(ids):
-            for idx_member,imember in enumerate(stda.member.values):
-                for idx_time,itime in enumerate(stda.time.values):
-                    for idx_dtime,idtime in enumerate(stda.dtime.values):
-                        if(hgt_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).isel(level=0).values > points['alt'][idx]):
-                            stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)]=stda_sfc_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).values[0]
+        for idx_member,imember in enumerate(stda.member.values):
+            for idx_time,itime in enumerate(stda.time.values):
+                for idx_dtime,idtime in enumerate(stda.dtime.values):
+                    try:#防止某一数据不全
+                        for idx,iid in enumerate(ids):
+                            if(hgt_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).isel(level=0).values > points['alt'][idx]):
+                                stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)]=stda_sfc_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).values[0]
+                    except:#防止某一数据不全
+                        stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)]=np.nan
+                        print('地面数据不全 起报时间'+str(itime)+' 预报时效'+str(idtime)+' 成员'+str(imember))
+                        continue
     return stda_sta
 
 if __name__ == '__main__':
