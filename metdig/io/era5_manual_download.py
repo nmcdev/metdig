@@ -140,13 +140,19 @@ def _get_ymd(dt_start, dt_end):
     return years, months, days
 
 
-def _split_psl(savefile, var_name, extent):
+def _split_psl(savefile, var_name, extent, pressure_level):
     # 拆分下载的psl数据到cache目录下
     if os.path.exists(savefile):
         data = xr.open_dataarray(savefile)
+        if 'level' not in data.dims: # 增加单层数据拆分的时候假如没有level的判断
+            _level = pressure_level
+            _lvltg = False
+        else:
+            _level = data['level'].values
+            _lvltg = True
         for dt_utc in data['time'].values:
             dt_utc = pd.to_datetime(dt_utc)
-            for lv in data['level'].values:
+            for lv in _level:
                 # cache目录为世界时
                 cachefile = os.path.join(
                     os.path.join(CONFIG.get_cache_dir(),
@@ -157,7 +163,10 @@ def _split_psl(savefile, var_name, extent):
                     _log.info('{} 拆分...'.format(cachefile))
                     if not os.path.exists(os.path.dirname(cachefile)):
                         os.makedirs(os.path.dirname(cachefile))
-                    data.sel(time=dt_utc, level=lv).to_netcdf(cachefile)
+                    if _lvltg:
+                        data.sel(time=dt_utc, level=lv).to_netcdf(cachefile)
+                    else:
+                        data.sel(time=dt_utc).to_netcdf(cachefile)
 
 
 def _split_sfc(savefile, var_name, extent):
@@ -208,7 +217,7 @@ def era5_psl_download(dt_start=None, dt_end=None, var_names=['hgt', 'u', 'v', 'v
         _era5_download_hourly_pressure_levels(savefile=savefile, year=years, month=months, day=days, hour=hour,
                                               pressure_level=pressure_level, variable=era5_var, extent=extent, is_overwrite=is_overwrite)
         # 将下载后的数据拆分到cache目录下
-        _split_psl(savefile, var_name, extent)
+        _split_psl(savefile, var_name, extent, pressure_level)
 
 
 def era5_sfc_download(dt_start=None, dt_end=None, var_names=['u10m','u100m', 'v10m','v100m', 'psfc', 'tcwv', 'prmsl','t2m','td2m'],
@@ -335,7 +344,7 @@ def test():
 
     # 多线程下载测试
     # era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0, 4], pressure_level=[200,500])
-    era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0,4])
+    # era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0,4])
 
     # 单线程下载测试
     # era5_psl_download(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0,4])
@@ -344,6 +353,7 @@ def test():
     # 历史同期下载测试
     # era5_psl_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['hgt', 'u'], hour=[0,4], pressure_level=[200,500])
     # era5_sfc_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['u10m', 'v10m'], hour=[0,4])
+    # era5_psl_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['u', 'v', 'tmp'], hour=[0,4], pressure_level=[500], beforeday=0, afterday=0)
 
 if __name__ == '__main__':
     test()
