@@ -14,12 +14,28 @@ import metpy.calc as mpcalc
 from metdig.cal.lib import utility as utl
 
 __all__ = [
+    'add_height_to_pres',
     'smooth_n_point',
     'gaussian_filter',
     'wind_components',
     'wind_direction',
     'wind_speed',
 ]
+
+def add_height_to_pres(pres,height):
+    """_summary_
+    'Calculate the pressure at a certain height above another pressure level.'
+    metpy.calc.add_height_to_pressure
+    Args:
+        pressure (stda): _description_
+        height (stda): _description_
+    """    
+    pres_p = pres.stda.quantity
+    height_p=height.stda.quantity
+    addpres_d=mpcalc.add_height_to_pressure(pres_p,height_p)
+    addpres = utl.quantity_to_stda_byreference('pres', addpres_d, pres)
+    
+    return addpres
 
 
 def smooth_n_point(stda_data, n=5, passes=1):

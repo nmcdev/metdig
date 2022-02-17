@@ -94,3 +94,4 @@ tcw,气柱总水含量,mm,0
 ug,纬向地转风,m/s,0
 vg,经向地转风,m/s,0
 thetaes,饱和相当位温,kelvin,0
+pres,气压,hPa,0
