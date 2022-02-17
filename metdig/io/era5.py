@@ -21,7 +21,7 @@ from metdig.io.lib import config as CONFIG
 from metdig.io import era5_manual_download
 
 import logging
-logging.basicConfig(format='', level=logging.INFO)  # 此处加这一句代表忽略下属_log作用，直接将_log输出到命令行，测试用
+# logging.basicConfig(format='', level=logging.INFO)  # 此处加这一句代表忽略下属_log作用，直接将_log输出到命令行，测试用
 _log = logging.getLogger(__name__)
 
 """
@@ -172,7 +172,7 @@ def _era5download(era5_bjtimes, var_names, levels, extent, x_percent, y_percent)
 
     # 单线程下载
     if all(_levels) == True:
-        era5_manual_download.era5_psl_download(_era5_bjtimes[0], _era5_bjtimes[-1], var_names, levels, 
+        era5_manual_download.era5_psl_download(_era5_bjtimes[0], _era5_bjtimes[-1], var_names, _levels, 
                                                extent=extent, download_dir=None, is_overwrite=False,
                                                years=years, months=months, days=days, hour=hours)
     else:
@@ -399,6 +399,9 @@ if __name__ == '__main__':
     # ], 'u10m')
     # print(data)
 
-    data = get_model_grid(datetime.datetime(2020, 8, 2, 8), 'u10m')
+    # data = get_model_grid(datetime.datetime(2020, 8, 2, 8), 'u10m')
+    # print(data)
+
+    data = get_model_grid(datetime.datetime(2020, 8, 2, 8), 'tmp', 500)
     print(data)
     pass
