@@ -194,12 +194,13 @@ def ulj_contourf(ax, stda, xdim='lon', ydim='lat',
 def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
                     levels=np.arange(-10, 10.1, 1), cmap='ncl/BlueWhiteOrangeRed', extend='both',
-                    transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
+                    transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, filter_low=True,**kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e4  # 1e-4/s
-    z[np.abs(z)<1]=np.nan
+    if(filter_low):
+        z[np.abs(z)<1]=np.nan
     cmap = cm_collected.get_cmap(cmap,levels)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)

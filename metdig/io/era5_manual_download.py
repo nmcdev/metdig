@@ -333,8 +333,8 @@ def test():
 
     _log.info('mytest')
 
-    dt_start = datetime.datetime(2020,1,30,0)  # 北京时
-    dt_end = datetime.datetime(2020,2,2,0)
+    dt_start = datetime.datetime(2021,3,13,0)  # 北京时
+    dt_end = datetime.datetime(2021,3,15,0)
 
     # dt_start = datetime.datetime(2021,7,17,0)  # 北京时
     # dt_end = datetime.datetime(2021,7,22,0)
@@ -343,17 +343,18 @@ def test():
     # 跨年/月/日数据由于era5下载api会导致多下载数据
 
     # 多线程下载测试
-    # era5_psl_download_usepool(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0, 4], pressure_level=[200,500])
-    # era5_sfc_download_usepool(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0,4])
+    era5_psl_sameperiod_download_usepool(years=np.arange(1980,2022).tolist(), var_names=['u', 'v', 'tmp'], month=3,day=14,hour=[0,6,12,18], pressure_level=[700], max_pool=4,beforeday=0,afterday=0)
+    era5_psl_sameperiod_download_usepool(years=np.arange(1980,2022).tolist(), var_names=['u', 'v', 'tmp'], month=3,day=15,hour=[0], pressure_level=[700], max_pool=4,beforeday=0,afterday=0)
+    era5_psl_download_usepool(dt_start, dt_end, hour=[0, 6, 12, 18], max_pool=4)
+    # era5_sfc_download_usepool(dt_start, dt_end, var_names=['psfc'], hour=[0, 6, 12, 18])
 
     # 单线程下载测试
     # era5_psl_download(dt_start, dt_end, var_names=['hgt', 'u', 'v'], hour=[0,4])
     # era5_sfc_download(dt_start, dt_end, var_names=['u10m', 'v10m'], hour=[0,4])
 
     # 历史同期下载测试
-    # era5_psl_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['hgt', 'u'], hour=[0,4], pressure_level=[200,500])
-    # era5_sfc_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['u10m', 'v10m'], hour=[0,4])
-    # era5_psl_sameperiod_download_usepool(years=[1980, 1981, 1982], var_names=['u', 'v', 'tmp'], hour=[0,4], pressure_level=[500], beforeday=0, afterday=0)
+    # era5_sfc_sameperiod_download_usepool(years=np.arange(1980,2022), var_names=['u10m', 'prmsl'], hour=[0,6,12,18])
+    # era5_psl_sameperiod_download_usepool(years=np.arange(1980,2022), var_names=['u', 'v', 'tmp'], hour=[0,6,12,18], pressure_level=[500], beforeday=0, afterday=0)
 
 if __name__ == '__main__':
     test()

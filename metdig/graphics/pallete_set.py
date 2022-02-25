@@ -40,7 +40,7 @@ def plt_base_env():
 @kwargs_wrapper
 def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_fontsize=18, forcast_info='', nmc_logo=False,
-                       add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=True, add_county_city=False, 
+                       add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=False, add_county_city=False, 
                        add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
                        background_zoom_level=5,add_tag=True,**kwargs):
     """[水平分布图画板设置]]
@@ -117,7 +117,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         # if(map_extent[1] - map_extent[0] < 25):
         #     small_city = True
         utl_plotmap.add_city_on_map(ax, map_extent=map_extent, transform=ccrs.PlateCarree(),
-                                    zorder=101, size=13, small_city=True)
+                                    zorder=101, size=13, city_type='county')
 
     # 背景图
     if add_background_style is None:
@@ -377,6 +377,9 @@ def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add
                     color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     else:
         # metdig 标识
+        ax_right.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
+        ax_right.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
+        ax_right.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
         ax_left.text(0.90, -0.2, 'Powered by MetDig', transform=ax_left.transAxes, size=14,
                     color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
         ax_bottom=None

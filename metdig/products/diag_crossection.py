@@ -557,9 +557,9 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
     if terrain.max() > 0:
         cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
-    red_line = lines.Line2D([], [], color='red', label='temperature')
+    red_line = lines.Line2D([], [], color='black', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
-    leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
+    leg = obj.ax.legend(handles=[red_line, brown_line], loc=2, title=None, framealpha=1)
     leg.set_zorder(100)
     return obj.save()
 

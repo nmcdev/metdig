@@ -94,6 +94,19 @@ def read_rain(data_source=None, init_time=None, fhour=None, extent=(50, 150, 0, 
 
     raise Exception('Can not get any data!')
 
+def read_rains(fhours=None,**kwargs):
+    rain=[]
+    for ifhour in fhours:
+        try:
+            data=read_rain(fhour=ifhour,**kwargs)
+            rain.append(data)
+        except:
+            continue
+    if(rain !=[]):
+        rain=xr.concat(rain, dim='dtime')
+        return rain
+    return None
+
 def read_points_rain(points=None,fhours=None,**kwargs):
 
     rain=[]

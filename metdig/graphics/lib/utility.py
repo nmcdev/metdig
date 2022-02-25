@@ -288,7 +288,7 @@ def add_colorbar(ax, img, ticks=None, label='', label_size=20, tick_size=15,pos=
     else:
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l, b - h * 0.05 - pad, w, h * 0.02])
+            cax = plt.axes([l, b - h * 0.06 - pad, w, h * 0.02])
             orientation = 'horizontal'
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds

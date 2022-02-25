@@ -517,8 +517,8 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     if ret:
         return ret
 
-if __name__ == '__main__':
-    time_div_vort_rh_uv()
+# if __name__ == '__main__':
+#     time_div_vort_rh_uv()
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -554,6 +554,10 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
         ret.update(drawret)
     if ret:
         return ret
+
+if __name__=='__main__':
+    time_wind_tmpadv_tmp(init_time=datetime.datetime(2022,1,27,20),fhours=np.arange(0,51,3),
+        data_source='cmadaas',data_name='ecmwf')
 
 
 @date_init('init_time')
@@ -1104,7 +1108,7 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    time_rh_uv_tmp(init_time='2021081120',mean_area=[100,120,30,40])
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     time_rh_uv_tmp(init_time='2021081120',mean_area=[100,120,30,40])
+#     plt.show()

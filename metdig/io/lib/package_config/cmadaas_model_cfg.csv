@@ -114,7 +114,6 @@ ecmwf,tcwv,surface,mm,TCWV,总柱状比湿（整层水汽含量）,1,0,NAFP_ECMF_C1D_GLB_FOR,
 ecmwf,gust10m_3h,surface,m/s,10FG3,过去3小时10米阵风,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,vis,surface,m,VIS,能见度,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,albedo,surface,100*percent,FAL,反照率,1,0,NAFP_ECMF_C1D_GLB_FOR,model
-ecmwf,rainnc,surface,m,LPE,大尺度降水,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,lcdc,surface,100*percent,LCC,低云量,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,gust10m_6h,surface,m/s,10FG6,过去6小时10米阵风,1,0,NAFP_ECMF_C1D_GLB_FOR,model
 ecmwf,rainc,surface,m,CPE,对流性降水,1,0,NAFP_ECMF_C1D_GLB_FOR,model

@@ -143,9 +143,9 @@ def _era5download(era5_bjtimes, var_names, levels, extent, x_percent, y_percent)
         for var_name in var_names:
             for level in _levels:
                 if level is None:
-                    cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=level, find_area=True)
-                else:
                     cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=None, find_area=True)
+                else:
+                    cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=level, find_area=True)
                 if not os.path.exists(cache_file):
                     return False
         return True
@@ -257,7 +257,8 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
                                          var_name=var_name, np_input_units=era5_units,
                                          data_source='cds', level_type=level_type)
     return stda_data
-
+if __name__=='__main__':
+    get_model_grid(data_source='cds', init_time=datetime.datetime(2020,3,14,8), fhour=0, data_name='era5', var_name='tmp', level=850, extent=[100,120,30,40])
 
 def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
     '''

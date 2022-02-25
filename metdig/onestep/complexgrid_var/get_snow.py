@@ -84,6 +84,19 @@ def read_snow(data_source=None, init_time=None, fhour=None, extent=(50, 150, 0, 
 
     raise Exception('Can not get any data!')
 
+def read_snows(fhours=None,**kwargs):
+    snow=[]
+    for ifhour in fhours:
+        try:
+            data=read_snow(fhour=ifhour,**kwargs)
+            snow.append(data)
+        except:
+            continue
+    if(snow !=[]):
+        snow=xr.concat(snow, dim='dtime')
+        return snow
+    return None
+
 def read_points_snow(points=None,fhours=None,**kwargs):
 
     snow=[]
