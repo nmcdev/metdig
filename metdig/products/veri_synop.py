@@ -25,6 +25,26 @@ from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.draw_compose import *
 import metdig.graphics.lib.utility as utl
 
+def draw_veri_tmp(tmp_fcst,tmp_bias,
+                map_extent=(60, 145, 15, 55),
+                tmp_bias_contourf_kwargs={},tmp_bias_contour_kwargs={},tmp_fcst_contour_kwargs={}, 
+                **pallete_kwargs):
+
+    init_time = pd.to_datetime(tmp_fcst.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhour = int(tmp_fcst['dtime'].values[0])
+    fcstTime = init_time + datetime.timedelta(hours=fhour)
+    data_name = tmp_fcst['member'].values[0]
+    title = '[{0:}] {1:}hPa气温预报检验预报检验'.format(data_name.upper(),tmp_fcst['level'].values[0])
+
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(init_time, fcstTime, fhour)
+    png_name = '{2:}_{3:}hPa_气温_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper(),tmp_fcst['level'].values[0])
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
+    contourf_method.contourf_2d(obj.ax,tmp_bias,levels=np.arange(-5,5.1,0.25),cmap='ncl/BlueYellowRed',cb_label='温度偏差 (degC)',kwargs=tmp_bias_contourf_kwargs)
+    contour_method.contour_2d(obj.ax,tmp_bias,levels=np.arange(-5.,5.,1),linewidths=0.5,colors='red',cb_colors='red',cb_fontsize=10,kwargs=tmp_bias_contour_kwargs)
+    contour_method.contour_2d(obj.ax,tmp_fcst,levels=np.arange(-40,30,2),linewidths=1,kwargs=tmp_fcst_contour_kwargs)
+
+    return obj.save()
+
 def draw_veri_gust10m(gust10m_fcst,gust10m_obs,gustdir10m_obs,
                       map_extent=(60, 145, 15, 55),
                       gust10m_barb_kwargs={},gust10m_pcolormesh_kwargs={},colorbar_kwargs={},
