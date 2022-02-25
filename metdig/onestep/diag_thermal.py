@@ -174,11 +174,11 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
         tmpadv = mask_terrian(psfc, tmpadv)
         tmp = mask_terrian(psfc, tmp)
 
-    if ret:
-        return ret
-
     # plot
     if is_draw:
         drawret = draw_thermal.draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
+
+    if ret:
+        return ret
 
