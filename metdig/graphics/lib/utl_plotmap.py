@@ -16,10 +16,93 @@ from matplotlib.text import TextPath
 from matplotlib.patches import PathPatch
 import matplotlib.patheffects as mpatheffects
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
-
 import metdig.graphics.lib.utility as utl
 
+import shapefile
+from matplotlib.path import Path
+from matplotlib.patches import PathPatch
+from shapely.geometry import Polygon as ShapelyPolygon
+from shapely.geometry import Point as ShapelyPoint
+
 pkg_name = 'metdig.graphics'
+
+def shp2clip_pro_id(originfig, ax, shpfile, num_list):
+    sf = shapefile.Reader(shpfile)
+    vertices = []  # 这块是已经修改的地方
+    codes = []  # 这块是已经修改的地方
+
+    shape_recs = sf.shapeRecords()
+
+    for i in range(len(shape_recs)):
+        # if shape_rec.record[3] == region:  # 这里需要找到和region匹配的唯一标识符，record[]中必有一项是对应的。
+
+        #if(len(shape_rec.record) ==1):continue
+
+        if i in num_list:  # 这块是已经修改的地方
+            shape_rec = shape_recs[i]
+            pts = shape_rec.shape.points
+            prt = list(shape_rec.shape.parts) + [len(pts)]
+            for i in range(len(prt) - 1):
+                for j in range(prt[i], prt[i + 1]):
+                    vertices.append((pts[j][0], pts[j][1]))
+                codes += [Path.MOVETO]
+                codes += [Path.LINETO] * (prt[i + 1] - prt[i] - 2)
+                codes += [Path.CLOSEPOLY]
+            path = Path(vertices, codes)
+            # extents = path.get_extents()
+            patch = PathPatch(path, transform=ax.transData, facecolor='none', edgecolor='black')
+    for contour in originfig.collections:
+        contour.set_clip_path(patch)
+    
+    try:
+        clabels=originfig.labelTextsList
+        if(clabels is not None):
+            clip_map_shapely = ShapelyPolygon(vertices)
+            for text_object in clabels:
+                if not clip_map_shapely.contains(ShapelyPoint(text_object.get_position())):
+                    text_object.set_visible(False)
+    except:
+        return path, patch
+
+    return path, patch
+
+def shp2clip_by_region_name(originfig, ax, region_name_list):
+    province = pkg_resources.resource_filename('meteva', "resources/maps/Province")
+
+    province_ch_name = ["北京","天津","河北","山西","内蒙古",
+                        "辽宁","吉林","黑龙江","上海","江苏",
+                        "浙江","安徽","福建","江西", "山东",
+                        "河南","湖北","湖南","广东","广西",
+                        "海南","重庆","四川","贵州","云南",
+                        "西藏","陕西","甘肃","青海","宁夏",
+                        "新疆","台湾","香港","澳门"]
+
+    province_name =["beijing","tianjin","hebei","shanxi","neimenggu",
+                    "liaoning", "jilin", "heilongjiang", "shanghai", "jiangsu",
+                    "zhejiang", "anhui", "fujian", "jiangxi", "shandong",
+                    "henan", "hubei", "hunan", "guangdong", "guangxi",
+                    "hainan", "chongqing", "sichuan", "guizhou", "yunnan",
+                    "xizang", "shanxi", "gansu", "qinghai", "ningxia",
+                    "xinjiang", "taiwan", "xianggang", "aomen"]
+
+
+    region_id_list = []
+    #print(region_name_list)
+    for region_name in region_name_list:
+        if region_name.lower()=="china" or region_name=="中国":
+            region_id_list.extend(np.arange(34).tolist())
+        else:
+            for i in range(len(province_name)):
+                if region_name.find(province_ch_name[i])>=0:
+                    region_id_list.append(i)
+                if region_name.lower().find(province_name[i])>=0:
+                    region_id_list.append(i)
+
+    #print(region_id_list)
+    region_id_list = list(set(region_id_list))
+    print(province)
+    shp2clip_pro_id(originfig, ax, province, region_id_list)
+
 
 def time_ticks_formatter(ax,times,if_minor=False):
     times=pd.to_datetime(times)
