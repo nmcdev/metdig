@@ -216,7 +216,7 @@ def obs_rename_colname(data):
         'Rain_3h': 'rain03',
         'Rain_6h': 'rain06',
         'Rain_12h': 'rain12',
-        'Rain_day': 'rain24',
+        'Rain_24h': 'rain24',
         'Rain_20-08': 'rain24',
         'Rain_08-20': 'rain24',
         'Rain_20-20': 'rain24',

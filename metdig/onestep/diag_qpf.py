@@ -78,6 +78,9 @@ def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, a
     if ret:
         return ret
 
+if __name__ == '__main__':
+    rain(clip_area=['中国'])
+
 @date_init('init_time')
 def hgt_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',
              is_return_data=False, is_draw=True, **products_kwargs):

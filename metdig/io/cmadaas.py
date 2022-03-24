@@ -290,9 +290,10 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
         raise Exception(str(e))
 
     # 读取数据
-    timestr = '{:%Y%m%d%H%M%S}'.format(obs_time - datetime.timedelta(hours=8))  # 数据都是世界时，需要转换为北京时
+    timestr = '{:%Y%m%d%H%M%S}'.format(obs_time - datetime.timedelta(hours=8))  # cmadaas数据都是世界时，需要转换为北京时
     data = nmc_cmadaas_io.cmadaas_obs_by_time(timestr, data_code=cmadaas_data_code,
                                               elements="Station_Id_C,Station_Id_d,lat,lon,Datetime," + cmadaas_var_name)
+    data['Datetime']=obs_time # cmadaas数据都是世界时，需要转换为北京时
 
     if data is None:
         raise Exception('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_var_name={}, obs_time={}'.format(
@@ -319,7 +320,12 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
         np_input_units=cmadass_units, var_name=var_name, other_input={},
         data_source='cmadaas', data_name=data_name
     )
-
+if __name__=='__main__':
+    import datetime
+    obs_time=datetime.datetime(2022,3,23,8)
+    # map_extent=[113.5,119.5,38,42]
+    rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='rain01').dropna()
+    print(rain)
 
 def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
                                extent=None, x_percent=0, y_percent=0, ):

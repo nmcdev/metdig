@@ -46,7 +46,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels, isLinear=isLinear)
 
-    if transform is None or (xdim != 'lon' and ydim != 'lat'):
+    if (transform is None) or (xdim != 'lon' and ydim != 'lat'):
         img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, alpha=alpha, extend=extend, **kwargs)
     else:
         img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
@@ -268,7 +268,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
 def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=np.arange(960, 1065, 5), cmap='guide/cs26', extend='neither',
-                   transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+                   transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # hPa
@@ -277,7 +277,7 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='mean sea level pressure (hPa)', extend='max')
+        utl.add_colorbar(ax, img, ticks=levels, label='mean sea level pressure (hPa)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -303,7 +303,7 @@ def pres_contourf(ax, stda, xdim='lon', ydim='lat',
 def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
                    add_colorbar=True,
                    transform=ccrs.PlateCarree(), alpha=0.8,levels=None,ticks=None,
-                   cmap='met/rain',
+                   cmap='met/rain',colorbar_kwargs={},
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -341,7 +341,7 @@ def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
         img = ax.contourf(x, y, z, levels=levels, norm=norm, cmap=cmap, transform=transform, alpha=alpha, extend='max', **kwargs)
 
         if add_colorbar:
-            utl.add_colorbar(ax, img, ticks=ticks, label='{}h precipitation (mm)'.format(valid_time), extend='max')
+            utl.add_colorbar(ax, img, ticks=ticks, label='{}h precipitation (mm)'.format(valid_time), extend='max',kwargs=colorbar_kwargs)
         return img
     except:
         print('nothing to contourf')

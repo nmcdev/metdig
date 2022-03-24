@@ -263,7 +263,6 @@ def get_obs_stations(data_source, throwexp=True, **kwargs):
             return None
     return None
 
-
 def get_obs_stations_multitime(data_source, throwexp=True, **kwargs):
     '''
 

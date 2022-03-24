@@ -158,7 +158,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=[12, 15, 18, 21, 24, 27, 30], cmap='met/wsp',
-                   transform=ccrs.PlateCarree(), alpha=0.5,
+                   transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -170,7 +170,7 @@ def wsp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max')
+        utl.add_colorbar(ax, img, label='Wind Speed (m/s)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 
@@ -197,18 +197,18 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',
-                  transform=ccrs.PlateCarree(), alpha=0.5,
+                  transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # percent
 
     cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
-    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+    # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(%)', extend='max')
+        utl.add_colorbar(ax, img, label='(%)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 
@@ -216,7 +216,7 @@ def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(2, 24, 0.5), cmap='met/specific_humidity_nws',
-                    transform=ccrs.PlateCarree(), alpha=0.8,
+                    transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -226,7 +226,7 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)')
+        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',kwargs=colorbar_kwargs)
     return img
 
 
@@ -234,7 +234,7 @@ def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels = np.arange(-4, 4.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',
-                  transform=ccrs.PlateCarree(), alpha=0.8,
+                  transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -245,7 +245,7 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha,**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)', extend='both')
+        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)', extend='both',kwargs=colorbar_kwargs)
     return img
             
 
@@ -275,7 +275,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    cmap='met/temp',levels = np.arange(-45, 46,1),
-                   transform=ccrs.PlateCarree(), alpha=0.5,
+                   transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -285,7 +285,7 @@ def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, cmap=cmap,norm=norm, transform=transform, alpha=alpha,  **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='°C', extend='both')
+        utl.add_colorbar(ax, img, label='°C', extend='both',kwargs=colorbar_kwargs)
     return img
 
 
