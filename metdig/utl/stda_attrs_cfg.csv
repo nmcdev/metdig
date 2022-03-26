@@ -5,7 +5,7 @@
 #    2. var_units在stda中配置时不能带任何倍数关系,,,
 #,,,
 var_name,var_cn_name,var_units,valid_time
-hgt,位势高度,dagpm,0
+hgt,高度,dagpm,0
 u,u方向风速,m/s,0
 v,v方向风速,m/s,0
 w,垂直方向风速,m/s,0
@@ -95,3 +95,7 @@ ug,纬向地转风,m/s,0
 vg,经向地转风,m/s,0
 thetaes,饱和相当位温,kelvin,0
 pres,气压,hPa,0
+mixr,水气混合比,g/kg,0
+density,空气密度,kg/m**3,0
+drsteg,干静力能,kJ/kg,0
+geohgt,位势高度,m**2/s**2,0

@@ -313,7 +313,6 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
         data_source='cassandra', data_name=data_name
     )
 
-
 def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
                                extent=None, x_percent=0, y_percent=0, is_save_other_info=False):
     '''

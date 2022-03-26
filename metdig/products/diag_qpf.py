@@ -13,6 +13,7 @@ from metdig.graphics.text_method import *
 from metdig.graphics.draw_compose import *
 
 import meteva.base as meb
+import metdig.graphics.lib.utl_plotmap as utl_plotmap
 
 def draw_model_cref(cref,map_extent=(60, 145, 15, 55),
                 ref_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={},
@@ -57,8 +58,8 @@ def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,clip_area=None
     img_rain=rain_contour(obj.ax,rain,kwargs=rain_contour_kwargs)
 
     if (clip_area != None):
-        meb.tool.maskout.shp2clip_by_region_name(img_qpf, obj.ax, clip_area)
-        meb.tool.maskout.shp2clip_by_region_name(img_rain, obj.ax, clip_area)
+        utl_plotmap.shp2clip_by_region_name(img_qpf, obj.ax, clip_area)
+        utl_plotmap.shp2clip_by_region_name(img_rain, obj.ax, clip_area)
 
     if(add_extrema):
         extrma_text=add_extrema_on_ax(obj.ax,rain,kwargs=extrema_text_kwargs)

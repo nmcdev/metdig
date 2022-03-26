@@ -90,7 +90,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     # 海岸线，省界，河流等中国边界信息
     if add_coastline:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.3, zorder=19, alpha=0.5,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.5, zorder=19, alpha=1,crs=ccrs.PlateCarree())
     if add_china:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=19,crs=ccrs.PlateCarree())
     if add_province:
@@ -156,7 +156,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     # 南海
     if add_south_china_sea:
         l, b, w, h = ax.get_position().bounds
-        utl_plotmap.add_south_china_sea_png(pos=[l + w - 0.094, b, 0.11, 0.211], name='simple')  # 直接贴图
+        utl_plotmap.add_south_china_sea_png(pos=[l + w - 0.1, b+0.005, 0.11, 0.211], name='simple')  # 直接贴图
 
     # 预报/分析描述信息
     if forcast_info:

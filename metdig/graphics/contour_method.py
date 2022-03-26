@@ -45,7 +45,7 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)
 
-    if transform is None or (xdim != 'lon' and ydim != 'lat'):
+    if (transform is None) or (xdim != 'lon' and ydim != 'lat'):
         img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
     else:
         img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
@@ -69,7 +69,7 @@ def rain_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=False,
                 levels=[1,10,25,50,100,250],
                 cmap='met/rain',
-                transform=ccrs.PlateCarree(), linewidths=0.7,
+                transform=ccrs.PlateCarree(), linewidths=0.7,colorbar_kwargs={},
                 **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -78,7 +78,7 @@ def rain_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, norm=norm, cmap=cmap, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
