@@ -26,6 +26,8 @@ def extent2limit(extent, x_percent=0, y_percent=0):
     return limit
 
 def parm_tolist(parm):
+    if parm is None:
+        return [None]
     if isinstance(parm, list):
         return parm
     if isinstance(parm, str):

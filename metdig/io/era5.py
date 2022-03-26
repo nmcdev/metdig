@@ -7,7 +7,6 @@ import math
 
 import cdsapi
 import numpy as np
-from sympy import N
 import xarray as xr
 
 import sys
@@ -25,6 +24,7 @@ import logging
 _log = logging.getLogger(__name__)
 
 """
+弃用
 class ERA5DataService(object):
     '''
 
@@ -110,11 +110,79 @@ class ERA5DataService(object):
             savefile)
 """
 
+def era5anycache(var_name, levels, era5_utctime, extent):
+    """判断某个要素某个时次，era5本地缓存内是否存在已经存在数据，只要有一个缓存文件不存在，就返回False，如果全存在，则返回True
+
+    注意：
+    因era5为一次提交，一个要素所有时次所有层次下载到如："v_19800709_19820709_50_160_0_70.nc"文件中，然后拆分到本地缓存中，
+    故下载这个时次时，只要有一个缓存文件不存在，就返回False，如果全存在，则返回True
+
+    遗留问题：
+    跨年/月/日数据由于era5下载api会导致多下载数据，短期数据影响不大，长时间数据建议
+
+    Args:
+        var_name (str): 要素名
+        levels (list): 层次列表
+        era5_utctime (datetime): era5世界时时间
+        extent (list): 区域
+
+    Returns:
+        bool: True/False
+    """   
+    _levels = utl.parm_tolist(levels)
+
+    for level in _levels:
+        if level is None:
+            cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=None, find_area=True)
+        else:
+            cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=level, find_area=True)
+        if not os.path.exists(cache_file):
+            return False
+    return True
+
+def era5_needdownedymdh_bytimes(era5_bjtimes, var_name, levels=None, extent=None, isjudgecache=True):
+    """获取某个要素，需要下载的年月日时列表（会根据本地缓存目录中已经存在的数据进行判断）
+
+    Args:
+        era5_bjtimes (datetime): era5北京时时间列表
+        var_name (str): 要素名
+        levels (list): 层次列表
+        isjudgecache (bool): 是否对本地缓存进行判断
+
+    Returns:
+        tuple: (years, months, days, hours)
+    """    
+    years = []
+    months = []
+    days = []
+    hours = []
+    for era5_bjtime in era5_bjtimes:
+        era5_utctime = era5_bjtime - datetime.timedelta(hours=8)  # 世界时
+
+        if isjudgecache == True:
+            if era5anycache(var_name, levels, era5_utctime, extent) == False:
+                years.append(era5_utctime.year)
+                months.append(era5_utctime.month)
+                days.append(era5_utctime.day)
+                hours.append(era5_utctime.hour)
+        else:
+            years.append(era5_utctime.year)
+            months.append(era5_utctime.month)
+            days.append(era5_utctime.day)
+            hours.append(era5_utctime.hour)
 
 
-def _era5download(era5_bjtimes, var_names, levels, extent, x_percent, y_percent):
+    years = list(sorted(set(years)))
+    months = list(sorted(set(months)))
+    days = list(sorted(set(days)))
+    hours = list(sorted(set(hours)))
+
+    return years, months, days, hours
+
+
+def _era5download(era5_bjtimes, var_name, levels, extent, x_percent, y_percent):
     '''
-    调用手动下载部分批量下载，自动拆分到缓存目录下，参数为北京时
+    调用手动下载部分批量下载单个要素，自动拆分到缓存目录下，参数为北京时
     '''
     _era5_bjtimes = utl.parm_tolist(era5_bjtimes)
     _levels = utl.parm_tolist(levels)
@@ -134,53 +202,25 @@ def _era5download(era5_bjtimes, var_names, levels, extent, x_percent, y_percent)
     else:
         extent = [50, 160, 0, 70]  # 数据下载默认范围
 
+
     # 获取本次需要下载的年月日参数
-    # 后续还得优化内容包括：
-    # 1.根据实际本地已有的数据再下载
-    # 2.跨年/月/日数据由于era5下载api会导致多下载数据，短期数据影响不大，长时间数据建议
-    def anycache(era5_utctime):
-        # 只要有一个缓存文件不存在，就返回False，如果全存在，则返回True
-        for var_name in var_names:
-            for level in _levels:
-                if level is None:
-                    cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=None, find_area=True)
-                else:
-                    cache_file = CONFIG.get_era5cache_file(era5_utctime, var_name, extent, level=level, find_area=True)
-                if not os.path.exists(cache_file):
-                    return False
-        return True
-    years = []
-    months = []
-    days = []
-    hours = []
-    for era5_bjtime in _era5_bjtimes:
-        era5_utctime = era5_bjtime - datetime.timedelta(hours=8)  # 世界时
-
-        if anycache(era5_utctime) == False:
-            years.append(era5_utctime.year)
-            months.append(era5_utctime.month)
-            days.append(era5_utctime.day)
-            hours.append(era5_utctime.hour)
-
-    years = list(sorted(set(years)))
-    months = list(sorted(set(months)))
-    days = list(sorted(set(days)))
-    hours = list(sorted(set(hours)))
+    # 根据实际本地已有的数据再下载
+    years, months, days, hours = era5_needdownedymdh_bytimes(_era5_bjtimes, var_name, _levels, extent) # 返回的年月日时为世界时
 
     if len(years) == 0:
         return
 
     # 单线程下载
     if all(_levels) == True:
-        era5_manual_download.era5_psl_download(_era5_bjtimes[0], _era5_bjtimes[-1], var_names, _levels, 
-                                               extent=extent, download_dir=None, is_overwrite=False,
+        era5_manual_download._era5_psl_download(_era5_bjtimes[0] - datetime.timedelta(hours=8), _era5_bjtimes[-1] - datetime.timedelta(hours=8), 
+                                               [var_name], _levels, extent=extent, download_dir=None, is_overwrite=False,
                                                years=years, months=months, days=days, hour=hours)
     else:
-        era5_manual_download.era5_sfc_download(_era5_bjtimes[0], _era5_bjtimes[-1], var_names, 
-                                               extent=extent, download_dir=None, is_overwrite=False,
+        era5_manual_download._era5_sfc_download(_era5_bjtimes[0] - datetime.timedelta(hours=8), _era5_bjtimes[-1] - datetime.timedelta(hours=8), 
+                                               [var_name], extent=extent, download_dir=None, is_overwrite=False,
                                                years=years, months=months, days=days, hour=hours)
 
-def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
+def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):
     '''
 
     [获取era5再分析单层单时次数据，注意：缓存的目录为世界时]
@@ -196,7 +236,8 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     Returns:
         [type] -- [description]
     '''
-    _era5download(init_time, [var_name], level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+    if force_local == False:
+        _era5download(init_time, var_name, level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
 
     init_time_utc = init_time - datetime.timedelta(hours=8)  # 世界时
     if extent:
@@ -260,7 +301,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
 if __name__=='__main__':
     get_model_grid(data_source='cds', init_time=datetime.datetime(2020,3,14,8), fhour=0, data_name='era5', var_name='tmp', level=850, extent=[100,120,30,40])
 
-def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, **kwargs):
+def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):
     '''
 
     [读取单层多时次模式网格数据]
@@ -276,14 +317,15 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     Returns:
         [stda] -- [stda格式数据]
     '''
-    _era5download(init_time, [var_name], level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+    if force_local == False:
+        _era5download(init_times, var_name, level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
 
     init_times = utl.parm_tolist(init_times)
 
     stda_data = []
     for init_time in init_times:
         try:
-            data = get_model_grid(init_time, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+            data = get_model_grid(init_time, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent, force_local=force_local)
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
@@ -293,7 +335,7 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     return None
 
 
-def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, **kwargs):
+def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):
     '''
 
     [读取多层单时次模式网格数据]
@@ -309,14 +351,15 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     Returns:
         [stda] -- [stda格式数据]
     '''
-    _era5download(init_time, [var_name], levels, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+    if force_local == False:
+        _era5download(init_time, var_name, levels, extent, x_percent, y_percent) # 调用手动下载模块批量下载
 
     levels = utl.parm_tolist(levels)
 
     stda_data = []
     for level in levels:
         try:
-            data = get_model_grid(init_time, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+            data = get_model_grid(init_time, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent, force_local=force_local)
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
@@ -327,7 +370,7 @@ def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x
     return None
 
 
-def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, **kwargs):
+def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):
     '''
 
     [读取多层多时次模式网格数据]
@@ -343,7 +386,8 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
     Returns:
         [stda] -- [stda格式数据]
     '''
-    _era5download(init_times, [var_name], levels, extent, x_percent, y_percent) # 调用手动下载模块批量下载
+    if force_local == False:
+        _era5download(init_times, var_name, levels, extent, x_percent, y_percent) # 调用手动下载模块批量下载
 
     init_times = utl.parm_tolist(init_times)
     levels = utl.parm_tolist(levels)
@@ -353,7 +397,7 @@ def get_model_3D_grids(init_times=None, var_name=None, levels=None, extent=None,
         temp_data = []
         for level in levels:
             try:
-                data = get_model_grid(init_time, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+                data = get_model_grid(init_time, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent, force_local=force_local)
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
