@@ -8,6 +8,7 @@ from . import cmadass_manual_download
 from . import era5
 from . import nmc_micaps_helper
 from . import thredds
+from . import custom
 
 
 from metdig.io.lib import config
@@ -71,6 +72,8 @@ def get_model_grid(data_source,  throwexp=True, **kwargs):
             return cmadaas.get_model_grid(**kwargs)
         elif data_source == 'thredds':
             return thredds.get_model_grid(**kwargs)
+        elif data_source == 'custom':
+            return custom.get_model_grid(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))
     except Exception as e:
@@ -109,6 +112,8 @@ def get_model_grids(data_source, throwexp=True, **kwargs):
             return cmadaas.get_model_grids(**kwargs)
         elif data_source == 'thredds':
             return thredds.get_model_grids(**kwargs)
+        elif data_source == 'custom':
+            return custom.get_model_grids(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))
     except Exception as e:
@@ -145,6 +150,8 @@ def get_model_3D_grid(data_source, throwexp=True, **kwargs):
             return cmadaas.get_model_3D_grid(**kwargs)
         elif data_source == 'thredds':
             return thredds.get_model_3D_grid(**kwargs)
+        elif data_source == 'custom':
+            return custom.get_model_3D_grid(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))
     except Exception as e:
@@ -185,6 +192,8 @@ def get_model_3D_grids(data_source, throwexp=True, **kwargs):
             if 'init_time' in kwargs:
                 kwargs['init_times'] = kwargs['init_time']
             return thredds.get_model_3D_grids(**kwargs)
+        elif data_source == 'custom':
+            return custom.get_model_3D_grids(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))
     except Exception as e:
@@ -222,6 +231,8 @@ def get_model_points(data_source, throwexp=True, **kwargs):
         elif data_source == 'thredds':
             kwargs.pop('fhours')
             return thredds.get_model_points(**kwargs)
+        elif data_source == 'custom':
+            return custom.get_model_points(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))
     except Exception as e:
