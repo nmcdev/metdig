@@ -96,6 +96,7 @@ cma_gfs,rh2m,surface,percent,,2,GRAPES_GFS/RH/2M_ABOVE_GROUND/
 cma_gfs,td2m,surface,degC,,2,GRAPES_GFS/DPT/2M_ABOVE_GROUND/
 #cma_gfs,bli,surface,,,0,GRAPES_GFS/BLI/
 cma_gfs,psfc,surface,hPa,,0,GRAPES_GFS/PRES/SURFACE/
+cma_gfs,cape,surface,J/kg,,0,GRAPES_GFS/CAPE/SURFACE/
 #cma_gfs,oro,surface,,,0,GRAPES_GFS/HGT/SURFACE/
 ncep_gfs,u10m,surface,m/s,,10,NCEP_GFS/UGRD/10M_ABOVE_GROUND/
 ncep_gfs,v10m,surface,m/s,,10,NCEP_GFS/VGRD/10M_ABOVE_GROUND/

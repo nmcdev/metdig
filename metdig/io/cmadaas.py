@@ -324,7 +324,7 @@ if __name__=='__main__':
     import datetime
     obs_time=datetime.datetime(2022,3,23,8)
     # map_extent=[113.5,119.5,38,42]
-    rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='rain01').dropna()
+    rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='tmp',id_selected=['54511','505'])
     print(rain)
 
 def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,

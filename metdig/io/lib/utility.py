@@ -135,7 +135,7 @@ def sta_select_id(df, id_selected):
     id_selected = np.array(id_selected).astype(df.index.dtype)
 
     try:
-        data = df.loc[id_selected]
+        data = df.loc[df.Station_Id_d.isin(id_selected)]
     except Exception as e:
         _log.debug('id_selected failed: id={} is not in data!'.format(id_selected))
         return None

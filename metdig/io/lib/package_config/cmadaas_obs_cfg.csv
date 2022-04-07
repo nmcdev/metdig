@@ -14,13 +14,14 @@ sfc_chn_hor,rain12,mm,PRE_12h,过去12小时降水量,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,rain06,mm,PRE_6h,过去6小时降水量,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,rain03,mm,PRE_3h,过去3小时降水量,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,rain01,mm,PRE_1h,过去1小时降水量,SURF_CHN_MUL_HOR_N
-sfc_chn_hor,tmp,kelvin,TEM,温度/气温,SURF_CHN_MUL_HOR_N
-sfc_chn_hor,td,kelvin,DPT,露点温度,SURF_CHN_MUL_HOR_N
+sfc_chn_hor,tmp,degC,TEM,温度/气温,SURF_CHN_MUL_HOR_N
+sfc_chn_hor,td,degC,DPT,露点温度,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,rh,percent,RHU,相对湿度,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,wsp,m/s,WIN_S_Avg_2mi,10分钟平均风速,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,wdir,degree,WIN_D_Avg_2mi,10分钟平均风向（角度）,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,wsp10min,m/s,WIN_S_Avg_10mi,2分钟平均风速,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,wdir10min,degree,WIN_D_Avg_10mi,2分钟平均风向（角度）,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,tmx24_2m,degC,TEM_Max_24h,过去24小时最高气温,SURF_CHN_MUL_HOR_N
+sfc_chn_hor,tmn24_2m,degC,TEM_Min_24h,过去24小时最高气温,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,gust10m,m/s,WIN_S_INST_Max,极大风速,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,gustdir10m,degree,WIN_D_INST_Max,极大风向,SURF_CHN_MUL_HOR_N

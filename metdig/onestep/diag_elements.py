@@ -159,7 +159,7 @@ def mslp_gust10m_uv10m(data_source='cassandra', data_name='ecmwf', init_time=Non
     gust10m.attrs['var_cn_name'] = '逐{}小时最大阵风'.format(t_gap)
 
     if is_return_data:
-        dataret = {'gust10m': gust10m, 'prmsl': prmsl}
+        dataret = {'gust10m': gust10m, 'prmsl': prmsl,'u10m':u10m,'v10m':v10m}
         ret.update({'data': dataret})
 
     prmsl = mdgcal.gaussian_filter(prmsl, 5)
