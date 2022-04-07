@@ -438,11 +438,11 @@ def ir_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # mm
 
-    cmap, norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels, isLinear=True)
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels, isLinear=True)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(K)', extend='neither', kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='(K)', extend='max', kwargs=colorbar_kwargs)
     return img
         
 @kwargs_wrapper

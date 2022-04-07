@@ -63,6 +63,38 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 # 以下为特殊方法，无法使用上述通用方法时在后面增加单独的方法
 ############################################################################################################################
+@kwargs_wrapper
+def spfh_contour(ax, stda,  xdim='lon', ydim='lat',
+                add_clabel=True,
+                levels= np.arange(8,20, 4),
+                colors='yellow',
+                transform=ccrs.PlateCarree(), linewidths=0.8,
+                **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) # dagpm
+
+    img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=13, fmt='%.0f', colors=colors)
+    return img
+
+@kwargs_wrapper
+def ulj_contour(ax, stda,  xdim='lon', ydim='lat',
+                add_clabel=True,
+                levels= np.arange(35,85, 10),
+                colors='yellow',
+                transform=ccrs.PlateCarree(), linewidths=0.8,
+                **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) # dagpm
+
+    img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=13, fmt='%.0f', colors=colors)
+    return img
+
 
 @kwargs_wrapper
 def rain_contour(ax, stda,  xdim='lon', ydim='lat',
@@ -156,18 +188,34 @@ def div_contour(ax, stda, xdim='lon', ydim='lat',
     return img
 
 @kwargs_wrapper
-def pv_contour(ax, stda, xdim='lon', ydim='lat',
-               add_clabel=True,
-               levels=np.arange(3, 25, 2), colors='black',
-               transform=ccrs.PlateCarree(), linewidths=1, **kwargs):
+def cape_contour(ax, stda, xdim='lon', ydim='lat',
+               add_clabel=True,cb_fontsize=20,
+               levels=np.arange(1000, 4100, 500), colors='red',
+               transform=ccrs.PlateCarree(), linewidths=1,clabel_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_value(ydim, xdim) # K*m**2/(s*kg)
+    z = stda.stda.get_value(ydim, xdim)
+
+    img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
+    if add_clabel:
+        plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt='%.0f', colors=colors)
+    return img
+
+
+
+@kwargs_wrapper
+def pv_contour(ax, stda, xdim='lon', ydim='lat',
+               add_clabel=True,cb_fontsize=20,
+               levels=np.arange(3, 25, 2), colors='black',
+               transform=ccrs.PlateCarree(), linewidths=1,clabel_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)
     z = z * 1e6  # 1e-6*K*m**2/(s*kg)
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+        plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt='%.0f', colors=colors)
     return img
 
 
