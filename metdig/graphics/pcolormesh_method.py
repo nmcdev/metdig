@@ -253,7 +253,7 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(5, 46).tolist(), cmap='met/wvfl_ctable',
-                    transform=ccrs.PlateCarree(), alpha=0.8,
+                    transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -267,7 +267,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Water Vapor Flux g/(cm*hPa*s)', extend='max')
+        utl.add_colorbar(ax, img, label='Water Vapor Flux g/(cm*hPa*s)', extend='max',kwargs=colorbar_kwargs)
     return img
 
 
