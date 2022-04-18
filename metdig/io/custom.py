@@ -18,7 +18,7 @@ import logging
 _log = logging.getLogger(__name__)
 
 
-def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=True):
+def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=True, **attrs_kwargs):
     '''
 
     [拆分自定义地面stda至metdig缓存目录]
@@ -46,6 +46,8 @@ def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=Tru
             data = stda.sel(time=time, dtime=dtime)
             data = data.expand_dims(time=[time], dtime=[dtime])
             data = data.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+            stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
+            data.attrs=stda_attrs
 
             if not os.path.exists(os.path.dirname(cachefile)):
                 os.makedirs(os.path.dirname(cachefile))
