@@ -82,7 +82,7 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=T
     [多进程绘图]
 
     Keyword Arguments:
-        func {[type]} -- [函数] (default: {None})
+        func {[type]} -- [函数 or list] (default: {None})如果是函数，list长度须于func_args_all一致
         func_args_all {list} -- [函数参数] (default: {[]})
         max_workers {number} -- [进程池大小] (default: {6})
         force_max_workers {bool} -- [是否强制使用max_workers参数，默认关闭] (default: {False})
@@ -102,7 +102,10 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=T
     all_ret = []
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executer:
         # 提交所有绘图任务
-        all_task = [executer.submit(func, **_) for _ in func_args_all]
+        if(isinstance(func,list)):
+            all_task = [executer.submit(func[_ifunc], **_) for _ifunc,_ in enumerate(func_args_all)]
+        else:
+            all_task = [executer.submit(func, **_) for _ in func_args_all]
 
         # 等待
         futures.wait(all_task, return_when=futures.ALL_COMPLETED)
