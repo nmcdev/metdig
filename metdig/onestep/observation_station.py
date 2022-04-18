@@ -5,7 +5,7 @@ import math
 import numpy as np
 
 from metdig.io import get_model_points
-from metdig.io.cassandra import get_obs_stations_multitime
+from metdig.io import get_obs_stations_multitime
 
 from metdig.onestep.lib.utility import date_init
 
@@ -24,11 +24,11 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='sfc_chn_hor', obs_tim
                        is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    rain01 = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='rain01', id_selected=id_selected)
-    tmp = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='tmp', id_selected=id_selected)
-    rh = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name,  var_name='rh', id_selected=id_selected)
-    wsp = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='wsp', id_selected=id_selected)
-    wdir = get_obs_stations_multitime(obs_times=obs_times, data_name=data_name, var_name='wdir', id_selected=id_selected)
+    rain01 = get_obs_stations_multitime(obs_times=obs_times,data_source=data_source, data_name=data_name, var_name='rain01', id_selected=id_selected)
+    tmp = get_obs_stations_multitime(obs_times=obs_times,data_source=data_source, data_name=data_name, var_name='tmp', id_selected=id_selected)
+    rh = get_obs_stations_multitime(obs_times=obs_times,data_source=data_source, data_name=data_name,  var_name='rh', id_selected=id_selected)
+    wsp = get_obs_stations_multitime(obs_times=obs_times,data_source=data_source, data_name=data_name, var_name='wsp', id_selected=id_selected)
+    wdir = get_obs_stations_multitime(obs_times=obs_times,data_source=data_source, data_name=data_name, var_name='wdir', id_selected=id_selected)
 
     # calcu
     u, v = mdgcal.wind_components(wsp, wdir)
@@ -46,6 +46,6 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='sfc_chn_hor', obs_tim
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    obs_uv_tmp_rh_rain(label_bottomax='平均风',wsp_plot_kwargs={'label':'阵风'})
+    obs_uv_tmp_rh_rain(data_source='cassandra',label_bottomax='平均风',wsp_plot_kwargs={'label':'阵风'})
     plt.show()
 

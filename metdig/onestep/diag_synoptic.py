@@ -64,11 +64,6 @@ def uvstream_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    uvstream_wsp()
-    plt.show()
-
 @date_init('init_time')
 def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,
@@ -121,7 +116,7 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    syn_composite()
+    syn_composite(init_time='2021110712',data_name='era5',data_source='cds')
     plt.show()
 
 @date_init('init_time')

@@ -93,6 +93,10 @@ def read_rain(data_source=None, init_time=None, fhour=None, extent=(50, 150, 0, 
         return rain
 
     raise Exception('Can not get any data!')
+if __name__ == '__main__':
+    from datetime import datetime
+    rain01=read_rain(data_source='custom',data_name='custom',init_time=datetime(2020,7,18,23),fhour=0,atime=2)
+    print(rain01)
 
 def read_rains(fhours=None,**kwargs):
     rain=[]

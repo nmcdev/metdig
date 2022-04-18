@@ -13,13 +13,10 @@ import pandas as pd
 import sys
 
 import metdig
-
-
 from metdig.io.lib import config as CONFIG
 
 import logging
 _log = logging.getLogger(__name__)
-
 
 def _cmadass_download_hourly_pressure_levels(
         init_time,
@@ -34,7 +31,6 @@ def _cmadass_download_hourly_pressure_levels(
     metdig.io.cmadaas.get_model_3D_grids(init_time=init_time, fhours=fhours, data_name=data_name, var_name=var_name,
                                          levels=levels, extent=extent)
 
-
 def _cmadass_download_hourly_single_levels(
         init_time,
         fhours=[24, 48, 72],
@@ -46,7 +42,6 @@ def _cmadass_download_hourly_single_levels(
     '''
     metdig.io.cmadaas.get_model_3D_grids(init_time=init_time, fhours=fhours, data_name=data_name, var_name=var_name,
                                          extent=extent)
-
 
 def cmadass_psl_download_usepool(
         init_time, data_name='cma_gfs', var_names=['hgt', 'u', 'v', 'vvel', 'rh', 'tmp', 'pv', 'div', 'spfh', 'vort'],
@@ -66,7 +61,6 @@ def cmadass_psl_download_usepool(
                                          init_time, fhours, levels, var_name, data_name, extent))
 
         futures.wait(tasks, return_when=futures.ALL_COMPLETED)
-
 
 def cmadass_sfc_download_usepool(
         init_time, data_name='cma_gfs',
@@ -88,12 +82,12 @@ def cmadass_sfc_download_usepool(
 
 
 def test():
-    init_time = datetime.datetime(2021, 7, 17, 0)  # 北京时
+    init_time = None  # 北京时
     # fhours = [0, 4, 6, 9, 12]
     fhours = [8]
 
-    cmadass_psl_download_usepool(init_time, data_name='cma_gfs', var_names=['hgt', 'u', 'v'], fhours=fhours)
-    cmadass_sfc_download_usepool(init_time, data_name='cma_gfs', var_names=['u10m', 'v10m'], fhours=fhours)
+    cmadass_psl_download_usepool(data_name='cma_gfs', var_names=['hgt', 'u', 'v'], fhours=fhours)
+    cmadass_sfc_download_usepool(data_name='cma_gfs', var_names=['u10m', 'v10m'], fhours=fhours)
 
 
 if __name__ == '__main__':

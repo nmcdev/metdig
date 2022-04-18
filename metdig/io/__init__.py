@@ -291,8 +291,8 @@ def get_obs_stations_multitime(data_source, throwexp=True, **kwargs):
         if data_source == 'cassandra':
             return cassandra.get_obs_stations_multitime(**kwargs)
         elif data_source == 'cmadaas':
-            kwargs.pop('level')
-            kwargs.pop('is_save_other_info')
+            # kwargs.pop('level') #不知何用 20220414
+            # kwargs.pop('is_save_other_info') #不知何用 20220414
             return cmadaas.get_obs_stations_multitime(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))

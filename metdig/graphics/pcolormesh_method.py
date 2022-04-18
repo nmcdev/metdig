@@ -196,19 +196,19 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
-                  levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',
+                  levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',extend='max',
                   transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # percent
 
-    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
     # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(%)', extend='max',kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='(%)', extend=extend,kwargs=colorbar_kwargs)
     return img
 
 
@@ -274,7 +274,7 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
-                   cmap='met/temp',levels = np.arange(-45, 46,1),
+                   cmap='met/temp',levels = np.arange(-45, 46,1),extend='both',
                    transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={},
                    **kwargs):
     x = stda.stda.get_dim_value(xdim)

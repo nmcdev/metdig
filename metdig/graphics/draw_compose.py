@@ -32,7 +32,7 @@ class horizontal_compose(object):
         # self.fig, self.ax = pallete_set.horizontal_pallete(figsize=(18, 9), crs=crs, map_extent=map_extent,
         #                                                    title=title, forcast_info=description, **kwargs)
 
-        self.fig, self.ax = pallete_set.horizontal_pallete(figsize=(18, 9), map_extent=map_extent, forcast_info=description, **kwargs)
+        self.fig, self.ax = pallete_set.horizontal_pallete(map_extent=map_extent, forcast_info=description, **kwargs)
 
     def save(self):
         return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
@@ -50,7 +50,7 @@ class cross_lonpres_compose(object):
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
 
-        self.fig, self.ax = pallete_set.cross_lonpres_pallete(figsize=(16, 9), levels=levels, title=title, forcast_info=description, **kwargs)
+        self.fig, self.ax = pallete_set.cross_lonpres_pallete(levels=levels, title=title, forcast_info=description, **kwargs)
 
     def save(self):
         return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)

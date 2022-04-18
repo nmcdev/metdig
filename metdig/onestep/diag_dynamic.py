@@ -109,23 +109,30 @@ def hgt_uv_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
 @date_init('init_time')
 def hgt_uv_vortadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                   hgt_lev=500, vort_lev=500, smth_step=1, is_mask_terrain=True,
+                   hgt_lev=500, vort_lev=500, uv_lev=500, smth_step=1, is_mask_terrain=True,
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # get area
     map_extent = get_map_area(area)
 
-    vort, u, v = read_vort_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=vort_lev, extent=map_extent)
+    vort, _u, _v = read_vort_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=vort_lev, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
-    vortadv = mdgcal.var_advect(vort, u, v)
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                         data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+                         data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+
+    vort = mdgcal.gaussian_filter(vort, smth_step)
+    _u = mdgcal.gaussian_filter(_u, smth_step)
+    _v = mdgcal.gaussian_filter(_v, smth_step)
+
+    vortadv = mdgcal.var_advect(vort, _u, _v)
 
     if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'vortadv': vortadv}
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'vortadv': vortadv,'vort':vort}
         ret.update({'data': dataret})
-
-    vortadv = mdgcal.gaussian_filter(vortadv, smth_step)
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
