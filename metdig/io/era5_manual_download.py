@@ -43,7 +43,7 @@ def _era5_download_hourly_pressure_levels(
     is_overwrite==True时会重复下载，覆盖已经存在的数据
     '''
     # https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=form
-    if os.path.exists(savefile) and is_overwrite == False:
+    if os.path.exists(savefile) and is_overwrite == False:#未考虑hour 和 level 需要改进
         _log.info('{} 存在 不重复下载'.format(savefile))
         return
     else:
@@ -434,8 +434,9 @@ def test():
 
     _log.info('mytest')
 
-    dt_start = datetime.datetime(2021,3,13,0)  # 北京时
-    dt_end = datetime.datetime(2021,3,15,0)
+    dt_start = datetime.datetime(2017,5,6,8)  # 北京时
+    dt_end = datetime.datetime(2017,5,4,8)
+    era5_psl_download_usepool(dt_start, dt_end, hour=np.arange(2,24,3))
 
     # dt_start = datetime.datetime(2021,7,17,0)  # 北京时
     # dt_end = datetime.datetime(2021,7,22,0)

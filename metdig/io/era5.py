@@ -213,11 +213,11 @@ def _era5download(era5_bjtimes, var_name, levels, extent, x_percent, y_percent):
     # 单线程下载
     if all(_levels) == True:
         era5_manual_download._era5_psl_download(_era5_bjtimes[0] - datetime.timedelta(hours=8), _era5_bjtimes[-1] - datetime.timedelta(hours=8), 
-                                               [var_name], _levels, extent=extent, download_dir=None, is_overwrite=False,
+                                               [var_name], _levels, extent=extent, download_dir=None, is_overwrite=True,
                                                years=years, months=months, days=days, hour=hours)
     else:
         era5_manual_download._era5_sfc_download(_era5_bjtimes[0] - datetime.timedelta(hours=8), _era5_bjtimes[-1] - datetime.timedelta(hours=8), 
-                                               [var_name], extent=extent, download_dir=None, is_overwrite=False,
+                                               [var_name], extent=extent, download_dir=None, is_overwrite=True,
                                                years=years, months=months, days=days, hour=hours)
 
 def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):
@@ -236,8 +236,6 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     Returns:
         [type] -- [description]
     '''
-    if force_local == False:
-        _era5download(init_time, var_name, level, extent, x_percent, y_percent) # 调用手动下载模块批量下载
 
     init_time_utc = init_time - datetime.timedelta(hours=8)  # 世界时
     if extent:
@@ -269,6 +267,10 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
         era5_units = era5_cfg().era5_units(level_type=level_type, var_name=var_name)
     except Exception as e:
         raise Exception(str(e))
+
+    if not os.path.exists(cache_file):
+        if force_local == False:
+            _era5download(init_time, var_name, level, extent, x_percent, y_percent) # 调用手动下载模块批量下载##检查是否已存在缓存数据是出现问题，需要解决
 
     '''
     弃用，此处只读取，更改为调用手动下载模块提前下载
