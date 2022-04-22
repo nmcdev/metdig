@@ -64,7 +64,7 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(-10, 10.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',
+                        levels=np.arange(-10, 10.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',colorbar_kwargs={},
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -74,7 +74,8 @@ def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='both', **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Frontogenesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)',  orientation='vertical', extend='both', pos='right')
+        utl.add_colorbar(ax, img, label='Frontogenesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)',  
+                         orientation='vertical', extend='both', pos='right', kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -315,7 +316,8 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
 def pres_contourf(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=None, cmap='guide/cs26', extend='both',
-                   transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+                   transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={},
+                   **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # hPa
@@ -327,7 +329,7 @@ def pres_contourf(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=ticks, label='surface pressure (hPa)', extend=extend)
+        utl.add_colorbar(ax, img, ticks=ticks, label='surface pressure (hPa)', extend=extend, kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
@@ -382,7 +384,8 @@ def qpf_contourf(ax, stda,  xdim='lon', ydim='lat', valid_time=24,
 def rain_contourf(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True,
                   levels=[0.1, 4, 13, 25, 60, 120], cmap='met/rain', extend='max',
-                  transform=ccrs.PlateCarree(), alpha=0.8, **kwargs):
+                  transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={},
+                  **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # mm
@@ -392,14 +395,14 @@ def rain_contourf(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contourf(x, y, z, levels, colors=colors, transform=transform, alpha=alpha, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max')
+        utl.add_colorbar(ax, img, ticks=levels, label='{}h precipitation (mm)'.format(stda.attrs['valid_time']), extend='max', kwargs=colorbar_kwargs)
     return img
 
 
 @kwargs_wrapper
 def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(-36, 36+1, 4), cmap='ncl/BlueWhiteOrangeRed',
+                        levels=np.arange(-36, 36+1, 4), cmap='ncl/BlueWhiteOrangeRed', colorbar_kwargs={},
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -410,7 +413,8 @@ def cross_absv_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, extend='both',**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Absolute Vorticity (10' + '$^{-5}$s$^{-1}$)',  orientation='vertical', extend='both', pos='right')
+        utl.add_colorbar(ax, img, label='Absolute Vorticity (10' + '$^{-5}$s$^{-1}$)',  
+                         orientation='vertical', extend='both', pos='right', kwargs=colorbar_kwargs)
     return img
 
 
@@ -436,7 +440,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_w_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(-0.5,0.51,0.05).tolist(), cmap='RdYlGn_r',
+                        levels=np.arange(-0.5,0.51,0.05).tolist(), cmap='RdYlGn_r',colorbar_kwargs={},
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -445,13 +449,13 @@ def cross_w_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend='both', **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Vertical velocity (m/s)',  orientation='vertical', extend='both', pos='right')
+        utl.add_colorbar(ax, img, label='Vertical velocity (m/s)',  orientation='vertical', extend='both', pos='right', kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper
 def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(0, 20, 1), cmap='ncl/MPL_Greens',extend='max',
+                        levels=np.arange(0, 20, 1), cmap='ncl/MPL_Greens',extend='max',colorbar_kwargs={},
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -461,14 +465,14 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend=extend, pos='right')
+        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',  orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
     return img
 
 
 @kwargs_wrapper
 def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        add_colorbar=True,extend='both',
-                       levels=np.arange(-10, 10, 1), cmap='ncl/cmp_flux',
+                       levels=np.arange(-10, 10, 1), cmap='ncl/cmp_flux',colorbar_kwargs={},
                        **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -480,7 +484,7 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,extend=extend, **kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Moisture Potential Vorticity (10$^{-6}$ K*m**2/(s*kg))',
-                         label_size=15, orientation='vertical', extend=extend, pos='right')
+                         label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
     return img
 
 

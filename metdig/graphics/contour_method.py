@@ -101,7 +101,7 @@ def rain_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=False,
                 levels=[1,10,25,50,100,250],
                 cmap='met/rain',
-                transform=ccrs.PlateCarree(), linewidths=0.7,colorbar_kwargs={},
+                transform=ccrs.PlateCarree(), linewidths=0.7,
                 **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -110,7 +110,7 @@ def rain_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, norm=norm, cmap=cmap, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black',kwargs=colorbar_kwargs)
+        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
     return img
 
 @kwargs_wrapper
