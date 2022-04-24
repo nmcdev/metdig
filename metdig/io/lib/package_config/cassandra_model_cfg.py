@@ -49,6 +49,10 @@ class cassandra_model_cfg(metaclass=SingletonMetaClass):
             return level
         else:
             return int(models_level)
+            
+    def model_cassandra_prod_type(self, level_type=None, data_name=None, var_name=None):
+        return self.get_model_cfg(level_type=level_type, data_name=data_name, var_name=var_name)['cassandra_prod_type']
+
 
 if __name__ == '__main__':
 
@@ -60,4 +64,7 @@ if __name__ == '__main__':
     x = cassandra_model_cfg().model_cassandra_level(data_name='ecmwf', var_name='tmp', level_type='high', level=100)
     print(x)
     x = cassandra_model_cfg().model_cassandra_level(data_name='ecmwf', var_name='tmp', level_type='high', level=None)
+    print(x)
+
+    x = cassandra_model_cfg().model_cassandra_prod_type(data_name='ecmwf', var_name='tmp', level_type='high')
     print(x)

@@ -51,6 +51,7 @@ def get_model_grid(init_time=None, data_name=None,  var_name=None, level=None, e
         thredds_var_name = thredds_model_cfg().model_thredds_variable(data_name=data_name, var_name=var_name, level_type=level_type)
         thredds_level = thredds_model_cfg().model_thredds_level(data_name=data_name, var_name=var_name, level_type=level_type, level=level)
         thredds_units = thredds_model_cfg().model_thredds_units(data_name=data_name, level_type=level_type, var_name=var_name)
+        thredds_prod_type = thredds_model_cfg().model_thredds_prod_type(data_name=data_name, level_type=level_type, var_name=var_name)
     except Exception as e:
         raise Exception(str(e))
 

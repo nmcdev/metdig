@@ -1,37 +1,37 @@
-#,,,,,
-# 注意事项,,,,,
-#    1. var_name为stda要素名,,,,,
-#    2. var_units为当前数据的在era5中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,
-#    3. era5_var_name为era5上数据接口需要的要素名,,,,,
-#    4. era5_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,
-#    5. era5_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,
-#    6. 以var_name,level_type列作为查询列，保证能确定唯一一行,,,,
-#,,,,,
-var_name,level_type,var_units,era5_var_name,era5_discription,era5_level
-hgt,high,1/9.8*gpm,geopotential,,any
-u,high,m/s,u_component_of_wind,,any
-v,high,m/s,v_component_of_wind,,any
-vvel,high,Pa/s,vertical_velocity,,any
-rh,high,percent,relative_humidity,,any
-tmp,high,K,temperature,,any
-pv,high,K*m**2/(s*kg),potential_vorticity,,any
-div,high,1/s,divergence,,any
-spfh,high,kg/kg,specific_humidity,,any
-u10m,surface,m/s,10m_u_component_of_wind,,10
-v10m,surface,m/s,10m_v_component_of_wind,,10
-u100m,surface,m/s,100m_u_component_of_wind,,100
-v100m,surface,m/s,100m_v_component_of_wind,,100
-psfc,surface,Pa,surface_pressure,,0
-tcwv,surface,mm,total_column_water_vapour,,0
-prmsl,surface,Pa,mean_sea_level_pressure,,0
-t2m,surface,K,2m_temperature,,0
-td2m,surface,K,2m_dewpoint_temperature,,0
-qice,high,kg/kg,specific_cloud_ice_water_content,,any
-qcld,high,kg/kg,specific_cloud_liquid_water_content,,any
-qsn,high,kg/kg,specific_snow_water_content,,any
-qrn,high,kg/kg,specific_rain_water_content,,any
-vort,high,1/s,vorticity,,any
-cape,surface,J/kg,convective_available_potential_energy,,0
-cin,surface,J/kg,convective_inhibition,,0
-k_idx,surface,K,k_index,,0
-rain01,surface,m,total_precipitation,,0
+#,,,,,,
+# 注意事项,,,,,,
+#    1. var_name为stda要素名,,,,,,
+#    2. var_units为当前数据的在era5中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,,
+#    3. era5_var_name为era5上数据接口需要的要素名,,,,,,
+#    4. era5_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,,
+#    5. era5_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,,
+#    6. 以var_name,level_type列作为查询列，保证能确定唯一一行,,,,,
+#,,,,,,
+var_name,level_type,var_units,era5_var_name,era5_discription,era5_level,era5_prod_type
+hgt,high,1/9.8*gpm,geopotential,,any,analysis
+u,high,m/s,u_component_of_wind,,any,analysis
+v,high,m/s,v_component_of_wind,,any,analysis
+vvel,high,Pa/s,vertical_velocity,,any,analysis
+rh,high,percent,relative_humidity,,any,analysis
+tmp,high,K,temperature,,any,analysis
+pv,high,K*m**2/(s*kg),potential_vorticity,,any,analysis
+div,high,1/s,divergence,,any,analysis
+spfh,high,kg/kg,specific_humidity,,any,analysis
+u10m,surface,m/s,10m_u_component_of_wind,,10,analysis
+v10m,surface,m/s,10m_v_component_of_wind,,10,analysis
+u100m,surface,m/s,100m_u_component_of_wind,,100,analysis
+v100m,surface,m/s,100m_v_component_of_wind,,100,analysis
+psfc,surface,Pa,surface_pressure,,0,analysis
+tcwv,surface,mm,total_column_water_vapour,,0,analysis
+prmsl,surface,Pa,mean_sea_level_pressure,,0,analysis
+t2m,surface,K,2m_temperature,,0,analysis
+td2m,surface,K,2m_dewpoint_temperature,,0,analysis
+qice,high,kg/kg,specific_cloud_ice_water_content,,any,analysis
+qcld,high,kg/kg,specific_cloud_liquid_water_content,,any,analysis
+qsn,high,kg/kg,specific_snow_water_content,,any,analysis
+qrn,high,kg/kg,specific_rain_water_content,,any,analysis
+vort,high,1/s,vorticity,,any,analysis
+cape,surface,J/kg,convective_available_potential_energy,,0,analysis
+cin,surface,J/kg,convective_inhibition,,0,analysis
+k_idx,surface,K,k_index,,0,analysis
+rain01,surface,m,total_precipitation,,0,analysis
