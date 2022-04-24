@@ -17,8 +17,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.cm
-from matplotlib import colors
-from matplotlib.colors import ListedColormap, to_rgb, LinearSegmentedColormap
+from matplotlib.colors import ListedColormap, to_rgb, to_hex, LinearSegmentedColormap
 from metdig.graphics.cmap.cpt import gmtColormap_openfile
 
 pkg_name = 'metdig.graphics'
@@ -90,6 +89,25 @@ def make_cmap(incolors, position=None, rgb=False, hex=False):
     return cmap
 
 
+def get_hexrgb_from_buildin_cmap(name, N=None, isLinear=False):
+    """获取metdig内置颜色表的十六进制rgb
+
+    Args:
+        name (str): 内置颜色表名称，such as'met/ape_new' or 'met/ape_new_r' or 'ncl/Blre' or 'ncl/Blre_r' or 'jet' or 'jet_r'
+        N (int, optional): 颜色表自动分成N段，如果N=None，则获取系统内置的N个颜色. Defaults to None.
+        isLinear (bool, optional): 是否对线性化. Defaults to False.
+
+    Returns:
+        list: 16进制rgb列表
+    """    
+    if N is None:
+        levels = None
+    else:
+        levels = np.arange(N + 1)
+    cmap, _ = get_cmap(name, extend='neither', levels=levels, isLinear=isLinear)
+    return [to_hex(x) for x in cmap.colors]
+
+
 def get_cmap(name, extend='neither', levels=None, isLinear=False):
     """[获取颜色表，注意：如果levels传参了，则会返回cmap和norm，如果levels没传参，则只会返回cmap。如果用户传进来的本身就是cmap,则直接返回cmap]
   
@@ -111,8 +129,13 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
     Returns:
         [type]: [cmap [norm]]
     """
-    if (isinstance(name,str) == False) and (isinstance(name,list) == False):  #应对可能用户喂进来的本身就是cmap,则自动返回
-        return name
+    if isinstance(name,str) == False and isinstance(name,list) == False:  
+        # 应对可能用户喂进来的本身就是cmap
+        try:
+            # 尝试取cmap中的color list（注：有的matplotlib的cmap对象不含colors属性，此处会抛出异常，待优化）
+            name = name.colors
+        except Exception as e:
+            raise e
     if isinstance(name, str):
         if name.startswith('met/'):
             if name.lower().endswith('_r'):
