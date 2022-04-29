@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 
-def wind_profiler(obs_st_time=None, obs_ed_time=None, id_selected=51463, is_return_data=False, is_draw=True, **products_kwargs):
+def wind_profiler(obs_st_time=None, obs_ed_time=None, id_selected=53399, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     wsp = get_wind_profiler_bytimerange(obs_st_time, obs_ed_time, data_name='wind_profiler', var_name='wsp', id_selected=id_selected)
@@ -46,5 +46,5 @@ def wind_profiler(obs_st_time=None, obs_ed_time=None, id_selected=51463, is_retu
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from datetime import datetime
-    wind_profiler(obs_st_time=datetime(2022,2,8,16),obs_ed_time=datetime(2022,2,9,1))
+    wind_profiler(obs_st_time=datetime(2022,4,21,10),obs_ed_time=datetime(2022,2,22,10))
     plt.show()
