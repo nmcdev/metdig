@@ -406,7 +406,7 @@ def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, exten
 
 
 def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
-              extent=None, x_percent=0, y_percent=0, is_save_other_info=False):
+              extent=None, x_percent=0, y_percent=0, is_save_other_info=False,dropna_any=True):
     """[探空tlogp数据]
 
     Args:
@@ -418,6 +418,7 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
         x_percent (int, optional): [根据裁剪区域经度方向扩充百分比]. Defaults to 0.
         y_percent (int, optional): [根据裁剪区域纬度方向扩充百分比]. Defaults to 0.
         is_save_other_info {bool} -- [是否保存从nmc_met_io中读取到的其它信息] (default: {False})
+        dropna_any {bool} -- [是否任意一列出现nan，drop一整行] (default: {True})
 
     Returns:
         [stda] -- [stda格式数据]
@@ -450,7 +451,8 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
 
     # 数据列转换成stda标准的名称
     data = data.rename(columns={'h': 'hgt', 't': 'tmp', 'td': 'td', 'wd': 'wdir', 'ws': 'wsp'})
-
+    if dropna_any:
+        data=data.dropna()
     # 层次初始化
     levels = data['p'].values
 

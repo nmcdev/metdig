@@ -34,7 +34,7 @@ def veri_tmp(data_source='cassandra',ana_data_source='cmadaas',
     tmp_ana=get_model_grid(data_source=ana_data_source, init_time=ana_time, fhour=0, data_name=ana_data_name, var_name='tmp', level=tmp_lev, extent=map_extent)
     tmp_fcst=get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tmp', level=tmp_lev, extent=map_extent)
     psfc_fcst=get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', level=None, extent=map_extent)
-    tmp_bias=(tmp_fcst.interp({'lon':tmp_ana.lon,'lat':tmp_ana.lat}).sel(member=data_name,dtime=fhour,time=init_time)-tmp_ana.sel(member='era5',dtime=0,time=ana_time)).expand_dims({'member':['ecmwf'],'dtime':[fhour],'time':[init_time]})
+    tmp_bias=(tmp_fcst.interp({'lon':tmp_ana.lon,'lat':tmp_ana.lat}).sel(member=data_name,dtime=fhour,time=init_time)-tmp_ana.sel(member=ana_data_name,dtime=0,time=ana_time)).expand_dims({'member':['ecmwf'],'dtime':[fhour],'time':[init_time]})
     tmp_bias = mask_terrian(psfc_fcst, tmp_bias)
     tmp_fcst = mask_terrian(psfc_fcst, tmp_fcst)
 
@@ -50,9 +50,8 @@ def veri_tmp(data_source='cassandra',ana_data_source='cmadaas',
 if __name__=='__main__':
     import matplotlib.pyplot as plt
     veri_tmp(data_source='cmadaas',data_name='ecmwf',
-        ana_data_source='cds',ana_data_name='era5',
+        ana_data_source='cmadaas',ana_data_name='cma_gfs',area='西南涡',
         init_time=datetime.datetime(2022,1,23,20),fhour=72,output_dir=r'L:\Temp/')
-    plt.show()
         
 
 @date_init('anl_time')

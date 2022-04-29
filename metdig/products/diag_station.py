@@ -87,7 +87,7 @@ def draw_t2m_ens_boxplot(t2m,t2m_boxplot_kwargs={}, **pallete_kwargs):
     is_return_pngname = pallete_kwargs.pop('is_return_pngname', False)
     return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
 
-def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
+def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp=None, **pallete_kwargs):
 
     init_time = pd.to_datetime(t2m['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     hourstep = int(rain['dtime'].values[1] - rain['dtime'].values[0])
@@ -98,11 +98,12 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
     png_name = '{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(t2m['id'].values[0], init_time)
 
     t2m_ylabel = '2米温度($^\circ$C) \n 10米风(m s$^-$$^1$) \n 逐{}小时降水(mm)'.format(hourstep)
+    if(wsp is None):
+        t2m_ylabel = '2米温度($^\circ$C) \n 逐{}小时降水(mm)'.format(hourstep)
     rh_ylabel = '相对湿度(%)'
     uv_ylabel = '10m风'
 
     fig, ax_t2m, ax_rh2m, ax_uv = pallete_set.time_series_left_right_bottom_v2(
-        (16, 4.5),
         title_left=title_left, title_right=title_right,
         label_leftax=t2m_ylabel, label_rightax=rh_ylabel, label_bottomax=uv_ylabel,kwargs=pallete_kwargs
     )
@@ -112,31 +113,33 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp, **pallete_kwargs):
     t2m_y = t2m.stda.values
     curve_t2m = ax_t2m.plot(t2m_x, t2m_y, c='#FF6600', linewidth=3, label='气温')
     ax_t2m.set_xlim(t2m_x[0] - pd.Timedelta(hours=1), t2m_x[-1] + pd.Timedelta(hours=1))
-    ax_t2m.set_ylim(
-        np.min([np.floor(t2m_y.min() / 5) * 5 - 2, 0]),
-        np.max([np.ceil(t2m_y.max() / 5) * 5, 40])
-    )
+    bottom_t2m=np.min([np.floor(t2m_y.min() / 5) * 5 - 2, 0])
+    top_t2m=np.max([np.ceil(t2m_y.max() / 5) * 5, 40])
+    if(wsp is None):
+        top_t2m=np.min([np.ceil(t2m_y.max() / 5) * 5, 40])
+    ax_t2m.set_ylim(bottom_t2m, top_t2m)
 
     # wsp
-    wsp_x = wsp.stda.fcst_time.values
-    wsp_y = wsp.stda.values
-    curve_wsp = ax_t2m.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='10米风')
+    if (wsp is not None):
+        wsp_x = wsp.stda.fcst_time.values
+        wsp_y = wsp.stda.values
+        curve_wsp = ax_t2m.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='10米风')
 
     # rain
     rain_x = rain.stda.fcst_time.values
     rain_y = rain.stda.values
-    bars_rn = ax_t2m.bar(rain_x, rain_y, width=0.1, color='#1E78B4', label='{}小时降水'.format(hourstep))
+    bars_rn = ax_t2m.bar(rain_x, rain_y, bottom=bottom_t2m, width=0.1, color='#1E78B4', label='{}小时降水'.format(hourstep))
 
-    def bars_autolabel(ax, rects):
+    def bars_autolabel(ax, rects,bottom=0):
         for rect in rects:
             height = rect.get_height()
             if(height > 0):
                 ax.annotate('%.2f' % height,
-                            xy=(rect.get_x() + rect.get_width() / 2, height),
+                            xy=(rect.get_x() + rect.get_width() / 2, height+bottom),
                             xytext=(0, 3),  # 3 points vertical offset
                             textcoords="offset points",
                             ha='center', va='bottom')
-    bars_autolabel(ax_t2m, bars_rn)
+    bars_autolabel(ax_t2m, bars_rn,bottom=bottom_t2m)
 
     # rh2m
     rh2m_x = rh2m.stda.fcst_time.values

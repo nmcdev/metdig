@@ -92,9 +92,9 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     if add_coastline:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.5, zorder=19, alpha=1,crs=ccrs.PlateCarree())
     if add_china:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=0.8, zorder=19,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=1.5, zorder=19,crs=ccrs.PlateCarree())
     if add_province:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=0.5, zorder=19,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree())
     
     if add_river:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='river', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
@@ -172,7 +172,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     # 添加 powered by metdig
     if(add_tag):
-        t=ax.text(0.01, 0.025, 'Powered by MetDig', transform=ax.transAxes, size=10,
+        t=ax.text(0.01, 0.028, 'Powered by MetDig', transform=ax.transAxes, size=15,
                 color='black', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
         t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
                     mpatheffects.Normal()])
@@ -184,7 +184,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     # ax.text(1.00, -0.005, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='top',  ha='right' )  # 右下角图的外面刻度线的位置
     return fig, ax
 
-
+@kwargs_wrapper
 def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=True):
 
     plt_base_env()  # 初始化字体中文等
@@ -218,8 +218,8 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
                 color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
 
-
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,logyaxis=True):
+@kwargs_wrapper
+def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,logyaxis=True,add_tag=True):
     """[时间剖面画板初始化]
 
     Args:
@@ -274,13 +274,13 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
         l, b, w, h = ax.get_position().bounds
         # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
-
-    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
-            color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+    if add_tag:
+        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+                color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
 
-
-def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True):
+@kwargs_wrapper
+def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,add_tag=True):
     if(reverse_time):
         times = times[::-1]
 
@@ -317,10 +317,11 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
         l, b, w, h = ax.get_position().bounds
         # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
-
-    ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='left')  # 左下角图的里面
+    if add_tag:
+        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='left')  # 左下角图的里面
     return fig, ax
 
+@kwargs_wrapper
 def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add_bottom=True, title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='',**kwargs):
 
     plt_base_env()  # 初始化字体中文等
@@ -377,14 +378,15 @@ def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add
                     color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     else:
         # metdig 标识
-        ax_right.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
-        ax_right.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
-        ax_right.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+        ax_left.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式
+        ax_left.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
+        ax_left.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
         ax_left.text(0.90, -0.2, 'Powered by MetDig', transform=ax_left.transAxes, size=14,
                     color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
         ax_bottom=None
     return fig, ax_left, ax_right, ax_bottom
 
+@kwargs_wrapper
 def time_series_left_right_bottom(times=None,figsize=(16, 4.5), title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='',add_tag=True,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
@@ -451,8 +453,9 @@ def time_series_left_right_bottom(times=None,figsize=(16, 4.5), title_left='', t
                     color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax_left, ax_right, ax_bottom
 
-
-def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', nmc_logo=False):
+@kwargs_wrapper
+def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', nmc_logo=False,
+        bottom=1000,top=100,left=-40,right=60):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -462,8 +465,8 @@ def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', 
 
     skew.ax.set_title(title, loc='left', fontsize=title_fontsize)
 
-    skew.ax.set_ylim(1000, 100)
-    skew.ax.set_xlim(-40, 60)
+    skew.ax.set_ylim(bottom, top)
+    skew.ax.set_xlim(left, right)
 
     if forcast_info:
         # skew.ax.text(0.01, 0.99, forcast_info, transform=skew.ax.transAxes, size=11, va='top',
