@@ -326,6 +326,16 @@ class __STDADataArrayAccessor(object):
         self._xr = xr
 
     @property
+    def horizontal_resolution(self):
+
+        """[获取水平分辨率,仅对格点数据有效]
+        Returns:
+            [pd.series]: [level]
+        """
+        resolution=np.abs(self._xr['lon'].values[1]-self._xr['lon'].values[0])
+        return resolution
+
+    @property
     def level(self):
         """[get level]
 
