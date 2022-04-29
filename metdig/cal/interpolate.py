@@ -5,12 +5,13 @@ import xarray as xr
 from scipy.interpolate import LinearNDInterpolator
 import metdig.utl as mdgstda
 from metdig.io.lib import utility as utl
+from metdig.onestep.lib.utility import mask_terrian
 
 __all__ = [
     'interpolate_3d',
 ]
 
-def interpolate_3d(stda, hgt, points, stda_sfc=None):
+def interpolate_3d(stda, hgt, points, stda_sfc=None, psfc=None):
     '''
 
     [利用位势高度，站点高度，和各层模式数据进行三维不规则点插值，获取初步订正的山地地形站点预报]
@@ -20,6 +21,7 @@ def interpolate_3d(stda, hgt, points, stda_sfc=None):
         hgt {[stda]} -- [模式位势高度]
         points {[{'lon':[110],'lat':[30],'alt':[1000]}]} -- [{被插值站点的经度，维度，高度}]
         stda_sfc {[stda]} -- [可选量,stda的对应地面量，当站点高度低于hgt中对应位置高度最小值，则直接用stda_sfc中的线性插值结果]
+        psfc {[stda]} -- [当psfc<stda的等压面，则为模式地下部分，赋值nan，如果此时stda_sfc不为None,则为其线性插值结果]
 
     Returns:
         [stda] -- [被插值后的站点数据,超出给定范围复制nan]
@@ -32,6 +34,9 @@ def interpolate_3d(stda, hgt, points, stda_sfc=None):
     sta=np.zeros((nsta,stda.member.size,stda.time.size,stda.dtime.size))
     nlines=nsta*stda.time.size*stda.dtime.size
     sta_df=[]
+
+    if(psfc is not None):
+        stda = mask_terrian(psfc, stda) 
     if('id' not in points.keys()):
         ids=np.arange(0,nsta)
     else:
@@ -83,8 +88,10 @@ def interpolate_3d(stda, hgt, points, stda_sfc=None):
                 for idx_dtime,idtime in enumerate(stda.dtime.values):
                     try:#防止某一数据不全
                         for idx,iid in enumerate(ids):
-                            if(hgt_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).isel(level=0).values > points['alt'][idx]):
+                            if((hgt_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).isel(level=0).values > points['alt'][idx]) or (stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)].values[0] == np.nan)): #psfc参数所用
                                 stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)]=stda_sfc_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).values[0]
+                            else:
+                                continue
                     except:#防止某一数据不全
                         stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)]=np.nan
                         print('地面数据不全 起报时间'+str(itime)+' 预报时效'+str(idtime)+' 成员'+str(imember))
@@ -96,58 +103,40 @@ if __name__ == '__main__':
     from datetime import datetime
     import numpy as np
     import pandas as pd
-    fhours=np.arange(24,31,6)
-    output_dir=r'G:\realtime_data\ensemble_fcst_sta_data/'
-    sta_info=pd.read_csv(r'L:/py_develop/Winter_Olympic/resources/sta_info.csv')
-    extent=[sta_info['lon'].min()-1,sta_info['lon'].max()+1,sta_info['lat'].min()-1,sta_info['lat'].max()+1]
-    points={'lon':sta_info['lon'].to_list(),'lat':sta_info['lat'].to_list(),
-       'alt':sta_info['level'].to_list(),'id':sta_info['ID'].to_list()}
+    id_selected=54511
+    obs_time=datetime(2022,4,27,20)
+    init_time=datetime(2022,4,27,8)
+    levels=[1000,850,700,500,200,100]
+    fhour=36
+    data_source='cmadaas'
+    data_name='ecmwf'
 
-    hgt=metdig.io.get_model_3D_grids(init_time=datetime(2021,12,29,20),fhours=fhours,levels=[1000,925,850,700],
-                                data_source='cassandra',data_name='ecmwf_ens',var_name='hgt',extent=extent)
-    u=metdig.io.get_model_3D_grids(init_time=datetime(2021,12,29,20),fhours=fhours,levels=[1000,925,850,700],
-                                data_source='cassandra',data_name='ecmwf_ens',var_name='u',extent=extent)
+    hgt_sounding=metdig.io.cassandra.get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='hgt',id_selected=id_selected)
+    tmp_sounding=metdig.io.cassandra.get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='tmp',id_selected=id_selected)
+    wsp_sounding=metdig.io.cassandra.get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='wsp',id_selected=id_selected)
+    wdir_sounding=metdig.io.cassandra.get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='wdir',id_selected=id_selected)
+    u_sounding,v_sounding=metdig.cal.other.wind_components(wsp_sounding,wdir_sounding)
 
-    v=metdig.io.get_model_3D_grids(init_time=datetime(2021,12,29,20),fhours=fhours,levels=[1000,925,850,700],
-                                data_source='cassandra',data_name='ecmwf_ens',var_name='v',extent=extent)
+    points={'lon':list(u_sounding.stda.lon),'lat':list(u_sounding.stda.lat),'alt':hgt_sounding.stda.values.tolist(),'id':list(hgt_sounding.stda.id)}
 
-    tmp=metdig.io.get_model_3D_grids(init_time=datetime(2021,12,29,20),fhours=fhours,levels=[1000,925,850,700],
-                                data_source='cassandra',data_name='ecmwf_ens',var_name='tmp',extent=extent)        
+    # get data
+    extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,max(points['lat'])+1]
+    u=metdig.io.get_model_3D_grid(init_time=init_time,fhour=fhour,levels=levels,
+                                data_source=data_source,data_name=data_name,var_name='u',extent=extent)
+    v=metdig.io.get_model_3D_grid(init_time=init_time,fhour=fhour,levels=levels,
+                                data_source=data_source,data_name=data_name,var_name='v',extent=extent)
+    tmp=metdig.io.get_model_3D_grid(init_time=init_time,fhour=fhour,levels=levels,
+                                data_source=data_source,data_name=data_name,var_name='tmp',extent=extent)
+    u10m=metdig.io.get_model_grid(init_time=init_time,fhour=fhour,
+                                    data_source=data_source,data_name=data_name,var_name='u10m',extent=extent)        
+    v10m=metdig.io.get_model_grid(init_time=init_time,fhour=fhour,
+                                    data_source=data_source,data_name=data_name,var_name='v10m',extent=extent)        
+    t2m=metdig.io.get_model_grid(init_time=init_time,fhour=fhour,
+                                    data_source=data_source,data_name=data_name,var_name='t2m',extent=extent)
 
-    rh=metdig.io.get_model_3D_grids(init_time=datetime(2021,12,29,20),fhours=fhours,levels=[1000,925,850,700],
-                                data_source='cassandra',data_name='ecmwf_ens',var_name='rh',extent=extent)        
+    hgt=metdig.io.get_model_3D_grid(init_time=init_time,fhour=fhour,levels=levels,
+                                data_source=data_source,data_name=data_name,var_name='hgt',extent=extent)
 
-    u10m=metdig.io.get_model_grids(init_time=datetime(2021,12,29,20),fhours=fhours,
-                                    data_source='cassandra',data_name='ecmwf_ens',var_name='u10m',extent=extent)        
-
-    v10m=metdig.io.get_model_grids(init_time=datetime(2021,12,29,20),fhours=fhours,
-                                    data_source='cassandra',data_name='ecmwf_ens',var_name='v10m',extent=extent)        
-
-    t2m=metdig.io.get_model_grids(init_time=datetime(2021,12,29,20),fhours=fhours,
-                                    data_source='cassandra',data_name='ecmwf_ens',var_name='t2m',extent=extent)        
-
-    td2m=metdig.io.get_model_grids(init_time=datetime(2021,12,29,20),fhours=fhours,
-                                    data_source='cassandra',data_name='ecmwf_ens',var_name='td2m',extent=extent)        
-
-    rain12=metdig.io.get_model_points(init_time=datetime(2021,12,29,20),fhours=fhours,points=points.copy(),
-                                    data_source='cassandra',data_name='ecmwf_ens',var_name='rain12')
-
-                                    #计算地面相对湿度
-    rh2m=metdig.cal.moisture.relative_humidity_from_dewpoint(t2m,td2m)
-
-    tmp_sta=metdig.cal.interpolate.interpolate_3d(tmp, hgt, points, t2m)
-
-    rh2m_sta=metdig.cal.interpolate.interpolate_3d(rh, hgt, points, rh2m)
-
-    t2m_sta=metdig.cal.interpolate.interpolate_3d(tmp, hgt, points, t2m)
-
-    u10m_sta=metdig.cal.interpolate.interpolate_3d(u, hgt, points, u10m)
-
-    v10m_sta=metdig.cal.interpolate.interpolate_3d(v, hgt, points, v10m)
-
-    wsp10m=metdig.cal.other.wind_speed(u10m_sta,v10m_sta)
-    wdir10m=metdig.cal.other.wind_direction(u10m_sta,v10m_sta)
-
-    output_filename=tmp_sta.stda.time[0].strftime('%Y%m%d%H.csv')
-
-    wsp10m.to_csv(output_dir+output_filename)
+    u10m_md=metdig.cal.interpolate.interpolate_3d(u, hgt, points, stda_sfc=u10m)
+    v10m_md=metdig.cal.interpolate.interpolate_3d(v, hgt, points, stda_sfc=v10m)
+    t2m_md=metdig.cal.interpolate.interpolate_3d(tmp, hgt, points, stda_sfc=t2m)
