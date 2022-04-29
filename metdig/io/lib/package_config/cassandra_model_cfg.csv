@@ -78,6 +78,8 @@ ecmwf,snow_density,surface,kg/m**3,,0,ECMWF_HR/SDEN/
 ecmwf,snow_depth,surface,cm,,0,ECMWF_HR/SNOD/
 ecmwf,sst,surface,degC,,0,ECMWF_HR/SST/
 ecmwf,vis,surface,km,,0,ECMWF_HR/VIS/
+ecmwf,vpbt,surface,K,,0,ECMWF_HR/MET_10/CH05/
+ecmwf,irbt,surface,K,,0,ECMWF_HR/MET_10/CH09/
 cma_gfs,u10m,surface,m/s,,10,GRAPES_GFS/UGRD/10M_ABOVE_GROUND/
 cma_gfs,v10m,surface,m/s,,10,GRAPES_GFS/VGRD/10M_ABOVE_GROUND/
 cma_gfs,prmsl,surface,hPa,,0,GRAPES_GFS/PRMSL/
@@ -96,6 +98,8 @@ cma_gfs,rh2m,surface,percent,,2,GRAPES_GFS/RH/2M_ABOVE_GROUND/
 cma_gfs,td2m,surface,degC,,2,GRAPES_GFS/DPT/2M_ABOVE_GROUND/
 #cma_gfs,bli,surface,,,0,GRAPES_GFS/BLI/
 cma_gfs,psfc,surface,hPa,,0,GRAPES_GFS/PRES/SURFACE/
+cma_gfs,vpbt,surface,K,,0,GRAPES_GFS/VAPOR_BRIGHTNESS_TEMPERATURE/
+cma_gfs,irbt,surface,K,,0,GRAPES_GFS/INFRARED_BRIGHTNESS_TEMPERATURE/
 cma_gfs,cape,surface,J/kg,,0,GRAPES_GFS/CAPE/SURFACE/
 #cma_gfs,oro,surface,,,0,GRAPES_GFS/HGT/SURFACE/
 ncep_gfs,u10m,surface,m/s,,10,NCEP_GFS/UGRD/10M_ABOVE_GROUND/

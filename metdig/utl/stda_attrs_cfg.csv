@@ -99,3 +99,6 @@ mixr,水气混合比,g/kg,0
 density,空气密度,kg/m**3,0
 drsteg,干静力能,kJ/kg,0
 geohgt,位势高度,m**2/s**2,0
+wvfldiv,水汽通量散度,g/m**2/Pa/s,0
+vpbt,模拟卫星水汽图像,K,0
+irbt,模拟卫星亮温图像,K,0
