@@ -337,9 +337,9 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
-    title = '[{}]相当位温, 绝对涡度, 沿剖面风'.format(data_name)
+    title = '[{0:}]相当位温, {1:}, 沿剖面风'.format(data_name,cross_absv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_绝对涡度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_{3:}_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name,cross_absv.attrs['var_cn_name'])
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)

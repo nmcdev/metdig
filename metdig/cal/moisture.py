@@ -20,7 +20,31 @@ __all__ = [
     'cal_ivt_singlelevel',
     'cal_p_vapor',
     'relative_humidity_from_dewpoint',
+    'water_wapor_flux_divergence'
 ]
+def integrated_water_vapor_flux(spfh,u,v, psfc=None):
+    for itime in spfh.stda.get_dim_value('time'):
+        for idtime in spfh.stda.get_dim_value('dtime'):
+            for imember in spfh.stda.get_dim_value('member'):
+                spfh_q=spfh.sel(time=itime,dtime=idtime,member=imember).transpose(['level','lat','lon'])
+                u_q=u.sel(time=itime,dtime=idtime,member=imember).transpose(['level','lat','lon'])
+                v_q=v.sel(time=itime,dtime=idtime,member=imember).transpose(['level','lat','lon'])
+                psfc_q=psfc.sel(time=itime,dtime=idtime,member=imember).transpose(['level','lat','lon'])
+
+
+if __name__ == '__main__':
+    import metdig
+    from datetime import datetime
+
+    ret1=metdig.onestep.diag_synoptic.hgt_uv_wsp(is_return_data=True,is_draw=False)
+    ret2=metdig.onestep.diag_moisture.hgt_uv_spfh(is_return_data=True,is_draw=False)
+
+    u=ret1['data']['u']
+    v=ret1['data']['v']
+    spfh=ret2['data']['spfh']
+
+    wvfldiv=integrated_water_vapor_flux(u,v,spfh)
+    print (wvfldiv)
 
 def relative_humidity_from_dewpoint(tmp,td):
     tmp_p = utl.stda_to_quantity(tmp)  # degC
@@ -174,3 +198,24 @@ def cal_p_vapor(tmp, rh):
     p_vapor = utl.quantity_to_stda_byreference('p_vapor', p_vapor_p, tmp)
 
     return p_vapor
+
+def water_wapor_flux_divergence(u,v,spfh):
+    uwvfl=cal_ivt_singlelevel(u,spfh)
+    vwvfl=cal_ivt_singlelevel(v,spfh)
+    
+    uwvfl_p = utl.stda_to_quantity(uwvfl) 
+    vwvfl_p = utl.stda_to_quantity(vwvfl)
+
+    lons = uwvfl['lon'].values
+    lats = uwvfl['lat'].values
+
+    dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
+
+    dx = dx[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :, :]
+    dy = dy[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :, :]
+
+    wvfldiv_p = mpcalc.divergence(uwvfl_p, vwvfl_p, dx=dx, dy=dy)
+
+    wvfldiv = utl.quantity_to_stda_byreference('wvfldiv', wvfldiv_p, u)
+
+    return wvfldiv

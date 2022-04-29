@@ -20,6 +20,8 @@ import metdig.utl.utl_stda_grid as utl_stda_grid
 import metdig.cal as mdgcal
 
 __all__ = [
+    'vpbt_img',
+    'irbt_img',
     'uvstream_wsp',
     'syn_composite',
     'hgt_uv_prmsl',
@@ -28,7 +30,56 @@ __all__ = [
     'pv_div_uv',
 ]
 
+@date_init('init_time')
+def vpbt_img(data_source='cassandra', data_name='cma_gfs', init_time=None, fhour=24,
+               is_mask_terrain=True,
+               area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
 
+    # get area
+    map_extent = get_map_area(area)
+
+    # get data
+    vpbt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='vpbt',  extent=map_extent)
+
+    if is_return_data:
+        dataret = {'vpbt': vpbt}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_synoptic.draw_vpbt(vpbt, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+# if __name__=='__main__':
+#     import matplotlib.pyplot as plt
+#     vpbt_img(data_source='cassandra',data_name='ecmwf')
+#     plt.show()
+
+@date_init('init_time')
+def irbt_img(data_source='cassandra', data_name='cma_gfs', init_time=None, fhour=24,
+               is_mask_terrain=True,
+               area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    # get data
+    irbt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='irbt',  extent=map_extent)
+
+    if is_return_data:
+        dataret = {'irbt': irbt}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_synoptic.draw_irbt(irbt, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+    
 @date_init('init_time')
 def uvstream_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                uv_lev=200, is_mask_terrain=True,
@@ -114,10 +165,10 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    syn_composite(init_time='2021110712',data_name='era5',data_source='cds')
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     syn_composite(init_time='2021110712',data_name='era5',data_source='cds')
+#     plt.show()
 
 @date_init('init_time')
 def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -208,17 +259,18 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
     # calculate
     wsp = mdgcal.wind_speed(u, v)
 
-    if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'wsp': wsp}
-        ret.update({'data': dataret})
-
     # 隐藏被地形遮挡地区
+    psfc=None
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt)
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
         wsp = mask_terrian(psfc, wsp)
+
+    if is_return_data:
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'wsp': wsp, 'psfc': psfc}
+        ret.update({'data': dataret})
 
     # plot
     if is_draw:
@@ -228,10 +280,13 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
     if ret:
         return ret
 
+if __name__=='__main__':
+    from datetime import datetime
+    hgt_uv_wsp(init_time=datetime(2022,1,31,14),data_name='era5',data_source='cds',fhour=0)
 
 @date_init('init_time')
 def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-              lvl_ana=250, levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 100], is_mask_terrain=True,
+              lvl_ana=200, levels=[700, 600, 500, 400, 300, 250, 200, 100], is_mask_terrain=True,
               area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 

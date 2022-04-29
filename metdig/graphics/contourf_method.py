@@ -14,9 +14,9 @@ import metdig.graphics.cmap.cm as cm_collected
 from  metdig.graphics.lib.utility import kwargs_wrapper
 
 @kwargs_wrapper
-def contourf_2d(ax, stda, xdim='lon', ydim='lat',
+def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
                 add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
-                levels=None, cmap='jet', extend='both', isLinear=False,
+                cmap='jet', extend='both', isLinear=False,
                 transform=ccrs.PlateCarree(), alpha=0.8, 
                 colorbar_kwargs={}, **kwargs):
     """[graphics层绘制contourf平面图通用方法]
@@ -62,6 +62,27 @@ def contourf_2d(ax, stda, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
+def wvfldiv_contourf(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    levels=np.arange(-10, 0, 0.5).tolist(), cmap='Greens_r',extend='min',
+                    transform=ccrs.PlateCarree(),colorbar_kwargs={},
+                    **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) * 1e5   # 10**5 g/(m**2*Pa*s)
+
+    cmap = cm_collected.get_cmap(cmap, extend=extend)
+    # cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+
+    # if levels:
+    #     z = np.where(z >= levels[0], z, np.nan)
+
+    img = ax.contourf(x, y, z, cmap=cmap, levels=levels,transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='水汽通量散度 10$^{-5}$ g/(m**2*Pa*s)', extend=extend,kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
 def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
                         levels=np.arange(-10, 10.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',
@@ -80,8 +101,8 @@ def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def pv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
-                    levels=np.arange(4, 25, 4), cmap='YlOrBr', extend='max',
-                    transform=ccrs.PlateCarree(), alpha=0.3, colorbar_kwargs={}, **kwargs):
+                    levels=np.arange(1, 12, 0.5), cmap='hot_r', extend='max',
+                    transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)   
@@ -90,7 +111,7 @@ def pv_contourf(ax, stda,  xdim='lon', ydim='lat',
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='Potential Vorticity (10**-6 K*m**2/(s*kg))',kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='位涡 （PVU）',kwargs=colorbar_kwargs)
     return img
 
 @kwargs_wrapper

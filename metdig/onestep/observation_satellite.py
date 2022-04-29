@@ -62,12 +62,6 @@ def fy4a_c009_hgt_uv_prmsl(ir_obs_time=None,
     if ret:
         return ret
 
-if __name__=='__main__':
-    import matplotlib.pyplot as plt
-    fy4a_c009_hgt_uv_prmsl(ir_obs_time=datetime.datetime(2022,4,12,8),
-        init_time=datetime.datetime(2022,4,12,8),fhour=3,add_city=False)
-    plt.show()
-
 def fy4a_c012_hgt_uv_prmsl(ir_obs_time=None,
                         init_time=None,fhour=12,data_name='cma_gfs',data_source='cmadaas',
                         hgt_lev=500,uv_lev=850,
@@ -107,12 +101,6 @@ def fy4a_c012_hgt_uv_prmsl(ir_obs_time=None,
 
     if ret:
         return ret
-
-if __name__=='__main__':
-    import matplotlib.pyplot as plt
-    fy4a_c012_hgt_uv_prmsl(ir_obs_time=datetime.datetime(2022,4,12,8),
-        init_time=datetime.datetime(2022,4,12,8),fhour=3,add_city=False)
-    plt.show()
 
 def fy4a_c012_hgt_uv_cape(ir_obs_time=None,
                         init_time=None,fhour=12,data_name='cma_gfs',data_source='cmadaas',
@@ -388,6 +376,7 @@ def fy4a_c012_hgt_uv_wsp(ir_obs_time=None,
 
     # get data
     ir = get_fy_awx(obs_time=ir_obs_time, data_name='fy4al1', var_name='tbb', channel=12, extent=map_extent)
+    # ir = get_fy_awx(obs_time=ir_obs_time, data_name='fy2g', var_name='tbb', channel=2, extent=map_extent)
     hgt = get_model_grid(init_time=init_time, fhour=fhour, data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
@@ -505,3 +494,9 @@ def fy4air_sounding_hgt(ir_obs_time=None, ir_channel=9,
 
     if ret:
         return ret
+
+if __name__=='__main__':
+    import matplotlib.pyplot as plt
+    fy4air_sounding_hgt(ir_obs_time=datetime.datetime(2022,4,25,8),sounding_obs_time=datetime.datetime(2022,4,25,8),
+        hgt_init_time=datetime.datetime(2022,4,25,8),fhour=3,add_city=False)
+    plt.show()

@@ -270,6 +270,26 @@ def wvfl_pcolormesh(ax, stda, xdim='lon', ydim='lat',
         utl.add_colorbar(ax, img, label='Water Vapor Flux g/(cm*hPa*s)', extend='max',kwargs=colorbar_kwargs)
     return img
 
+@kwargs_wrapper
+def wvfldiv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                    add_colorbar=True,
+                    levels=np.arange(-10, 0, 0.5).tolist(), extend='min',cmap='Greens_r',
+                    transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},
+                    **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)*100000  # 10**4 g/(m**2*Pa*s)
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+
+    if levels:
+        z = np.where(z >= levels[0], z, np.nan)
+
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='水汽通量散度 10$^{-5}$ g/(m**2*Pa*s)', extend=extend,kwargs=colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def tmp_pcolormesh(ax, stda, xdim='lon', ydim='lat',

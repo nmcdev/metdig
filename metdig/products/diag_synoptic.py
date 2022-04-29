@@ -16,6 +16,42 @@ from metdig.graphics.streamplot_method import *
 from metdig.graphics.text_method import *
 from metdig.graphics.draw_compose import *
 
+def draw_vpbt(irbt, map_extent=(60, 145, 15, 55),
+                    irbt_pcolormesh_kwargs={},
+                    **pallete_kwargs):
+    init_time = pd.to_datetime(irbt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhour = int(irbt['dtime'].values[0])
+    fcst_time = init_time + datetime.timedelta(hours=fhour)
+
+    data_name = str(irbt['member'].values[0])
+    title = '[{}] 模拟卫星水汽图像'.format(
+        data_name.upper())
+
+    forcast_info = irbt.stda.description()
+    png_name = '{2}_模拟卫星水汽图像_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
+
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
+    ir_pcolormesh(obj.ax, irbt, cmap='met/wv_enhancement_r', levels=np.arange(121.6,336.2),kwargs=irbt_pcolormesh_kwargs)
+    return obj.save()
+
+def draw_irbt(irbt, map_extent=(60, 145, 15, 55),
+                    irbt_pcolormesh_kwargs={},
+                    **pallete_kwargs):
+    init_time = pd.to_datetime(irbt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhour = int(irbt['dtime'].values[0])
+    fcst_time = init_time + datetime.timedelta(hours=fhour)
+
+    data_name = str(irbt['member'].values[0])
+    title = '[{}] 模拟卫星亮温图像'.format(
+        data_name.upper())
+
+    forcast_info = irbt.stda.description()
+    png_name = '{2}_模拟卫星亮温图像_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
+
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
+    ir_pcolormesh(obj.ax, irbt, cmap='met/ir_enhancement1', levels=np.arange(121.6,336.2),kwargs=irbt_pcolormesh_kwargs)
+    return obj.save()
+
 def draw_uvstream_wsp(u, v, wsp, map_extent=(60, 145, 15, 55),
                     wsp_pcolormesh_kwargs={}, uv_streamplot_kwargs={},
                     **pallete_kwargs):
