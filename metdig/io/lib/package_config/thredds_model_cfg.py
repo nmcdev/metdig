@@ -54,6 +54,8 @@ class thredds_model_cfg(metaclass=SingletonMetaClass):
         else:
             return int(models_level)
 
+    def model_thredds_prod_type(self, level_type=None, data_name=None, var_name=None):
+        return self.get_model_cfg(level_type=level_type, data_name=data_name, var_name=var_name)['thredds_prod_type']
 
 if __name__ == '__main__':
     x = thredds_model_cfg().model_thredds_variable(level_type='high', data_name='cfsr', var_name='hgt',)
@@ -66,4 +68,8 @@ if __name__ == '__main__':
     print(x)
 
     x = thredds_model_cfg().model_thredds_level(level_type='high', data_name='cfsr', var_name='u', level=2)
+    print(x)
+
+
+    x = thredds_model_cfg().model_thredds_prod_type(level_type='high', data_name='cfsr', var_name='u')
     print(x)

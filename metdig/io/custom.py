@@ -18,7 +18,7 @@ import logging
 _log = logging.getLogger(__name__)
 
 
-def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=True, **attrs_kwargs):
+def split_stda_to_cache_sfc(stda, var_name, data_name='custom', var_units='', is_overwrite=True, **attrs_kwargs):
     '''
 
     [拆分自定义地面stda至metdig缓存目录]
@@ -27,7 +27,8 @@ def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=Tru
         stda {[xarray]} -- [stda格式数据]
         var_name {[str]} -- [数据要素名]
         data_name {[str]} -- [模式名]
-        is_overwrite {[bool]} -- [是否重写，默认重写覆盖])
+        var_units {[str]} -- [数据对应的单位。默认不给定单位即传进来的stda数据为标准格式，自动赋予stda标准单位属性。如给定单位则进行单位转换]
+        is_overwrite {[bool]} -- [是否重写，默认重写覆盖]
     '''
     if stda.level.size > 1:
         raise Exception('stda error: the length of the level dimension must be 1!')
@@ -46,8 +47,13 @@ def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=Tru
             data = stda.sel(time=time, dtime=dtime)
             data = data.expand_dims(time=[time], dtime=[dtime])
             data = data.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+
+            # 单位及属性
             stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
-            data.attrs=stda_attrs
+            if var_units:
+                data.values, data_units = mdgstda.numpy_units_to_stda(data.values, var_units, stda_attrs['var_units']) # 单位转换
+                stda_attrs['var_units'] = data_units
+            data.attrs = stda_attrs
 
             if not os.path.exists(os.path.dirname(cachefile)):
                 os.makedirs(os.path.dirname(cachefile))
@@ -56,7 +62,7 @@ def split_stda_to_cache_sfc(stda, var_name, data_name='custom', is_overwrite=Tru
             data.to_netcdf(cachefile)
 
 
-def split_stda_to_cache_psl(stda, var_name, data_name='custom', is_overwrite=True):
+def split_stda_to_cache_psl(stda, var_name, data_name='custom', var_units='', is_overwrite=True, **attrs_kwargs):
     '''
 
     [拆分自定义高空stda至metdig缓存目录]
@@ -65,7 +71,8 @@ def split_stda_to_cache_psl(stda, var_name, data_name='custom', is_overwrite=Tru
         stda {[xarray]} -- [stda格式数据]
         var_name {[str]} -- [数据要素名]
         data_name {[str]} -- [模式名]
-        is_overwrite {[bool]} -- [是否重写，默认重写覆盖])
+        var_units {[str]} -- [数据对应的单位。默认不给定单位即传进来的stda数据为标准格式，自动赋予stda标准单位属性。如给定单位则进行单位转换]
+        is_overwrite {[bool]} -- [是否重写，默认重写覆盖]
     '''
     stda.name = var_name
     for level in stda.level.values:
@@ -83,6 +90,13 @@ def split_stda_to_cache_psl(stda, var_name, data_name='custom', is_overwrite=Tru
                 data = stda.sel(level=level, time=time, dtime=dtime)
                 data = data.expand_dims(level=[level], time=[time], dtime=[dtime])
                 data = data.transpose('member', 'level', 'time', 'dtime', 'lat', 'lon')
+                
+                # 单位及属性
+                stda_attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
+                if var_units:
+                    data.values, data_units = mdgstda.numpy_units_to_stda(data.values, var_units, stda_attrs['var_units']) # 单位转换
+                    stda_attrs['var_units'] = data_units
+                data.attrs = stda_attrs
 
                 if not os.path.exists(os.path.dirname(cachefile)):
                     os.makedirs(os.path.dirname(cachefile))

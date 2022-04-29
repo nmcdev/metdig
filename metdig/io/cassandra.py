@@ -50,6 +50,8 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
             cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
         cassandra_units = cassandra_model_cfg().model_cassandra_units(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
         cassandra_level = cassandra_model_cfg().model_cassandra_level(level_type=level_type, data_name=data_name, var_name=var_name, level=level)
+        cassandra_prod_type = cassandra_model_cfg().model_cassandra_prod_type(level_type=level_type, data_name=data_name, var_name=var_name)
+        print(cassandra_prod_type)
     except Exception as e:
         raise Exception(str(e))
     filename = utl.model_filename(init_time, fhour)

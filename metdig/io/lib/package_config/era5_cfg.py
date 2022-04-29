@@ -41,6 +41,8 @@ class era5_cfg(metaclass=SingletonMetaClass):
         else:
             return int(models_level)
 
+    def era5_prod_type(self, var_name=None, level_type=None):
+        return self.get_model_cfg(var_name=var_name, level_type=level_type)['era5_prod_type']
 
 if __name__ == '__main__':
     x = era5_cfg().era5_variable(level_type='surface', var_name='u10m',)
@@ -64,4 +66,7 @@ if __name__ == '__main__':
     print(x)
 
     x = era5_cfg().era5_level(level_type='surface', var_name='u10m', level=2)
+    print(x)
+
+    x = era5_cfg().era5_prod_type(level_type='surface', var_name='u10m')
     print(x)

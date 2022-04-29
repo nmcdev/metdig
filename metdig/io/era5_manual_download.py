@@ -434,9 +434,13 @@ def test():
 
     _log.info('mytest')
 
-    dt_start = datetime.datetime(2017,5,6,8)  # 北京时
-    dt_end = datetime.datetime(2017,5,4,8)
-    era5_psl_download_usepool(dt_start, dt_end, hour=np.arange(2,24,3))
+    # dt_start = datetime.datetime(2017,5,6,8)  # 北京时
+    # dt_end = datetime.datetime(2017,5,4,8)
+    # era5_psl_download_usepool(dt_start, dt_end, hour=np.arange(2,24,3))
+
+    hours = [2, 5, 8, 11, 14, 17, 20, 23]
+    era5_sfc_download_usepool(dt_start=datetime.datetime(2022,1,30),dt_end=datetime.datetime(2022,1,30),hour=hours, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl','t2m','td2m'],extent=[50, 160, 0, 70])
+    era5_psl_download_usepool(dt_start=datetime.datetime(2022,1,30),dt_end=datetime.datetime(2022,1,30),hour=hours, var_names=['hgt', 'u', 'v', 'rh', 'tmp', 'pv','spfh'],extent=[50, 160, 0, 70],pressure_level=[500,600,700,800,850,900,925,950,1000])
 
     # dt_start = datetime.datetime(2021,7,17,0)  # 北京时
     # dt_end = datetime.datetime(2021,7,22,0)

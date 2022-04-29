@@ -265,6 +265,7 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
         era5_var = era5_cfg().era5_variable(var_name=var_name, level_type=level_type)
         era5_level = era5_cfg().era5_level(var_name=var_name, level_type=level_type, level=level)
         era5_units = era5_cfg().era5_units(level_type=level_type, var_name=var_name)
+        era5_prod_type = era5_cfg().era5_prod_type(level_type=level_type, var_name=var_name)
     except Exception as e:
         raise Exception(str(e))
 

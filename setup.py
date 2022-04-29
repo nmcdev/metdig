@@ -38,7 +38,7 @@ setup(
 
     install_requires=[
                       'matplotlib',
-                      'nmc_met_io>=0.1.0',
+                      'nmc_met_io>=0.1.9',
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
                       'xarray <= 0.19.0',
