@@ -25,6 +25,7 @@ import metdig.cal as mdgcal
 import metdig.utl as mdgstda
 
 __all__ = [
+    'wind_theta_wsp',
     'wind_theta_vort',
     'wind_theta_fg',
     'wind_thetaes_mpvg',
@@ -48,6 +49,91 @@ __all__ = [
     'time_rh_uv_tmp',
     'wind_theta_div'
 ]
+
+@date_init('init_time')
+def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    #lon_mean 经向平均 当为None时不平均
+    #lat_mean 纬向平均 当为None时不平均
+    
+    # get area
+    map_extent = get_map_area(area)
+
+    rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                           var_name='rh', levels=levels, extent=map_extent)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=map_extent)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=map_extent)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='tmp', levels=levels, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='hgt', level=500, extent=map_extent)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='psfc', extent=map_extent)
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+
+
+    if is_return_data:
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        ret.update({'data': dataret})
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    wsp = mdgcal.other.wind_speed(u, v)
+
+    cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+    cross_wsp = mdgcal.cross_section(wsp, st_point, ed_point)
+
+    cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
+
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
+
+    cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
+
+    cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
+
+    if is_draw:
+        drawret = draw_cross.draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+                                       st_point=st_point, ed_point=ed_point,
+                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                       map_extent=map_extent, h_pos=h_pos,
+                                       **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+if __name__=='__main__':
+    import matplotlib.pyplot as plt
+    wind_theta_wsp(data_source='cmadaas')
+    plt.show()
 
 @date_init('init_time')
 def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -131,7 +217,7 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
 @date_init('init_time')
 def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -155,6 +241,23 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     pressure_3d = mdgstda.gridstda_full_like_by_levels(tmp, tmp['level'].values)
     thta=mdgcal.thermal.potential_temperature(pressure_3d,tmp)
     fg=mdgcal.dynamic.frontogenesis(thta,u,v)
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    fg=fg.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
@@ -198,7 +301,7 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
 
 @date_init('init_time')
-def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,lon_mean=None,lat_mean=None,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
@@ -227,6 +330,23 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
                           var_name='psfc', extent=map_extent)
     mpvg=mdgcal.dynamic.potential_vorticity_baroclinic(thetaes,pressure,ug,vg)
     
+    res=mpvg.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    theta=theta.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    ug=ug.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    vg=vg.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    mpvg=mpvg.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+
+
     if is_return_data:
         dataret = {'theta': theta, 'u': u, 'v': v, 'mpvg': mpvg, 'hgt': hgt, 'psfc': psfc}
         ret.update({'data': dataret})
@@ -260,7 +380,9 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
 def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    area='全国', is_return_data=False, is_draw=True,
+                    lon_mean=None,lat_mean=None,
+                     **products_kwargs):
     ret = {}
 
     # get area
@@ -286,6 +408,24 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     # w = mdgcal.vertical_velocity(vvel, tmp, spfh)
 
     w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
@@ -324,7 +464,7 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
 @date_init('init_time')
 def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                  levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                  levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -342,6 +482,23 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='psfc', extent=map_extent)
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    div=div.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
@@ -832,7 +989,7 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
 
 @date_init('init_time')
 def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
+                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
 
@@ -849,8 +1006,25 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='psfc', extent=map_extent)
 
+    res=mpv.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    theta=theta.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    mpv=mpv.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+
+
     if is_return_data:
-        dataret = {'theta': theta, 'u': u, 'v': v, 'pv': mpv, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'theta': theta, 'u': u, 'v': v, 'mpv': mpv, 'hgt': hgt, 'psfc': psfc}
         ret.update({'data': dataret})
 
     # +form 3D psfc
