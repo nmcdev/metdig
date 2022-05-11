@@ -26,6 +26,34 @@ from shapely.geometry import Point as ShapelyPoint
 
 pkg_name = 'metdig.graphics'
 
+
+def indicate_points(ax,sta_info,stda=None,size=20,zorder=10,ha='left',va_text='top',color='black',point_color='black'):
+    #if_adjust [bool] 是否自适应不相互重叠 #需要安装 pip install adjustText
+    #sta_info={'lon':[94.123,97.123,100.123,103.123],'lat':[29.123,30.123,30.13,30.123],'id':['测试1','测试2','测试3','测试4']}
+    alltxt=[]
+    for iid,id in enumerate(sta_info['id']):
+        if(stda is None):
+            s=ax.scatter(sta_info['lon'][iid],sta_info['lat'][iid],color=point_color,zorder=zorder)
+            s.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                mpatheffects.Normal()])
+            t=ax.text(sta_info['lon'][iid],sta_info['lat'][iid],str(sta_info['name'][iid]),size=size,zorder=zorder, ha=ha,va=va_text,color=color)
+            t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                mpatheffects.Normal()])
+            alltxt.append(t)
+        if(stda is not None):
+            s=ax.scatter(sta_info['lon'][iid],sta_info['lat'][iid],color=point_color,zorder=zorder)
+            s.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                    mpatheffects.Normal()])
+
+            num_area=stda.interp(lon=('points',[sta_info['lon'][iid]]), lat=('points', [sta_info['lat'][iid]]))
+            num = ax.text(sta_info['lon'][iid],sta_info['lat'][iid],'%.1f ' % np.squeeze(num_area.values)+'\n'+sta_info['id'][iid],
+                family='SimHei', ha=ha, va=va_text, size=size-2, zorder=zorder)
+
+            num.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
+                                mpatheffects.Normal()])
+            alltxt.append(num)
+    return(alltxt)
+
 def shp2clip_pro_id(originfig, ax, shpfile, num_list):
     sf = shapefile.Reader(shpfile)
     vertices = []  # 这块是已经修改的地方
