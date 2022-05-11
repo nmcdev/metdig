@@ -133,7 +133,8 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
         # 应对可能用户喂进来的本身就是cmap
         try:
             # 尝试取cmap中的color list（注：有的matplotlib的cmap对象不含colors属性，此处会抛出异常，待优化）
-            name = name.colors
+            # name = name.colors
+            name = name(np.linspace(0,1,name.N))
         except Exception as e:
             raise e
     if isinstance(name, str):

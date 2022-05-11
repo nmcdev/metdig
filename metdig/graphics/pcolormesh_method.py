@@ -314,7 +314,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     cmap='met/wind_speed_nws',
                     levels =[1.6,3.4,5.5,8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7, 37, 41.5, 46.2, 51.0, 56.1, 61.3],
-                    transform=ccrs.PlateCarree(), alpha=1,colorbar_kwargs={},
+                    transform=ccrs.PlateCarree(), alpha=1,colorbar_kwargs={},level_drop=7.9,
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -322,7 +322,7 @@ def gust_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     
     cmap,norm = cm_collected.get_cmap(cmap,extend='max', levels=levels)
 
-    z = np.where(z < 7.9, np.nan, z)
+    z = np.where(z < level_drop, np.nan, z)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap,norm=norm, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:

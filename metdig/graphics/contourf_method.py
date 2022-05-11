@@ -62,6 +62,43 @@ def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
+def tcdc_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, 
+                    levels=np.arange(0, 101, 0.5), cmap=None, extend='max',
+                    transform=ccrs.PlateCarree(), colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # %
+
+    if cmap is None:
+        cmap = col.LinearSegmentedColormap.from_list('own2', ['#1E90FF','#94D8F6','#F1F1F1','#BFBFBF','#696969'])
+    else:
+        cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=np.arange(0,100,10), label='总云量 (%)',kwargs=colorbar_kwargs)
+    return img
+
+
+@kwargs_wrapper
+def psfc_terrain_contourf(ax, psfc, xdim='lon', ydim='lat',
+                    add_colorbar=False,zorder=0,
+                    levels=range(300,1001,50), cmap='Greys_r',extend='min',
+                    transform=ccrs.PlateCarree(),colorbar_kwargs={},
+                    **kwargs):
+    x = psfc.stda.get_dim_value(xdim)
+    y = psfc.stda.get_dim_value(ydim)
+    z = psfc.stda.get_value(ydim, xdim)
+
+    cmap = cm_collected.get_cmap(cmap, extend=extend)
+
+    img = ax.contourf(x, y, z, cmap=cmap, levels=levels,transform=transform, extend=extend,zorder=zorder, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='地面气压指示地形 (hPa)', extend=extend,kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
 def wvfldiv_contourf(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(-10, 0, 0.5).tolist(), cmap='Greens_r',extend='min',
@@ -85,7 +122,7 @@ def wvfldiv_contourf(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
                         add_colorbar=True,
-                        levels=np.arange(-10, 10.5,0.5).tolist(), cmap='ncl/hotcolr_19lev',colorbar_kwargs={},
+                        levels=np.arange(-5, 5.5,0.05).tolist(), cmap='ncl/BlueWhiteOrangeRed',colorbar_kwargs={},
                         **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -313,7 +350,7 @@ def div_contourf(ax, stda, xdim='lon', ydim='lat',
         print('nothing to contourf')
         return
     if add_colorbar:
-        utl.add_colorbar(ax, img, ticks=levels, label='Divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='Divergence 10' + '$^{-5}$s$^{-1}$',extend=extend,kwargs=colorbar_kwargs)
     return img
 
 
@@ -493,7 +530,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        add_colorbar=True,extend='both',
-                       levels=np.arange(-10, 10, 1), cmap='ncl/cmp_flux',colorbar_kwargs={},
+                       levels=np.arange(-10, 10, 0.5), cmap='ncl/NCV_jaisnd',colorbar_kwargs={},
                        **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
