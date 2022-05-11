@@ -111,7 +111,7 @@ def draw_syn_composite(
     return obj.save()
 
 
-def draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
+def draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),marke_hl=True,
                       prmsl_contourf_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
                       **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -131,7 +131,8 @@ def draw_hgt_uv_prmsl(hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
     prmsl_contourf(obj.ax, prmsl, kwargs=prmsl_contourf_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    mslp_highlower_center_text(obj.ax, prmsl, map_extent)
+    if(marke_hl):
+        mslp_highlower_center_text(obj.ax, prmsl, map_extent)
     return obj.save()
 
 
