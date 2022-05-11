@@ -1,11 +1,11 @@
-#,,,,,,,
-# ע������,,,,,,,
-#    1. var_nameΪstdaҪ����,,,,,,,
-#    2. var_unitsΪ��ǰ���ݵ���cassandra�еĵ�λ����λ���ο�metpy.units����pint�⣩��δ֪���߲�ȷ������д���ż��ɣ��ɴ�����,,,,,,,
-#    3. cassandra_discriptionΪ������Ϣ��Ŀǰ�������κ�ʹ�ã��ɿ���Ϊ�����е�˵��,,,,,,,
-#    4. cassandra_level�߿�����дany��������㣬����������ⵥ������д����ĳһ�㣬δ֪���߲�ȷ������дany,,,,,,,
-#    5. ��data_name,var_name,level_type����Ϊ��ѯ�У���֤��ȷ��Ψһһ��,,,,,
-# ,,,,,,,
+#,,,,,,
+# 注意事项,,,,,,
+#    1. var_name为stda要素名,,,,,,
+#    2. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,,
+#    3. cassandra_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,,
+#    4. cassandra_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,,
+#    5. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行,,,,
+# ,,,,,,
 data_name,var_name,level_type,var_units,cassandra_discription,cassandra_level,cassandra_path,cassandra_prod_type
 ecmwf,hgt,high,dagpm,,any,ECMWF_HR/HGT/,model
 ecmwf,u,high,m/s,,any,ECMWF_HR/UGRD/,model

@@ -11,7 +11,9 @@ from metdig.io.lib.package_config.base import check_units, SingletonMetaClass
 class cassandra_model_cfg(metaclass=SingletonMetaClass):
     def __init__(self):
         self.model_cfg_csv = os.path.dirname(os.path.realpath(__file__)) + '/cassandra_model_cfg.csv'
-        self.model_cfg = pd.read_csv(self.model_cfg_csv, encoding='gbk', comment='#')
+        # self.model_cfg = pd.read_csv(self.model_cfg_csv, encoding='gbk', comment='#')
+        self.model_cfg = pd.read_csv(self.model_cfg_csv, comment='#')
+
         self.model_cfg = self.model_cfg.fillna('')
         self.model_cfg.apply(lambda row: check_units(row['var_units']), axis=1)  # 检查是否满足units格式
 
