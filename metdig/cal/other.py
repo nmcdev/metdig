@@ -77,6 +77,14 @@ __all__ = [
 #     pres=metdig.utl.gridstda_full_like_by_levels(spfh,spfh['level'].values)
 #     geohgt=mean_pressure_weighted(pres,spfh,hgt=hgt)
 #     print(geohgt)
+def pressure_to_height_std(pressure):
+    #Convert pressure data to height using the U.S. standard atmosphere [NOAA1976].
+    #The implementation uses the formula outlined in [Hobbs1977] pg.60-61.
+    pressure_p=pressure.stda.quantity
+    height_p=mpcalc.pressure_to_height_std(pressure_p)
+    height=utl.quantity_to_stda_byreference('hgt', height_p, pressure)
+    return height
+
 
 def height_to_geopotential(hgt):
     """_summary_
