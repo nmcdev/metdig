@@ -20,7 +20,7 @@ _log = logging.getLogger(__name__)
 
 
 def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, level=None,
-                   extent=None, x_percent=0, y_percent=0,cache_clear=True):
+                   extent=None, x_percent=0, y_percent=0,cache_clear=True,dim_round=4,**kwargs):
     '''
 
     [读取单层单时次模式网格数据]
@@ -34,7 +34,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         extent {[tuple]} -- [裁剪区域，如(50, 150, 0, 65)] (default: {None})
         x_percent {number} -- [根据裁剪区域经度方向扩充百分比] (default: {0})
         y_percent {number} -- [根据裁剪区域纬度方向扩充百分比] (default: {0})
-
+        dim_round {number} 坐标保留几位小数
     Returns:
         [stda] -- [stda格式数据]
     '''
@@ -65,12 +65,12 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if cmadaas_prod_type == 'analysis':
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
-                                             time_str=timestr+'0000', level_type=cmadaas_level_type,limit=limit,
-                                             fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+                                             time_str=timestr+'0000', level_type=cmadaas_level_type,#limit=limit, #暂时去除limit参数，因为nmc_met_io的缓存数据不能判断空间范围，导致重复读取数据
+                                             fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear,**kwargs) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     elif cmadaas_prod_type == 'model':
         data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
-                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,limit=limit,
-                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,#limit=limit, #暂时去除limit参数，因为nmc_met_io的缓存数据不能判断空间范围，导致重复读取数据
+                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear,**kwargs) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     else:
         raise Exception('cmadaas_prod_type error!')
 
@@ -79,8 +79,10 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         raise Exception('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, init_time={}, fhour={}'.format(
             cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
 
+    data['lon']=data.lon.round(dim_round)
+    data['lat']=data.lat.round(dim_round)
     # 数据裁剪
-    # data = utl.area_cut(data, extent, x_percent, y_percent)
+    data = utl.area_cut(data, extent, x_percent, y_percent)
 
     # 经纬度从小到大排序好
     data = data.sortby('lat')
@@ -124,7 +126,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
 
 def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, level=None,
-                    extent=None, x_percent=0, y_percent=0):
+                    extent=None, x_percent=0, y_percent=0,**kwargs):
     '''
 
     [读取单层多时次模式网格数据]
@@ -147,7 +149,7 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
     stda_data = []
     for fhour in fhours:
         try:
-            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent,**kwargs)
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
