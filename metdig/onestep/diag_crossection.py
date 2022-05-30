@@ -17,6 +17,7 @@ from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv_4d
 from metdig.onestep.complexgrid_var.spfh import read_spfh_4D,read_spfh_3D
 from metdig.onestep.complexgrid_var.theta import read_theta3d
 from metdig.onestep.complexgrid_var.w import read_w3d
+from metdig.onestep.complexgrid_var.vvel import read_vvel3ds,read_vvel3d
 
 
 from metdig.products import diag_crossection as draw_cross
@@ -44,9 +45,9 @@ __all__ = [
     'wind_theta_absv',
     'wind_theta_rh',
     'wind_theta_spfh',
-    'wind_tmp_rh',
+    'wind_tmp_rh_vvel',
     'time_rh_uv_theta',
-    'time_rh_uv_tmp',
+    'time_rh_uv_tmp_vvel',
     'wind_theta_div'
 ]
 
@@ -129,11 +130,6 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     if ret:
         return ret
-
-if __name__=='__main__':
-    import matplotlib.pyplot as plt
-    wind_theta_wsp(data_source='cmadaas')
-    plt.show()
 
 @date_init('init_time')
 def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -293,12 +289,6 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     if ret:
         return ret
-
-# if __name__ == '__main__':
-#     import matplotlib.pyplot as plt
-#     wind_theta_fg()
-#     plt.show()
-
 
 @date_init('init_time')
 def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,lon_mean=None,lat_mean=None,
@@ -678,18 +668,6 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     if ret:
         return ret
 
-# if __name__ == '__main__':
-#     import matplotlib.pyplot as plt
-#     wind_w_theta_spfh(data_name='ecmwf',data_source='cmadaas',
-#     # init_time=datetime.datetime(2021,12,25,20),fhour=36,st_point=[18,105],ed_point=[38,105.1],
-#     fhour=36,st_point=[18,105],ed_point=[38,105.1],
-#                                             area=[95,121,18,38],                                                                    
-#                                                   wind_quiver_kwargs={'xdim':'lat_cross'},
-#                                                                     theta_contour_kwargs={'xdim':'lat_cross'},
-#                                                                     spfh_contourf_kwargs={'xdim':'lat_cross'},
-#                                                                     terrain_contourf_kwargs={'xdim':'lat_cross'})
-#     plt.show()
-
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -755,9 +733,6 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     if ret:
         return ret
 
-# if __name__ == '__main__':
-#     time_div_vort_rh_uv()
-
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
@@ -792,11 +767,6 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
         ret.update(drawret)
     if ret:
         return ret
-
-# if __name__=='__main__':
-#     time_wind_tmpadv_tmp(init_time=datetime.datetime(2022,1,27,20),fhours=np.arange(0,51,3),
-#         data_source='cmadaas',data_name='ecmwf')
-
 
 @date_init('init_time')
 def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -1133,11 +1103,6 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    wind_theta_absv(lon_mean=5)
-    plt.show()
-
 @date_init('init_time')
 def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
@@ -1256,7 +1221,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
         return ret
 
 @date_init('init_time')
-def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
                 st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
@@ -1273,6 +1238,8 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
                           var_name='v', levels=levels, extent=map_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             var_name='tmp', levels=levels, extent=map_extent)
+    vvel = read_vvel3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -1290,9 +1257,8 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
+    cross_vvel = mdgcal.cross_section(vvel, st_point, ed_point)
     cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
-
-    cross_u_t, cross_v_n = mdgcal.cross_section_components(cross_u, cross_v)
 
     _, pressure = xr.broadcast(cross_rh, cross_tmp['level'])
     cross_terrain = pressure - cross_psfc
@@ -1301,7 +1267,7 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     cross_rh = cross_rh.where(cross_rh < 100, 100)  # 大于100的赋值成100
 
     if is_draw:
-        drawret = draw_cross.draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel,cross_terrain, hgt,
                                    st_point=st_point, ed_point=ed_point,
                                    lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                    map_extent=map_extent, h_pos=h_pos,
@@ -1310,7 +1276,6 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
 
     if ret:
         return ret
-
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
@@ -1352,17 +1317,19 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
 
 
 @date_init('init_time', method=date_init.special_series_set)
-def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
+def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                   points={'lon': [116.3833], 'lat': [39.9]},mean_area=None,
+                   points={'lon': [115], 'lat': [22.3]},mean_area=None,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
-
-    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=mean_area)
-    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=mean_area)
-    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=mean_area)
-    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=mean_area)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=mean_area)
+    extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=extent)
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=extent)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=extent)
+    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
+    # vvel = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='vvel', levels=levels,extent=extent)
+    vvel = read_vvel3ds(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'psfc': psfc}
@@ -1373,6 +1340,7 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         rh = rh.interp(lon=points['lon'], lat=points['lat'])
+        vvel = vvel.interp(lon=points['lon'], lat=points['lat'])
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     _, pressure = xr.broadcast(v, v['level'])
@@ -1382,13 +1350,13 @@ def time_rh_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 
     if is_draw:
-        drawret = draw_cross.draw_time_rh_uv_tmp(rh, u, v, tmp, terrain, **products_kwargs)
+        drawret = draw_cross.draw_time_rh_uv_tmp_vvel(rh, u, v, tmp, vvel, terrain, **products_kwargs)
         ret.update(drawret)
 
     if ret:
         return ret
 
-# if __name__ == '__main__':
-#     import matplotlib.pyplot as plt
-#     time_rh_uv_tmp(init_time='2021081120',mean_area=[100,120,30,40])
-#     plt.show()
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    time_rh_uv_tmp_vvel(data_source='cmadaas',data_name='ecmwf',fhours=np.arange(72,241,6))
+    plt.show()

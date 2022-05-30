@@ -46,12 +46,24 @@ def read_vvel(data_source=None, init_time=None, fhour=None, data_name=None, leve
     if data is not None:
         return data
 
-    raise Exception('Can not get any data!')
+    return None
+    # raise Exception('Can not get any data!')
 
 
-def read_vvel3d(levels, **read_theta_kwargs):
+def read_vvel3d(levels, **read_vvel_kwargs):
     data = []
     for ilevel in levels:
-        data.append(read_vvel(level=ilevel, **read_theta_kwargs))
+        temp=read_vvel(level=ilevel, **read_vvel_kwargs)
+        if (temp is not None):
+            data.append(temp)
     data = xr.concat(data, dim='level')
+    return data
+
+def read_vvel3ds(fhours, **read_vvel3d_kwargs):
+    data = []
+    for ifhour in fhours:
+        temp=read_vvel3d(fhour=ifhour, **read_vvel3d_kwargs)
+        if (temp is not None):
+            data.append(temp)
+    data = xr.concat(data, dim='dtime')
     return data

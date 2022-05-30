@@ -168,7 +168,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100,kwargs=terrain_contourf_kwargs)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -206,7 +206,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100,kwargs=terrain_contourf_kwargs)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -475,10 +475,10 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     return obj.save()
 
 
-def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n, cross_terrain, hgt,
+def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cross_terrain, hgt,
                      st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                      h_pos=[0.125, 0.665, 0.25, 0.2],
-                     rh_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
+                     rh_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},vvel_contour_kwargs={},terrain_contourf_kwargs={},
                      **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
@@ -486,19 +486,20 @@ def draw_wind_tmp_rh(cross_rh, cross_tmp, cross_u, cross_v, cross_u_t, cross_v_n
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
-    title = '[{}]温度, 相对湿度, 水平风场'.format(data_name)
+    title = '[{}]温度 相对湿度 水平风 气压垂直运动速度'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_相对湿度_水平风场_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_相对湿度_水平风_气压垂直运动速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
-    cross_u_t = cross_u_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
-    cross_v_n = cross_v_n.isel(lon=wind_slc_horz, level=wind_slc_vert)
+    cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
+    cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
     obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 101, 0.5), kwargs=rh_contourf_kwargs)
+    cross_vvel_contour(obj.ax, cross_vvel, zorder=1, kwargs=vvel_contour_kwargs)
     cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
-    barbs_2d(obj.ax, cross_u_t, cross_v_n, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7,zorder=2, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
@@ -523,7 +524,7 @@ def draw_time_rh_uv_theta(rh, u, v, theta, terrain,rh_contourf_kwargs={}, uv_bar
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_theta_contour(obj.ax, theta, xdim='fcst_time', ydim='level', levels=np.arange(250, 450, 5), colors='#A0522D', kwargs=theta_contour_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100,kwargs=terrain_contourf_kwargs)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     return obj.save()
 
 
@@ -550,7 +551,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
     div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
     vort_contour(obj.ax, vort, xdim='fcst_time', ydim='level', colors='black', transform=None, kwargs=div_contour_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='horizontal divergence')
     black_line = lines.Line2D([], [], color='black', label='vertical vorticity')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
@@ -588,7 +589,7 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='black', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=2, title=None, framealpha=1)
@@ -626,7 +627,7 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
@@ -657,7 +658,7 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
     div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
     vort_contour(obj.ax, vort, xdim='fcst_time', ydim='level', colors='black', transform=None, kwargs=div_contour_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='horizontal divergence')
     black_line = lines.Line2D([], [], color='black', label='vertical verticity')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
@@ -666,7 +667,8 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
     return obj.save()
 
 
-def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  rh_contourf_kwargs={}, uv_barbs_kwargs={}, tmp_contour_kwargs={}, **pallete_kwargs):
+def draw_time_rh_uv_tmp_vvel(rh, u, v, tmp, vvel, terrain,  rh_contourf_kwargs={}, uv_barbs_kwargs={}, tmp_contour_kwargs={}, vvel_contour_kwargs={},
+            terrain_contourf_kwargs={}, **pallete_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
     times = rh.stda.fcst_time
@@ -674,24 +676,17 @@ def draw_time_rh_uv_tmp(rh, u, v, tmp, terrain,  rh_contourf_kwargs={}, uv_barbs
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
 
-    title = '温度, 相对湿度, 水平风'
+    title = '温度 相对湿度 水平风 气压垂直速度'
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}'.format(
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
-    png_name = '{3}_温度_相对湿度_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
+    png_name = '{3}_温度_相对湿度_水平风_气压垂直速度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
-
-    cenlon = u.lon.mean()
-    cenlat = u.lat.mean()
-    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    rh = rh.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 101, 0.5), extend='max', kwargs=rh_contourf_kwargs)
+    cross_vvel_contour(obj.ax, vvel, xdim='fcst_time', ydim='level',linewidths=2,kwargs=vvel_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
+    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',  kwargs=tmp_contour_kwargs)
     if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, terrain.max(), 0.1), zorder=100)
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
     return obj.save()
