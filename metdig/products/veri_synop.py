@@ -25,6 +25,43 @@ from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.draw_compose import *
 import metdig.graphics.lib.utility as utl
 
+def draw_veri_tlogp(tmp,td,u,v,pres,tmp_sounding,td_sounding,u_sounding,v_sounding,**pallete_kwargs):
+
+    init_time = tmp.stda.time[0]
+    fcst_time= tmp.stda.fcst_time[0]
+    fhour = tmp.stda.dtime[0]
+    data_name = tmp.stda.member[0].upper()
+    id=tmp.id[0]
+
+    description='[{0:}]探空站 {1:%m月%d日%H时观测} \n[{2:}]模式 {3:%m月%d日%H时起报}{4:}小时预报'.format(str(id),fcst_time,data_name.upper(),init_time,str(fhour))
+    png_name='{0:}模式_{1:}站_{2:%Y年%m月%d日%H时}观测_{3:%Y年%m月%d日%H时}起报_{4:}小时预报.png'.format(data_name,str(id),fcst_time,init_time,str(fhour))
+
+    obj = skewt_compose(figsize=(9,9),description=description,png_name=png_name,
+                                                    bottom=pres.stda.values.max(),top=max([200,pres.stda.values.min()]),left=-30,right=tmp_sounding.stda.values.max()+5, kwargs=pallete_kwargs)
+
+    obj.skew.plot(pres.stda.quantity, tmp_sounding.stda.quantity, 'r')
+    obj.skew.plot(pres.stda.quantity, tmp.stda.quantity, 'r',ls='--')
+
+    obj.skew.plot(pres.stda.quantity, td_sounding.stda.quantity, 'g')
+    obj.skew.plot(pres.stda.quantity, td.stda.quantity, 'g',ls='--')
+
+    obj.skew.ax.barbs(tmp_sounding.stda.values,pres.stda.values,
+    u_sounding.stda.values,v_sounding.stda.values,
+    color='black',length=6,sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
+
+    obj.skew.ax.barbs(td.stda.values,pres.stda.values,
+    u.stda.values,v.stda.values,
+    color='black',length=6,sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
+
+    td_line = lines.Line2D([], [], color='g', label='观测露点温度')
+    tmp_line = lines.Line2D([], [], color='r', label='观测温度')
+    td_md_line = lines.Line2D([], [], color='g', label='预报露点温度',linestyle='--')
+    tmp_md_line = lines.Line2D([], [], color='r', label='预报温度',linestyle='--')
+
+    leg = obj.skew.ax.legend(handles=[td_line, tmp_line,td_md_line,tmp_md_line], title=None, framealpha=1)
+
+    return obj.save()
+
 def draw_veri_tmp(tmp_fcst,tmp_bias,
                 map_extent=(60, 145, 15, 55),
                 tmp_bias_contourf_kwargs={},tmp_bias_contour_kwargs={},tmp_fcst_contour_kwargs={}, 

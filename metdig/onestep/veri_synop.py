@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from metdig.io import get_model_grid,get_model_grids,get_obs_stations
+from metdig.io import get_model_grid,get_model_grids,get_obs_stations,get_model_points
+from metdig.io.cassandra import get_tlogp
 
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
@@ -20,6 +21,64 @@ __all__ = [
 
 ]
 
+@date_init('init_time')
+def veri_tlogp(data_source='cmadaas',obs_data_source='cassandra',data_name='ecmwf',id_selected=54511,
+                init_time=None,fhour=6,levels=[1000,950,925,850,800,700,600,500,400,300,250,200,100],
+                is_return_data=False,is_draw=True,**products_kwargs):
+    obs_time=init_time+datetime.timedelta(hours=fhour)
+    hgt_sounding=get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='hgt',id_selected=id_selected)
+    tmp_sounding=get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='tmp',id_selected=id_selected)
+    td_sounding=get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='td',id_selected=id_selected)
+    wsp_sounding=get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='wsp',id_selected=id_selected)
+    wdir_sounding=get_tlogp(obs_time=obs_time,data_name='tlogp',var_name='wdir',id_selected=id_selected)
+
+    hgt_sounding=hgt_sounding.loc[hgt_sounding.level.isin(levels)]
+    tmp_sounding=tmp_sounding.loc[tmp_sounding.level.isin(levels)]
+    td_sounding=td_sounding.loc[td_sounding.level.isin(levels)]
+    wsp_sounding=wsp_sounding.loc[wsp_sounding.level.isin(levels)]
+    wdir_sounding=wdir_sounding.loc[wdir_sounding.level.isin(levels)]
+    if(len(wdir_sounding) < 2):
+        print('探空在模式层数据小于2，返回')
+        return
+    u_sounding,v_sounding=mdgcal.other.wind_components(wsp_sounding,wdir_sounding)
+
+    md_levels=list(set(wdir_sounding.level.tolist()+wsp_sounding.level.tolist()+td_sounding.level.tolist()+tmp_sounding.level.tolist()+hgt_sounding.level.tolist()))
+    md_levels.sort(reverse=True)
+    md_levels=np.array(md_levels).astype('int')
+    points={'lon':list(set(u_sounding.stda.lon)),'lat':list(set(u_sounding.stda.lat)),'id':[id_selected]}
+
+    # get data
+    tmp = get_model_points(data_source=data_source, init_time=init_time, fhours=[
+                           fhour], data_name=data_name, var_name='tmp', levels=md_levels, points=points)
+    u = get_model_points(data_source=data_source, init_time=init_time, fhours=[
+                         fhour], data_name=data_name, var_name='u', levels=md_levels, points=points)
+    v = get_model_points(data_source=data_source, init_time=init_time, fhours=[
+                         fhour], data_name=data_name, var_name='v', levels=md_levels, points=points)
+    rh = get_model_points(data_source=data_source, init_time=init_time, fhours=[
+                          fhour], data_name=data_name, var_name='rh', levels=md_levels, points=points)
+
+    td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
+
+    pres = tmp.copy(deep=True)
+    pres.stda.set_values(md_levels, var_name='pres')
+
+    ret={}
+    if is_return_data:
+        dataret = {'tmp': tmp , 'u': u, 'v': v, 'td':td,
+                    'tmp_sounding': tmp_sounding , 'u_sounding': u_sounding, 'v_sounding': v_sounding, 'td_sounding':td_sounding,
+                    'pres':pres}
+        ret.update({'data': dataret}) 
+
+    if is_draw:
+        draw_veri_synop.draw_veri_tlogp(tmp,td,u,v,pres,tmp_sounding,td_sounding,u_sounding,v_sounding,**products_kwargs)
+
+    if ret:
+        return ret
+        
+if __name__=='__main__':
+    import matplotlib.pyplot as plt
+    veri_tlogp(is_return_data=True,is_draw=False,id_selected=None)
+    plt.show()
 
 @date_init('init_time')
 def veri_tmp(data_source='cassandra',ana_data_source='cmadaas',
