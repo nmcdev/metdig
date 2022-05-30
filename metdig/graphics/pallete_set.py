@@ -123,9 +123,11 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     if add_background_style is None:
         # ax.add_feature(cfeature.OCEAN, facecolor='#EDFBFE')
         # ax.add_feature(cfeature.LAND, facecolor='#FCF6EA')
-        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=19) 
+        # add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=19) 
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='world', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree())
     elif add_background_style == 'RD':
-        add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.5, encoding='gbk',zorder=19) 
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='world', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree())
+        # add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.5, encoding='gbk',zorder=19) 
         # ax.add_feature(cfeature.OCEAN)
         utl_plotmap.add_cartopy_background(ax, name='RD')
     elif add_background_style == 'YB':
