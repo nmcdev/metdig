@@ -175,7 +175,9 @@ def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
     """
 
     # map name
-    names = {'nation': "NationalBorder", 
+    names = {
+            'world':'worldmap',
+            'nation': "NationalBorder", 
              'province': "Province",
             #  'county': "County",  # 无资源，暂时注释
              'river': "hyd1_4l",

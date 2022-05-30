@@ -99,6 +99,24 @@ def psfc_terrain_contourf(ax, psfc, xdim='lon', ydim='lat',
     return img
 
 @kwargs_wrapper
+def terrain_contourf(ax, terrain, xdim='lon', ydim='lat',
+                    add_colorbar=False,zorder=0,
+                    levels=range(1000,8000,200), cmap='Greys',extend='max',
+                    transform=ccrs.PlateCarree(),colorbar_kwargs={},
+                    **kwargs):
+    x = terrain.stda.get_dim_value(xdim)
+    y = terrain.stda.get_dim_value(ydim)
+    z = terrain.stda.get_value(ydim, xdim)
+
+    cmap,norm = cm_collected.get_cmap(cmap,levels=levels, extend=extend)
+
+    img = ax.contourf(x, y, z, cmap=cmap,levels=levels, norm=norm,transform=transform, extend=extend,zorder=zorder, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='海拔高度 (m)', extend=extend,kwargs=colorbar_kwargs)
+    return img
+
+
+@kwargs_wrapper
 def wvfldiv_contourf(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(-10, 0, 0.5).tolist(), cmap='Greens_r',extend='min',
@@ -559,5 +577,5 @@ def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
         endcolor = '#DAC2AD'  # 绿
         cmap = col.LinearSegmentedColormap.from_list('own3', [endcolor, startcolor])
 
-    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, **kwargs)
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap,  **kwargs)
     return img
