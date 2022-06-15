@@ -45,7 +45,8 @@ def veri_tlogp(data_source='cmadaas',obs_data_source='cassandra',data_name='ecmw
     md_levels=list(set(wdir_sounding.level.tolist()+wsp_sounding.level.tolist()+td_sounding.level.tolist()+tmp_sounding.level.tolist()+hgt_sounding.level.tolist()))
     md_levels.sort(reverse=True)
     md_levels=np.array(md_levels).astype('int')
-    points={'lon':list(set(u_sounding.stda.lon)),'lat':list(set(u_sounding.stda.lat)),'id':[id_selected]}
+    sta_info=u_sounding.drop_duplicates(subset=['id']).reset_index(drop=True)
+    points={'lon':list(sta_info.stda.lon),'lat':list(sta_info.stda.lat),'id':[id_selected]}
 
     # get data
     tmp = get_model_points(data_source=data_source, init_time=init_time, fhours=[

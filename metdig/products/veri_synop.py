@@ -39,26 +39,28 @@ def draw_veri_tlogp(tmp,td,u,v,pres,tmp_sounding,td_sounding,u_sounding,v_soundi
     obj = skewt_compose(figsize=(9,9),description=description,png_name=png_name,
                                                     bottom=pres.stda.values.max(),top=max([200,pres.stda.values.min()]),left=-30,right=tmp_sounding.stda.values.max()+5, kwargs=pallete_kwargs)
 
-    obj.skew.plot(pres.stda.quantity, tmp_sounding.stda.quantity, 'r')
-    obj.skew.plot(pres.stda.quantity, tmp.stda.quantity, 'r',ls='--')
+    obj.skew.plot(tmp_sounding.level, tmp_sounding.stda.quantity, 'r')
+    obj.skew.plot(tmp.level, tmp.stda.quantity, 'r',ls='--')
 
-    obj.skew.plot(pres.stda.quantity, td_sounding.stda.quantity, 'g')
-    obj.skew.plot(pres.stda.quantity, td.stda.quantity, 'g',ls='--')
+    obj.skew.plot(td_sounding.level, td_sounding.stda.quantity, 'g')
+    obj.skew.plot(td.level, td.stda.quantity, 'g',ls='--')
 
-    obj.skew.ax.barbs(tmp_sounding.stda.values,pres.stda.values,
+    obj.skew.ax.barbs(tmp_sounding.stda.values,tmp_sounding.level,
     u_sounding.stda.values,v_sounding.stda.values,
     color='black',length=6,sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
 
-    obj.skew.ax.barbs(td.stda.values,pres.stda.values,
+    obj.skew.ax.barbs(td.stda.values,td.level,
     u.stda.values,v.stda.values,
-    color='black',length=6,sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
+    color='gray',length=6,sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
 
     td_line = lines.Line2D([], [], color='g', label='观测露点温度')
     tmp_line = lines.Line2D([], [], color='r', label='观测温度')
+    uv_line = lines.Line2D([], [], color='black', label='观测风')
     td_md_line = lines.Line2D([], [], color='g', label='预报露点温度',linestyle='--')
     tmp_md_line = lines.Line2D([], [], color='r', label='预报温度',linestyle='--')
+    uv_md_line = lines.Line2D([], [], color='gray', label='预报风')
 
-    leg = obj.skew.ax.legend(handles=[td_line, tmp_line,td_md_line,tmp_md_line], title=None, framealpha=1)
+    leg = obj.skew.ax.legend(handles=[td_line, tmp_line,uv_line,td_md_line,tmp_md_line,uv_md_line], title=None, framealpha=1)
 
     return obj.save()
 

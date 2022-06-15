@@ -480,5 +480,5 @@ def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='(dbz)', kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='(dbz)',extend='max', kwargs=colorbar_kwargs)
     return img

@@ -1311,7 +1311,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
         return ret
 
 @date_init('init_time')
-def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                 st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
@@ -1348,6 +1348,7 @@ def wind_tmp_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    vvel=vvel.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 

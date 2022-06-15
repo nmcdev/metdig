@@ -17,6 +17,7 @@ __all__ = [
     'hgt_uv_rh',
     'hgt_uv_spfh',
     'hgt_uv_wvfl',
+    'hgt_uv_wvfldiv',
 ]
 
 @date_init('init_time')
