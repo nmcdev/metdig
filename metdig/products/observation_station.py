@@ -10,6 +10,24 @@ from metdig.graphics.plot_method import *
 from metdig.graphics.bar_method import *
 from metdig.graphics.barbs_method import *
 
+def draw_blowup_sounding(pres,thta,theta,thetaes,u,v,extent=(260,400,1000,100),uv_barb_kwargs={},**pallete_kwargs):
+
+    init_time = pd.to_datetime(pres['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    png_name = '{0:%Y}年{0:%m}月{0:%d}日{0:%H}_观测_{1:}_溃变理论诊断分析产品.jpg'.format(init_time,pres['id'].values[0],)
+    obj=twod_compose(title='溃变理论诊断分析',description=pres.stda.description_point_obs(),png_name=png_name,kwargs=pallete_kwargs)
+    obj.ax.xaxis.label.set_size(16)
+    obj.ax.yaxis.label.set_size(16)
+    obj.ax.tick_params(labelsize=14)
+
+    obj.ax.plot(thta.stda.get_value(),pres.stda.get_value(),color='red',label='位温',linewidth=2)
+    obj.ax.plot(theta.stda.get_value(),pres.stda.get_value(),color='green',label='假相当位温',linewidth=2)
+    obj.ax.plot(thetaes.stda.get_value(),pres.stda.get_value(),color='purple',label='饱和相当位温',linewidth=2)
+    obj.ax.barbs(thetaes.stda.get_value(), pres.stda.get_value(), u.stda.get_value(), v.stda.get_value(),
+         color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
+    obj.ax.legend(fontsize=15)
+    obj.save()
+
+
 def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp,
     tmp_plot_kwargs={},uv_barb_kwargs={},rh_plot_kwargs={},rain_bar_kwargs={},wsp_plot_kwargs={},
     **pallete_kwargs):

@@ -457,7 +457,7 @@ def time_series_left_right_bottom(times=None,figsize=(16, 4.5), title_left='', t
 
 @kwargs_wrapper
 def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', nmc_logo=False,
-        bottom=1000,top=100,left=-40,right=60):
+        bottom=1000,top=100,left=-40,right=60,add_tag=True):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -480,7 +480,45 @@ def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', 
         l, b, w, h = skew.ax.get_position().bounds
         utl.add_logo_extra_in_axes(pos=[l - 0.0, b + h - 0.075, .07, .07], which='nmc', size='Xlarge')  # 左上角
         # utl.add_logo_extra_in_axes(pos=[l + w - 0.1, b , .1, .1], which='nmc', size='Xlarge')  # 右下角
-
-    skew.ax.text(0.00, 0.001, 'Powered by MetDig', transform=skew.ax.transAxes, size=14,
-                 color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+    if add_tag:
+        skew.ax.text(0.00, 0.001, 'Powered by MetDig', transform=skew.ax.transAxes, size=14,
+                    color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, skew
+
+@kwargs_wrapper
+def twod_pallete(figsize=(14, 12), title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=False,
+        bottom=1000,top=100,left=260,right=400,
+        xlabel='K',ylabel='hPa',yticklabels=np.arange(1000, 100, -100),yticks=np.arange(1000, 100, -100)):
+
+    plt_base_env()  # 初始化字体中文等
+
+    fig = plt.figure(figsize=figsize)
+    ax = plt.axes()
+
+    ax.set_title(title, loc='right', fontsize=23)
+
+    # Adjust the y-axis to be logarithmic
+    if(logyaxis):
+        ax.set_yscale('symlog')
+    ax.set_yticklabels(yticklabels)
+    ax.set_yticks(yticks)
+    ax.set_ylim(bottom, top)
+    ax.set_ylabel(ylabel)
+
+    ax.set_xlim(left, right)
+    ax.set_xlabel(xlabel)
+
+
+    if forcast_info:
+        ax.text(0.01, 1.005, forcast_info, transform=ax.transAxes, size=11, va='bottom',
+                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='white', pad=0.0))
+
+    if nmc_logo:
+        l, b, w, h = ax.get_position().bounds
+        # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
+        utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
+
+    if(add_tag):
+        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+                color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
+    return fig, ax

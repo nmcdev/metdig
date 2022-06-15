@@ -443,6 +443,24 @@ class __STDADataFrameAccessor(object):
                 init_time, data_name, point_lon, point_lat, describe)
         return description
 
+    def description_point_obs(self, describe=''):
+        '''
+        仅对观测数据生效
+        获取站点观测描述信息，格式如下:
+        起报时间: Y年m月d日H时
+        [data_name]N小时预报[describe]
+        预报点: lon, lat
+
+        起报时间: Y年m月d日H时
+        [data_name]实况info
+        分析点: lon, lat
+        '''
+        init_time = self.time[0]
+        id = self.id[0]
+        description = '观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n观测站号: [{1:}] {2:}'.format(
+            init_time, id, describe)
+        return description
+
     def where(self, conditon, other=np.nan):
         '''
         根据conditon条件过滤数据自data_start_columns列开始的数据，类似于pandas.DataFrame.where
