@@ -117,7 +117,7 @@ def uvstream_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
 @date_init('init_time')
 def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                  hgt_lev=500, uv_lev=850, is_mask_terrain=True,
+                  hgt_lev=500, uv_lev=850, wsp_lev=200, vort_lev=500, is_mask_terrain=True,
                   area='全国',  is_return_data=False, is_draw=True, add_city=False, add_background_style=False,
                   **products_kwargs):
     ret = {}
@@ -125,12 +125,12 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     map_extent = get_map_area(area)
 
     # get data
-    vort500, u500, v500 = read_vort_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=500, extent=map_extent)
-    wsp200, u200, v200 = read_wsp(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=200, extent=map_extent)
+    vort500, u500, v500 = read_vort_uv(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=vort_lev, extent=map_extent)
+    wsp200, u200, v200 = read_wsp(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=wsp_lev, extent=map_extent)
     hgt500 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
-                            data_name=data_name, var_name='hgt', level=500, extent=map_extent)
-    u850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=850, extent=map_extent)
-    v850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=850, extent=map_extent)
+                            data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
+    u850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v850 = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
     prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='prmsl', extent=map_extent)
     tcwv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tcwv', extent=map_extent)
 
@@ -167,7 +167,7 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
 # if __name__ == '__main__':
 #     import matplotlib.pyplot as plt
-#     syn_composite(init_time='2021110712',data_name='era5',data_source='cds')
+#     syn_composite(uv_lev=925,hgt_lev=200)
 #     plt.show()
 
 @date_init('init_time')
@@ -280,9 +280,9 @@ def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
     if ret:
         return ret
 
-if __name__=='__main__':
-    from datetime import datetime
-    hgt_uv_wsp(init_time=datetime(2022,1,31,14),data_name='era5',data_source='cds',fhour=0)
+# if __name__=='__main__':
+#     from datetime import datetime
+#     hgt_uv_wsp(init_time=datetime(2022,1,31,14),data_name='era5',data_source='cds',fhour=0)
 
 @date_init('init_time')
 def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,

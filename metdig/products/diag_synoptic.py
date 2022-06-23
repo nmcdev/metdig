@@ -96,7 +96,7 @@ def draw_syn_composite(
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     tcwv_contourf(obj.ax, tcwv, alpha=0.6, cmap='ncl/WhiteGreen', levels=np.arange(20, 70, 4),
                   colorbar_kwargs={'pos': 'right center', 'orientation': 'vertical', 'tick_size':10,'label_size': 10}, kwargs=tcwv_contourf_kwargs)
-    uv_quiver(obj.ax, u850, v850, color='#404040', label='850hPa wind', kwargs=uv_quiver_kwargs)
+    uv_quiver(obj.ax, u850, v850, color='#404040', label=str(u850.stda.level[0])+'hPa wind', kwargs=uv_quiver_kwargs)
     ulj_contourf(obj.ax, wsp200, alpha=0.6, colorbar_kwargs={'pos': 'right top',
                                                              'orientation': 'vertical','tick_size':10, 'label_size': 10}, kwargs=ulj_contourf_kwargs)
     vort_contourf(obj.ax, vort500, alpha=0.4, colorbar_kwargs={'pos': 'right bottom', 'tick_size':10,
@@ -105,7 +105,7 @@ def draw_syn_composite(
     prmsl_contour(obj.ax, prmsl, colors='red', linewidths=0.7, levels=np.arange(950, 1100, 4), kwargs=prmsl_contour_kwargs)
     uv_label = obj.ax.get_legend_handles_labels()
     red_line = lines.Line2D([], [], color='red', label='mean sea leve pressure')
-    black_line = lines.Line2D([], [], color='black', label='500hPa geopotential height')
+    black_line = lines.Line2D([], [], color='black', label=str(hgt500.stda.level[0])+'hPa geopotential height')
     leg = obj.ax.legend(handles=uv_label[0]+[red_line, black_line], loc=1, title=None, framealpha=1)
     leg.set_zorder(100)
     return obj.save()
