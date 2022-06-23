@@ -64,13 +64,13 @@ def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def extreme_contourf(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
-                    levels=np.arange(-6,-1).tolist()+[0]+np.arange(2,7).tolist(), cmap='ncl/BlueWhiteOrangeRed',extend='both',
+                    levels=np.arange(-6,-1.5,0.5).tolist()+[0]+np.arange(2,6.5,.5).tolist(), cmap='ncl/BlueWhiteOrangeRed',extend='both',
                     transform=ccrs.PlateCarree(),colorbar_kwargs={},
                     **kwargs):
 
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.where(stda>2.).stda.get_value(ydim, xdim)
+    z = stda.where(((stda>2.) | (stda<-2.))).stda.get_value(ydim, xdim)
 
     cmap = cm_collected.get_cmap(cmap, extend=extend)
 

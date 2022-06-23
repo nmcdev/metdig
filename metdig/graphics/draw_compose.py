@@ -76,7 +76,7 @@ class cross_timepres_compose(object):
 
 @kwargs_wrapper
 class cross_timeheight_compose(object):
-    def __init__(self, heights, times, title='', description='', output_dir=None, png_name='', **kwargs):
+    def __init__(self, times, title='', description='', output_dir=None, png_name='',**kwargs):
 
         self.png_name = png_name
         self.output_dir = output_dir
@@ -87,7 +87,7 @@ class cross_timeheight_compose(object):
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
 
-        self.fig, self.ax = pallete_set.cross_timeheight_pallete(heights=heights, times=np.array(times), title=title, forcast_info=description, **kwargs)
+        self.fig, self.ax = pallete_set.cross_timeheight_pallete(times=np.array(times), title=title, forcast_info=description, **kwargs)
 
     def save(self):
         return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)

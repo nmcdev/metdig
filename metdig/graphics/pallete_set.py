@@ -282,7 +282,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     return fig, ax
 
 @kwargs_wrapper
-def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,add_tag=True):
+def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000]):
     if(reverse_time):
         times = times[::-1]
 
@@ -307,8 +307,8 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
 
     ax.set_ylabel('高度/m', fontsize=15)
     ax.set_yticklabels([0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000])
-    # if heights is not None:
-    #     ax.set_ylim(heights.min(),heights.max())
+    ax.set_yticks([0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000])
+    ax.set_ylim(ylim)
     ax.set_xlim(times[0], times[-1])
 
     if forcast_info:

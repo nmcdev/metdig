@@ -46,5 +46,6 @@ def wind_profiler(obs_st_time=None, obs_ed_time=None, id_selected=53399, is_retu
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from datetime import datetime
-    wind_profiler(obs_st_time=datetime(2022,4,21,10),obs_ed_time=datetime(2022,2,22,10))
+    ret=wind_profiler(obs_st_time=datetime(2022,6,22,10),obs_ed_time=datetime(2022,6,22,22),ylim=[0,5000])
+    # ret['ax'].set_ylim(0,5000)
     plt.show()
