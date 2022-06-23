@@ -21,7 +21,7 @@ _log = logging.getLogger(__name__)
 
 
 def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, level=None,
-                   extent=None, x_percent=0, y_percent=0):
+                   extent=None, x_percent=0, y_percent=0,**kwargs):
     '''
 
     [读取单层单时次模式网格数据]
@@ -55,7 +55,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     except Exception as e:
         raise Exception(str(e))
     filename = utl.model_filename(init_time, fhour)
-    data = nmc_micaps_io.get_model_grid(cassandra_dir, filename=filename)  # ['number', 'time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+    data = nmc_micaps_io.get_model_grid(cassandra_dir, filename=filename,**kwargs)  # ['number', 'time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     # 此处建议修改为warnning
     if data is None:
         raise Exception('Can not get data from cassandra! {}{}'.format(cassandra_dir, filename))
@@ -102,7 +102,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
 
 def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, level=None,
-                    extent=None, x_percent=0, y_percent=0):
+                    extent=None, x_percent=0, y_percent=0,**kwargs):
     '''
 
     [读取单层多时次模式网格数据]
@@ -125,7 +125,7 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
     stda_data = []
     for fhour in fhours:
         try:  # 待斟酌
-            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent,**kwargs)
         except:  # 待斟酌
             continue
         if data is not None and data.size > 0:
@@ -137,7 +137,7 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
 
 
 def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None, levels=None,
-                      extent=None, x_percent=0, y_percent=0):
+                      extent=None, x_percent=0, y_percent=0,**kwargs):
     '''
 
     [读取多层单时次模式网格数据]
@@ -160,7 +160,7 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
     stda_data = []
     for level in levels:
         try:
-            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent,**kwargs)
             if data is not None and data.size > 0:
                 stda_data.append(data)
         except Exception as e:
@@ -171,7 +171,7 @@ def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None,
 
 
 def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=None, levels=None,
-                       extent=None, x_percent=0, y_percent=0):
+                       extent=None, x_percent=0, y_percent=0,**kwargs):
     '''
 
     [读取多层多时次模式网格数据]
@@ -197,7 +197,7 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
         temp_data = []
         for level in levels:
             try:
-                data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+                data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent,**kwargs)
                 if data is not None and data.size > 0:
                     temp_data.append(data)
             except Exception as e:
@@ -212,7 +212,7 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
     return None
 
 
-def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None, levels=None, points={}):
+def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None, levels=None, points={},**kwargs):
     '''
 
     [读取单层/多层，单时效/多时效 模式网格数据，插值到站点上]
@@ -232,7 +232,7 @@ def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None,
     levels = utl.parm_tolist(levels)
 
     # get grids data
-    stda_data = get_model_3D_grids(init_time, fhours, data_name, var_name, levels)
+    stda_data = get_model_3D_grids(init_time, fhours, data_name, var_name, levels,**kwargs)
 
     if stda_data is not None and stda_data.size > 0:
         return mdgstda.gridstda_to_stastda(stda_data, points)
