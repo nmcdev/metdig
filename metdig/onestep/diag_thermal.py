@@ -143,7 +143,7 @@ def hgt_uv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
 
 @date_init('init_time')
 def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
-                  hgt_lev=500, tmp_lev=500,uv_lev=500, smth_stp=1,is_mask_terrain=True,
+                  hgt_lev=500, tmpadv_lev=500,uv_lev=500, smth_stp=1,is_mask_terrain=True,
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -154,10 +154,10 @@ def hgt_uv_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)                         
-    _u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=tmp_lev, extent=map_extent)
-    _v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=tmp_lev, extent=map_extent)
+    _u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=tmpadv_lev, extent=map_extent)
+    _v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=tmpadv_lev, extent=map_extent)
     tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
-                         data_name=data_name, var_name='tmp', level=tmp_lev, extent=map_extent)
+                         data_name=data_name, var_name='tmp', level=tmpadv_lev, extent=map_extent)
     tmpadv = mdgcal.var_advect(tmp, _u, _v)
 
     if is_return_data:

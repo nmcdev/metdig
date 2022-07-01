@@ -63,7 +63,7 @@ def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
 
 @kwargs_wrapper
 def extreme_contourf(ax, stda, xdim='lon', ydim='lat',
-                    add_colorbar=True,
+                    add_colorbar=True,alpha=0.8,
                     levels=np.arange(-6,-1.5,0.5).tolist()+[0]+np.arange(2,6.5,.5).tolist(), cmap='ncl/BlueWhiteOrangeRed',extend='both',
                     transform=ccrs.PlateCarree(),colorbar_kwargs={},
                     **kwargs):
@@ -74,7 +74,7 @@ def extreme_contourf(ax, stda, xdim='lon', ydim='lat',
 
     cmap = cm_collected.get_cmap(cmap, extend=extend)
 
-    img = ax.contourf(x, y, z, cmap=cmap, levels=levels,transform=transform, extend=extend, **kwargs)
+    img = ax.contourf(x, y, z, cmap=cmap, levels=levels,transform=transform, extend=extend, alpha=alpha,**kwargs)
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Sigma',ticks=levels, extend=extend,kwargs=colorbar_kwargs)
     return img
@@ -119,7 +119,7 @@ def psfc_terrain_contourf(ax, psfc, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def terrain_contourf(ax, terrain, xdim='lon', ydim='lat',
                     add_colorbar=False,zorder=0,
-                    levels=range(1000,8000,200), cmap='Greys',extend='max',
+                    levels=range(1000,8000,200), cmap='guide/cs45_r',extend='max',
                     transform=ccrs.PlateCarree(),colorbar_kwargs={},
                     **kwargs):
     x = terrain.stda.get_dim_value(xdim)
