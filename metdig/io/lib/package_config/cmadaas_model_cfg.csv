@@ -145,3 +145,18 @@ ncep_gfs,vvel,high,Pa/s,VVP,垂直速度,100,any,NAFP_FOR_FTM_KWBC_NHEJ,model
 ncep_gfs,psfc,surface,Pa,PRS,气压,1,0,NAFP_FOR_FTM_KWBC_NHEJ,model
 ncep_gfs,rainc,surface,mm,CPE,对流性降水,1,0,NAFP_FOR_FTM_KWBC_NHEJ,model
 ncep_gfs,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_KWBC_NHEJ,model
+# 集合预报,,,,,,,,,
+ens_model,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,tmp,high,K,TEM,气温,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,rh,high,percent,RHU,相对湿度,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,u,high,m/s,WIU,东西风,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,v,high,m/s,WIV,南北风,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,vvel,high,Pa/s,VVP,垂直速度,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
+ens_model,tmx6_2m,surface,K,MX2T6,过去6小时2米最高温度,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
+ens_model,tmn6_2m,surface,K,MN2T6,过去6小时2米最低温度,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
+ens_model,u10m,surface,m/s,WIU10,东西风风速,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
+ens_model,v10m,surface,m/s,WIV10,南北风风速,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
+ens_model,t2m,surface,kelvin,TEM,气温,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
+ens_model,rain,surface,m,TPE,总降水量,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
+ens_model,td2m,surface,kelvin,DPT,露点温度,1,0,NAFP_C3E_FOR_FTM_LOW_ASI,ens_0-50
