@@ -84,7 +84,7 @@ def hgt_uv_tcwv(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     tcwv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tcwv', extent=map_extent)
 
     if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'vvel': tcwv}
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'tcwv': tcwv}
         ret.update({'data': dataret})
 
     # 隐藏被地形遮挡地区

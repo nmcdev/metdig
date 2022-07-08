@@ -4,8 +4,8 @@
 import numpy as np
 import xarray as xr
 
-from metdig.io import get_model_grid
-from metdig.onestep.complexgrid_var.spfh import read_spfh
+from metdig.io import get_model_grid,get_model_3D_grid,get_model_3D_grids
+from metdig.onestep.complexgrid_var.spfh import read_spfh, read_spfh_3D,read_spfh_4D
 
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
@@ -49,21 +49,67 @@ def read_vvel(data_source=None, init_time=None, fhour=None, data_name=None, leve
     return None
     # raise Exception('Can not get any data!')
 
+def _by_self_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+    vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                             var_name='vvel', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    return vvel
+    
+def _by_w_tmp_spfh_3d(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhours=fhour, data_name=data_name,levels=levels, extent=extent)
 
-def read_vvel3d(levels, **read_vvel_kwargs):
-    data = []
-    for ilevel in levels:
-        temp=read_vvel(level=ilevel, **read_vvel_kwargs)
-        if (temp is not None):
-            data.append(temp)
-    data = xr.concat(data, dim='level')
-    return data
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    w = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                        var_name='w', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
 
-def read_vvel3ds(fhours, **read_vvel3d_kwargs):
-    data = []
-    for ifhour in fhours:
-        temp=read_vvel3d(fhour=ifhour, **read_vvel3d_kwargs)
-        if (temp is not None):
-            data.append(temp)
-    data = xr.concat(data, dim='dtime')
-    return data
+    if tmp is None or w is None or spfh is None:
+        return None
+
+    w = mdgcal.vertical_velocity_pressure(w, tmp, spfh)
+
+    return w
+
+def read_vvel3d(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+
+    data = _by_self_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=extent)
+    if data is not None:
+        return data
+
+    _log.info('cal vvel _by_w_tmp_spfh_3d')
+    data = _by_w_tmp_spfh_3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=extent)
+    if data is not None:
+        return data
+
+    raise Exception('Can not get any data!')
+
+def _by_self_4D(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+    vvel = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                             var_name='vvel', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    return vvel
+    
+def _by_w_tmp_spfh_4d(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+    spfh = read_spfh_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,levels=levels, extent=extent)
+
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                         var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+    w = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='w', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
+
+    if tmp is None or w is None or spfh is None:
+        return None
+
+    w = mdgcal.vertical_velocity_pressure(w, tmp, spfh)
+
+    return w
+
+def read_vvel3ds(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+
+    data = _by_self_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+    if data is not None:
+        return data
+    _log.info('cal vvel _by_w_tmp_spfh_4d')
+    data = _by_w_tmp_spfh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+    if data is not None:
+        return data
+    
+    raise Exception('Can not get any data!')

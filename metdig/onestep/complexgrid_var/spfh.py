@@ -112,7 +112,6 @@ def read_spfh_4D(data_source=None, init_time=None, fhours=None, data_name=None, 
     data = _by_self_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     if data is not None:
         return data
-
     _log.info('cal spfh _by_tmp_rh')
     data = _by_tmp_rh_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     if data is not None:
