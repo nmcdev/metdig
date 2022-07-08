@@ -43,8 +43,9 @@ t2m,2m温度,degC,0
 rh2m,2m相对湿度,percent,0
 td2m,2m露点温度,degC,0
 psfc,地面气压,hPa,0
-tcdc,低云量,percent,0
-lcdc,总云量,percent,0
+lcdc,低云量,percent,0
+tcdc,总云量,percent,0
+hcdc,高云量,percent,0
 vis,能见度,km ,0
 gust10m,1小时10米阵风,m/s,1
 gustdir10m,3小时10米阵风风向,degree,1
