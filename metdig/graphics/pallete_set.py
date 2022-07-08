@@ -144,7 +144,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     elif add_background_style == 'terrain2':
         tiler = Stamen('terrain-background')
-        ax.add_image(tiler, background_zoom_level,filternorm=False)
+        ax.add_image(tiler, background_zoom_level,interpolation='bilinear')
 
     elif add_background_style == 'road':
         request = utl.TDT()  # 卫星图像

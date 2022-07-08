@@ -232,7 +232,7 @@ def get_imgbuf_from_fig(fig, dpi=200):
     return img_arr
 
 
-def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_plt=False, is_return_figax=False, is_return_pngname=False):
+def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_plt=False, is_return_figax=False, is_return_pngname=False,dpi=200):
     # 保存图片通用方法
     ret = {
         # 'png_name': None,
@@ -253,7 +253,7 @@ def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_pl
         _log.info(out_png)
         ret['output_dir'] = output_dir
         ret['pic_path'] = out_png
-        plt.savefig(out_png, dpi=200, bbox_inches='tight')
+        plt.savefig(out_png, dpi=dpi, bbox_inches='tight')
 
     if is_return_imgbuf:
         ret['img_buf'] = get_imgbuf_from_fig(fig)
