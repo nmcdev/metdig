@@ -1465,5 +1465,8 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    time_rh_uv_tmp_vvel(data_source='cmadaas',data_name='ecmwf',fhours=np.arange(72,241,6))
+    import pandas as pd
+    init_times=pd.date_range('2022-06-26-08','2022-06-27-08',freq='1H')
+    time_rh_uv_tmp_vvel(init_time=init_times,points={'lat':[36.2109],'lon':[117.0638]},
+        data_name='era5',data_source='cds')
     plt.show()
