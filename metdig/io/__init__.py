@@ -7,6 +7,7 @@ from . import era5_manual_download
 from . import cmadass_manual_download
 from . import era5
 from . import nmc_micaps_helper
+from . import nmc_cmadass_helper
 from . import thredds
 from . import custom
 

@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 import nmc_met_io.retrieve_cmadaas as nmc_cmadaas_io
+import metdig.io.nmc_cmadass_helper as nmc_cmadass_helper
 
 from metdig.io.lib import cmadaas_model_cfg, cmadaas_obs_cfg
 from metdig.io.lib import utility as utl
@@ -62,6 +63,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         limit=utl.extent2limit(extent,x_percent=x_percent,y_percent=y_percent)
     else:
         limit=None
+
     if cmadaas_prod_type == 'analysis':
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
@@ -71,6 +73,19 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
                                                 init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,#limit=limit, #暂时去除limit参数，因为nmc_met_io的缓存数据不能判断空间范围，导致重复读取数据
                                                 fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear,**kwargs) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+    elif cmadaas_prod_type.startswith('ens'):
+        #针对大数据云平台中的集合成员数据
+        ms = cmadaas_prod_type.split('_')[-1].split('-')[0]
+        me = cmadaas_prod_type.split('_')[-1].split('-')[1]
+        data = []
+        for i in range(int(ms), int(me) + 1, 1):
+            tmp = nmc_cmadass_helper.cmadaas_ens_model_grid(data_code=cmadaas_data_code,
+                                                init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,#limit=limit, #暂时去除limit参数，因为nmc_met_io的缓存数据不能判断空间范围，导致重复读取数据
+                                                fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name, fcst_member=i,cache_clear=cache_clear,**kwargs) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
+            
+            if tmp is not None:
+                data.append(tmp)
+        data = xr.concat(data, dim='number')
     else:
         raise Exception('cmadaas_prod_type error!')
 
@@ -78,6 +93,13 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     if data is None:
         raise Exception('Can not get data from cmadaas! cmadaas_data_code={}, cmadaas_level_type={}, cmadaas_level={}, cmadaas_var_name={}, init_time={}, fhour={}'.format(
             cmadaas_data_code, cmadaas_level_type, cmadaas_level, cmadaas_var_name, timestr, fhour))
+    
+    #读取集合预报
+    if('number' in list(data.coords.keys())):
+        member = data.coords['number'].values
+        member = list(map(lambda x: data_name + '-' + str(x), member))
+    else:
+        member = [data_name]
 
     data['lon']=data.lon.round(dim_round)
     data['lat']=data.lat.round(dim_round)
@@ -92,8 +114,8 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
 
     # 待测试。。。
     stda_data = mdgstda.xrda_to_gridstda(data[list(data.keys())[0]],
-                                         level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
-                                         member=[data_name], level=[cmadaas_level], time=[init_time], dtime=[fhour],
+                                         member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
+                                         member=member, level=[cmadaas_level], time=[init_time], dtime=[fhour],
                                          var_name=var_name, np_input_units=cmadaas_units,
                                          data_source='cmadaas', level_type=level_type)
     return stda_data
