@@ -301,8 +301,8 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
                                          var_name=var_name, np_input_units=era5_units,
                                          data_source='cds', level_type=level_type)
     return stda_data
-if __name__=='__main__':
-    get_model_grid(data_source='cds', init_time=datetime.datetime(2020,3,14,8), fhour=0, data_name='era5', var_name='tmp', level=850, extent=[100,120,30,40])
+# if __name__=='__main__':
+#     get_model_grid(data_source='cds', init_time=datetime.datetime(2020,3,14,8), fhour=0, data_name='era5', var_name='tmp', level=850, extent=[100,120,30,40])
 
 def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):
     '''
@@ -336,6 +336,11 @@ def get_model_grids(init_times=None, var_name=None, level=None, extent=None, x_p
     if stda_data:
         return xr.concat(stda_data, dim='time')
     return None
+if __name__=='__main__':
+    import pandas as pd
+    init_times=pd.date_range('2022-07-01-02','2022-07-07-20',freq='6h')
+    test=get_model_grids(init_time=init_times,fhour=0,data_name='cma_ra',var_name='hgt',level=500)
+    print(test)
 
 
 def get_model_3D_grid(init_time=None, var_name=None, levels=None, extent=None, x_percent=0, y_percent=0, force_local=False, **kwargs):

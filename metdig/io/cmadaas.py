@@ -167,21 +167,26 @@ def get_model_grids(init_time=None, fhours=None, data_name=None, var_name=None, 
         [stda] -- [stda格式数据]
     '''
     fhours = utl.parm_tolist(fhours)
+    init_time = utl.parm_tolist(init_time)
 
     stda_data = []
-    for fhour in fhours:
-        try:
-            data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent,**kwargs)
-            if data is not None and data.size > 0:
-                stda_data.append(data)
-        except Exception as e:
-            _log.info(str(e))
+
+    for iinit in init_time:
+        for fhour in fhours:
+            try:
+                data = get_model_grid(iinit, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent,**kwargs)
+                if data is not None and data.size > 0:
+                    stda_data.append(data)
+            except Exception as e:
+                _log.info(str(e))
 
     if stda_data:
-        return xr.concat(stda_data, dim='dtime')
+        if(len(init_time)>1):
+            return xr.concat(stda_data, dim='time')
+        else:
+            return xr.concat(stda_data, dim='dtime')
 
     return None
-
 
 def get_model_3D_grid(init_time=None, fhour=None, data_name=None, var_name=None, levels=None,
                       extent=None, x_percent=0, y_percent=0):
@@ -239,24 +244,35 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
     '''
     fhours = utl.parm_tolist(fhours)
     levels = utl.parm_tolist(levels)
+    init_time = utl.parm_tolist(init_time)
 
     stda_data = []
-    for fhour in fhours:
-        temp_data = []
-        for level in levels:
-            try:
-                data = get_model_grid(init_time, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
-                if data is not None and data.size > 0:
-                    temp_data.append(data)
-            except Exception as e:
-                _log.info(str(e))
-        if temp_data:
-            temp_data = xr.concat(temp_data, dim='level')
-            stda_data.append(temp_data)
+
+    for iinit in init_time:
+        for fhour in fhours:
+            temp_data = []
+            for level in levels:
+                try:
+                    data = get_model_grid(iinit, fhour, data_name, var_name, level, extent=extent, x_percent=x_percent, y_percent=y_percent)
+                    if data is not None and data.size > 0:
+                        temp_data.append(data)
+                except Exception as e:
+                    _log.info(str(e))
+            if temp_data:
+                temp_data = xr.concat(temp_data, dim='level')
+                stda_data.append(temp_data)
     if stda_data:
-        return xr.concat(stda_data, dim='dtime')
+        if(len(init_time)>0):
+            return xr.concat(stda_data, dim='time')
+        else:
+            return xr.concat(stda_data, dim='dtime')
     return None
 
+if __name__=='__main__':
+    import pandas as pd
+    init_times=pd.date_range('2022-07-01-02','2022-07-07-20',freq='6h').to_pydatetime()
+    test=get_model_3D_grids(data_name='cma_ra',init_time=init_times,fhours=0,var_name='u',levels=[500,850])
+    print(test)
 
 def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None, levels=None, points={}):
     '''
@@ -344,12 +360,12 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
         np_input_units=cmadass_units, var_name=var_name, other_input={},
         data_source='cmadaas', data_name=data_name
     )
-if __name__=='__main__':
-    import datetime
-    obs_time=datetime.datetime(2022,3,23,8)
-    # map_extent=[113.5,119.5,38,42]
-    rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='tmp',id_selected=['54511','505'])
-    print(rain)
+# if __name__=='__main__':
+#     import datetime
+#     obs_time=datetime.datetime(2022,3,23,8)
+#     # map_extent=[113.5,119.5,38,42]
+#     rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='tmp',id_selected=['54511','505'])
+#     print(rain)
 
 def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
                                extent=None, x_percent=0, y_percent=0, ):

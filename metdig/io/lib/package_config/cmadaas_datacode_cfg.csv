@@ -23,3 +23,5 @@ ncep_gfs,0,NAFP_KWBC_GFS_ANA_0P25_GLB
 ncep_gfs,1,NAFP_KWBC_GFS_FOR_0P25_GLB
 ecmwf_ens,0,any
 ecmwf_ens,1,any
+cma_ra,0,any
+cma_ra,1,any
