@@ -39,11 +39,11 @@ class horizontal_compose(object):
 
 @kwargs_wrapper
 class cross_lonpres_compose(object):
-    def __init__(self, levels, title='', description='', output_dir=None, png_name='', **kwargs):
+    def __init__(self, levels, title='', description='', output_dir=None, png_name='', is_overwrite=False,**kwargs):
 
         self.png_name = png_name
         self.output_dir = output_dir
-        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+        if((glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []) and (not is_overwrite)): 
             raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)

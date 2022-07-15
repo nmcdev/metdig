@@ -201,7 +201,7 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     if u is not None and v is not None:
         u = u.stda.quantity
         v = v.stda.quantity
-        obj.skew.plot_barbs(pres, u, v)
+        obj.skew.plot_barbs(pres, u, v,barb_increments={'half': 2, 'full': 4, 'flag': 20})
 
     lcl_pres, lcl_tmp = mpcalc.lcl(pres, tmp[0], td[0])
     obj.skew.plot(lcl_pres[0], lcl_tmp[0], 'ko', markerfacecolor='black')

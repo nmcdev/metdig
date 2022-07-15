@@ -137,7 +137,7 @@ def terrain_contourf(ax, terrain, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def wvfldiv_contourf(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
-                    levels=np.arange(-10, 0, 0.5).tolist(), cmap='Greens_r',extend='min',
+                    levels=np.arange(-10.5, 0, 0.5).tolist(), cmap='Greens_r',extend='min',
                     transform=ccrs.PlateCarree(),colorbar_kwargs={},
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)

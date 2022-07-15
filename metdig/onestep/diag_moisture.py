@@ -159,10 +159,6 @@ def hgt_uv_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
     spfh = read_spfh(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=spfh_lev, extent=map_extent)
 
-    if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'spfh': spfh}
-        ret.update({'data': dataret})
-
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
@@ -170,6 +166,10 @@ def hgt_uv_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
         spfh = mask_terrian(psfc, spfh)
+
+    if is_return_data:
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'spfh': spfh}
+        ret.update({'data': dataret})
 
     # plot
     if is_draw:

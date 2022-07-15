@@ -269,7 +269,7 @@ def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_pl
 
 
 @kwargs_wrapper
-def add_colorbar(ax, img, ticks=None,tick_label=None, label='', label_size=20, tick_size=15,pos='bottom', rect=None,  orientation='horizontal', pad=0, **kwargs):
+def add_colorbar(ax, img, ticks=None,tick_label=None, label='', label_size=20, tick_size=16,pos='bottom', rect=None,  orientation='horizontal', pad=0.02, **kwargs):
     """[summary]
 
     Args:
