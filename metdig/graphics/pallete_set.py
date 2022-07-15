@@ -152,12 +152,17 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     # 增加坐标
     if add_ticks:
-        ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=ccrs.PlateCarree())
-        ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=ccrs.PlateCarree())
-        lon_formatter = LongitudeFormatter(degree_symbol='', dateline_direction_label=True)
-        lat_formatter = LatitudeFormatter(degree_symbol='')
-        ax.xaxis.set_major_formatter(lon_formatter)
-        ax.yaxis.set_major_formatter(lat_formatter)
+        if(isinstance(add_ticks,bool)):
+            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),yticks=np.arange(map_extent[2], map_extent[3]+1, 10))
+        else:
+            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),yticks=np.arange(map_extent[2], map_extent[3]+1, 10),kwargs=add_ticks)
+        # plt.tick_params(labelsize=15)
+        # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=ccrs.PlateCarree())
+        # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=ccrs.PlateCarree())
+        # lon_formatter = LongitudeFormatter(dateline_direction_label=True)
+        # lat_formatter = LatitudeFormatter()
+        # ax.xaxis.set_major_formatter(lon_formatter)
+        # ax.yaxis.set_major_formatter(lat_formatter)
 
     # 南海
     if add_south_china_sea:
@@ -225,7 +230,7 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     return fig, ax
 
 @kwargs_wrapper
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,logyaxis=True,add_tag=True):
+def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,logyaxis=True,add_tag=True,**kwargs):
     """[时间剖面画板初始化]
 
     Args:

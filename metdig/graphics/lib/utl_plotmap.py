@@ -23,6 +23,7 @@ from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from shapely.geometry import Polygon as ShapelyPolygon
 from shapely.geometry import Point as ShapelyPoint
+from  metdig.graphics.lib.utility import kwargs_wrapper
 
 pkg_name = 'metdig.graphics'
 
@@ -145,7 +146,7 @@ def time_ticks_formatter(ax,times,if_minor=False):
             ax.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
 
 
-
+@kwargs_wrapper
 def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False ,**kwargs):
     if xticks is not None:
         ax.set_xticks(xticks, crs=crs)
