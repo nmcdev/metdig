@@ -26,6 +26,8 @@ import metdig.cal as mdgcal
 import metdig.utl as mdgstda
 
 __all__ = [
+    'wind_theta_wvfldiv',
+    'wind_theta_wvfl',
     'wind_theta_wsp',
     'wind_theta_vort',
     'wind_theta_fg',
@@ -50,6 +52,174 @@ __all__ = [
     'time_rh_uv_tmp_vvel',
     'wind_theta_div'
 ]
+
+@date_init('init_time')
+def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    #lon_mean 经向平均 当为None时不平均
+    #lat_mean 纬向平均 当为None时不平均
+    
+    # get area
+    map_extent = get_map_area(area)
+
+    rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                           var_name='rh', levels=levels, extent=map_extent)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=map_extent)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=map_extent)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='tmp', levels=levels, extent=map_extent)
+    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            levels=levels, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='hgt', level=500, extent=map_extent)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='psfc', extent=map_extent)
+    wvfldiv=mdgcal.water_wapor_flux_divergence(u,v,spfh)
+
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+    cross_wvfldiv = mdgcal.cross_section(wvfldiv, st_point, ed_point)
+
+    cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
+
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
+
+    cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
+
+    cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'wvfldiv':cross_wvfldiv, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain, 'hgt': hgt}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_cross.draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+                                       st_point=st_point, ed_point=ed_point,
+                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                       map_extent=map_extent, h_pos=h_pos,
+                                       **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+@date_init('init_time')
+def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    #lon_mean 经向平均 当为None时不平均
+    #lat_mean 纬向平均 当为None时不平均
+    
+    # get area
+    map_extent = get_map_area(area)
+
+    rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                           var_name='rh', levels=levels, extent=map_extent)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=map_extent)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=map_extent)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='tmp', levels=levels, extent=map_extent)
+    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            levels=levels, extent=map_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='hgt', level=500, extent=map_extent)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='psfc', extent=map_extent)
+    wsp=mdgcal.wind_speed(u,v)
+    wvfl=mdgcal.cal_ivt_singlelevel(wsp,spfh)
+
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+    cross_wvfl = mdgcal.cross_section(wvfl, st_point, ed_point)
+
+    cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
+
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
+
+    cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
+
+    cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'wvfl':cross_wvfl, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain, 'hgt': hgt}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_cross.draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrain, hgt,
+                                       st_point=st_point, ed_point=ed_point,
+                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                       map_extent=map_extent, h_pos=h_pos,
+                                       **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+if __name__ == '__main__':
+    init_time=datetime.datetime(2022,7,4,8)
+    wind_theta_wvfl(st_point=[33.91,115.51],
+        init_time=init_time,data_name='era5',data_source='cds',fhour=0)
 
 @date_init('init_time')
 def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -93,11 +263,6 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
@@ -119,6 +284,10 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'wsp':cross_wsp, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain, 'hgt': hgt}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -173,11 +342,6 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
@@ -199,6 +363,10 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'vort': cross_vort, 'u': cross_u, 'v': cross_v, 'theta': cross_theta, 'hgt': hgt, 'terrain':cross_terrain}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_absv(cross_vort, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -488,10 +656,6 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
@@ -511,6 +675,10 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'div':cross_div, 'theta':cross_theta, 'u':cross_u, 'v':cross_v, 'terrain':cross_terrain, 'hgt':hgt}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -667,9 +835,9 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.nanmax(np.abs(cross_n.values))/np.nanmax(np.abs(cross_w.values))
+    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
-        dataret = {'rh': rh, 'wind_n': cross_n, 'w': cross_w, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'spfh': cross_spfh, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'terrain': cross_terrain, 'hgt': hgt}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -728,10 +896,6 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc')
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels)
 
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': div, 'vort': vort}
-        ret.update({'data': dataret})
-
     u = u.interp(lon=points['lon'], lat=points['lat'])
     v = v.interp(lon=points['lon'], lat=points['lat'])
     div = div.interp(lon=points['lon'], lat=points['lat'])
@@ -741,6 +905,11 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
     _, pressure = xr.broadcast(v, v['level'])
     terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'rh': rh, 'u': u, 'v': v, 'div': div, 'vort': vort,'terrain':terrain}
+        ret.update({'data': dataret})
+
     if is_draw:
         drawret = draw_cross.draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain, **products_kwargs)
         ret.update(drawret)
@@ -902,9 +1071,9 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.nanmax(np.abs(cross_n.values))/np.nanmax(np.abs(cross_w.values))
+    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
-        dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'psfc': cross_psfc}
+        dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n,'wind_t': cross_t, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'psfc': cross_psfc}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -1050,11 +1219,6 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     mpv=mpv.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-
-    if is_return_data:
-        dataret = {'theta': theta, 'u': u, 'v': v, 'mpv': mpv, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(theta, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
@@ -1068,6 +1232,10 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     pressure = mdgstda.gridstda_full_like_by_levels(cross_theta, cross_theta['level'].values)
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'mpv': cross_mpv, 'hgt': hgt, 'terrain': cross_terrain}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -1200,10 +1368,6 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
@@ -1223,6 +1387,10 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
+    if is_return_data:
+        dataret = {'rh': cross_rh, 'u': cross_u, 'v': cross_v, 'theta': cross_theta, 'terrain':cross_terrain,'hgt': hgt}
+        ret.update({'data': dataret})
+
     if is_draw:
         drawret = draw_cross.draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                      st_point=st_point, ed_point=ed_point,
@@ -1234,6 +1402,13 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if ret:
         return ret
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    wind_theta_rh(data_name='cma_ra',fhour=0,data_source='cmadaas',init_time=datetime.datetime(2022,7,6,8),
+        st_point=[43.4520,110.3548],ed_point=[30.7775,124.4222],area='华北',
+        levels=[200,225,250,275,300,325,350,375,400,425,450 ,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000][::-1])
+    plt.show()
 
 @date_init('init_time')
 def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -1462,11 +1637,3 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
 
     if ret:
         return ret
-
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    init_times=pd.date_range('2022-06-26-08','2022-06-27-08',freq='1H')
-    time_rh_uv_tmp_vvel(init_time=init_times,points={'lat':[36.2109],'lon':[117.0638]},
-        data_name='era5',data_source='cds')
-    plt.show()
