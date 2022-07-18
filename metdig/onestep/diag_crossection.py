@@ -790,8 +790,9 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
                             var_name='tmp', levels=levels, extent=map_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='vvel', levels=levels, extent=map_extent)
+    w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            levels=levels, extent=map_extent)
+
     spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             var_name='spfh', levels=levels, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -810,11 +811,9 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    vvel=vvel.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    w = mdgcal.vertical_velocity(vvel, tmp, spfh)
 
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
