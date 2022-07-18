@@ -52,7 +52,10 @@ def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
         img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, alpha=alpha, extend=extend, **kwargs)
 
     if add_colorbar:
-        cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
+        try:
+            cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
+        except:
+            print('输入变量请添加"var_cn_name"属性和"var_units"属性')
         utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, kwargs=colorbar_kwargs)
         return img
     return img
