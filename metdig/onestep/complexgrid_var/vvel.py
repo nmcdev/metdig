@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 
 from metdig.io import get_model_grid,get_model_3D_grid,get_model_3D_grids
-from metdig.onestep.complexgrid_var.spfh import read_spfh, read_spfh_3D,read_spfh_4D
+from metdig.onestep.complexgrid_var.spfh import read_spfh, read_spfh_3D,read_spfh_4d
 
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
@@ -88,7 +88,7 @@ def _by_self_4D(data_source=None, init_time=None, fhours=None, data_name=None, l
     return vvel
     
 def _by_w_tmp_spfh_4d(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
-    spfh = read_spfh_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,levels=levels, extent=extent)
+    spfh = read_spfh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,levels=levels, extent=extent)
 
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                          var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)

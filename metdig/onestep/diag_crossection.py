@@ -14,7 +14,7 @@ from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.pv_div_uv import read_pv_div_uv
 from metdig.onestep.complexgrid_var.div_uv import read_div_uv_4d,read_div_uv_3d
 from metdig.onestep.complexgrid_var.vort_uv import read_vort_uv_4d
-from metdig.onestep.complexgrid_var.spfh import read_spfh_4D,read_spfh_3D
+from metdig.onestep.complexgrid_var.spfh import read_spfh_4d,read_spfh_3D
 from metdig.onestep.complexgrid_var.theta import read_theta3d
 from metdig.onestep.complexgrid_var.w import read_w3d
 from metdig.onestep.complexgrid_var.vvel import read_vvel3ds,read_vvel3d
@@ -81,7 +81,6 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='psfc', extent=map_extent)
     wvfldiv=mdgcal.water_wapor_flux_divergence(u,v,spfh)
-
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -444,7 +443,7 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -506,7 +505,7 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
 
 
     if is_return_data:
-        dataret = {'theta': theta, 'u': u, 'v': v, 'mpvg': mpvg, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'theta': theta, 'u': u, 'v': v, 'mpvg': mpvg, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     # +form 3D psfc
@@ -604,7 +603,7 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -722,7 +721,7 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_ti
     terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
-        dataret = {'u': u, 'v': v, 'qsn' : qsn, 'qcld':qcld,'tmp': tmp}
+        dataret = {'u': u, 'v': v, 'qsn' : qsn, 'qcld':qcld,'tmp': tmp,'terrain':terrain}
         ret.update({'data': dataret})
     if is_draw:
         drawret = draw_cross.draw_time_wind_qcld_qsn_tmp(qcld,qsn, tmp, u, v, terrain, **products_kwargs)
@@ -762,7 +761,7 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_t
     terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
-        dataret = {'u': u, 'v': v, 'qice' : qice, 'qcld':qcld,'tmp': tmp}
+        dataret = {'u': u, 'v': v, 'qice' : qice, 'qcld':qcld,'tmp': tmp,'terrain':terrain}
         ret.update({'data': dataret})
     if is_draw:
         drawret = draw_cross.draw_time_wind_qcld_qice_tmp(qcld,qice, tmp, u, v, terrain, **products_kwargs)
@@ -860,7 +859,7 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
 
     div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
     vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
-    spfh = read_spfh_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
+    spfh = read_spfh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc')
 
     if is_return_data:
@@ -943,7 +942,7 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
     terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
-        dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv': tmpadv}
+        dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv': tmpadv,'terrain':terrain}
         ret.update({'data': dataret})
     if is_draw:
         drawret = draw_cross.draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, **products_kwargs)
@@ -1072,7 +1071,7 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
 
     ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
-        dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n,'wind_t': cross_t, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'psfc': cross_psfc}
+        dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n,'wind_t': cross_t, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -1109,7 +1108,7 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
     terrain = pressure - psfc.values
     terrain.attrs['var_units'] = ''
     if is_return_data:
-        dataret = {'u': u, 'v': v, 'tmp': tmp, 'vortadv': vortadv}
+        dataret = {'u': u, 'v': v, 'tmp': tmp, 'vortadv': vortadv,'terrain':terrain}
         ret.update({'data': dataret})
     if is_draw:
         drawret = draw_cross.draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, **products_kwargs)
@@ -1169,7 +1168,7 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
     cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
-        dataret = {'vortadv': cross_vortadv, 'u': cross_u, 'v': cross_v, 'tmp': cross_tmp, 'hgt': hgt, 'psfc': cross_psfc}
+        dataret = {'vortadv': cross_vortadv, 'u': cross_u, 'v': cross_v, 'tmp': cross_tmp, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -1292,7 +1291,7 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
 
     if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     # +form 3D psfc
@@ -1448,10 +1447,6 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
@@ -1472,6 +1467,10 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
+
+    if is_return_data:
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
@@ -1526,10 +1525,6 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     # +form 3D psfc
     _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
     psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000  # (1, 12, 1, 1, 901, 1801)
@@ -1546,6 +1541,10 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     cross_terrain.attrs['var_units'] = ''
 
     cross_rh = cross_rh.where(cross_rh < 100, 100)  # 大于100的赋值成100
+
+    if is_return_data:
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel,cross_terrain, hgt,
@@ -1612,10 +1611,6 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
     vvel = read_vvel3ds(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
 
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'psfc': psfc}
-        ret.update({'data': dataret})
-
     if (mean_area==None):
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         u = u.interp(lon=points['lon'], lat=points['lat'])
@@ -1629,6 +1624,10 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
     terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
+
+    if is_return_data:
+        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'terrain': terrain}
+        ret.update({'data': dataret})
 
     if is_draw:
         drawret = draw_cross.draw_time_rh_uv_tmp_vvel(rh, u, v, tmp, vvel, terrain, **products_kwargs)

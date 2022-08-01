@@ -13,13 +13,13 @@ import logging
 _log = logging.getLogger(__name__)
 
 
-def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
+def _by_self(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=None):
     spfh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='spfh', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return spfh
 
 
-def _by_tmp_rh(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
+def _by_tmp_rh(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=None):
     tmp = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='tmp', level=level, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     rh = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -36,7 +36,7 @@ def _by_tmp_rh(data_source=None, init_time=None, fhour=None, data_name=None, lev
     return spfh
 
 
-def read_spfh(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=(50, 150, 0, 65)):
+def read_spfh(data_source=None, init_time=None, fhour=None, data_name=None, level=500, extent=None):
     data = _by_self(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, level=level, extent=extent)
     if data is not None:
         return data
@@ -49,13 +49,13 @@ def read_spfh(data_source=None, init_time=None, fhour=None, data_name=None, leve
     raise Exception('Can not get any data!')
 
 
-def _by_self_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+def _by_self_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=None):
     spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                              var_name='spfh', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return spfh
 
 
-def _by_tmp_rh_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+def _by_tmp_rh_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=None):
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -72,7 +72,7 @@ def _by_tmp_rh_3D(data_source=None, init_time=None, fhour=None, data_name=None, 
     return spfh
 
 
-def read_spfh_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+def read_spfh_3D(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=None):
     data = _by_self_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=extent)
     if data is not None:
         return data
@@ -85,13 +85,13 @@ def read_spfh_3D(data_source=None, init_time=None, fhour=None, data_name=None, l
     raise Exception('Can not get any data!')
 
 
-def _by_self_4D(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+def _by_self_4d(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=None):
     spfh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                               var_name='spfh', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     return spfh
 
 
-def _by_tmp_rh_4D(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
+def _by_tmp_rh_4d(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=None):
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                              var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
@@ -108,12 +108,12 @@ def _by_tmp_rh_4D(data_source=None, init_time=None, fhours=None, data_name=None,
     return spfh
 
 
-def read_spfh_4D(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
-    data = _by_self_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+def read_spfh_4d(data_source=None, init_time=None, fhours=None, data_name=None, levels=None, extent=None):
+    data = _by_self_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     if data is not None:
         return data
     _log.info('cal spfh _by_tmp_rh')
-    data = _by_tmp_rh_4D(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+    data = _by_tmp_rh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     if data is not None:
         return data
 
