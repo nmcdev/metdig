@@ -171,9 +171,13 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     # 预报/分析描述信息
     if forcast_info:
-        ax.text(0.01, 0.99, forcast_info, transform=ax.transAxes, size=12, va='top',
-                ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20)
-
+        if(isinstance(add_ticks,str)):
+            # ax.text(0.01, 0.99, forcast_info, transform=ax.transAxes, size=12, va='top',
+            #         ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20)
+            utl_plotmap.forcast_info(ax,x=0.01,y=0.99,info=forcast_info,transform=ax.transAxes)
+        else:
+            utl_plotmap.forcast_info(ax,x=0.01,y=0.99,info=forcast_info, transform=ax.transAxes, size=12, va='top',
+                    ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20,kwargs=forcast_info)
     # logo
 
     if nmc_logo:
@@ -196,7 +200,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     return fig, ax
 
 @kwargs_wrapper
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=True):
+def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -291,7 +295,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     return fig, ax
 
 @kwargs_wrapper
-def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000]):
+def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000],**kwargs):
     if(reverse_time):
         times = times[::-1]
 
@@ -466,7 +470,7 @@ def time_series_left_right_bottom(times=None,figsize=(16, 4.5), title_left='', t
 
 @kwargs_wrapper
 def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', nmc_logo=False,
-        bottom=1000,top=100,left=-40,right=60,add_tag=True):
+        bottom=1000,top=100,left=-40,right=60,add_tag=True,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -497,7 +501,7 @@ def skewt_pallete(figsize=(9, 9), title='', title_fontsize=23, forcast_info='', 
 @kwargs_wrapper
 def twod_pallete(figsize=(14, 12), title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=False,
         bottom=1000,top=100,left=260,right=400,
-        xlabel='K',ylabel='hPa',yticklabels=np.arange(1000, 100, -100),yticks=np.arange(1000, 100, -100)):
+        xlabel='K',ylabel='hPa',yticklabels=np.arange(1000, 100, -100),yticks=np.arange(1000, 100, -100),**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 
