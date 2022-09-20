@@ -25,3 +25,5 @@ ecmwf_ens,0,any
 ecmwf_ens,1,any
 cma_ra,0,any
 cma_ra,1,any
+ecmwf_hr,0,any
+ecmwf_hr,1,any

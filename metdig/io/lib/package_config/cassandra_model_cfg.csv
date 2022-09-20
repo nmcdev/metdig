@@ -1,11 +1,3 @@
-#,,,,,,
-# 注意事项,,,,,,
-#    1. var_name为stda要素名,,,,,,
-#    2. var_units为当前数据的在cassandra中的单位，单位名参考metpy.units（即pint库），未知或者不确定不填写空着即可，可带倍数,,,,,,
-#    3. cassandra_discription为描述信息，目前不进行任何使用，可看作为配置行的说明,,,,,,
-#    4. cassandra_level高空请填写any代表任意层，地面或者特殊单层请填写具体某一层，未知或者不确定请填写any,,,,,,
-#    5. 以data_name,var_name,level_type列作为查询列，保证能确定唯一一行,,,,
-# ,,,,,,
 data_name,var_name,level_type,var_units,cassandra_discription,cassandra_level,cassandra_path,cassandra_prod_type
 ecmwf,hgt,high,dagpm,,any,ECMWF_HR/HGT/,model
 ecmwf,u,high,m/s,,any,ECMWF_HR/UGRD/,model
@@ -78,6 +70,8 @@ ecmwf,snow_density,surface,kg/m**3,,0,ECMWF_HR/SDEN/,model
 ecmwf,snow_depth,surface,cm,,0,ECMWF_HR/SNOD/,model
 ecmwf,sst,surface,degC,,0,ECMWF_HR/SST/,model
 ecmwf,vis,surface,km,,0,ECMWF_HR/VIS/,model
+cma_gfs,lcdc,surface,percent,,0,GRAPES_GFS/LCDC/ATMOSPHERE_TOP,model
+cma_gfs,tcdc,surface,percent,,0,GRAPES_GFS/TCDC/ATMOSPHERE_TOP/,model
 cma_gfs,u10m,surface,m/s,,10,GRAPES_GFS/UGRD/10M_ABOVE_GROUND/,model
 cma_gfs,v10m,surface,m/s,,10,GRAPES_GFS/VGRD/10M_ABOVE_GROUND/,model
 cma_gfs,prmsl,surface,hPa,,0,GRAPES_GFS/PRMSL/,model
