@@ -12,7 +12,6 @@ import matplotlib as mpl
 from cartopy.io.shapereader import Reader
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-from matplotlib.text import TextPath
 from matplotlib.patches import PathPatch
 import matplotlib.patheffects as mpatheffects
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
@@ -162,6 +161,10 @@ def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree()
     if add_grid:
         ax.gridlines(crs=crs, xlocs=xticks, ylocs=yticks, linewidth=1, color='gray', alpha=0.5, linestyle='--', zorder=100)
     
+@kwargs_wrapper
+def forcast_info(ax, x=0.1 ,y=0.99 ,info=None ,transform=None , size=12, va='top',
+                    ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20,**kwargs):
+    ax.text(x, y, info, transform=ax.transAxes, size=size, va=va, ha=ha, bbox=bbox,zorder=zorder) 
 
 def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
                                   edgecolor='c', lw=2,crs=ccrs.PlateCarree(), **kwargs):
