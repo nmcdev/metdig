@@ -20,7 +20,7 @@ def draw_hgt_uv_vvel(hgt, u, v, vvel, map_extent=(60, 145, 15, 55),
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0])
 
-    title = '[{}] {}hPa 位势高度场, {}hPa 风场和垂直气压速度'.format(data_name.upper(), hgt['level'].values[0], u['level'].values[0])
+    title = '[{}] {}hPa 位势高度场, {}hPa 风场 {}hPa垂直气压速度'.format(data_name.upper(), hgt['level'].values[0], u['level'].values[0], vvel['level'].values[0])
     
     forcast_info = hgt.stda.description()
     png_name = '{2}_位势高度场_风场_垂直气压速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
