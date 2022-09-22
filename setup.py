@@ -44,7 +44,8 @@ setup(
                       'xarray <= 0.19.0',
                       'cdsapi',
                       'numba',
-                      'folium'],
+                      'folium',
+                      'shapely < 1.8.0'],
     python_requires='>=3',
     zip_safe = False
 )

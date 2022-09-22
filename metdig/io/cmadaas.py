@@ -262,7 +262,7 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
                 temp_data = xr.concat(temp_data, dim='level')
                 stda_data.append(temp_data)
     if stda_data:
-        if(len(init_time)>0):
+        if(len(init_time)>1):
             return xr.concat(stda_data, dim='time')
         else:
             return xr.concat(stda_data, dim='dtime')
