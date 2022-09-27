@@ -45,7 +45,9 @@ setup(
                       'cdsapi',
                       'numba',
                       'folium',
-                      'shapely < 1.8.0'],
+                      'shapely < 1.8.0',
+                      'imageio',
+                      'numpy < 1.20'],
     python_requires='>=3',
     zip_safe = False
 )
