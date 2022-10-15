@@ -38,7 +38,7 @@ setup(
 
     install_requires=[
                       'matplotlib',
-                      'nmc_met_io>=0.1.9',
+                      'nmc_met_io <= 0.1.10.4',
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
                       'xarray <= 0.19.0',
@@ -47,7 +47,9 @@ setup(
                       'folium',
                       'shapely < 1.8.0',
                       'imageio',
-                      'numpy < 1.20'],
+                      'numpy < 1.21',
+                      'protobuf<=3.20',
+                      'ipython'],
     python_requires='>=3',
     zip_safe = False
 )
