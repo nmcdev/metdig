@@ -173,11 +173,11 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
     init_time = pd.to_datetime(hgt_fcst.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(u_fcst['dtime'].values[0])
     fcstTime = init_time + datetime.timedelta(hours=fhour)
-    data_name = str(hgt_ana['member'].values[0])
+    data_name = str(hgt_fcst['member'].values[0])
     title = '[{}] {}hPa 位势高度, {}hPa 风 预报检验'.format(
         data_name.upper(),
-        hgt_ana['level'].values[0],
-        u_ana['level'].values[0])
+        hgt_fcst['level'].values[0],
+        u_fcst['level'].values[0])
 
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n分析时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(init_time, fcstTime, fhour)
     png_name = '{2}_位势高度_风_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper())

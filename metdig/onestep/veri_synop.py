@@ -143,7 +143,7 @@ def compare_gh_uv(data_source='cassandra',ana_data_source='cmadaas',
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc_ana = get_model_grid(data_source=data_source, init_time=anl_time, fhour=0, data_name=data_name, var_name='psfc', extent=map_extent)
+        psfc_ana = get_model_grid(data_source=ana_data_source, init_time=anl_time, fhour=0, data_name=ana_data_name, var_name='psfc', extent=map_extent)
         hgt_ana = mask_terrian(psfc_ana, hgt_ana)
         u_ana = mask_terrian(psfc_ana, u_ana)
         v_ana = mask_terrian(psfc_ana, v_ana)
