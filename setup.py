@@ -37,11 +37,11 @@ setup(
     exclude_package_data={'': ['.gitignore']},
 
     install_requires=[
-                      'matplotlib',
+                      'matplotlib < 3.6',
                       'nmc_met_io <= 0.1.10.4',
                       'metpy >= 1.0',
                       'meteva > 1.3.*',
-                      'xarray <= 0.19.0',
+                      'xarray <= 0.19.0 ',
                       'cdsapi',
                       'numba',
                       'folium',
@@ -49,7 +49,8 @@ setup(
                       'imageio',
                       'numpy < 1.21',
                       'protobuf<=3.20',
-                      'ipython'],
+                      'ipython',
+                      'pint < 0.20.0'],
     python_requires='>=3',
     zip_safe = False
 )

@@ -3,15 +3,20 @@
 
 ## Dependencies
 Other required packages:
-- 请在anaconda环境下安装，并确保matplotlib、meteva符合以下版本需求
-- matplotlib
-- cartopy >= 0.19.0
-- metpy >=1.0
-- meteva >=1.3.*
-- cdsapi
-- nmc_met_io
-- numba
-- folium
+        'matplotlib < 3.6',
+        'nmc_met_io <= 0.1.10.4',
+        'metpy >= 1.0',
+        'meteva > 1.3.*',
+        'xarray <= 0.19.0 ',
+        'cdsapi',
+        'numba',
+        'folium',
+        'shapely < 1.8.0',
+        'imageio',
+        'numpy < 1.21',
+        'protobuf<=3.20',
+        'ipython',
+        'pint < 0.20.0'
 ## Install
 please install metdig under anaconda enviroment.
 since Cartopy is hard to install, 
