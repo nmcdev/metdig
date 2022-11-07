@@ -31,8 +31,10 @@ rain06,6小时降水,mm,6
 rain12,12小时降水,mm,12
 rain24,24小时降水,mm,24
 rainnc,非对流降水,mm,0
+rainnc01,1小时非对流性降水,mm,1
 rainnc03,3小时非对流性降水,mm,3
 rainc,对流降水,mm,0
+rainc01,1小时对流性降水,mm,1
 rainc03,3小时对流性降水,mm,3
 es,饱和水汽压,hPa,0
 u10m,10mU风,m/s,0

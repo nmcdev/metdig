@@ -35,3 +35,6 @@ cape,surface,J/kg,convective_available_potential_energy,,0,analysis
 cin,surface,J/kg,convective_inhibition,,0,analysis
 k_idx,surface,K,k_index,,0,analysis
 rain01,surface,m,total_precipitation,,0,analysis
+rainc01,surface,m,convective_precipitation,,0,analysis
+rainnc01,surface,m,large_scale_precipitation,,0,analysis
+tsfc,surface,K,skin_temperature,,0,analysis
