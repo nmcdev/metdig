@@ -1,4 +1,3 @@
-import datetime
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -6,11 +5,97 @@ from scipy.interpolate import LinearNDInterpolator
 import metdig.utl as mdgstda
 from metdig.io.lib import utility as utl
 from metdig.onestep.lib.utility import mask_terrian
-import math
+import metdig
+from datetime import datetime,timedelta
+import math 
+import numpy as np 
+import xarray as xr
+
 __all__ = [
     'interpolate_3d',
     'interpolate_3d_whole_area'
 ]
+
+def trajectory_on_pressure_level(u,v,vvel,var_diag=None,
+    s_point={'lon':[119.3,119.31],'lat':[32.4,32.41],'level':[925,900],'id':[1,2]},
+    t_s=None,t_e=None,dt=1800):
+
+    #气压坐标下的空气质点追踪算法，输入垂直运动速度为气压速度
+    #stda标准u 东西风 v 南北风 vvel气压垂直速度
+    #var_diag 为任意stda标准格式的诊断两，如spfh、rh等
+    #s_points 为字典型，质点起始位置，如{'lon':[100,101.1],'lat':[30,30.1],'level':[875,875.5],'id':[1,2]}，如果用户没有给定id，则自动生成连续数字
+    #t_s 起始时间，t_e终止时间，datetime格式，如未给定，则为u的预报时间的起止时间
+    #dt追踪时间步长 单位为s
+    if('id' not in list(s_point.keys())):
+        s_point['id']=list(range(0,len(s_point['lon'])))
+
+    if(len(u['time'])>1):
+        trans_dim='time'
+    else:
+        trans_dim='dtime'
+    
+    u_trans=u.assign_coords({'fcst_time':(trans_dim,u.stda.fcst_time)}).swap_dims({trans_dim:'fcst_time'})
+    v_trans=v.assign_coords({'fcst_time':(trans_dim,v.stda.fcst_time)}).swap_dims({trans_dim:'fcst_time'})
+    vvel_trans=vvel.assign_coords({'fcst_time':(trans_dim,vvel.stda.fcst_time)}).swap_dims({trans_dim:'fcst_time'})
+    if(t_s is None):
+        if(dt > 0):
+            t_s=pd.to_datetime(u_trans.fcst_time.values[0])
+        else:
+            t_s=pd.to_datetime(u_trans.fcst_time.values[-1])
+    t_now=t_s
+    if(t_e is None):
+        if(dt > 0):
+            t_e=pd.to_datetime(u_trans.fcst_time.values[-1])
+        else:
+            t_e=pd.to_datetime(u_trans.fcst_time.values[0])
+            
+    if(var_diag is None):
+        var_diag=vvel.copy()
+    var_diag_trans=var_diag.assign_coords({'fcst_time':(trans_dim,var_diag.stda.fcst_time)}).swap_dims({trans_dim:'fcst_time'})
+    u_s=u_trans.interp({'lon':('id',s_point['lon']),'lat':('id',s_point['lat']),'level':('id',s_point['level']),'fcst_time':[t_s]}).assign_coords({'id':('id',s_point['id'])})
+    v_s=v_trans.interp({'lon':('id',s_point['lon']),'lat':('id',s_point['lat']),'level':('id',s_point['level']),'fcst_time':[t_s]}).assign_coords({'id':('id',s_point['id'])})
+    vvel_s=vvel_trans.interp({'lon':('id',s_point['lon']),'lat':('id',s_point['lat']),'level':('id',s_point['level']),'fcst_time':[t_s]}).assign_coords({'id':('id',s_point['id'])})
+    var_s=var_diag_trans.interp({'lon':('id',s_point['lon']),'lat':('id',s_point['lat']),'level':('id',s_point['level']),'fcst_time':[t_s]}).assign_coords({'id':('id',s_point['id'])})
+
+    r_earth=6371000 
+    dis2lat=180/(math.pi*r_earth) #Distance to Latitude 
+    const={'a':r_earth,'dis2lat':dis2lat} 
+
+    while ((t_now <= max((t_s,t_e))) and (t_now >= min((t_s,t_e)))):
+        print(t_now)
+        dx=u_s*dt 
+        dlon=dx*180/(const['a']*math.sin(math.pi/2-math.radians(s_point['lat'][-1]))*math.pi) 
+        dy=v_s*dt
+        dlat=dy*const['dis2lat'] 
+        dvvel=vvel_s*dt/100 # to hPa 
+        temp=var_s.isel(fcst_time=[-1]).copy()
+        temp.coords['lon']=temp.coords['lon']+dlon.squeeze().values
+        temp.coords['lat']=temp.coords['lat']+dlat.squeeze().values
+        temp.coords['level']=temp.coords['level']+dvvel.squeeze().values
+        temp.coords['fcst_time']=[t_now]
+        u_s=u_trans.interp({'lon':('id',temp['lon'].values.flatten().tolist()),'lat':('id',temp['lat'].values.flatten().tolist()),'level':('id',temp['level'].values.flatten().tolist()),'fcst_time':[t_now]}).assign_coords({'id':('id',temp['id'].values.flatten().tolist())})
+        v_s=v_trans.interp({'lon':('id',temp['lon'].values.flatten().tolist()),'lat':('id',temp['lat'].values.flatten().tolist()),'level':('id',temp['level'].values.flatten().tolist()),'fcst_time':[t_now]}).assign_coords({'id':('id',temp['id'].values.flatten().tolist())})
+        vvel_s=vvel_trans.interp({'lon':('id',temp['lon'].values.flatten().tolist()),'lat':('id',temp['lat'].values.flatten().tolist()),'level':('id',temp['level'].values.flatten().tolist()),'fcst_time':[t_now]}).assign_coords({'id':('id',temp['id'].values.flatten().tolist())})
+        temp.values=var_diag_trans.interp({'lon':('id',temp['lon'].values.flatten().tolist()),'lat':('id',temp['lat'].values.flatten().tolist()),'level':('id',temp['level'].values.flatten().tolist()),'fcst_time':[t_now]}).assign_coords({'id':('id',temp['id'].values.flatten().tolist())})
+        var_s=xr.concat([var_s,temp],dim='fcst_time')    
+        t_now = t_now+timedelta(seconds=dt)
+
+    var_stda=var_s.rename({'fcst_time':trans_dim}).squeeze().to_dataframe(var_s.member.values[0]).reset_index().drop('member',axis=1)
+    var_stda.attrs=var_s.attrs
+    var_stda.attrs['data_start_columns'] = 6
+    return var_stda
+
+if __name__ == '__main__' :
+    levels=[925,850,700,500,200]
+    init_times=pd.date_range('2022-07-20-08','2022-07-21-08',freq='1h')
+
+    u=metdig.io.get_model_3D_grids(data_source='cds',data_name='era5',levels=levels,fhours=0,init_time=init_times,var_name='u')
+    v=metdig.io.get_model_3D_grids(data_source='cds',data_name='era5',levels=levels,fhours=0,init_time=init_times,var_name='v')
+    vvel=metdig.io.get_model_3D_grids(data_source='cds',data_name='era5',levels=levels,fhours=0,init_time=init_times,var_name='vvel')
+    spfh=metdig.io.get_model_3D_grids(data_source='cds',data_name='era5',levels=levels,fhours=0,init_time=init_times,var_name='spfh')
+    trajectoies=trajectory_on_pressure_level(u,v,vvel,var_diag=spfh,dt=-1800,t_s=datetime(2022,7,21,8))
+    print(trajectoies)
+
 
 def interpolate_3d(stda, hgt, points, stda_sfc=None, psfc=None,if_split=None):
     '''
