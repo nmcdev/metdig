@@ -171,7 +171,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     # 预报/分析描述信息
     if forcast_info:
-        if(isinstance(add_ticks,str)):
+        if(isinstance(forcast_info,str)):
             # ax.text(0.01, 0.99, forcast_info, transform=ax.transAxes, size=12, va='top',
             #         ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20)
             utl_plotmap.forcast_info(ax,x=0.01,y=0.99,info=forcast_info,transform=ax.transAxes)
