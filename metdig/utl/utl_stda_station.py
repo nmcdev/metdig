@@ -70,6 +70,8 @@ def numpy_to_stastda(np_input, members, levels, times, dtimes, ids, lats, lons,
 
     # 属性
     df.attrs = stda_attrs
+    if ('data_start_columns' not in df.attrs.keys()):
+        df.attrs['data_start_columns']=6
     df.attrs['data_start_columns'] = 6 + len(other_input.keys())
 
     return df
@@ -146,6 +148,8 @@ def stastda_copy(data, iscopy_otherdim=True, iscopy_value=True):
         [stda] -- [拷贝后的数据]
     '''
     idx1 = 6
+    if ('data_start_columns' not in data.attrs.keys()):
+        data.attrs['data_start_columns']=6
     idx2 = data.attrs['data_start_columns']
     newdata = data.copy(deep=True)
 
