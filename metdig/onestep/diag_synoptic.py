@@ -25,7 +25,7 @@ __all__ = [
     'uvstream_wsp',
     'syn_composite',
     'hgt_uv_prmsl',
-    'hgt_uv_rain06',
+    'hgt_uv_rain',
     'hgt_uv_wsp',
     'pv_div_uv',
 ]
@@ -207,7 +207,7 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
 
 @date_init('init_time')
-def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+def hgt_uv_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,atime=6,
                   hgt_lev=500, uv_lev=850, is_mask_terrain=True,
                   area='全国',  is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -216,11 +216,15 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     map_extent = get_map_area(area)
 
     # get data
-    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
+    if(int(atime/2) >=3 ):
+        atime_mid=int(atime/2)
+    else:
+        atime_mid=atime
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour-atime_mid,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
-    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
-    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
-    rain06 = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=6, extent=map_extent)
+    u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour-atime_mid, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour-atime_mid, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+    rain06 = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, atime=atime, extent=map_extent)
 
     if is_return_data:
         dataret = {'hgt': hgt, 'u': u, 'v': v, 'rain06': rain06}
@@ -228,7 +232,7 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
-        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour-atime_mid, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt)
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
@@ -240,6 +244,11 @@ def hgt_uv_rain06(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    hgt_uv_rain(data_source='cmadaas')
+    plt.show()
 
 @date_init('init_time')
 def hgt_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,

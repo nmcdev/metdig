@@ -189,12 +189,13 @@ def draw_hgt_uv_rain06(hgt, u, v, rain06, map_extent=(60, 145, 15, 55),
     fcst_time = init_time + datetime.timedelta(hours=fhour)
 
     data_name = str(hgt['member'].values[0])
-    title = '[{}] {}hPa 位势高度场, {}hPa 风场, 6小时降水'.format(
+    title = '[{}] {}hPa 位势高度场, {}hPa 风场, {}小时降水'.format(
         data_name.upper(),
         hgt['level'].values[0],
-        u['level'].values[0])
+        u['level'].values[0],
+        rain06.attrs['valid_time'])
 
-    forcast_info = hgt.stda.description()
+    forcast_info = rain06.stda.description()+'(形势场:{}小时)'.format(hgt.stda.dtime[0])
     png_name = '{2}_位势高度场_风场_降水_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
