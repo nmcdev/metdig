@@ -133,7 +133,7 @@ ecmwf,snow_density,surface,kg*m**-3,SNDE,雪密度,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,mod
 ecmwf,snow_depth,surface,m,SDE,雪深,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,tsfc,surface,K,SKTE,表面温度,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 #,,,,,,,,,
-ecmwf_hr,hgt,high,gpm,GPH,位势高度,1,any,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,hgt,high,gpm,GPH,位势高度,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,u,high,m/s,WIU,东西风风速,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,v,high,m/s,WIV,南北风风速,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,vvel,high,Pa/s,VVP,垂直速度,100,any,NAFP_ECMF_D1D_FOR,model
