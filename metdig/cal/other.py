@@ -268,7 +268,7 @@ def wind_components(wsp, wdir):
     u_p, v_p = mpcalc.wind_components(wsp_p, wdir_p)  # m/s
 
     u = utl.quantity_to_stda_byreference('u', u_p, wsp)
-    v = utl.quantity_to_stda_byreference('v', v_p, wdir)
+    v = utl.quantity_to_stda_byreference('v', v_p, wsp)
 
     return u, v
 
