@@ -100,24 +100,26 @@ def mult_process(func=None, func_args_all=[], max_workers=6, force_max_workers=T
     _log.debug('cpu_count={}, use max_workers={}'.format(os.cpu_count(), max_workers))
 
     all_ret = []
-    with futures.ProcessPoolExecutor(max_workers=max_workers) as executer:
-        # 提交所有绘图任务
-        if(isinstance(func,list)):
-            all_task = [executer.submit(func[_ifunc], **_) for _ifunc,_ in enumerate(func_args_all)]
+    # with futures.ProcessPoolExecutor(max_workers=max_workers) as executer:
+    # 提交所有绘图任务
+    executer=futures.ProcessPoolExecutor(max_workers=max_workers)
+    if(isinstance(func,list)):
+        all_task = [executer.submit(func[_ifunc], **_) for _ifunc,_ in enumerate(func_args_all)]
+    else:
+        all_task = [executer.submit(func, **_) for _ in func_args_all]
+
+    # 等待
+    futures.wait(all_task, return_when=futures.ALL_COMPLETED)
+
+    # 取返回值
+    for task in all_task:
+        exp = task.exception()
+        if exp is None:
+            all_ret.append(task.result())
         else:
-            all_task = [executer.submit(func, **_) for _ in func_args_all]
-
-        # 等待
-        futures.wait(all_task, return_when=futures.ALL_COMPLETED)
-
-        # 取返回值
-        for task in all_task:
-            exp = task.exception()
-            if exp is None:
-                all_ret.append(task.result())
-            else:
-                _log.debug(exp)
-                pass
+            _log.debug(exp)
+            pass
+    executer.shutdown()
     return all_ret
 
 
