@@ -72,10 +72,10 @@ def quantity_to_stda_byreference(var_name, data, reference_variables,
         stda_data.attrs['data_start_columns'] = reference_variables.attrs['data_start_columns']
         member = reference_variables.stda.member #针对集合预报的情况的修改
         if (len(member)==1):
-            stda_data[member[0]] = np.array(data)[:]
+            stda_data[member[0]] = np.array(data)
         else:
             for idxm,im in enumerate(member):
-                stda_data[im] = np.array(data)[:,idxm].squeeze()
+                stda_data[im] = np.array(data)[...,idxm].squeeze()
         return stda_data
 
     else:
