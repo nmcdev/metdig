@@ -124,6 +124,8 @@ def xrda_to_gridstda(xrda,
     stda_data.values, data_units = mdgstda.numpy_units_to_stda(stda_data.values, np_input_units, stda_attrs['var_units'])
     stda_attrs['var_units'] = data_units
     stda_data.attrs = stda_attrs
+    stda_data=stda_data.sortby('lon')
+    stda_data=stda_data.sortby('lat')
     return stda_data
 
 

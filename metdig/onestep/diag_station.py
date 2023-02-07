@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from metdig import utl
-import matplotlib.pyplot as plt
-import math
 import numpy as np
-
 from metdig.io import get_model_points
-
 from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.get_rain import read_points_rain
-
+from metdig.onestep.complexgrid_var.rh2m import read_points_rh2m
 from metdig.products import diag_station as draw_station
-
 import metdig.cal as mdgcal
 
 __all__ = [
@@ -61,13 +55,13 @@ def t2m_ens_boxplot(data_source='cassandra', data_name='ecmwf_ens', init_time=No
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    t2m_ens_boxplot(init_time='2021090708', fhours=np.arange(0, 243, 3),t2m_boxplot_kwargs=dict(medianline=True,label_gap=3))
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     t2m_ens_boxplot(init_time='2021090708', fhours=np.arange(0, 243, 3),t2m_boxplot_kwargs=dict(medianline=True,label_gap=3))
+#     plt.show()
 
 @date_init('init_time')
-def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), points={'lon': [110], 'lat': [20] ,'id':['任意点']},
+def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=np.arange(3, 36, 3), atime=3, points={'lon': [110], 'lat': [20] ,'id':['任意点']},
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -75,9 +69,9 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
     t2m = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='t2m', points=points)
     u10m = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u10m', points=points)
     v10m = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v10m', points=points)
-    rh2m = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh2m', points=points)
-    rain03 = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rain03', points=points)
-
+    rh2m = read_points_rh2m(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, points=points)
+    # rain03 = get_model_points(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rain03', points=points)
+    rain03=read_points_rain(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,points=points,atime=atime)
     # calcu
     wsp = mdgcal.wind_speed(u10m, v10m)
 
@@ -92,6 +86,10 @@ def uv_tmp_rh_rain(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if ret:
         return ret
 
+if __name__ == '__main__':
+    uv_tmp_rh_rain(data_source='cmadaas')
+    import matplotlib.pyplot as plt
+    plt.show()
 @date_init('init_time')
 def sta_SkewT(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
               levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200, 150, 100],

@@ -26,7 +26,7 @@ from meteva.base.tool.plot_tools import add_china_map_2basemap
 import metdig.graphics.lib.utl_plotmap as utl_plotmap
 import metdig.graphics.lib.utility as utl
 from  metdig.graphics.lib.utility import kwargs_wrapper
-from cartopy.io.img_tiles import Stamen
+from cartopy.io.img_tiles import Stamen,GoogleTiles
 
 def plt_base_env():
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 步骤一（替换sans-serif字体）
@@ -144,7 +144,13 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     elif add_background_style == 'terrain2':
         tiler = Stamen('terrain-background')
-        ax.add_image(tiler, background_zoom_level,interpolation='bilinear')
+        ax.add_image(tiler, background_zoom_level,interpolation='spline36')
+
+    elif add_background_style == 'terrain3':
+        # request = utl.TDT_ter2()  # 地形
+        request = GoogleTiles(style='terrain')
+            # url='http://mt1.google.com/vt/lyrs={style}&x={x}&y={y}&z={z}')  # 谷歌地形
+        ax.add_image(request, background_zoom_level)  
 
     elif add_background_style == 'road':
         request = utl.TDT()  # 卫星图像

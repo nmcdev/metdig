@@ -29,6 +29,7 @@ class TDT_img(cimgt.GoogleWTS):
         x, y, z = tile
         url = 'https://webst01.is.autonavi.com/appmaptile?x=%s&y=%s&z=%s&style=6'% (x, y, z)
         return url
+
 class TDT_ter(cimgt.GoogleTiles):
     def _image_url(self, tile, cache=True):
         x, y, z = tile
@@ -38,6 +39,12 @@ class TDT_ter(cimgt.GoogleTiles):
         # url = 'http://server.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/tile/%s/%s/%s'% (z, y, x)
 
         return url
+
+class TDT_ter2(cimgt.GoogleTiles):
+    def _image_url(self, tile, cache=True):
+        x, y, z = tile
+        url = 'https://mts0.google.com/vt/lyrs=t@177000000&hl=en&src=api&x={x}&y={y}&z={z}&s=G'
+        return url        
 
 class TDT(cimgt.GoogleWTS):
     def _image_url(self, tile):
