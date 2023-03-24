@@ -55,7 +55,7 @@ def _by_self_3D(data_source=None, init_time=None, fhour=None, data_name=None, le
     return vvel
     
 def _by_w_tmp_spfh_3d(data_source=None, init_time=None, fhour=None, data_name=None, levels=None, extent=(50, 150, 0, 65)):
-    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhours=fhour, data_name=data_name,levels=levels, extent=extent)
+    spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,levels=levels, extent=extent)
 
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='tmp', levels=levels, extent=extent, x_percent=0, y_percent=0, throwexp=False)
