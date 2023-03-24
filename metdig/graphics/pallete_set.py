@@ -39,7 +39,7 @@ def plt_base_env():
         
 @kwargs_wrapper
 def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
-                       title='', title_fontsize=18, forcast_info='', nmc_logo=False,
+                       title='', title_loc='left', title_fontsize=18, forcast_info='', nmc_logo=False,
                        add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=False, add_county_city=False, 
                        add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
                        background_zoom_level=5,add_tag=True,**kwargs):
@@ -73,7 +73,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     else:
         fig=None
     # 标题
-    ax.set_title(title, loc='left', fontsize=title_fontsize)
+    ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
     # set_map_extent
     if((map_extent[1]-map_extent[0] > 350) and (map_extent[3]-map_extent[2] > 170)):
@@ -206,21 +206,22 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     return fig, ax
 
 @kwargs_wrapper
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
+def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+                          nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
 
-    ax.set_title(title, loc='right', fontsize=25)
+    ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
     # Adjust the y-axis to be logarithmic
     if(logyaxis):
         ax.set_yscale('symlog')
-    ax.set_yticklabels(np.arange(levels[0], levels[-1], -100))
+    ax.set_yticklabels(np.arange(levels[0], levels[-1]-1, -100))
     ax.set_ylim(levels[0], levels[-1])
-    ax.set_yticks(np.arange(levels[0], levels[-1], -100))
+    ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
 
     ax.set_ylabel('Pressure (hPa)')
     ax.set_xlabel('Longitude')
@@ -240,7 +241,8 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     return fig, ax
 
 @kwargs_wrapper
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,logyaxis=True,add_tag=True,**kwargs):
+def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+                           nmc_logo=False, reverse_time=True, logyaxis=True, add_tag=True, xtickfmt='%m月%d日%H时',**kwargs):
     """[时间剖面画板初始化]
 
     Args:
@@ -262,9 +264,9 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
 
-    ax.set_title(title, loc='right', fontsize=25)
+    ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
-    xstklbls = mpl.dates.DateFormatter('%m月%d日%H时')
+    xstklbls = mpl.dates.DateFormatter(xtickfmt)
     ax.xaxis.set_major_formatter(xstklbls)
 
     for label in ax.get_xticklabels():
@@ -281,8 +283,8 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     if(logyaxis):
         ax.set_yscale('symlog')
     ax.set_ylabel('高度 （hPa）', fontsize=15)
-    ax.set_yticklabels([100, 925, 850, 700, 600, 500, 400, 300])
-    ax.set_yticks([100, 925, 850, 700, 600, 500, 400, 300])
+    ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
+    ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     if levels is not None:
         ax.set_ylim(levels.max(), levels.min())
     ax.set_xlim(times[0], times[-1])
@@ -301,7 +303,8 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     return fig, ax
 
 @kwargs_wrapper
-def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000],**kwargs):
+def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+                             nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000],xtickfmt='%m月%d日%H时',**kwargs):
     if(reverse_time):
         times = times[::-1]
 
@@ -310,9 +313,9 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
     fig = plt.figure(figsize=figsize)
     ax = plt.axes()
 
-    ax.set_title(title, loc='right', fontsize=25)
+    ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
-    xstklbls = mpl.dates.DateFormatter('%m月%d日%H时')
+    xstklbls = mpl.dates.DateFormatter(xtickfmt)
     ax.xaxis.set_major_formatter(xstklbls)
     for label in ax.get_xticklabels():
         label.set_rotation(30)
