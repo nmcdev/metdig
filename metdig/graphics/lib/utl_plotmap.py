@@ -147,7 +147,11 @@ def time_ticks_formatter(ax,times,if_minor=False):
 
 @kwargs_wrapper
 def add_ticks(ax, xticks=None, yticks=None, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False ,**kwargs):
+
+
     if xticks is not None:
+        xticks = np.array(xticks)
+        xticks = np.where(xticks > 180, xticks - 360, xticks) # 0-360转-180 180
         ax.set_xticks(xticks, crs=crs)
         lon_formatter = LongitudeFormatter(zero_direction_label=False)
         ax.xaxis.set_major_formatter(lon_formatter)

@@ -83,10 +83,10 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         ax.set_extent(map_extent, crs=ccrs.PlateCarree())
 
     # add grid lines
-    if add_grid:
-        gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
-        gl.xlocator = mpl.ticker.FixedLocator(np.arange(0, 361, 10))
-        gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
+    # if add_grid: 
+    #     gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+    #     gl.xlocator = mpl.ticker.FixedLocator(np.arange(-180, 181, 10))
+    #     gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
 
     # 海岸线，省界，河流等中国边界信息
     if add_coastline:
@@ -156,12 +156,14 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         request = utl.TDT()  # 卫星图像
         ax.add_image(request, background_zoom_level)  # level=10 缩放等级
 
-    # 增加坐标
+    # 增加坐标和网格线
     if add_ticks:
         if(isinstance(add_ticks,bool)):
-            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),yticks=np.arange(map_extent[2], map_extent[3]+1, 10))
+            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
+                                  yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid)
         else:
-            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),yticks=np.arange(map_extent[2], map_extent[3]+1, 10),kwargs=add_ticks)
+            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
+                                  yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid,kwargs=add_ticks)
         # plt.tick_params(labelsize=15)
         # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=ccrs.PlateCarree())
         # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=ccrs.PlateCarree())
@@ -169,6 +171,11 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         # lat_formatter = LatitudeFormatter()
         # ax.xaxis.set_major_formatter(lon_formatter)
         # ax.yaxis.set_major_formatter(lat_formatter)
+    else:  
+        if add_grid:
+            gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+            gl.xlocator = mpl.ticker.FixedLocator(np.arange(-180, 181, 10))
+            gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
 
     # 南海
     if add_south_china_sea:
