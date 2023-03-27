@@ -110,3 +110,6 @@ lcl,抬升凝结气压高度,Pa,0
 lfc,自由对流气压高度,Pa,0
 li,抬升指数,K,0
 bli,最优抬升指数,K,0
+shear_vort,切变涡度,1/s,0
+curve_vort,曲率涡度,1/s,0
+
