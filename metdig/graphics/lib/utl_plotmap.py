@@ -134,15 +134,22 @@ def shp2clip_by_region_name(originfig, ax, region_name_list):
 
 def time_ticks_formatter(ax,times,if_minor=False):
     times=pd.to_datetime(times)
-    hours_total=(times[-1]-times[0]).total_seconds()/3600.
+    hours_total=np.abs((times[-1]-times[0]).total_seconds()/3600.)
+    # print(hours_total)
     if(hours_total > 84):
         ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
         if if_minor:
             ax.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 14, 20, 2)))  # 单位是小时
-    else:
+    elif(hours_total > 24):
         ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 14, 20, 2)))  # 单位是小时
         if if_minor:
             ax.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+    elif(hours_total > 12):
+        ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 11, 14, 17, 20, 23, 2, 5)))  # 单位是小时
+        if if_minor:
+            ax.xaxis.set_minor_locator(mpl.dates.HourLocator(byhour=list(range(0,24,1))))  # 单位是小时
+    else:
+        ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=list(range(0,24,1))))  # 单位是小时
 
 
 @kwargs_wrapper

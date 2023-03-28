@@ -301,14 +301,19 @@ def cross_tmp_contour(ax, stda, xdim='lon', ydim='level',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim) # degC
 
+    # 颜色统一
+    single_color = '#0A1F5D'
+    if isinstance(colors, str):
+        single_color = colors
+
     img = ax.contour(x, y, z, levels=levels, colors=colors,linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, fontsize=17, colors='red', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
-
+        plt.clabel(img, fontsize=17, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+    
     if z.min() < 0 and z.max() > 0:
-        img = ax.contour(x, y, z, levels=[0], colors='k', linewidths=linewidths+2)
+        img = ax.contour(x, y, z, levels=[0], colors=single_color, linewidths=linewidths+2)
         if add_clabel:
-            plt.clabel(img, [0], fontsize=22, colors='k', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+            plt.clabel(img, [0], fontsize=22, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
     return img
 
 @kwargs_wrapper

@@ -289,7 +289,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
 
     if(logyaxis):
         ax.set_yscale('symlog')
-    ax.set_ylabel('高度 （hPa）', fontsize=15)
+    ax.set_ylabel('Pressure （hPa）', fontsize=15)
     ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     if levels is not None:
