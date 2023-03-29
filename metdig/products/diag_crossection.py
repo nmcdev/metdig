@@ -376,9 +376,9 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
-    title = '[{}]相当位温, 湿位涡, 沿剖面风'.format(data_name)
+    title = '[{}]饱和相当位温, 准地转湿位涡, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_饱和相当位温_准地转湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)

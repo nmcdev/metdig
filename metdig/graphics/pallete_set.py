@@ -230,8 +230,9 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     ax.set_ylim(levels[0], levels[-1])
     ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
 
-    ax.set_ylabel('Pressure (hPa)')
-    ax.set_xlabel('Longitude')
+    # ax.set_ylabel('Pressure (hPa)', fontsize=15)
+    ax.set_ylabel('气压 (hPa)', fontsize=15)
+    ax.set_xlabel('Longitude', fontsize=15)
 
     if forcast_info:
         ax.text(0.01, 1.005, forcast_info, transform=ax.transAxes, size=11, va='bottom',
@@ -289,7 +290,8 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
 
     if(logyaxis):
         ax.set_yscale('symlog')
-    ax.set_ylabel('Pressure （hPa）', fontsize=15)
+    # ax.set_ylabel('Pressure (hPa)', fontsize=15)
+    ax.set_ylabel('气压 （hPa）', fontsize=15)
     ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     if levels is not None:
