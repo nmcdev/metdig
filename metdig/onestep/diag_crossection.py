@@ -33,24 +33,24 @@ __all__ = [
     'wind_theta_fg',
     'wind_thetaes_mpvg',
     'wind_theta_w',
-    'time_wind_qcld_qsn_tmp',
-    'time_wind_qcld_qice_tmp',
-    'wind_w_theta_spfh',
-    'time_div_vort_spfh_uv',
-    'time_div_vort_rh_uv',
-    'time_wind_tmpadv_tmp',
-    'wind_tmpadv_tmp',
-    'wind_w_tmpadv_tmp',
-    'time_wind_vortadv_tmp',
-    'wind_vortadv_tmp',
     'wind_theta_mpv',
     'wind_theta_absv',
     'wind_theta_rh',
     'wind_theta_spfh',
+    'wind_theta_div',
+    'wind_w_theta_spfh',
+    'wind_tmpadv_tmp',
+    'wind_w_tmpadv_tmp',
+    'wind_vortadv_tmp',
     'wind_tmp_rh_vvel',
+    'time_wind_qcld_qsn_tmp',
+    'time_wind_qcld_qice_tmp',
+    'time_div_vort_spfh_uv',
+    'time_div_vort_rh_uv',
+    'time_wind_tmpadv_tmp',
+    'time_wind_vortadv_tmp',
     'time_rh_uv_theta',
     'time_rh_uv_tmp_vvel',
-    'wind_theta_div'
 ]
 
 @date_init('init_time')
@@ -697,25 +697,32 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_ti
                          is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='u', levels=levels, extent=mean_area)
-    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                          var_name='v', levels=levels, extent=mean_area)
-    qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                        var_name='qcld', levels=levels, extent=mean_area)
-    qsn = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                        var_name='qsn', levels=levels, extent=mean_area)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
-    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
-                             data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
 
-    if(mean_area == None):
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                           var_name='u', levels=levels, extent=extent)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                          var_name='v', levels=levels, extent=extent)
+    qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qcld', levels=levels, extent=extent)
+    qsn = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qsn', levels=levels, extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
+                             data_name=data_name, var_name='tmp', levels=levels, extent=extent)
+
+    if(mean_area is None):
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         qsn = qsn.interp(lon=points['lon'], lat=points['lat'])
         qcld = qcld.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
 
     _, pressure = xr.broadcast(v, v['level'])
     terrain = pressure - psfc.values
@@ -737,25 +744,32 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_t
                          is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='u', levels=levels, extent=mean_area)
-    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                          var_name='v', levels=levels, extent=mean_area)
-    qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                        var_name='qcld', levels=levels, extent=mean_area)
-    qice = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                        var_name='qice', levels=levels, extent=mean_area)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
-    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
-                             data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
 
-    if(mean_area == None):
+    u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                           var_name='u', levels=levels, extent=extent)
+    v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                          var_name='v', levels=levels, extent=extent)
+    qcld = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qcld', levels=levels, extent=extent)
+    qice = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
+                        var_name='qice', levels=levels, extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
+    tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
+                             data_name=data_name, var_name='tmp', levels=levels, extent=extent)
+
+    if(mean_area is None):
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         qice = qice.interp(lon=points['lon'], lat=points['lat'])
         qcld = qcld.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
 
     _, pressure = xr.broadcast(v, v['level'])
     terrain = pressure - psfc.values
@@ -853,25 +867,34 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                           levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                          points={'lon': [113], 'lat': [22]},
+                          points={'lon': [113], 'lat': [22]},mean_area=None,
                           is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
-    vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
-    spfh = read_spfh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc')
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
+
+    div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
+    vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
+    spfh = read_spfh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+
+    if (mean_area is None):
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        div = div.interp(lon=points['lon'], lat=points['lat'])
+        vort = vort.interp(lon=points['lon'], lat=points['lat'])
+        spfh = spfh.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
 
     if is_return_data:
         dataret = {'spfh': spfh, 'u': u, 'v': v, 'tmp': div, 'vort': vort}
         ret.update({'data': dataret})
 
-    u = u.interp(lon=points['lon'], lat=points['lat'])
-    v = v.interp(lon=points['lon'], lat=points['lat'])
-    div = div.interp(lon=points['lon'], lat=points['lat'])
-    vort = vort.interp(lon=points['lon'], lat=points['lat'])
-    spfh = spfh.interp(lon=points['lon'], lat=points['lat'])
-    psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     _, pressure = xr.broadcast(v, v['level'])
     terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
@@ -885,21 +908,30 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                         levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                        points={'lon': [90], 'lat': [30]},
+                        points={'lon': [90], 'lat': [30]},mean_area=None,
                         is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
-    vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc')
-    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels)
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
 
-    u = u.interp(lon=points['lon'], lat=points['lat'])
-    v = v.interp(lon=points['lon'], lat=points['lat'])
-    div = div.interp(lon=points['lon'], lat=points['lat'])
-    vort = vort.interp(lon=points['lon'], lat=points['lat'])
-    rh = rh.interp(lon=points['lon'], lat=points['lat'])
-    psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+    vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+    rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
+
+    if (mean_area is None):
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        div = div.interp(lon=points['lon'], lat=points['lat'])
+        vort = vort.interp(lon=points['lon'], lat=points['lat'])
+        rh = rh.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
+
     _, pressure = xr.broadcast(v, v['level'])
     terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
@@ -922,21 +954,27 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
                          is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='u', levels=levels, extent=mean_area)
+                           var_name='u', levels=levels, extent=extent)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                           var_name='v', levels=levels, extent=mean_area)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
+                           var_name='v', levels=levels, extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
-                             data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
+                             data_name=data_name, var_name='tmp', levels=levels, extent=extent)
     tmpadv = mdgcal.var_advect(tmp, u, v)
 
-    if(mean_area == None):
+    if(mean_area is None):
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         tmpadv = tmpadv.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
 
     _, pressure = xr.broadcast(v, v['level'])
     terrain = pressure - psfc.values
@@ -1091,18 +1129,24 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
                           is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=mean_area)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=mean_area)
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
+    vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
+    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
-                             data_name=data_name, var_name='tmp', levels=levels, extent=mean_area)
+                             data_name=data_name, var_name='tmp', levels=levels, extent=extent)
     vortadv = mdgcal.var_advect(vort, u, v)
 
-    if(mean_area == None):
+    if(mean_area is None):
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         vortadv = vortadv.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
 
     _, pressure = xr.broadcast(v, v['level'])
     terrain = pressure - psfc.values
@@ -1560,26 +1604,32 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
 @date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                      levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                     points={'lon': [116.3833], 'lat': [39.9]},
+                     points={'lon': [116.3833], 'lat': [39.9]},mean_area=None,
                      is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
-    extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=extent)
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=extent)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=extent)
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
 
+    if (mean_area is None):
+        tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
+        u = u.interp(lon=points['lon'], lat=points['lat'])
+        v = v.interp(lon=points['lon'], lat=points['lat'])
+        rh = rh.interp(lon=points['lon'], lat=points['lat'])
+        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+    else:
+        pass
+
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp}
         ret.update({'data': dataret})
-
-    tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
-    u = u.interp(lon=points['lon'], lat=points['lat'])
-    v = v.interp(lon=points['lon'], lat=points['lat'])
-    rh = rh.interp(lon=points['lon'], lat=points['lat'])
-    psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
 
     td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
     pressure = mdgstda.gridstda_full_like_by_levels(rh, rh['level'].values)
@@ -1603,7 +1653,10 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
                    points={'lon': [115], 'lat': [22.3]},mean_area=None,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
-    extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    if (mean_area is None):
+        extent=[min(points['lon'])-1,max(points['lon'])+1,min(points['lat'])-1,min(points['lat'])+1]
+    else:
+        extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=extent)
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=extent)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=extent)
@@ -1612,14 +1665,18 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
     vvel = read_vvel3ds(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
     psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
 
-    if (mean_area==None):
+    if (mean_area is None):
+        # 区域插值
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         rh = rh.interp(lon=points['lon'], lat=points['lat'])
         vvel = vvel.interp(lon=points['lon'], lat=points['lat'])
         psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
-
+    else:
+        # 区域平均
+        pass
+    
     _, pressure = xr.broadcast(v, v['level'])
     terrain= mask_terrian(psfc, pressure,get_terrain=True)
     terrain.attrs['var_units'] = ''
