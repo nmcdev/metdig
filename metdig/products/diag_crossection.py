@@ -625,7 +625,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
 
 
 def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
-                              tmpadv_contourf_kwargs={'levels': np.arange(-15, 15, 1)}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
+                              tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},
                               **pallete_kwargs):
 
     init_time = pd.to_datetime(tmpadv['time'].values[0]).replace(tzinfo=None).to_pydatetime()

@@ -351,7 +351,7 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
 @kwargs_wrapper
 def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
-                    levels=np.arange(-10, 10.1, 0.5), cmap='ncl/BlueRed', extend='both',if_mask=True,
+                    levels=np.arange(-10, 10.1, 1), cmap='ncl/hotcold_18lev', extend='both',if_mask=True,
                     transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
@@ -592,7 +592,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        add_colorbar=True,extend='both',
-                       levels=np.arange(-10, 10, 0.5), cmap='ncl/NCV_jaisnd',colorbar_kwargs={},
+                       levels=np.arange(-10, 10, 0.5), cmap='ncl/ViBlGrWhYeOrRe',colorbar_kwargs={},
                        **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
