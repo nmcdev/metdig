@@ -11,7 +11,7 @@ def scatter_2d(ax, stda, xdim='lon', ydim='lat',
                   add_colorbar=True, cb_pos='bottom', cb_ticks=None, cb_label=None,
                   levels=np.arange(-40,40), cmap='ncl/BlueYellowRed', extend='both',isLinear=False,
                   transform=ccrs.PlateCarree(), alpha=1,
-                  colorbar_kwargs={},s=1, **kwargs):
+                  colorbar_kwargs={},s=1,size_changable=True, **kwargs):
     """[graphics层绘制scatter平面图通用方法]
 
     Args:
@@ -30,6 +30,7 @@ def scatter_2d(ax, stda, xdim='lon', ydim='lat',
         transform ([type], optional): [stda的投影类型，仅在xdim='lon' ydim='lat'时候生效]. Defaults to ccrs.PlateCarree().
         alpha (float, optional): [description]. Defaults to 1.
         s=1 (float, optional): [散点大小]. Defaults to 1.
+        size_changable ([bool],optional):[散点大小是否与数值随动]，Defaults to True.
     Returns:
         [type]: [绘图对象]
     """
@@ -39,9 +40,12 @@ def scatter_2d(ax, stda, xdim='lon', ydim='lat',
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels,isLinear=isLinear)
     if transform is None or (xdim != 'lon' and ydim != 'lat'):
+        if not size_changable:
+            s=1
         img = ax.scatter(x, y, z*s, norm=norm, cmap=cmap,c=z, alpha=alpha, **kwargs)
-
     else:
+        if not size_changable:
+            s=1
         img = ax.scatter(x, y, z*s, norm=norm, cmap=cmap,c=z, transform=transform, alpha=alpha, **kwargs)
 
 
