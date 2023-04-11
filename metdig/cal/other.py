@@ -16,8 +16,16 @@ __all__ = [
     'gaussian_filter',
     'wind_components',
     'wind_direction',
-    'wind_speed'
-]
+    'wind_speed',
+    'pressure_to_height_std',
+    'height_to_geopotential',
+    'geopotential_to_height',
+    'dry_lapse',
+    'air_density',
+    'add_pres_to_hgt',
+    'add_hgt_to_pres'
+    ]
+    
 
 
 # def mean_pressure_weighted(pres,stda,hgt=None,bottom=None,depth=None):

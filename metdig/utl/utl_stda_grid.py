@@ -126,6 +126,8 @@ def xrda_to_gridstda(xrda,
     stda_data.attrs = stda_attrs
     stda_data=stda_data.sortby('lon')
     stda_data=stda_data.sortby('lat')
+    # stda_data= stda_data.sel(lat=stda_data['lat'][::-1])
+    # stda_data= stda_data.sel(lon=stda_data['lon'][::-1])
     return stda_data
 
 

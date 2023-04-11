@@ -1,26 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import os
-import datetime
 import numpy as np
 import pandas as pd
-
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import matplotlib.lines as lines
-from matplotlib.ticker import MultipleLocator
-
-from pint import unit
-
 import metdig.graphics.pallete_set as pallete_set
 from metdig.graphics.lib.utility import save
-
 from metdig.graphics.draw_compose import skewt_compose
 from metdig.graphics.boxplot_method import boxplot_1D
-
-import metdig.cal as mdgcal
 import metpy.calc as mpcalc
-from metpy.units import units
 
 def draw_rain_ens_boxplot(rain,rain_boxplot_kwargs={}, **pallete_kwargs):
     """[画集合预报降水箱线图]
@@ -95,7 +83,9 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp=None, **pallete_kwargs)
     data_name = t2m.stda.member[0]
     title_left = '{}预报 {} [{},{}]'.format(data_name.upper(), t2m['id'].values[0], t2m['lon'].values[0], t2m['lat'].values[0])
     title_right = '起报时间：{0:%Y}年{0:%m}月{0:%d}日{0:%H}时'.format(init_time)
-    png_name = '{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(t2m['id'].values[0], init_time)
+    png_name=pallete_kwargs.pop('png_name', None)
+    if(png_name is None):
+        png_name = '{0}_风_温度_相对湿度_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(t2m['id'].values[0], init_time)
 
     t2m_ylabel = '2米温度($^\circ$C) \n 10米风(m s$^-$$^1$) \n 逐{}小时降水(mm)'.format(hourstep)
     if(wsp is None):
@@ -123,7 +113,9 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp=None, **pallete_kwargs)
     if (wsp is not None):
         wsp_x = wsp.stda.fcst_time.values
         wsp_y = wsp.stda.values
-        curve_wsp = ax_t2m.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label='10米风')
+        if('var_name' in wsp.attrs.keys()):
+            label_wsp=wsp.attrs['var_name']
+        curve_wsp = ax_t2m.plot(wsp_x, wsp_y, c='#282C5A', linewidth=3, label=label_wsp)
 
     # rain
     rain_x = rain.stda.fcst_time.values

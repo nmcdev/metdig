@@ -76,10 +76,10 @@ def veri_tlogp(data_source='cmadaas',obs_data_source='cassandra',data_name='ecmw
     if ret:
         return ret
         
-if __name__=='__main__':
-    import matplotlib.pyplot as plt
-    veri_tlogp(is_return_data=True,is_draw=False,id_selected=None)
-    plt.show()
+# if __name__=='__main__':
+#     import matplotlib.pyplot as plt
+#     veri_tlogp(is_return_data=True,is_draw=False,id_selected=None)
+#     plt.show()
 
 @date_init('init_time')
 def veri_tmp(data_source='cassandra',ana_data_source='cmadaas',
@@ -107,11 +107,11 @@ def veri_tmp(data_source='cassandra',ana_data_source='cmadaas',
     if ret:
         return ret
 
-if __name__=='__main__':
-    import matplotlib.pyplot as plt
-    veri_tmp(data_source='cmadaas',data_name='ecmwf',
-        ana_data_source='cmadaas',ana_data_name='cma_gfs',area='西南涡',
-        init_time=datetime.datetime(2022,1,23,20),fhour=72,output_dir=r'L:\Temp/')
+# if __name__=='__main__':
+#     import matplotlib.pyplot as plt
+#     veri_tmp(data_source='cmadaas',data_name='ecmwf',
+#         ana_data_source='cmadaas',ana_data_name='cma_gfs',area='西南涡',
+#         init_time=datetime.datetime(2022,1,23,20),fhour=72,output_dir=r'L:\Temp/')
         
 
 @date_init('anl_time')
@@ -282,8 +282,8 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     # anl_time=datetime.datetime(2020,7,16,8)
     # output_dir = './test_output'
-    veri_gust10m(init_time='2021120908',fhour=24,data_source='cassandra',
-                data_name='ecmwf',data_name_obs='sfc_chn_hor_auto',area=[100,110,30,40])
+    veri_gust10m(init_time='2023032108',fhour=24,data_source='cmadaas',
+                data_name='ecmwf',data_name_obs='sfc_chn_hor',area=[100,110,30,40])
     plt.show() 
 
 @date_init('init_time')

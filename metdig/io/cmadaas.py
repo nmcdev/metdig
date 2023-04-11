@@ -356,7 +356,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
     if isinstance(data_name, list) is True:
         data_name = str(data_name)
     return mdgstda.numpy_to_stastda(
-        data[cmadaas_var_name].values, [data_name], levels, data['Datetime'].values, 0, data.index,  data['lat'].values, data['lon'].values,
+        data[cmadaas_var_name].values, [data_name], levels, data['Datetime'].values, 0, data.iloc[:,0],  data['lat'].values, data['lon'].values,
         np_input_units=cmadass_units, var_name=var_name, other_input={},
         data_source='cmadaas', data_name=data_name
     )

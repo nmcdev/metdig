@@ -310,7 +310,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name], levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values,
+        data[var_name].values, [data_name], levels, data['time'].values, 0, data.iloc[:,0], data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )
@@ -466,7 +466,7 @@ def get_tlogp(obs_time=None, data_name=None, var_name=None, id_selected=None,
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name], levels, data['time'].values, 0, data.index, data['lat'].values, data['lon'].values,
+        data[var_name].values, [data_name], levels, data['time'].values, 0, data.iloc[:,0], data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )

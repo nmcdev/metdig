@@ -144,9 +144,9 @@ def hgt_spaghetti_contour(ax, stda,  xdim='lon', ydim='lat',
 @kwargs_wrapper
 def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
                 add_clabel=True,
-                levels=np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 584, 8), np.arange(580, 604, 4))), np.arange(604, 2000, 8)),
+                levels=np.append(np.append(np.arange(0, 480, 4), np.append(np.arange(480, 580, 4), np.arange(580, 604, 4))), np.arange(604, 2000, 8)),
                 colors='black',
-                transform=ccrs.PlateCarree(), linewidths=2,
+                transform=ccrs.PlateCarree(), linewidths=1.7,
                 **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)

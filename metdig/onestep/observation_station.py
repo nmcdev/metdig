@@ -40,10 +40,10 @@ def blowup_sounding(data_source='cassandra',data_name='ecmwf',id_selected=54511,
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    blowup_sounding()
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     blowup_sounding()
+#     plt.show()
 
 
 @date_init('obs_times', method=date_init.series_1_36_set)
@@ -70,3 +70,9 @@ def obs_uv_tmp_rh_rain(data_source='cassandra', data_name='sfc_chn_hor', obs_tim
 
     if ret:
         return ret
+    
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    obs_uv_tmp_rh_rain()
+    plt.show()
+

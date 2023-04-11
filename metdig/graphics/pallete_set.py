@@ -374,6 +374,7 @@ def time_series_left_right_bottom_v2(figsize=(16, 4.5), if_add_right=True,if_add
     plt.title(title_left, loc='left', fontsize=21)
     plt.title(title_right, loc='right', fontsize=15)
     ax_left.grid(axis='x', which='minor', ls='--')
+    ax_left.grid(axis='both', which='major')
     ax_left.tick_params(length=10)
     ax_left.set_ylabel(label_leftax)
     ax_left.xaxis.set_major_formatter(mpl.dates.DateFormatter('%m-%d %H'))  # 设置格式

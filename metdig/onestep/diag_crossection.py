@@ -620,7 +620,7 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 @date_init('init_time')
 def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                  st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                  st_point=[20, 120.0], ed_point=[50, 130.0],h_pos=[0.125, 0.665, 0.25, 0.2],
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
