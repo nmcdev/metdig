@@ -6,10 +6,12 @@
 
 import numpy as np
 import xarray as xr
+from numba import njit
 
 import metpy.calc as mpcalc
 from metpy.units import units
 
+from metdig.cal.other import distance
 from metdig.cal.lib import utility as utl
 import metdig.utl.utl_stda_grid as utl_stda_grid
 
@@ -23,6 +25,7 @@ __all__ = [
     'absolute_vorticity',
     'potential_vorticity_baroclinic',
     'divergence',
+    'shear_vorticity',
 
 ]
 
@@ -299,3 +302,138 @@ def divergence(u, v):
     div = utl.quantity_to_stda_byreference('div', div_p, u)
 
     return div
+
+
+def shear_vorticity(u, v, fill_value=np.nan):
+    '''
+
+    [Calculate relative vorticity and its components shear and curvature on a regular lat-lon-grid.]
+
+    Arguments:
+        u {[stda]} -- [x component of the vector]
+        v {[stda]} -- [y component of the vector]
+
+    Returns:
+        [stda] -- [vort: atmosphere_upward_relative_vorticity]
+        [stda] -- [shear_vort: shear_component_of_atmosphere_upward_relative_vorticity]
+        [stda] -- [curve_vort: curvature_component_atmosphere_upward_relative_vorticity]
+    '''
+
+    lons = u['lon'].values
+    lats = u['lat'].values
+    
+    vort = xr.full_like(u, fill_value=fill_value, dtype=np.float64)
+    shear_vort = xr.full_like(u, fill_value=fill_value, dtype=np.float64)
+    curve_vort = xr.full_like(u, fill_value=fill_value, dtype=np.float64)
+
+    for imember in u.member.values:
+        for ilevel in u.level.values:
+            for idtime in u.dtime.values:
+                for itime in u.time.values:
+                    _u_1d = u.sel(member=imember, level=ilevel, dtime=idtime, time=itime)
+                    _v_1d = v.sel(member=imember, level=ilevel, dtime=idtime, time=itime)
+                    _u_1d_p = utl.stda_to_quantity(_u_1d)  # m/s
+                    _v_1d_p = utl.stda_to_quantity(_v_1d)  # m/s
+                    _vor, _shear, _curve = __vorticity(np.asarray(_u_1d_p), np.asarray(_v_1d_p), lons, lats, fill_value)
+                    vort.loc[dict(member=imember, level=ilevel, dtime=idtime, time=itime)] = _vor
+                    shear_vort.loc[dict(member=imember, level=ilevel, dtime=idtime, time=itime)] = _shear
+                    curve_vort.loc[dict(member=imember, level=ilevel, dtime=idtime, time=itime)] = _curve
+    
+    vort = utl.quantity_to_stda_byreference('vort', vort.values * units('1/s'), u)
+    shear_vort = utl.quantity_to_stda_byreference('shear_vort', shear_vort.values * units('1/s'), u)
+    curve_vort = utl.quantity_to_stda_byreference('curve_vort', curve_vort.values * units('1/s'), u)
+
+    return vort, shear_vort, curve_vort
+
+@njit()
+def __vorticity(u, v, lon, lat, fill_value):
+    vor = np.zeros_like(u, dtype=np.float64)
+    shear = np.zeros_like(u, dtype=np.float64)
+    curve = np.zeros_like(u, dtype=np.float64)
+    v1 = np.zeros(2)
+    v2 = np.zeros(2)
+
+    # loop over all grid points
+    for y in range(1, u.shape[0]-1):
+        for x in range(1, u.shape[1]-1):
+            # any missing values?
+            if np.isnan(u[y,x]) or np.isnan(u[y,x+1]) or np.isnan(u[y,x-1]) \
+                or np.isnan(u[y+1,x]) or np.isnan(u[y-1,x]) \
+                or np.isnan(v[y,x]) or np.isnan(v[y,x+1]) or np.isnan(v[y,x-1]) \
+                or np.isnan(v[y+1,x]) or np.isnan(v[y-1,x]):
+                vor[y,x] = np.NaN
+                shear[y,x] = np.NaN
+                curve[y,x] = np.NaN
+            
+            # distance on globe
+            dx = distance(lat[y], lat[y], lon[x+1], lon[x-1], input_in_radian=False)
+            dy = distance(lat[y-1], lat[y+1], lon[x], lon[x], input_in_radian=False)
+            vor[y,x] = (v[y,x+1]-v[y,x-1]) / dx - (u[y+1,x]-u[y-1,x]) / dy
+
+            # calculate shear-vorticity
+            # calculate the wind direction
+            wdir = np.arctan2(u[y,x], v[y,x])
+            wspd = np.sqrt(u[y,x]**2 + v[y,x]**2)
+            sin_wdir = np.sin(wdir)
+            cos_wdir = np.cos(wdir)
+
+            # calculate dot-product for four points around the reference point to the reference vector.
+            # Use the wind component parallel to the reference vector from all four points and calculate
+            # the vorticity based on this component, which results in the shear vorticity.
+            #
+            # This approach follows Berry et al. 2006.
+            # Points:
+            #    c
+            #  b r a
+            #    d
+
+            # point a
+            v1[0] = u[y,x]
+            v1[1] = v[y,x]
+            v2[0] = u[y,x+1]
+            v2[1] = v[y,x+1]
+            dp = np.dot(v1, v2) / wspd
+            v_a = dp * cos_wdir
+
+            # point b
+            v2[0] = u[y,x-1]
+            v2[1] = v[y,x-1]
+            dp = np.dot(v1, v2) / wspd
+            v_b = dp * cos_wdir
+
+            # point c
+            v2[0] = u[y+1,x]
+            v2[1] = v[y+1,x]
+            dp = np.dot(v1, v2) / wspd
+            u_c = dp * sin_wdir
+
+            # point d 
+            v2[0] = u[y-1,x]
+            v2[1] = v[y-1,x]
+            dp = np.dot(v1, v2) / wspd
+            u_d = dp * sin_wdir
+
+            # calculate the shear vorticity
+            shear[y,x] = (v_a-v_b) / dx - (u_c-u_d) / dy
+    
+    # fill values at the borders
+    vor[0,:] = np.NaN
+    vor[-1,:] = np.NaN
+    vor[:,0] = np.NaN
+    vor[:,-1] = np.NaN
+    
+    shear[0,:] = np.NaN
+    shear[-1,:] = np.NaN
+    shear[:,0] = np.NaN
+    shear[:,-1] = np.NaN
+    
+    # calculate curvature-vorticity 
+    curve = np.where(np.logical_or(np.isnan(vor), np.isnan(shear)), np.NaN, vor-shear)
+
+    # replace fill values if something different from NaN is used
+    if not np.isnan(fill_value):
+        vor = np.where(np.isnan(vor), fill_value, vor)
+        shear = np.where(np.isnan(shear), fill_value, shear)
+        curve = np.where(np.isnan(curve), fill_value, curve)
+    return vor, shear, curve
+

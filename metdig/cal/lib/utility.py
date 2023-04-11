@@ -75,7 +75,7 @@ def quantity_to_stda_byreference(var_name, data, reference_variables,
             stda_data[member[0]] = data.magnitude #np.array(data)[:]
         else:
             for idxm,im in enumerate(member):
-                stda_data[im] = np.array(data)[:,idxm].squeeze()
+                stda_data[im] = np.array(data)[...,idxm].squeeze()
         return stda_data
 
     else:

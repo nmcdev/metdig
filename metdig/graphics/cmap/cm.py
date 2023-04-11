@@ -158,6 +158,7 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
                 colors = plt.get_cmap(name)(range(256))
             else:
                 colors = np.array([name]) # 单个颜色
+                isLinear = False
     else:
         colors = np.array(name)
 

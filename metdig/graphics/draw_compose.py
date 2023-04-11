@@ -57,11 +57,11 @@ class cross_lonpres_compose(object):
 
 @kwargs_wrapper
 class cross_timepres_compose(object):
-    def __init__(self, levels, times, title='', description='', output_dir=None, png_name='', **kwargs):
+    def __init__(self, levels, times, title='', description='', output_dir=None, png_name='',is_overwrite=False, **kwargs):
 
         self.png_name = png_name
         self.output_dir = output_dir
-        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+        if((glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []) and (not is_overwrite)): 
             raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
@@ -76,11 +76,11 @@ class cross_timepres_compose(object):
 
 @kwargs_wrapper
 class cross_timeheight_compose(object):
-    def __init__(self, times, title='', description='', output_dir=None, png_name='',**kwargs):
+    def __init__(self, times, title='', description='', output_dir=None, png_name='',is_overwrite=False,**kwargs):
 
         self.png_name = png_name
         self.output_dir = output_dir
-        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+        if((glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []) and (not is_overwrite)): 
             raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
@@ -98,9 +98,8 @@ class skewt_compose(object):
 
         self.png_name = png_name
         self.output_dir = output_dir
-        if not is_overwrite:
-            if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
-                raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))      
+        if((glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []) and (not is_overwrite)): 
+            raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))      
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
@@ -132,11 +131,11 @@ class time_series_left_right_bottom_compose(object):
 
 @kwargs_wrapper
 class twod_compose(object):
-    def __init__(self, title='', description='', output_dir=None, png_name='', **kwargs):
+    def __init__(self, title='', description='', output_dir=None, png_name='',is_overwrite=False,**kwargs):
 
         self.png_name = png_name
         self.output_dir = output_dir
-        if(glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []): 
+        if((glob.glob(os.path.join(str(self.output_dir), self.png_name)) != []) and (not is_overwrite)): 
             raise Exception('路径下已经有该图'+os.path.join(self.output_dir, self.png_name))
         self.is_return_imgbuf = kwargs.pop('is_return_imgbuf', False)
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)

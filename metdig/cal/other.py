@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from numba import jit
 
 from scipy import ndimage
 
@@ -323,3 +324,38 @@ def wind_speed(u, v):
     wsp = utl.quantity_to_stda_byreference('wsp', wsp_p, u)
 
     return wsp
+
+
+
+@jit(nopython=True)
+def distance(lat1, lat2, lon1, lon2, radius=6371229.0, input_in_radian=True):
+    """
+    distance between two points on a globe.
+    Parameters
+    ----------
+    lat1:
+            latitude of first point in radian or degree
+    lat2:
+            latitude of second point in radian or degree
+    lon1:
+            longitude of first point in radian or degree
+    lon2:
+            logitude of second point in radian or degree
+    radius:
+            radius of the globe in m.
+    input_in_radian: bool
+            if True, the input is assumed to be in radian, otherwise in degree
+    Returns
+    -------
+    distance in m
+    """
+    if not input_in_radian:
+        lat1 = np.deg2rad(lat1)
+        lat2 = np.deg2rad(lat2)
+        lon1 = np.deg2rad(lon1)
+        lon2 = np.deg2rad(lon2)
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = np.sin(dlat / 2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2)**2
+    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
+    return radius * c
