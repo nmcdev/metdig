@@ -55,8 +55,9 @@ cma_meso_3km,td2m,surface,kelvin,DPT,露点温度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAF
 cma_meso_3km,rh2m,surface,percent,RHU,相对湿度,103,2,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
 cma_meso_3km,prmsl,surface,Pa,SSP,海平面气压,101,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
 cma_meso_3km,tcwv,surface,mm,TIWV,总柱状比湿（整层水汽含量）,10,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
-cma_meso_3km,gust10m,surface,m/s,WSGU,过去3小时10米阵风,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
+cma_meso_3km,gust10m,surface,m/s,WSGU,过去1小时10米阵风,103,10,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
 cma_meso_3km,cref,surface,,RACR,雷达组合反射率,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
+cma_meso_3km,cape,surface,J/kg,CAPE,对流有效位能,1,0,NAFP_GRAPES_MESO_FOR_3KM/NAFP_GRAPES_MESO_ANA_3KM,model
 #,,,,,,,,,
 cma_rafs_3km,u10m,surface,m/s,WIU,东西风风速,103,10,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM,model
 cma_rafs_3km,v10m,surface,m/s,WIV,南北风风速,103,10,NAFP_FOR_GRAPES_RAFS_3KM/NAFP_ANA_GRAPES_RAFS_3KM,model
