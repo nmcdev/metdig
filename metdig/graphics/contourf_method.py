@@ -194,6 +194,22 @@ def pv_contourf(ax, stda,  xdim='lon', ydim='lat',
     return img
 
 @kwargs_wrapper
+def mpv_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, extend='both',
+                    levels=np.arange(-10, 10.1, 0.5), cmap='ncl/ViBlGrWhYeOrRe',
+                    transform=ccrs.PlateCarree(), alpha=0.8, colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)   
+    z = z * 1e6  # 1e-6*K*m**2/(s*kg)
+
+    cmap = cm_collected.get_cmap(cmap)
+    img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='湿位涡 (10$^{-6}$ K*m**2/(s*kg))',kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
 def spfh_contourf(ax, stda,  xdim='lon', ydim='lat',
                     add_colorbar=True, 
                     levels=np.arange(8,21,4), cmap=['#C8EBFA','#94D8F6','#60C5F1','#007AAE','#005174'], extend='max',

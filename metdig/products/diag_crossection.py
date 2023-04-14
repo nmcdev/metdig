@@ -217,15 +217,6 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     png_name = '{3}_云水比_雪水比_水平风_温度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
-    cenlon = u.lon.mean()
-    cenlat = u.lat.mean()
-    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    qcld = qcld.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    qsn = qsn.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     qcld_contourf(obj.ax, qcld, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right top'}, transform=None, kwargs=qcld_contour_kwargs)
     qsn_contourf(obj.ax, qsn, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
@@ -254,15 +245,6 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
         init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
     png_name = '{3}_云水比_冰水比_水平风_温度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
-
-    cenlon = u.lon.mean()
-    cenlat = u.lat.mean()
-    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    qcld = qcld.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    qice = qice.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     qcld_contourf(obj.ax, qcld, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right top'}, transform=None, kwargs=qcld_contour_kwargs)
@@ -376,9 +358,9 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
 
-    title = '[{}]饱和相当位温, 准地转湿位涡, 沿剖面风'.format(data_name)
+    title = '[{}]饱和相当位温, 准地转湿位涡, 沿剖面准地转风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_饱和相当位温_准地转湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_饱和相当位温_准地转湿位涡_沿剖面准地转风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
@@ -640,14 +622,6 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     png_name = '{3}_温度_温度平流_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
-    cenlon = u.lon.mean()
-    cenlat = u.lat.mean()
-    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    tmpadv = tmpadv.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     tmpadv_contourf(obj.ax, tmpadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=tmpadv_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -678,14 +652,6 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     png_name = '{3}_温度_垂直涡度平流_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
         init_time, fhours[0], fhours[-1], data_name)
 
-    cenlon = u.lon.mean()
-    cenlat = u.lat.mean()
-    u = u.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    v = v.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    vortadv = vortadv.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    tmp = tmp.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-    terrain = terrain.mean(dim=('lon', 'lat')).expand_dims({'lon': [cenlon], 'lat': [cenlat]})
-
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     vortadv_contourf(obj.ax, vortadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, if_mask=False,kwargs=vortadv_contourf_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
@@ -696,6 +662,57 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc=3, title=None, framealpha=1)
     leg.set_zorder(100)
+    return obj.save()
+
+def draw_time_wind_theta_mpv(theta, mpv, u, v, terrain, mean_area=None,
+                             theta_contour_kwargs={}, mpv_contour_kwargs={}, uv_barbs_kwargs={},
+                             **pallete_kwargs):
+
+    init_time = pd.to_datetime(theta['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhours = theta['dtime'].values
+    times = theta.stda.fcst_time
+    # points = {'lon': theta['lon'].values, 'lat': theta['lat'].values}
+    data_name = str(theta['member'].values[0]).upper()
+    levels = theta['level'].values
+
+    title = '相当位温, 湿位涡, 水平风'
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}'.format(
+        init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
+    png_name = '{3}_相当位温_湿位涡_水平风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
+        init_time, fhours[0], fhours[-1], data_name)
+
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    mpv_contourf(obj.ax, mpv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=mpv_contour_kwargs)
+    barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_theta_contour(obj.ax, theta, xdim='fcst_time', ydim='level', kwargs=theta_contour_kwargs)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
+    return obj.save()
+
+
+def draw_time_wind_thetaes_mpvg(thetaes, mpvg, u, v, terrain, mean_area=None,
+                             theta_contour_kwargs={}, mpv_contour_kwargs={}, uv_barbs_kwargs={},
+                             **pallete_kwargs):
+
+    init_time = pd.to_datetime(thetaes['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhours = thetaes['dtime'].values
+    times = thetaes.stda.fcst_time
+    # points = {'lon': thetaes['lon'].values, 'lat': thetaes['lat'].values}
+    data_name = str(thetaes['member'].values[0]).upper()
+    levels = thetaes['level'].values
+
+    title = '饱和相当位温, 准地转湿位涡, 准地转风'
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n平均区域:{2}'.format(
+        init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
+    png_name = '{3}_饱和相当位温_准地转湿位涡_准地转风_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
+        init_time, fhours[0], fhours[-1], data_name)
+
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    mpv_contourf(obj.ax, mpvg, xdim='fcst_time', ydim='level', levels=np.arange(-20, 21, 1), colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=mpv_contour_kwargs)
+    barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_theta_contour(obj.ax, thetaes, xdim='fcst_time', ydim='level', kwargs=theta_contour_kwargs)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     return obj.save()
 
 
