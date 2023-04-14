@@ -577,6 +577,46 @@ class __STDADataArrayAccessor(object):
             return ret.values.squeeze()
         return ret.squeeze()
 
+    def mean_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True):
+        """[区域平均，返回stda]
+        
+        """
+        if len(self._xr['lon']) <= 1 and len(self._xr['lat']) <= 1:
+            return self._xr
+        
+        data = self._xr
+
+        if extent is not None:
+            # 取区域平均
+            if data['lon'].values[0] < data['lon'].values[-1]:
+                lon_slc = slice(extent[0], extent[1])
+            else:
+                lon_slc = slice(extent[1], extent[0])
+            if data['lat'].values[0] < data['lat'].values[-1]:
+                lat_slc = slice(extent[2], extent[3])
+            else:
+                lat_slc = slice(extent[3], extent[2])
+            data = data.sel(lon=lon_slc, lat=lat_slc)
+
+            if set_point_lon is None:
+                set_point_lon = (extent[0] + extent[1]) / 2
+            if set_point_lat is None:
+                set_point_lat = (extent[2] + extent[3]) / 2
+        else:
+            if set_point_lon is None:
+                set_point_lon = (data['lon'].values[0] + data['lon'].values[-1]) / 2
+            if set_point_lat is None:
+                set_point_lat = (data['lat'].values[0] + data['lat'].values[-1]) / 2
+            
+
+        data = data.mean(dim=['lon', 'lat'], skipna=skipna)
+        data.attrs = self._xr.attrs
+
+        data = data.expand_dims({'lat': [set_point_lon]}, axis=-1)
+        data = data.expand_dims({'lon': [set_point_lat]}, axis=-1)
+        
+        return data
+
     def interp_tosta(self, lon, lat, id=None, other={}, method='linear'):
         """[插值到站点上，返回stda站点数据]
 

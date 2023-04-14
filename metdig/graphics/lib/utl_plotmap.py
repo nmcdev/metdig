@@ -134,8 +134,7 @@ def shp2clip_by_region_name(originfig, ax, region_name_list):
 
 def time_ticks_formatter(ax,times,if_minor=False):
     times=pd.to_datetime(times)
-    hours_total=np.abs((times[-1]-times[0]).total_seconds()/3600.)
-    # print(hours_total)
+    hours_total=np.abs((times[len(times)-1]-times[0]).total_seconds()/3600.)
     if(hours_total > 84):
         ax.xaxis.set_major_locator(mpl.dates.HourLocator(byhour=(8, 20)))  # 单位是小时
         if if_minor:

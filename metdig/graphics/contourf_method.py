@@ -592,7 +592,7 @@ def cross_spfh_contourf(ax, stda, xdim='lon', ydim='level',
 @kwargs_wrapper
 def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
                        add_colorbar=True,extend='both',
-                       levels=np.arange(-10, 10, 0.5), cmap='ncl/ViBlGrWhYeOrRe',colorbar_kwargs={},
+                       levels=np.arange(-10, 10.1, 0.5), cmap='ncl/ViBlGrWhYeOrRe',colorbar_kwargs={},
                        **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)

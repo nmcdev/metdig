@@ -754,3 +754,30 @@ def draw_time_rh_uv_tmp_vvel(rh, u, v, tmp, vvel, terrain,  rh_contourf_kwargs={
     if terrain.max() > 0:
         cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
     return obj.save()
+
+
+def draw_time_rh_uv_tmp_vvel_rain(rh, u, v, tmp, vvel, rain, terrain,  rh_contourf_kwargs={}, uv_barbs_kwargs={}, tmp_contour_kwargs={}, vvel_contour_kwargs={},
+            terrain_contourf_kwargs={}, rain_kwargs={},
+            **pallete_kwargs):
+    init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhours = rh['dtime'].values
+    times = rh.stda.fcst_time
+    points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
+    data_name = str(rh['member'].values[0]).upper()
+    levels = rh['level'].values
+
+    title = '温度 相对湿度 水平风 气压垂直速度'
+    forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n[{1}]模式时间剖面\n预报点:{2}'.format(
+        init_time, data_name, '('+','.join([str(u.lon.min().values), str(u.lon.max().values), str(u.lat.min().values), str(u.lat.max().values)])+')')
+    png_name = '{3}_温度_相对湿度_水平风_气压垂直速度_时间剖面产品_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:03d}_至_{2:03d}.png'.format(
+        init_time, fhours[0], fhours[-1], data_name)
+
+    obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 101, 0.5), extend='max', kwargs=rh_contourf_kwargs)
+    cross_vvel_contour(obj.ax, vvel, xdim='fcst_time', ydim='level',linewidths=2,kwargs=vvel_contour_kwargs)
+    barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',  kwargs=tmp_contour_kwargs)
+    if terrain.max() > 0:
+        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
+    cross_section_rain(obj.ax, rain, times, kwargs=rain_kwargs)
+    return obj.save()
