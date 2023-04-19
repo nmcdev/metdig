@@ -8,7 +8,7 @@ from metdig.io import get_model_grid
 from metdig.io import get_model_3D_grid
 from metdig.io import get_model_3D_grids
 
-from metdig.onestep.lib.utility import get_map_area, get_minor_extent
+from metdig.onestep.lib.utility import get_map_area, get_minor_extent, point_to1dim
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.pv_div_uv import read_pv_div_uv, read_pv_div_uv_4d
@@ -63,6 +63,11 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
 
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
@@ -146,6 +151,10 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
@@ -237,6 +246,10 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
@@ -319,6 +332,10 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
@@ -400,6 +417,10 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -484,6 +505,10 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
 
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
@@ -563,6 +588,10 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -650,6 +679,10 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
                   st_point=[20, 120.0], ed_point=[50, 130.0],h_pos=[0.125, 0.665, 0.25, 0.2],
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -829,6 +862,10 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -1052,6 +1089,10 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
@@ -1118,6 +1159,10 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
                       st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                       area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -1234,6 +1279,10 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
                      area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
@@ -1303,6 +1352,10 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
 
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -1376,6 +1429,10 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
@@ -1459,6 +1516,10 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)
@@ -1544,6 +1605,10 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
@@ -1621,6 +1686,10 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
                 st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
 
     # get area
     map_extent = get_map_area(area)

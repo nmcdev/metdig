@@ -213,7 +213,8 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     return fig, ax
 
 @kwargs_wrapper
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+def cross_lonpres_pallete(figsize=(16, 9), levels=None, index=None, lon_cross=None, lat_cross=None,  
+                          title='', forcast_info='', title_loc='right', title_fontsize=25,
                           nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
@@ -229,6 +230,24 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, title='', forcast_info='
     ax.set_yticklabels(np.arange(levels[0], levels[-1]-1, -100))
     ax.set_ylim(levels[0], levels[-1])
     ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
+
+    if index is not None and lon_cross is not None and index is not lat_cross:
+        ax.set_xlim(index[0], index[-1])
+        x_ticks = np.linspace(index[0], index[-1], 10).astype('int32')
+        ax.set_xticks(x_ticks)
+        x_labels = []
+        for x, y in zip(lon_cross[ax.get_xticks().astype('int32')], lat_cross[ax.get_xticks().astype('int32')]):
+            if x > 0:
+                x = f'{x:.2f}°E'
+            else:
+                x = f'{x:.2f}°W'
+
+            if y > 0:
+                y = f'{y:.2f}°N'
+            else:
+                y = f'{y:.2f}°S'
+            x_labels.append(f'{x}\n{y}')
+        ax.set_xticklabels(x_labels)
 
     # ax.set_ylabel('Pressure (hPa)', fontsize=15)
     ax.set_ylabel('气压 (hPa)', fontsize=15)

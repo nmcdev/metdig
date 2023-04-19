@@ -29,6 +29,7 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{0:}]相当位温, 沿剖面风和水汽通量散度'.format(data_name,cross_wvfldiv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -39,14 +40,14 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    wvfldiv_contourf(obj.ax, cross_wvfldiv,xdim='lon',ydim='level',regrid_shape=None,transform=None, colorbar_kwargs={'pos':'right'},extend='min',
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    wvfldiv_contourf(obj.ax, cross_wvfldiv,xdim='index',ydim='level',regrid_shape=None,transform=None, colorbar_kwargs={'pos':'right'},extend='min',
         kwargs=wvfldiv_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -61,6 +62,7 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{0:}]相当位温, 沿剖面风和水汽通量'.format(data_name,cross_wvfl.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -71,15 +73,15 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    contourf_2d(obj.ax, cross_wvfl,xdim='lon',ydim='level',regrid_shape=None,transform=None, 
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    contourf_2d(obj.ax, cross_wvfl,xdim='index',ydim='level',regrid_shape=None,transform=None, 
         levels=np.arange(5,46,5),cmap='met/wvfl_ctable',colorbar_kwargs={'pos':'right'},extend='max',
         kwargs=wvfl_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -93,6 +95,7 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{0:}]相当位温, 沿剖面风和风速'.format(data_name,cross_wsp.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -103,15 +106,15 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    contourf_2d(obj.ax, cross_wsp,xdim='lon',ydim='level',regrid_shape=None,transform=None, 
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    contourf_2d(obj.ax, cross_wsp,xdim='index',ydim='level',regrid_shape=None,transform=None, 
         levels=np.arange(12,52,3),cmap='ncl/MPL_YlOrbr',colorbar_kwargs={'pos':'right'},extend='max',
         kwargs=wsp_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -125,6 +128,7 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]相当位温, 锋生函数, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -135,11 +139,11 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_fg_contourf(obj.ax, cross_fg, kwargs=fg_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_fg_contourf(obj.ax, cross_fg, xdim='index',kwargs=fg_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -153,6 +157,7 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]相当位温, 垂直运动速度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -163,11 +168,11 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_w_contourf(obj.ax, cross_w, kwargs=w_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_w_contourf(obj.ax, cross_w, xdim='index',kwargs=w_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -181,6 +186,7 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]相当位温, 水平散度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -191,13 +197,13 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    div_contourf(obj.ax, cross_div, ydim='level',levels=np.arange(-10, 10,1),extend='both',
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    div_contourf(obj.ax, cross_div, xdim='index', ydim='level',levels=np.arange(-10, 10,1),extend='both',
                  cmap='ncl/BlueWhiteOrangeRed',transform=None,colorbar_kwargs=dict(pos='right',orientation='vertical'),kwargs=div_contourf_kwargs,
                 )
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index', kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -270,6 +276,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_tmpadv['level'].values
+    index = cross_tmpadv['index'].values
 
     title = '[{}]温度, 温度平流, 沿剖垂直环流'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -280,11 +287,11 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    tmpadv_contourf(obj.ax, cross_tmpadv, xdim='lon', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
-    cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
-    uv_quiver(obj.ax, cross_t, cross_w, xdim='lon', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross,title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    tmpadv_contourf(obj.ax, cross_tmpadv, xdim='index', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
+    cross_tmp_contour(obj.ax, cross_tmp, xdim='index', kwargs=tmp_contour_kwargs)
+    uv_quiver(obj.ax, cross_t, cross_w, xdim='index', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -299,6 +306,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]温度, 温度平流, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -309,11 +317,11 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    tmpadv_contourf(obj.ax, cross_tmpadv, xdim='lon', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
-    cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    tmpadv_contourf(obj.ax, cross_tmpadv, xdim='index', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
+    cross_tmp_contour(obj.ax, cross_tmp,xdim='index', kwargs=tmp_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -328,6 +336,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]温度, 垂直涡度平流, 水平风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -338,12 +347,12 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    vortadv_contourf(obj.ax, cross_vortadv, xdim='lon', ydim='level', transform=None,if_mask=False,
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    vortadv_contourf(obj.ax, cross_vortadv, xdim='index', ydim='level', transform=None,if_mask=False,
                      colorbar_kwargs={'pos': 'right'}, kwargs=vortadv_contourf_kwargs)
-    cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    cross_tmp_contour(obj.ax, cross_tmp, xdim='index', kwargs=tmp_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -357,6 +366,7 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]饱和相当位温, 准地转湿位涡, 沿剖面准地转风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -367,11 +377,11 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_mpv_contourf(obj.ax, cross_mpvg, levels=np.arange(-20, 21, 1),kwargs=mpv_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_mpv_contourf(obj.ax, cross_mpvg, dim='index',levels=np.arange(-20, 21, 1),kwargs=mpv_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, dim='index',kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, dim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -385,6 +395,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]相当位温, 湿位涡, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -395,11 +406,11 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_mpv_contourf(obj.ax, cross_mpv, kwargs=mpv_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_mpv_contourf(obj.ax, cross_mpv, xdim='index', kwargs=mpv_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index', kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -414,6 +425,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{0:}]相当位温, {1:}, 沿剖面风'.format(data_name,cross_absv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -424,13 +436,13 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_absv_contourf(obj.ax, cross_absv, kwargs=absv_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_absv_contourf(obj.ax, cross_absv, xdim='index',kwargs=absv_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, 100, 5)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100, kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -445,6 +457,7 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]相当位温, 相对湿度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -455,11 +468,11 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 106, 5), kwargs=rh_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_rh_contourf(obj.ax, cross_rh, xdim='index', levels=np.arange(0, 106, 5), kwargs=rh_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index', kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -473,22 +486,23 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_spfh['level'].values
+    index = cross_spfh['index'].values
 
-    title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 绝对湿度, 沿剖面垂直环流'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_绝对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_绝对湿度_沿剖面垂直环流_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(3, 100, 3)
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_spfh_contourf(obj.ax, cross_spfh, levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    # barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    uv_quiver(obj.ax, cross_t, cross_w, xdim='lon', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_spfh_contourf(obj.ax, cross_spfh, xdim='index', levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index', kwargs=theta_contour_kwargs)
+    # barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    uv_quiver(obj.ax, cross_t, cross_w, xdim='index', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -502,6 +516,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -512,11 +527,11 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_spfh_contourf(obj.ax, cross_spfh, levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
-    cross_theta_contour(obj.ax, cross_theta, kwargs=theta_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+    cross_spfh_contourf(obj.ax, cross_spfh, xdim='index',levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
+    cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 
@@ -531,6 +546,7 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     fcst_time = init_time + datetime.timedelta(hours=fhour)
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
+    index = cross_u['index'].values
 
     title = '[{}]温度 相对湿度 水平风 气压垂直运动速度'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -541,12 +557,13 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     cross_u = cross_u.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
-    obj = cross_lonpres_compose(levels, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 101, 0.5), kwargs=rh_contourf_kwargs)
-    cross_vvel_contour(obj.ax, cross_vvel, zorder=1, kwargs=vvel_contour_kwargs)
-    cross_tmp_contour(obj.ax, cross_tmp, kwargs=tmp_contour_kwargs)
-    barbs_2d(obj.ax, cross_u, cross_v, xdim='lon', ydim='level', color='k', length=7,zorder=2, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    cross_terrain_contourf(obj.ax, cross_terrain, levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+
+    cross_rh_contourf(obj.ax, cross_rh, levels=np.arange(0, 101, 0.5), xdim='index', kwargs=rh_contourf_kwargs)
+    cross_vvel_contour(obj.ax, cross_vvel, zorder=1,xdim='index', kwargs=vvel_contour_kwargs)
+    cross_tmp_contour(obj.ax, cross_tmp, xdim='index', kwargs=tmp_contour_kwargs)
+    barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7,zorder=2, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     return obj.save()
 

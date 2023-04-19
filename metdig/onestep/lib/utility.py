@@ -8,10 +8,13 @@ from functools import wraps
 import datetime
 
 
-def get_minor_extent(st_point=[20, 120.0], ed_point=[50, 130.0]):
+def get_minor_extent(st_point=[20, 120.0], ed_point=[50, 130.0], offset=1):
     _p = np.vstack([np.array(st_point).reshape(-1, 2), np.array(ed_point).reshape(-1, 2)]) # [[lat, lon]]
-    minor_extent = [_p[:, 1].min() - 1, _p[:, 1].max() + 1, _p[:, 0].min() - 1, _p[:, 0].max() + 1]
+    minor_extent = [_p[:, 1].min() - offset, _p[:, 1].max() + offset, _p[:, 0].min() - offset, _p[:, 0].max() + offset]
     return minor_extent
+
+def point_to1dim(point):
+    return np.array(point).flatten()
 
 
 def get_map_area(area):
