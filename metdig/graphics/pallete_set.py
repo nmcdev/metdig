@@ -269,7 +269,7 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, index=None, lon_cross=No
 
 @kwargs_wrapper
 def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
-                           nmc_logo=False, reverse_time=True, logyaxis=True, add_tag=True, xtickfmt='%m月%d日%H时',**kwargs):
+                           nmc_logo=False, reverse_time=True, logyaxis=True, yoffset=0, add_tag=True, xtickfmt='%m月%d日%H时',**kwargs):
     """[时间剖面画板初始化]
 
     Args:
@@ -314,7 +314,9 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     if levels is not None:
-        ax.set_ylim(levels.max(), levels.min())
+        # ax.set_ylim(levels.max(), levels.min())
+        yoffset = abs(levels[0] - levels[-1]) * yoffset
+        ax.set_ylim(levels.max() + yoffset, levels.min() - yoffset)
     ax.set_xlim(times[0], times[-1])
 
     if forcast_info:

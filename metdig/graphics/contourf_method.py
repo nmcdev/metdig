@@ -563,7 +563,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
     if cmap is None:
         cmap = col.LinearSegmentedColormap.from_list('own2', ['#1E90FF','#94D8F6','#F1F1F1','#BFBFBF','#696969'])
     else:
-        cmap = cm_collected.get_cmap(cmap)
+        cmap = cm_collected.get_cmap(cmap, extend=extend,)
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, extend=extend,**kwargs)
     if add_colorbar:
