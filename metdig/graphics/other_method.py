@@ -29,9 +29,17 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
     ax_inset.contour(x, y, z, levels=levels, cmap='inferno')
 
     if st_point is not None and ed_point is not None:
-        endpoints = crs.transform_points(ccrs.Geodetic(), *np.vstack([st_point, ed_point]).transpose()[::-1])
-        ax_inset.scatter(endpoints[:, 0], endpoints[:, 1], c='k', zorder=2)
+        # endpoints = crs.transform_points(ccrs.Geodetic(), *np.vstack([st_point, ed_point]).transpose()[::-1])
 
+        # 支持多点的情况
+        st = np.array(st_point).reshape(-1, 2) # [[lat, lon]]
+        ed = np.array(ed_point).reshape(-1, 2) # [[lat, lon]]
+        endpoints = np.vstack([st, ed[-1, :].reshape(-1, 2)]) # [[lat, lon]]
+        endpoints = crs.transform_points(ccrs.Geodetic(), endpoints[:, 1], endpoints[:, 0])
+
+        ax_inset.scatter(endpoints[:, 0], endpoints[:, 1], c='k', zorder=2)
+        pass
+    
     if lon_cross is None or lat_cross is None:
         if st_point is not None and ed_point is not None:
             ax_inset.plot(endpoints[:, 0], endpoints[:, 1], c='k', zorder=2)

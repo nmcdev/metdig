@@ -8,7 +8,7 @@ from metdig.io import get_model_grid
 from metdig.io import get_model_3D_grid
 from metdig.io import get_model_3D_grids
 
-from metdig.onestep.lib.utility import get_map_area
+from metdig.onestep.lib.utility import get_map_area, get_minor_extent, point_to1dim
 from metdig.onestep.lib.utility import mask_terrian
 from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.pv_div_uv import read_pv_div_uv, read_pv_div_uv_4d
@@ -64,26 +64,34 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            levels=levels, extent=map_extent)
+                            levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
     wvfldiv=mdgcal.water_wapor_flux_divergence(u,v,spfh)
 
     res=rh.stda.horizontal_resolution
@@ -144,26 +152,33 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     spfh = read_spfh_3D(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            levels=levels, extent=map_extent)
+                            levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
     wsp=mdgcal.wind_speed(u,v)
     wvfl=mdgcal.cal_ivt_singlelevel(wsp,spfh)
 
@@ -231,24 +246,31 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -310,24 +332,31 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -389,21 +418,28 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     pressure_3d = mdgstda.gridstda_full_like_by_levels(tmp, tmp['level'].values)
     thta=mdgcal.thermal.potential_temperature(pressure_3d,tmp)
@@ -469,8 +505,15 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
 
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
+
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
 
     # theta = read_theta3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
     # mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
@@ -481,15 +524,17 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
     #                       var_name='v', levels=levels, extent=map_extent)
 
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='tmp', levels=levels, extent=map_extent)
+                          var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='hgt', levels=levels, extent=map_extent)
+                          var_name='hgt', levels=levels, extent=minor_extent)
     ug,vg=mdgcal.dynamic.geostrophic_wind(hgt)
     pressure = mdgstda.gridstda_full_like_by_levels(hgt, hgt.level.values.tolist())
     thetaes=mdgcal.thermal.saturation_equivalent_potential_temperature(pressure,tmp)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
     mpvg=mdgcal.dynamic.potential_vorticity_baroclinic(thetaes,pressure,ug,vg)
+    hgtlvl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='hgt', level=500, extent=map_extent)
     
     res=mpvg.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -527,7 +572,7 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain.attrs['var_units'] = ''
 
     if is_draw:
-        drawret = draw_cross.draw_wind_thetaes_mpvg(cross_mpvg, cross_thetaes, cross_ug, cross_vg, cross_terrain, hgt.sel(level=[500]),
+        drawret = draw_cross.draw_wind_thetaes_mpvg(cross_mpvg, cross_thetaes, cross_ug, cross_vg, cross_terrain, hgtlvl,
                                       st_point=st_point, ed_point=ed_point,
                                       lon_cross=cross_ug['lon_cross'].values, lat_cross=cross_ug['lat_cross'].values,
                                       map_extent=map_extent, h_pos=h_pos,
@@ -544,17 +589,24 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     # vvel = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -562,7 +614,7 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
     #                         var_name='spfh', levels=levels, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     # w = mdgcal.vertical_velocity(vvel, tmp, spfh)
 
@@ -628,19 +680,26 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
-    div,u,v = read_div_uv_3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
+    div,u,v = read_div_uv_3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=minor_extent)
 
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -804,26 +863,33 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            levels=levels, extent=map_extent)
+                            levels=levels, extent=minor_extent)
 
     spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='spfh', levels=levels, extent=map_extent)
+                            var_name='spfh', levels=levels, extent=minor_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1023,19 +1089,26 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=tmp.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1087,22 +1160,29 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
                       area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
-    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
-    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
 
-    w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=minor_extent)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=minor_extent)
+
+    w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=minor_extent)
 
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=w.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1199,19 +1279,26 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
                      area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=tmp.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1266,22 +1353,29 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
-    theta = read_theta3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
-    mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
-                                     data_name=data_name, lvl_ana=levels, levels=levels, extent=map_extent)
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
+    theta = read_theta3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=minor_extent)
+    # mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
+    #                                  data_name=data_name, lvl_ana=levels, levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     pres = mdgstda.gridstda_full_like_by_levels(u, levels)
     # mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=mpv.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1336,24 +1430,31 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     #lon_mean 经向平均 当为None时不平均
     #lat_mean 纬向平均 当为None时不平均
     
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1416,21 +1517,28 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1497,21 +1605,28 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1572,23 +1687,30 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
     # get area
     map_extent = get_map_area(area)
 
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
     rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                           var_name='rh', levels=levels, extent=map_extent)
+                           var_name='rh', levels=levels, extent=minor_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='u', levels=levels, extent=map_extent)
+                          var_name='u', levels=levels, extent=minor_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='v', levels=levels, extent=map_extent)
+                          var_name='v', levels=levels, extent=minor_extent)
     tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='tmp', levels=levels, extent=map_extent)
+                            var_name='tmp', levels=levels, extent=minor_extent)
     vvel = read_vvel3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            levels=levels, extent=map_extent)
+                            levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=map_extent)
+                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):

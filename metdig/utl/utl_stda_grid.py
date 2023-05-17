@@ -605,6 +605,9 @@ class __STDADataArrayAccessor(object):
             else:
                 lat_slc = slice(extent[3], extent[2])
             data = data.sel(lon=lon_slc, lat=lat_slc)
+            if data.values.size == 0:
+                # return None # 选取的区域平均范围太小，无法构成二维数据
+                raise Exception(f'数据分辨率为{self.horizontal_resolution}, 区域平均范围太小！')
 
             if set_point_lon is None:
                 set_point_lon = (extent[0] + extent[1]) / 2
@@ -616,7 +619,7 @@ class __STDADataArrayAccessor(object):
             if set_point_lat is None:
                 set_point_lat = (data['lat'].values[0] + data['lat'].values[-1]) / 2
             
-
+        
         data = data.mean(dim=['lon', 'lat'], skipna=skipna)
         data.attrs = self._xr.attrs
 

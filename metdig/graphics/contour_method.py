@@ -320,13 +320,28 @@ def cross_tmp_contour(ax, stda, xdim='lon', ydim='level',
 def cross_vvel_contour(ax, stda, xdim='lon', ydim='level', 
                       add_clabel=True, cmap='ncl/MPL_YlGn_r',
                       levels=np.arange(-3,0,0.2).tolist(), linewidths=1, **kwargs):
-
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim) # degC
     cmap, norm = cm_collected.get_cmap(cmap, extend='min', levels=levels,isLinear=True)
 
-    img = ax.contour(x, y, z, levels=levels, cmap=cmap,linewidths=linewidths, **kwargs)
+    # 上升运动为虚线，下沉运动为实线
+    # 上升运动为负值，下沉运动为正值
+    # dashed虚线，solid实线
+    if max(levels) <= 0.001:
+        linestyles = 'dashed' # 全为虚线
+    elif min(levels) >= 0.001:
+        linestyles = 'solid' # 全为实线
+    else:
+        linestyles = []
+        for level in levels:
+            if level <= 0.001: # 有正有负，0归类到虚线
+                linestyles.append('dashed')
+            else:
+                linestyles.append('solid')
+
+    img = ax.contour(x, y, z, levels=levels, cmap=cmap,linewidths=linewidths,linestyles=linestyles, **kwargs)
+
     if add_clabel:
         plt.clabel(img, fontsize=10, inline=1, inline_spacing=8, fmt='%.1f', rightside_up=True, use_clabeltext=True)
     return img

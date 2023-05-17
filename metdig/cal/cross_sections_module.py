@@ -6,6 +6,7 @@
 
 
 import numpy as np
+import xarray as xr
 
 import metpy.calc as mpcalc
 from metpy.units import units as mpunits
@@ -45,24 +46,58 @@ def cross_section(data, start, end, steps=101, interp_type='linear'):
     # data.coords['crs'] = CFProjection({'grid_mapping_name': 'latitude_longitude'})
     data = data.metpy.assign_crs(grid_mapping_name='latitude_longitude')  # metpy 1.0
 
-    cross_data = mpinterp.cross_section(data, start, end, steps=steps, interp_type=interp_type)
+    if len(start) < 2 or len(start) % 2:
+        raise Exception('Start point must be a pair of lat/lon coordinates')
 
-    # to_stda
-    np_cross = cross_data.values  # [member, level, time, dtime, index]
-    np_cross = np_cross[:, :, :, :, np.newaxis, :]  # 增加一维lat，然后将index转换成lon
-    cross_stda = mdgstda.numpy_to_gridstda(np_cross,
-                                           cross_data['member'].values,
-                                           cross_data['level'].values,
-                                           cross_data['time'].values,
-                                           cross_data['dtime'].values,
-                                           [9999],
-                                           cross_data['lon'].values)
-    cross_stda.attrs = cross_data.attrs
+    npts = len(start) // 2 # 线段数
 
+    distance = []
+    for i in range(npts): # 循环每一段线
+        _stp = start[i * 2:i * 2 + 2] # 开始点[lat, lon]
+        _edp = end[i * 2:i * 2 + 2] # 结束点[lat, lon]
+        distance.append((_stp[0] - _edp[0])**2 + (_stp[1] - _edp[1])**2) # 计算每一段线的距离
+    distance = np.array(distance)
+    distance = distance / distance.sum() # 距离归一化到0-1
+
+    cross_data_lst = []
+    for i in range(npts): # 循环每一段线
+        _stp = start[i * 2:i * 2 + 2] # 开始点[lat, lon]
+        _edp = end[i * 2:i * 2 + 2] # 结束点[lat, lon]
+
+        _step = int(distance[i] * steps) # 每一段线的插值点数
+        cross_data = mpinterp.cross_section(data, _stp, _edp, steps=_step, interp_type=interp_type)
+        
+        if i >= 1:
+            _last_edp = end[(i-1) * 2:(i-1) * 2 + 2] # 上一段的结束点
+            if _last_edp[0] == _stp[0] and _last_edp[1] == _stp[1]: # 如果上一段线的结束点和这一段线的开始点重合
+                cross_data = cross_data.isel(index=slice(1, None)) # 去掉重复的第一个点
+                # print('去掉重复的第一个点')
+            
+            _last_index_ed = cross_data_lst[-1]['index'].values[-1] # 上一段线的最后一个index
+            cross_data['index'] = np.arange(_last_index_ed + 1, _last_index_ed + cross_data['index'].size + 1)  # index设置为连续递增数列
+
+        cross_data.name = 'data'
+        # print(cross_data.dims, cross_data.shape, type(cross_data))
+        # print(cross_data.coords)
+        # print()
+        cross_data_lst.append(cross_data)
+
+    cross_data_lst = xr.combine_by_coords(cross_data_lst)['data'] # [member, level, time, dtime, index]
+    cross_stda = mdgstda.numpy_to_gridstda(cross_data_lst.values[:, :, :, :, np.newaxis, :], # 增加一维lat，然后将index转换成lon
+                                            cross_data_lst['member'].values,
+                                            cross_data_lst['level'].values,
+                                            cross_data_lst['time'].values,
+                                            cross_data_lst['dtime'].values,
+                                            [9999],
+                                            cross_data_lst['lon'].values)
     cross_stda.coords['crs'] = CFProjection({'grid_mapping_name': 'latitude_longitude'})
-    cross_stda = cross_stda.assign_coords({"lon_cross": ("lon", cross_data['lon'].values)})
-    cross_stda = cross_stda.assign_coords({"lat_cross": ("lon", cross_data['lat'].values)})
-
+    cross_stda = cross_stda.assign_coords({"lon_cross": ("lon", cross_data_lst['lon'].values)})
+    cross_stda = cross_stda.assign_coords({"lat_cross": ("lon", cross_data_lst['lat'].values)})
+    cross_stda = cross_stda.assign_coords({"index": ("lon", cross_data_lst['index'].values)})
+    cross_stda.attrs = data.attrs
+    # print(cross_stda.dims, cross_stda.shape)
+    # print(cross_stda)
+    # exit()
     return cross_stda
 
 
