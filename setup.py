@@ -40,7 +40,7 @@ setup(
                       'matplotlib ==3.2.2',
                       'nmc_met_io <= 0.1.10.4',
                       'metpy == 1.0',
-                      'meteva > 1.3.*',
+                      'meteva > 1.3',
                       'xarray <= 0.19.0 ',
                       'cdsapi',
                       'numba',
