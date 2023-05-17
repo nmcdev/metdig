@@ -273,7 +273,7 @@ def numpy_to_gridstda(np_input, members, levels, times, dtimes, lats, lons,
     return stda_data
 
 
-def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargs):
+def gridstda_full_like(a, fill_value, dtype=None, var_name='', dim_fill='level',**attrs_kwargs):
     '''
 
     [返回一个和参数a具有相同维度信息的STDA数据，并且均按fill_value填充该stda]
@@ -281,6 +281,7 @@ def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargs):
     Arguments:
         a {[stda]} -- [description]
         fill_value {[scalar]} -- [Value to fill the new object with before returning it]
+        dim_fill{[str]} -- [fill_value所在维度]
         **attrs_kwargs {[type]} -- [其它相关属性，如：data_source='cassandra', level_type='high', data_name='ecmwf']
 
     Keyword Arguments:
@@ -290,7 +291,14 @@ def gridstda_full_like(a, fill_value, dtype=None, var_name='', **attrs_kwargs):
     Returns:
         [stda] -- [stda网格数据]
     '''
-    stda_data = xr.full_like(a, fill_value, dtype=dtype)
+
+    stda_data=[]
+    if isinstance(fill_value,list):
+        for fill in fill_value:
+            stda_data.append(xr.full_like(a.sel({dim_fill:[fill]}), fill, dtype=dtype))
+        stda_data=xr.concat(stda_data,dim_fill)    
+    else:
+        stda_data=xr.full_like(a, fill_value, dtype=dtype)
     stda_data.attrs = mdgstda.get_stda_attrs(var_name=var_name, **attrs_kwargs)
     return stda_data
 

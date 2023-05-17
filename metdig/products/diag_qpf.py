@@ -67,7 +67,7 @@ def draw_rain(rain, map_extent=(60, 145, 15, 55),add_extrema=True,clip_area=None
     return obj.save()
 
 def draw_hgt_rain(hgt, rain, map_extent=(60, 145, 15, 55),
-                  hgt_contour_kwargs={},
+                  hgt_contour_kwargs={},rain_pcolormesh_kwargs={},
                   **pallete_kwargs):
     init_time = pd.to_datetime(rain.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(rain['dtime'].values[0])
@@ -85,7 +85,7 @@ def draw_hgt_rain(hgt, rain, map_extent=(60, 145, 15, 55),
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    qpf_pcolormesh(obj.ax, rain, valid_time=valid_time)
+    qpf_pcolormesh(obj.ax, rain, valid_time=valid_time,kwargs=rain_pcolormesh_kwargs)
     return obj.save()
 
 

@@ -219,10 +219,10 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if ret:
         return ret
 
-if __name__ == '__main__':
-    init_time=datetime.datetime(2022,7,4,8)
-    wind_theta_wvfl(st_point=[33.91,115.51],
-        init_time=init_time,data_name='era5',data_source='cds',fhour=0)
+# if __name__ == '__main__':
+#     init_time=datetime.datetime(2022,7,4,8)
+#     wind_theta_wvfl(st_point=[33.91,115.51],
+#         init_time=init_time,data_name='era5',data_source='cds',fhour=0)
 
 @date_init('init_time')
 def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -1270,14 +1270,14 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     map_extent = get_map_area(area)
 
     theta = read_theta3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, levels=levels, extent=map_extent)
-    # mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
-    #                                  data_name=data_name, lvl_ana=levels, levels=levels, extent=map_extent)
+    mpv, _div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
+                                     data_name=data_name, lvl_ana=levels, levels=levels, extent=map_extent)
     u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='u', levels=levels, extent=map_extent)
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='v', levels=levels, extent=map_extent)
     pres = mdgstda.gridstda_full_like_by_levels(u, levels)
-    mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
+    # mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -1482,13 +1482,13 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if ret:
         return ret
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    wind_theta_rh(data_name='cma_ra',fhour=0,data_source='cmadaas',init_time=datetime.datetime(2022,7,6,8),
-        st_point=[43.4520,110.3548],ed_point=[30.7775,124.4222],area='华北',
-        levels=[200,225,250,275,300,325,350,375,400,425,450 ,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000][::-1])
-    plt.show()
+# if __name__ == '__main__':
+#     import matplotlib.pyplot as plt
+#     import pandas as pd
+#     wind_theta_rh(data_name='cma_ra',fhour=0,data_source='cmadaas',init_time=datetime.datetime(2022,7,6,8),
+#         st_point=[43.4520,110.3548],ed_point=[30.7775,124.4222],area='华北',
+#         levels=[200,225,250,275,300,325,350,375,400,425,450 ,475,500,525,550,575,600,625,650,675,700,725,750,775,800,825,850,875,900,925,950,975,1000][::-1])
+#     plt.show()
 
 @date_init('init_time')
 def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
@@ -1742,6 +1742,10 @@ def time_wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=No
 
     if ret:
         return ret
+
+if __name__ == '__main__':
+    import pandas as pd
+    time_wind_theta_mpv(data_source='cds',data_name='era5',init_time=pd.date_range('2021-07-20-02','2021-07-20-12',freq='1h').to_list())
 
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),

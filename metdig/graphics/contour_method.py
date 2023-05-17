@@ -281,7 +281,7 @@ def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
 @kwargs_wrapper
 def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
                         add_clabel=True, 
-                        levels=np.arange(280, 450, 4), colors='black',
+                        levels=np.arange(200, 450, 4), colors='black',
                         linewidths=2, **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)

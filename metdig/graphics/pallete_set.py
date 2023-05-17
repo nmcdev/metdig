@@ -80,7 +80,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         ax.set_global()
     else:
         # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
-        ax.set_extent(map_extent, crs=ccrs.PlateCarree())
+        ax.set_extent(map_extent, crs=crs)
 
     # add grid lines
     # if add_grid: 
@@ -165,15 +165,15 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
             utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
                                   yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid,kwargs=add_ticks)
         # plt.tick_params(labelsize=15)
-        # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=ccrs.PlateCarree())
-        # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=ccrs.PlateCarree())
+        # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=crs)
+        # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=crs)
         # lon_formatter = LongitudeFormatter(dateline_direction_label=True)
         # lat_formatter = LatitudeFormatter()
         # ax.xaxis.set_major_formatter(lon_formatter)
         # ax.yaxis.set_major_formatter(lat_formatter)
     else:  
         if add_grid:
-            gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+            gl = ax.gridlines(crs=crs, linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
             gl.xlocator = mpl.ticker.FixedLocator(np.arange(-180, 181, 10))
             gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
 

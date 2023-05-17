@@ -268,11 +268,11 @@ def get_model_3D_grids(init_time=None, fhours=None, data_name=None, var_name=Non
             return xr.concat(stda_data, dim='dtime')
     return None
 
-if __name__=='__main__':
-    import pandas as pd
-    init_times=pd.date_range('2022-07-01-02','2022-07-07-20',freq='6h').to_pydatetime()
-    test=get_model_3D_grids(data_name='cma_ra',init_time=init_times,fhours=0,var_name='u',levels=[500,850])
-    print(test)
+# if __name__=='__main__':
+#     import pandas as pd
+#     init_times=pd.date_range('2022-07-01-02','2022-07-07-20',freq='6h').to_pydatetime()
+#     test=get_model_3D_grids(data_name='cma_ra',init_time=init_times,fhours=0,var_name='u',levels=[500,850])
+#     print(test)
 
 def get_model_points(init_time=None, fhours=None, data_name=None, var_name=None, levels=None, points={}):
     '''
@@ -356,16 +356,16 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, id_selected=N
     if isinstance(data_name, list) is True:
         data_name = str(data_name)
     return mdgstda.numpy_to_stastda(
-        data[cmadaas_var_name].values, [data_name], levels, data['Datetime'].values, 0, data.iloc[:,0],  data['lat'].values, data['lon'].values,
+        data[cmadaas_var_name].values, [data_name], levels, data['Datetime'].values, 0, data.iloc[:,0].values,  data['lat'].values, data['lon'].values,
         np_input_units=cmadass_units, var_name=var_name, other_input={},
         data_source='cmadaas', data_name=data_name
     )
-# if __name__=='__main__':
-#     import datetime
-#     obs_time=datetime.datetime(2022,3,23,8)
-#     # map_extent=[113.5,119.5,38,42]
-#     rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='tmp',id_selected=['54511','505'])
-#     print(rain)
+if __name__=='__main__':
+    import datetime
+    obs_time=datetime.datetime(2022,11,5,8)
+    # map_extent=[113.5,119.5,38,42]
+    rain=get_obs_stations(obs_time=obs_time,data_name='sfc_chn_hor',var_name='tmp')
+    print(rain)
 
 def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id_selected=None,
                                extent=None, x_percent=0, y_percent=0, ):

@@ -682,7 +682,7 @@ def draw_time_wind_theta_mpv(theta, mpv, u, v, terrain, mean_area=None,
         init_time, fhours[0], fhours[-1], data_name)
 
     obj = cross_timepres_compose(levels, times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    mpv_contourf(obj.ax, mpv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=mpv_contour_kwargs)
+    mpv_contourf(obj.ax, mpv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None,kwargs=mpv_contour_kwargs)
     barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     cross_theta_contour(obj.ax, theta, xdim='fcst_time', ydim='level', kwargs=theta_contour_kwargs)
     if terrain.max() > 0:
