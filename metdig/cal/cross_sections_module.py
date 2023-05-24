@@ -50,6 +50,7 @@ def cross_section(data, start, end, steps=101, interp_type='linear'):
         raise Exception('Start point must be a pair of lat/lon coordinates')
 
     npts = len(start) // 2 # 线段数
+    steps *= npts # 如果线段多，则插值点数自动变多
 
     distance = []
     for i in range(npts): # 循环每一段线
@@ -58,13 +59,17 @@ def cross_section(data, start, end, steps=101, interp_type='linear'):
         distance.append((_stp[0] - _edp[0])**2 + (_stp[1] - _edp[1])**2) # 计算每一段线的距离
     distance = np.array(distance)
     distance = distance / distance.sum() # 距离归一化到0-1
+    # print(distance)
 
     cross_data_lst = []
     for i in range(npts): # 循环每一段线
         _stp = start[i * 2:i * 2 + 2] # 开始点[lat, lon]
         _edp = end[i * 2:i * 2 + 2] # 结束点[lat, lon]
 
-        _step = int(distance[i] * steps) # 每一段线的插值点数
+        _step = int(distance[i] * steps) # 每一段线的插值点数按总线段的比例分配
+        # print(_stp, _edp, _step)
+        if _step < 3: # 插值点数最少为3
+            _step = 3
         cross_data = mpinterp.cross_section(data, _stp, _edp, steps=_step, interp_type=interp_type)
         
         if i >= 1:

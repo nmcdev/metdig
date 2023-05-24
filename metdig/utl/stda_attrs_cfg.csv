@@ -33,9 +33,15 @@ rain24,24小时降水,mm,24
 rainnc,非对流降水,mm,0
 rainnc01,1小时非对流性降水,mm,1
 rainnc03,3小时非对流性降水,mm,3
+rainnc06,6小时非对流性降水,mm,6
+rainnc12,12小时非对流性降水,mm,12
+rainnc24,24小时非对流性降水,mm,24
 rainc,对流降水,mm,0
 rainc01,1小时对流性降水,mm,1
 rainc03,3小时对流性降水,mm,3
+rainc06,6小时对流性降水,mm,6
+rainc12,12小时对流性降水,mm,12
+rainc24,24小时对流性降水,mm,24
 es,饱和水汽压,hPa,0
 u10m,10mU风,m/s,0
 v10m,10mV风,m/s,0
@@ -48,6 +54,7 @@ psfc,地面气压,hPa,0
 lcdc,低云量,percent,0
 tcdc,总云量,percent,0
 hcdc,高云量,percent,0
+mcdc,中云量,percent,0
 vis,能见度,km ,0
 gust10m,1小时10米阵风,m/s,1
 gustdir10m,3小时10米阵风风向,degree,1
@@ -112,4 +119,5 @@ li,抬升指数,K,0
 bli,最优抬升指数,K,0
 shear_vort,切变涡度,1/s,0
 curve_vort,曲率涡度,1/s,0
+deg0l,零度高度,m,0
 

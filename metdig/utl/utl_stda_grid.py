@@ -348,6 +348,15 @@ class __STDADataArrayAccessor(object):
         return resolution
 
     @property
+    def vertical_resolution(self):
+        """[获取垂直分辨率,仅对格点数据有效]
+        Returns:
+            [pd.series]: [level]
+        """
+        resolution=np.abs(self._xr['lat'].values[1]-self._xr['lat'].values[0])
+        return resolution
+
+    @property
     def level(self):
         """[get level]
 
@@ -584,11 +593,12 @@ class __STDADataArrayAccessor(object):
         if return_number:
             return ret.values.squeeze()
         return ret.squeeze()
-
-    def mean_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True):
-        """[区域平均，返回stda]
-        
+    
+    def calc_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True, cal_type='mean'):
+        """区域 平均/最大/最小
         """
+        if cal_type != 'mean' and cal_type != 'max' and cal_type != 'min':
+            raise Exception('cal_type must be mean or max or min')
         if len(self._xr['lon']) <= 1 and len(self._xr['lat']) <= 1:
             return self._xr
         
@@ -607,7 +617,7 @@ class __STDADataArrayAccessor(object):
             data = data.sel(lon=lon_slc, lat=lat_slc)
             if data.values.size == 0:
                 # return None # 选取的区域平均范围太小，无法构成二维数据
-                raise Exception(f'数据分辨率为{self.horizontal_resolution}, 区域平均范围太小！')
+                raise Exception(f'数据分辨率为{self.horizontal_resolution}，约为{self.horizontal_resolution*111:.2f}km,，范围太小，无法计算！')
 
             if set_point_lon is None:
                 set_point_lon = (extent[0] + extent[1]) / 2
@@ -619,14 +629,34 @@ class __STDADataArrayAccessor(object):
             if set_point_lat is None:
                 set_point_lat = (data['lat'].values[0] + data['lat'].values[-1]) / 2
             
-        
-        data = data.mean(dim=['lon', 'lat'], skipna=skipna)
+        if cal_type == 'mean':
+            data = data.mean(dim=['lon', 'lat'], skipna=skipna)
+        elif cal_type == 'max':
+            data = data.max(dim=['lon', 'lat'], skipna=skipna)
+        elif cal_type == 'min':
+            data = data.min(dim=['lon', 'lat'], skipna=skipna)
+
         data.attrs = self._xr.attrs
 
         data = data.expand_dims({'lat': [set_point_lon]}, axis=-1)
         data = data.expand_dims({'lon': [set_point_lat]}, axis=-1)
         
         return data
+
+    def mean_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True):
+        """[区域平均 返回stda]
+        """
+        return self.calc_area(extent=extent, set_point_lon=set_point_lon, set_point_lat=set_point_lat, skipna=skipna, cal_type='mean')
+    
+    def max_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True):
+        """[区域最大 返回stda]
+        """
+        return self.calc_area(extent=extent, set_point_lon=set_point_lon, set_point_lat=set_point_lat, skipna=skipna, cal_type='max')
+    
+    def min_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True):
+        """[区域最小 返回stda]
+        """
+        return self.calc_area(extent=extent, set_point_lon=set_point_lon, set_point_lat=set_point_lat, skipna=skipna, cal_type='min')
 
     def interp_tosta(self, lon, lat, id=None, other={}, method='linear'):
         """[插值到站点上，返回stda站点数据]
