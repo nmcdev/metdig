@@ -152,6 +152,13 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
             # url='http://mt1.google.com/vt/lyrs={style}&x={x}&y={y}&z={z}')  # 谷歌地形
         ax.add_image(request, background_zoom_level)  
 
+    elif add_background_style == 'terrain4':
+        request = utl.TDT_Hillshade()  # 地形阴影
+        ax.add_image(request, background_zoom_level)  # level=10 缩放等
+        # request = utl.TDT_ter()  # 地形
+        # ax.add_image(request, background_zoom_level,alpha=0.5)  # level=10 缩放等
+
+
     elif add_background_style == 'road':
         request = utl.TDT()  # 卫星图像
         ax.add_image(request, background_zoom_level)  # level=10 缩放等级
