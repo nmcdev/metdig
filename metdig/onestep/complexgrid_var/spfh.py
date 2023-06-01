@@ -65,7 +65,7 @@ def _by_tmp_rh_3D(data_source=None, init_time=None, fhour=None, data_name=None, 
         return None
 
     # calcu
-    pres = utl_stda_grid.gridstda_full_like_by_levels(tmp, levels)
+    pres = utl_stda_grid.gridstda_full_like_by_levels(tmp, tmp['level'].values)
     td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
     spfh = mdgcal.specific_humidity_from_dewpoint(pres, td)  # modify by wenzhijun pres和td参数对调，适应于metpy1.0
 
@@ -101,7 +101,7 @@ def _by_tmp_rh_4d(data_source=None, init_time=None, fhours=None, data_name=None,
         return None
 
     # calcu
-    pres = utl_stda_grid.gridstda_full_like_by_levels(tmp, levels)
+    pres = utl_stda_grid.gridstda_full_like_by_levels(tmp, tmp['level'].values)
     td = mdgcal.dewpoint_from_relative_humidity(tmp, rh)
     spfh = mdgcal.specific_humidity_from_dewpoint(pres, td)  # modify by wenzhijun pres和td参数对调，适应于metpy1.0
 

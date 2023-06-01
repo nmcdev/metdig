@@ -83,7 +83,7 @@ def _by_uv_tmp(data_source=None, init_time=None, fhour=None, data_name=None,
         return None, None, None, None
 
     # calculate
-    pres = utl_stda_grid.gridstda_full_like_by_levels(u, levels)
+    pres = utl_stda_grid.gridstda_full_like_by_levels(u, u['level'].values)
     thta = mdgcal.potential_temperature(pres, tmp)
     pv = mdgcal.potential_vorticity_baroclinic(thta, pres, u, v)
     div = mdgcal.divergence(u, v)
@@ -107,7 +107,7 @@ def _by_uv_tmp_4d(data_source=None, init_time=None, fhours=None, data_name=None,
         return None, None, None, None
 
     # calculate
-    pres = utl_stda_grid.gridstda_full_like_by_levels(u, levels)
+    pres = utl_stda_grid.gridstda_full_like_by_levels(u, u['level'].values)
     thta = mdgcal.potential_temperature(pres, tmp)
     pv = mdgcal.potential_vorticity_baroclinic(thta, pres, u, v)
     div = mdgcal.divergence(u, v)
