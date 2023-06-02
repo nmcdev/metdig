@@ -155,7 +155,28 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
                 colors = guide_cmaps(name[6:]).colors
         else:
             if name in matplotlib.cm.cmap_d.keys():
-                colors = plt.get_cmap(name)(range(256))
+                if name.startswith('Pastel1'):
+                    colors = plt.get_cmap(name)(range(9))
+                elif name.startswith('Pastel2'):
+                    colors = plt.get_cmap(name)(range(8))
+                elif name.startswith('Paired'):
+                    colors = plt.get_cmap(name)(range(12))
+                elif name.startswith('Accent'):
+                    colors = plt.get_cmap(name)(range(8))
+                elif name.startswith('Dark2'):
+                    colors = plt.get_cmap(name)(range(8))
+                elif name.startswith('Set1'):
+                    colors = plt.get_cmap(name)(range(9))
+                elif name.startswith('Set2'):
+                    colors = plt.get_cmap(name)(range(8))
+                elif name.startswith('Set3'):
+                    colors = plt.get_cmap(name)(range(12))
+                elif name.startswith('tab10'):
+                    colors = plt.get_cmap(name)(range(10))
+                elif name.startswith('tab20'):
+                    colors = plt.get_cmap(name)(range(20))
+                else:
+                    colors = plt.get_cmap(name)(range(256))
             else:
                 colors = np.array([name]) # 单个颜色
                 isLinear = False

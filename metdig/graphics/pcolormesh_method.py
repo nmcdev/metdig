@@ -485,3 +485,34 @@ def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(dbz)',extend='max', kwargs=colorbar_kwargs)
     return img
+        
+
+@kwargs_wrapper
+def mode_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                  add_colorbar=True,
+                  transform=ccrs.PlateCarree(), colorbar_kwargs={},
+                  **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) 
+
+    vmax = int(np.nanmax(z)) # 0是无识别区域，1是开始是识别区域
+    if vmax <= 0:
+        return # 无识别区域就不画了
+    levels = np.arange(0, vmax+2, 1) - 0.5  # 识别区域，从0开始
+
+    if vmax < 12:
+        colors = cm_collected.get_hexrgb_from_buildin_cmap('Paired', 12)
+    elif vmax <= 20:
+        colors = cm_collected.get_hexrgb_from_buildin_cmap('tab20b', 20)
+    else:
+        colors = cm_collected.get_hexrgb_from_buildin_cmap('gist_rainbow', vmax)
+    colors = ['#ffffff'] + colors
+    colors = colors[:int(vmax)+1]
+
+    cmap, norm = cm_collected.get_cmap(colors, extend='neither', levels=levels) # 这边-0.5保证了颜色的中心0,1,2,3整数上
+
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, ticks=levels+0.5, label='',extend='neither', kwargs=colorbar_kwargs)
+    return img

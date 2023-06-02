@@ -641,3 +641,24 @@ def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,  **kwargs)
     return img
+
+@kwargs_wrapper
+def ids_contourf(ax, stda,  xdim='lon', ydim='lat',
+                    add_colorbar=True, 
+                    transform=ccrs.PlateCarree(), colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) 
+
+    vmax = np.nanmax(z)
+    vmin = np.nanmin(z)
+    vmax = np.max([np.abs(vmax), np.abs(vmin)]) # vmax 取绝对值较大的那个值
+    vmin = -1 * vmax # vmin 取 vmax 的相反数
+    levels = np.arange(vmin, vmax+1, 1) # 保证红色区域代表高压区，蓝色区域代表低压区
+
+    cmap, norm = cm_collected.get_cmap('bwr', extend='neither', levels=levels)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, norm=norm, transform=transform, extend='neither', **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='',kwargs=colorbar_kwargs)
+    return img
