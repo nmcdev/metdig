@@ -231,14 +231,14 @@ def smooth_n_point(stda_data, n=5, passes=1):
     see detail:
     metpy.calc.smooth_n_point
     '''
-    result = stda_data.copy(deep=True)
-    for a in range(result.coords['member'].size):
-        for b in range(result.coords['level'].size):
-            for c in range(result.coords['time'].size):
-                for d in range(result.coords['dtime'].size):
-                    scalar_grid = stda_data.values[a, b, c, d]
+    result = stda_data.copy()
+    for imember in result.member.values:
+        for ilevel in result.level.values:
+            for idtime in result.dtime.values:
+                for itime in result.time.values:
+                    scalar_grid = stda_data.sel(member=imember, level=ilevel, dtime=idtime, time=itime)
                     scalar_grid = mpcalc.smooth_n_point(scalar_grid, n=n, passes=passes)
-                    result.values[a, b, c, d] = scalar_grid
+                    result.loc[dict(member=imember, level=ilevel, dtime=idtime, time=itime)] = scalar_grid
     return result
 
 

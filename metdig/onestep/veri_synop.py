@@ -188,7 +188,7 @@ def veri_heatwave(data_source='cassandra',
                 raise Exception('can not get any data')
 
         tmx24_2m_fcst = t2m.isel(dtime=[-1]).copy()
-        tmx24_2m_fcst.values[:, :, :, 0, :, :] = t2m.max(dim='dtime').values
+        tmx24_2m_fcst[dict(dtime=0)] = t2m.max(dim='dtime').values
         tmx24_2m_fcst.attrs['var_name'] = 'tmx24_2m'
         tmx24_2m_fcst.attrs['var_cn_name'] = '过去24小时最高温度'
         tmx24_2m_fcst.attrs['valid_time'] = 24

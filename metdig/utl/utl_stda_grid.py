@@ -323,8 +323,8 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
 
     # 后续可以改为stda_broadcast_levels， xr.broadcast(a, levels.squeeze())
     stda_data = gridstda_full_like(a, 0, var_name=var_name, **attrs_kwargs)
-    for i, lev in enumerate(levels):
-        stda_data.values[:, i, :, :, :, :] = lev
+    for lev in levels:
+        stda_data.loc[dict(level=lev)] = lev
     return stda_data
 
 
@@ -595,10 +595,10 @@ class __STDADataArrayAccessor(object):
         return ret.squeeze()
     
     def calc_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True, cal_type='mean'):
-        """区域 平均/最大/最小
+        """区域 平均/最大/最小/区域所有值
         """
-        if cal_type != 'mean' and cal_type != 'max' and cal_type != 'min':
-            raise Exception('cal_type must be mean or max or min')
+        if cal_type != 'mean' and cal_type != 'max' and cal_type != 'min' and cal_type != 'area':
+            raise Exception('cal_type must be mean or max or min or area')
         if len(self._xr['lon']) <= 1 and len(self._xr['lat']) <= 1:
             return self._xr
         
@@ -635,7 +635,9 @@ class __STDADataArrayAccessor(object):
             data = data.max(dim=['lon', 'lat'], skipna=skipna)
         elif cal_type == 'min':
             data = data.min(dim=['lon', 'lat'], skipna=skipna)
-
+        elif cal_type == 'area':
+            data = data
+            return data
         data.attrs = self._xr.attrs
 
         data = data.expand_dims({'lat': [set_point_lon]}, axis=-1)
@@ -657,6 +659,12 @@ class __STDADataArrayAccessor(object):
         """[区域最小 返回stda]
         """
         return self.calc_area(extent=extent, set_point_lon=set_point_lon, set_point_lat=set_point_lat, skipna=skipna, cal_type='min')
+
+    def get_area(self, extent=None, set_point_lon=None, set_point_lat=None, skipna=True):
+        """[区域所有值 返回stda]
+        """
+        return self.calc_area(extent=extent, set_point_lon=set_point_lon, set_point_lat=set_point_lat, skipna=skipna, cal_type='area')
+
 
     def interp_tosta(self, lon, lat, id=None, other={}, method='linear'):
         """[插值到站点上，返回stda站点数据]
