@@ -92,7 +92,8 @@ def vvel_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # Pa/s
     z = z * 10  # 0.1*Pa/s
-    z[np.abs(z)<0.5]=np.nan
+    # z[np.abs(z)<0.5]=np.nan
+    z = np.where(np.abs(z)<0.5, np.nan, z)
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
@@ -243,7 +244,8 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # kelvin/m/s
     z = z * 1e9  
-    z[np.abs(z)<0.5]=np.nan
+    # z[np.abs(z)<0.5]=np.nan
+    z = np.where(np.abs(z)<0.5, np.nan, z)
     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha,**kwargs)
@@ -343,7 +345,8 @@ def dt2m_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # degC
-    z[np.abs(z)<4]=np.nan
+    # z[np.abs(z)<4]=np.nan
+    z = np.where(np.abs(z)<4, np.nan, z)
     cmap,norm = cm_collected.get_cmap(cmap, extend='neither', levels=levels,isLinear=True)
     # cmap = cm_collected.linearized_cmap(cmap)
 
@@ -477,7 +480,8 @@ def cref_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # mm
-    z[z<15]=np.nan
+    # z[z<15]=np.nan
+    z = np.where(z<15, np.nan, z)
     colors = ['#01A0F6', '#00ECEC', '#00D800', '#019000', '#FFFF00', '#E7C000', '#FF9000', '#FF0000', '#D60000', '#D60000', '#FF00F0', '#9600B4', '#AD90F0']
     cmap, norm = cm_collected.get_cmap(colors, extend='max', levels=levels)
 
