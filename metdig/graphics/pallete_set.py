@@ -220,7 +220,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     return fig, ax
 
 @kwargs_wrapper
-def cross_lonpres_pallete(figsize=(16, 9), levels=None, index=None, lon_cross=None, lat_cross=None,  
+def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None,  
                           title='', forcast_info='', title_loc='right', title_fontsize=25,
                           nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
 
@@ -230,6 +230,9 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, index=None, lon_cross=No
     ax = plt.axes()
 
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
+
+    for label in ax.get_yticklabels():
+        label.set_fontsize(15)
 
     # Adjust the y-axis to be logarithmic
     if(logyaxis):
@@ -256,9 +259,12 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, index=None, lon_cross=No
             x_labels.append(f'{x}\n{y}')
         ax.set_xticklabels(x_labels)
 
+    for label in ax.get_xticklabels():
+        label.set_fontsize(15)
+
     # ax.set_ylabel('Pressure (hPa)', fontsize=15)
     ax.set_ylabel('气压 (hPa)', fontsize=15)
-    ax.set_xlabel('Longitude', fontsize=15)
+    ax.set_xlabel('经度/纬度', fontsize=15)
 
     if forcast_info:
         ax.text(0.01, 1.005, forcast_info, transform=ax.transAxes, size=11, va='bottom',
@@ -275,7 +281,7 @@ def cross_lonpres_pallete(figsize=(16, 9), levels=None, index=None, lon_cross=No
     return fig, ax
 
 @kwargs_wrapper
-def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+def cross_timepres_pallete(figsize=(22, 15), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
                            nmc_logo=False, reverse_time=True, logyaxis=True, yoffset=0, add_tag=True, xtickfmt='%m月%d日%H时',**kwargs):
     """[时间剖面画板初始化]
 
@@ -309,7 +315,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
         label.set_horizontalalignment('right')
 
     #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
-    utl_plotmap.time_ticks_formatter(ax,times)
+    utl_plotmap.time_ticks_formatter(ax,times,if_minor=True)
 
     for label in ax.get_yticklabels():
         label.set_fontsize(15)
@@ -340,7 +346,7 @@ def cross_timepres_pallete(figsize=(16, 9), levels=None, times=None, title='', f
     return fig, ax
 
 @kwargs_wrapper
-def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+def cross_timeheight_pallete(figsize=(22, 15), heights=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
                              nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000],xtickfmt='%m月%d日%H时',**kwargs):
     if(reverse_time):
         times = times[::-1]
@@ -359,7 +365,7 @@ def cross_timeheight_pallete(figsize=(16, 9), heights=None, times=None, title=''
         label.set_fontsize(15)
         label.set_horizontalalignment('right')
     #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
-    utl_plotmap.time_ticks_formatter(ax,times)
+    utl_plotmap.time_ticks_formatter(ax,times,if_minor=True)
 
     for label in ax.get_yticklabels():
         label.set_fontsize(15)
