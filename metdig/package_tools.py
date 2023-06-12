@@ -1,5 +1,4 @@
 import os
-import folium
 import webbrowser
 
 
@@ -7,6 +6,12 @@ def easy_sel_point(zoom_start=5, openinwebbrowser=False):
     '''
     选择获取经纬度
     '''
+    
+    try:
+        import folium
+    except:
+        raise Exception("folium not exists, please install folium first, such as: pip install folium")
+    
     m = folium.Map(
         location=[35, 108],
         zoom_start=zoom_start,
