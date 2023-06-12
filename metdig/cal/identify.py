@@ -49,12 +49,18 @@ def java_class_func(jar_path, class_name, func_name, jvm_path=None, *args):
     """
     # jar包路径的配置
     if jar_path is None or not os.path.exists(jar_path):
-        raise Exception("jar not exists, please set jar_path such as: metdig.cal.set_jar_path(r'd:/sysIdentify2023.jar')")
+        raise Exception("jar not exists")
     # 这里指定了jvm
     if jvm_path:
         jvmpath = jvm_path
     else:
-        jvmpath = jpype.getDefaultJVMPath()
+        try:
+            jvmpath = jpype.getDefaultJVMPath()
+        except Exception as e:
+            msg = str(e)
+            msg += "\n"
+            msg += "jre not found, please install jre first, you can download jre installation package from https://www.java.com/zh-CN/download\n"
+            raise Exception("jvm path error")
 
     try:
         jpype.startJVM(jvmpath, "-ea", "-Djava.class.path=%s" % jar_path)
