@@ -28,7 +28,8 @@ def draw_high_low_center(hgt, ids, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     ids_contourf(obj.ax, ids,  kwargs=ids_contourf_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_vortex(u, v, ids, map_extent=(60, 145, 15, 55),
@@ -46,7 +47,8 @@ def draw_vortex(u, v, ids, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     mode_pcolormesh(obj.ax, ids, kwargs=ids_pcolormesh_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_trough(hgt, graphy, map_extent=(60, 145, 15, 55),
@@ -64,7 +66,8 @@ def draw_trough(hgt, graphy, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     graphy_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_reverse_trough(hgt, graphy, map_extent=(60, 145, 15, 55),
@@ -82,7 +85,8 @@ def draw_reverse_trough(hgt, graphy, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     graphy_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_convergence_line(u, v, graphy, map_extent=(60, 145, 15, 55),
@@ -100,7 +104,8 @@ def draw_convergence_line(u, v, graphy, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     graphy_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_shear(u, v, graphy, map_extent=(60, 145, 15, 55),
@@ -118,7 +123,8 @@ def draw_shear(u, v, graphy, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     shear_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_jet(u, v, wsp, graphy, map_extent=(60, 145, 15, 55),
@@ -137,7 +143,8 @@ def draw_jet(u, v, wsp, graphy, map_extent=(60, 145, 15, 55),
     wsp_pcolormesh(obj.ax, wsp, kwargs=wsp_pcolormesh_kwargs)
     uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     graphy_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_subtropical_high(hgt, graphy, map_extent=(60, 145, 15, 55),
@@ -155,7 +162,8 @@ def draw_subtropical_high(hgt, graphy, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     graphy_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_south_asia_high(hgt, graphy, map_extent=(60, 145, 15, 55),
@@ -173,4 +181,5 @@ def draw_south_asia_high(hgt, graphy, map_extent=(60, 145, 15, 55),
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     graphy_plot(obj.ax, graphy, kwargs=graphy_plot_kwargs)
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()

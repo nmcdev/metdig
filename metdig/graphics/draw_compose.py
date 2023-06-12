@@ -24,6 +24,7 @@ class horizontal_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         # crs = ccrs.AlbersEqualArea(central_latitude=(map_extent[2] + map_extent[3]) / 2.,
         #                            central_longitude=(map_extent[0] + map_extent[1]) / 2.,
@@ -34,8 +35,17 @@ class horizontal_compose(object):
 
         self.fig, self.ax = pallete_set.horizontal_pallete(map_extent=map_extent, forcast_info=description, **kwargs)
 
+        self.img = {}
+
     def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
 
 @kwargs_wrapper
 class cross_lonpres_compose(object):
@@ -49,12 +59,22 @@ class cross_lonpres_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         self.fig, self.ax = pallete_set.cross_lonpres_pallete(levels=levels, title=title, forcast_info=description, **kwargs)
 
-    def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        self.img = {}
 
+    def save(self):
+        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
+    
 @kwargs_wrapper
 class cross_timepres_compose(object):
     def __init__(self, levels, times, title='', description='', output_dir=None, png_name='',is_overwrite=False, **kwargs):
@@ -67,13 +87,23 @@ class cross_timepres_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         self.fig, self.ax = pallete_set.cross_timepres_pallete(
             levels=levels, times=np.array(times), title=title, forcast_info=description, **kwargs)
+        
+        self.img = {}
 
     def save(self):
         return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
 
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
+    
 @kwargs_wrapper
 class cross_timeheight_compose(object):
     def __init__(self, times, title='', description='', output_dir=None, png_name='',is_overwrite=False,**kwargs):
@@ -86,12 +116,22 @@ class cross_timeheight_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         self.fig, self.ax = pallete_set.cross_timeheight_pallete(times=np.array(times), title=title, forcast_info=description, **kwargs)
 
-    def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        self.img = {}
 
+    def save(self):
+        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
+    
 @kwargs_wrapper
 class skewt_compose(object):
     def __init__(self, title='', description='', output_dir=None, png_name='', is_overwrite=False,**kwargs):
@@ -104,12 +144,22 @@ class skewt_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         self.fig, self.skew = pallete_set.skewt_pallete( title=title, forcast_info=description, **kwargs)
 
-    def save(self):
-        return save(self.fig, self.skew.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        self.img = {}
 
+    def save(self):
+        return save(self.fig, self.skew.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
+    
 @kwargs_wrapper
 class time_series_left_right_bottom_compose(object):
     def __init__(self,times=None, title_left='', title_right='', label_leftax='', label_rightax='', label_bottomax='', output_dir=None, png_name='',is_overwrite=False, **kwargs):
@@ -122,13 +172,23 @@ class time_series_left_right_bottom_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         self.fig, self.ax_tmp, self.ax_rh, self.ax_uv = pallete_set.time_series_left_right_bottom(times=times,
             title_left=title_left, title_right=title_right, label_leftax=label_leftax, label_rightax=label_rightax, label_bottomax=label_bottomax,**kwargs)
 
-    def save(self):
-        return save(self.fig, [self.ax_tmp, self.ax_rh, self.ax_uv], self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        self.img = {}
 
+    def save(self):
+        return save(self.fig, [self.ax_tmp, self.ax_rh, self.ax_uv], self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
+    
 @kwargs_wrapper
 class twod_compose(object):
     def __init__(self, title='', description='', output_dir=None, png_name='',is_overwrite=False,**kwargs):
@@ -141,8 +201,19 @@ class twod_compose(object):
         self.is_clean_plt = kwargs.pop('is_clean_plt', False)
         self.is_return_figax = kwargs.pop('is_return_figax', False)
         self.is_return_pngname = kwargs.pop('is_return_pngname', False)
+        self.dpi = kwargs.pop('dpi', 200)
 
         self.fig, self.ax = pallete_set.twod_pallete(title=title, forcast_info=description, **kwargs)
 
+        self.img = {}
+
     def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+
+    def get_mpl(self):
+        return {
+            'fig': self.fig,
+            'ax': self.ax,
+            'img': self.img,
+        }
+    

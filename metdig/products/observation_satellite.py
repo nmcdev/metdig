@@ -34,12 +34,13 @@ def draw_fy4a_c009_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 5
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(159.3,299.7),kwargs=ir_pcolormesh_kwargs)
-    prmsl_contour(obj.ax, prmsl, linewidths=1.2,colors='#ED1C24', kwargs=prmsl_contour_kwargs)
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(159.3,299.7),kwargs=ir_pcolormesh_kwargs)
+    obj.img['prmsl'] = prmsl_contour(obj.ax, prmsl, linewidths=1.2,colors='#ED1C24', kwargs=prmsl_contour_kwargs)
     mslp_highlower_center_text(obj.ax, prmsl, map_extent)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='black' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='black' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_fy4a_c009_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
@@ -62,11 +63,12 @@ def draw_fy4a_c009_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(159.3,299.7),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='black' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    ulj_contour(obj.ax, wsp,colors='red', kwargs=wsp_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(159.3,299.7),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='black' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['wsp'] = ulj_contour(obj.ax, wsp,colors='red', kwargs=wsp_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 def draw_fy4a_c012_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, pv_contour_kwargs={},
@@ -88,12 +90,13 @@ def draw_fy4a_c012_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 5
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    prmsl_contour(obj.ax, prmsl , linewidths=1.2,colors='#000000', kwargs=pv_contour_kwargs)
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['prmsl'] = prmsl_contour(obj.ax, prmsl , linewidths=1.2,colors='#000000', kwargs=pv_contour_kwargs)
     mslp_highlower_center_text(obj.ax, prmsl, map_extent)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_fy4a_c012_hgt_uv_cape(ir, hgt, u, v, cape, map_extent=(60, 145, 15, 55),
@@ -116,11 +119,12 @@ def draw_fy4a_c012_hgt_uv_cape(ir, hgt, u, v, cape, map_extent=(60, 145, 15, 55)
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    cape_contour(obj.ax, cape , cb_fontsize=10,kwargs=pv_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['cape'] = cape_contour(obj.ax, cape , cb_fontsize=10,kwargs=pv_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 def draw_fy4a_c012_hgt_uv_pv(ir, hgt, u, v, pv, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, cape_contour_kwargs={},
@@ -142,15 +146,16 @@ def draw_fy4a_c012_hgt_uv_pv(ir, hgt, u, v, pv, map_extent=(60, 145, 15, 55),
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+
     levels=np.arange(5, 31, 5)
     cmap, norm = cm_collected.get_cmap('summer_r', extend='max', levels=levels, isLinear=True)
-
-    pv_contour(obj.ax, pv ,colors=None, levels=levels,linewidths=[0.8,0.8,1.1,1.4,1.7,2.0], cb_fontsize=10,
+    obj.img['pv'] = pv_contour(obj.ax, pv ,colors=None, levels=levels,linewidths=[0.8,0.8,1.1,1.4,1.7,2.0], cb_fontsize=10,
                 cmap=cmap,norm=norm,kwargs=cape_contour_kwargs) #'#86FB0A'
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 def draw_fy4a_c012_hgt_uv_div(ir, hgt, u, v, div, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, div_contour_kwargs={},
@@ -172,11 +177,12 @@ def draw_fy4a_c012_hgt_uv_div(ir, hgt, u, v, div, map_extent=(60, 145, 15, 55),
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    div_contourf(obj.ax, div, levels=np.arange(-12, -1, 2),alpha=0.3,colorbar_kwargs={'pos':'right'},kwargs=div_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['div'] = div_contourf(obj.ax, div, levels=np.arange(-12, -1, 2),alpha=0.3,colorbar_kwargs={'pos':'right'},kwargs=div_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_fy4a_c012_hgt_uv_spfh(ir, hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
@@ -199,11 +205,12 @@ def draw_fy4a_c012_hgt_uv_spfh(ir, hgt, u, v, spfh, map_extent=(60, 145, 15, 55)
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    spfh_contourf(obj.ax, spfh,colorbar_kwargs={'pos':'right'}, kwargs=spfh_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['spfh'] = spfh_contourf(obj.ax, spfh,colorbar_kwargs={'pos':'right'}, kwargs=spfh_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 def draw_fy4a_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, wsp_contour_kwargs={},
@@ -225,11 +232,12 @@ def draw_fy4a_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    ulj_contour(obj.ax, wsp, kwargs=wsp_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['wsp'] = ulj_contour(obj.ax, wsp, kwargs=wsp_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 def draw_fy2g_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, wsp_contour_kwargs={},
@@ -251,11 +259,12 @@ def draw_fy2g_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
-    ulj_contour(obj.ax, wsp, kwargs=wsp_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, levels=np.arange(121.6,336.2),kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, regrid_shape=15, length=5.2, color='white' ,kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, colors='orange' ,kwargs=hgt_contour_kwargs)
+    obj.img['wsp'] = ulj_contour(obj.ax, wsp, kwargs=wsp_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 145, 15, 55),
@@ -282,8 +291,9 @@ def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 14
     png_name = '卫星观测{1}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时.png'.format(ir_time, ir_name)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, kwargs=ir_pcolormesh_kwargs)
-    barbs_2d(obj.ax, sounding_u, sounding_v, length=7, lw=1.5, sizes=dict(emptybarb=0.0), regrid_shape=None, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    hgt_contour(obj.ax, hgt, levels=[588], linewidths=4, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['ir'] = ir_pcolormesh(obj.ax, ir, cmap=ir_cmap, kwargs=ir_pcolormesh_kwargs)
+    obj.img['uv'] = barbs_2d(obj.ax, sounding_u, sounding_v, length=7, lw=1.5, sizes=dict(emptybarb=0.0), regrid_shape=None, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.img['hgt_588'] = hgt_contour(obj.ax, hgt, levels=[588], linewidths=4, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()

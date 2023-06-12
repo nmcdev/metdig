@@ -23,6 +23,7 @@ def draw_wind_profiler(u, v, id, st_time, ed_time, uv_barbs_kwargs={}, **pallete
     png_name = '{2}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时{0:%M}分_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时{1:%M}分风廓线雷达时间剖面图.png'.format(st_time, ed_time, id)
 
     obj = draw_compose.cross_timeheight_compose( times=times, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    barbs_2d(obj.ax, u, v, xdim='time', ydim='level', color='k', length=5, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
+    obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='time', ydim='level', color='k', length=5, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()

@@ -214,4 +214,5 @@ def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     tmp_line = lines.Line2D([], [], color='r', label='温度')
     leg = obj.skew.ax.legend(handles=[td_line, tmp_line], title=None, framealpha=1)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()

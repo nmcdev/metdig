@@ -29,10 +29,11 @@ def draw_hgt_uv_cape(hgt, u, v, cape, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度_风_对流有效位能_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    cape_pcolormesh(obj.ax, cape, kwargs=cape_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['cape'] = cape_pcolormesh(obj.ax, cape, kwargs=cape_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_hgt_uv_theta(hgt, u, v, theta, map_extent=(60, 145, 15, 55),
@@ -53,10 +54,11 @@ def draw_hgt_uv_theta(hgt, u, v, theta, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度_风_相当位温_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    theta_pcolormesh(obj.ax, theta, kwargs=theta_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['theta'] = theta_pcolormesh(obj.ax, theta, kwargs=theta_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_hgt_uv_tmp(hgt, u, v, tmp, map_extent=(60, 145, 15, 55),
@@ -77,11 +79,12 @@ def draw_hgt_uv_tmp(hgt, u, v, tmp, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_温度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    tmp_pcolormesh(obj.ax, tmp, kwargs=tmp_pcolormesh_kwargs)
-    tmp_contour(obj.ax,tmp,levels=[-4],colors='red')
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['tmp_pcolormesh'] = tmp_pcolormesh(obj.ax, tmp, kwargs=tmp_pcolormesh_kwargs)
+    obj.img['tmp_contour'] = tmp_contour(obj.ax,tmp,levels=[-4],colors='red')
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 def draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=(60, 145, 15, 55),
                         tmpadv_contourf_kwargs={},tmp_contour_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
@@ -96,8 +99,9 @@ def draw_hgt_uv_tmpadv(hgt, u, v, tmp, tmpadv, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_温度平流_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    tmpadv_contourf(obj.ax, tmpadv, kwargs=tmpadv_contourf_kwargs)
-    tmp_contour(obj.ax, tmp, levels=np.arange(-60,40,4),linewidths=2,colors='red',linestyle='dashed', kwargs=tmp_contour_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['tmpadv'] = tmpadv_contourf(obj.ax, tmpadv, kwargs=tmpadv_contourf_kwargs)
+    obj.img['tmp'] = tmp_contour(obj.ax, tmp, levels=np.arange(-60,40,4),linewidths=2,colors='red',linestyle='dashed', kwargs=tmp_contour_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
