@@ -220,7 +220,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     return fig, ax
 
 @kwargs_wrapper
-def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None,  
+def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None, st_point=None, ed_point=None, 
                           title='', forcast_info='', title_loc='right', title_fontsize=25,
                           nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
 
@@ -242,6 +242,7 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
     ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
 
     if index is not None and lon_cross is not None and index is not lat_cross:
+        # 先以index为x轴刻度，把刻度替换成经纬度
         ax.set_xlim(index[0], index[-1])
         x_ticks = np.linspace(index[0], index[-1], 10).astype('int32')
         ax.set_xticks(x_ticks)
@@ -258,6 +259,15 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
                 y = f'{y:.2f}°S'
             x_labels.append(f'{x}\n{y}')
         ax.set_xticklabels(x_labels)
+
+        # 在x轴上标上points记号1-N
+        if st_point is not None and ed_point is not None:
+            st = np.array(st_point).reshape(-1, 2) # [[lat, lon]]
+            ed = np.array(ed_point).reshape(-1, 2) # [[lat, lon]]
+            endpoints = np.vstack([st, ed[-1, :].reshape(-1, 2)]) # [[lat, lon]]
+            for i, (plat, plon) in enumerate(endpoints):
+                idx = np.argmin((lon_cross - plon) ** 2 + (lat_cross - plat) ** 2)
+                ax.text(index[idx], levels[0], f'${i + 1}$', ha='center', va='bottom', fontsize=13, zorder=101, rotation=-15)
 
     for label in ax.get_xticklabels():
         label.set_fontsize(15)
