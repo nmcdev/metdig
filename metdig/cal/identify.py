@@ -161,7 +161,7 @@ def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
@@ -358,7 +358,7 @@ def convergence_line(u, v, resolution="low", smooth_times=0, min_size=100):
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
@@ -423,7 +423,7 @@ def shear(u, v, resolution="low", smooth_times=0, min_size=100):
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
@@ -488,7 +488,7 @@ def jet(u, v, resolution="low", smooth_times=0, min_size=100, jet_min_speed=12, 
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
