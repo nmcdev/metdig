@@ -78,7 +78,7 @@ def vortex(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
     if ret:
         return ret
 
-
+@date_init('init_time')
 def trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
            area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -111,7 +111,7 @@ def trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
     if ret:
         return ret
 
-
+@date_init('init_time')
 def reverse_trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -144,7 +144,7 @@ def reverse_trough(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if ret:
         return ret
 
-
+@date_init('init_time')
 def convergence_line(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
                      area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -176,7 +176,7 @@ def convergence_line(data_source='cassandra', data_name='ecmwf', init_time=None,
     if ret:
         return ret
 
-
+@date_init('init_time')
 def shear(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
           area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -208,7 +208,7 @@ def shear(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, 
     if ret:
         return ret
 
-
+@date_init('init_time')
 def jet(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
         area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -241,6 +241,9 @@ def jet(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv
 
     if ret:
         return ret
+if __name__ == '__main__':
+    jet(data_source='cmadaas', data_name='ecmwf_hr', init_time='2023050408', fhour=24, uv_lev=850, 
+                     is_mask_terrain=False)
 
 
 def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
