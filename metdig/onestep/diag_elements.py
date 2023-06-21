@@ -214,7 +214,7 @@ def dt2m_mx24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
             raise Exception('can not get any data')
 
     dtmx_2m = t_2m_1.isel(dtime=[-1]).copy()
-    dtmx_2m.values[:, :, :, 0, :, :] = t_2m_1.max(dim='dtime').values - t_2m_2.max(dim='dtime').values
+    dtmx_2m[:, :, :, 0, :, :] = t_2m_1.max(dim='dtime').values - t_2m_2.max(dim='dtime').values
     dtmx_2m.attrs['var_name'] = 'dtmx_2m'
     dtmx_2m.attrs['var_cn_name'] = '2米最高温度24小时变温'
 
