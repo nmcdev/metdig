@@ -1371,7 +1371,7 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='v', levels=levels, extent=minor_extent)
     pres = mdgstda.gridstda_full_like_by_levels(u, levels)
-    # mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
+    mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
