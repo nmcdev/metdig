@@ -36,7 +36,8 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
         ed = np.array(ed_point).reshape(-1, 2) # [[lat, lon]]
         endpoints = np.vstack([st, ed[-1, :].reshape(-1, 2)]) # [[lat, lon]]
         endpoints = crs.transform_points(ccrs.Geodetic(), endpoints[:, 1], endpoints[:, 0])
-
+        for i, (plon, plat, _) in enumerate(endpoints):
+            ax_inset.text(plon, plat, f'${i + 1}$', ha='left', va='bottom', fontsize=13, rotation=-15)
         ax_inset.scatter(endpoints[:, 0], endpoints[:, 1], c='k', zorder=2)
         pass
     
@@ -51,7 +52,7 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
 def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fontsize=25, reverse_time=True, xtickfmt='%m月%d日%H时'):
     
     l, b, w, h = ax.get_position().bounds
-    ax_inset = plt.axes([l, b - h*0.7 - 0.15, w, h * 0.7])
+    ax_inset = plt.axes([l, b - h*0.4 - 0.1, w, h * 0.4])
 
     if not title:
         title = f"过去{rain.attrs['valid_time']}小时降水"
@@ -64,7 +65,7 @@ def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fonts
         label.set_fontsize(15)
         label.set_horizontalalignment('right')
     #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
-    utl_plotmap.time_ticks_formatter(ax_inset, times)
+    utl_plotmap.time_ticks_formatter(ax_inset, times, if_minor=True)
 
     for label in ax_inset.get_yticklabels():
         label.set_fontsize(15)

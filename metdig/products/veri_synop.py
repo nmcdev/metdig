@@ -62,7 +62,8 @@ def draw_veri_tlogp(tmp,td,u,v,pres,tmp_sounding,td_sounding,u_sounding,v_soundi
 
     leg = obj.skew.ax.legend(handles=[td_line, tmp_line,uv_line,td_md_line,tmp_md_line,uv_md_line], title=None, framealpha=1)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 def draw_veri_tmp(tmp_fcst,tmp_bias,
                 map_extent=(60, 145, 15, 55),
@@ -78,11 +79,12 @@ def draw_veri_tmp(tmp_fcst,tmp_bias,
     forcast_info = '起报时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2}小时'.format(init_time, fcstTime, fhour)
     png_name = '{2:}_{3:}hPa_气温_预报检验_分析时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_预报时效_{1:}小时.png'.format(fcstTime, fhour, data_name.upper(),tmp_fcst['level'].values[0])
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    contourf_method.contourf_2d(obj.ax,tmp_bias,levels=np.arange(-5,5.1,0.25),cmap='ncl/BlueYellowRed',cb_label='温度偏差 (degC)',kwargs=tmp_bias_contourf_kwargs)
-    contour_method.contour_2d(obj.ax,tmp_bias,levels=np.arange(-5.,5.,1),linewidths=0.5,colors='red',cb_colors='red',cb_fontsize=10,kwargs=tmp_bias_contour_kwargs)
-    contour_method.contour_2d(obj.ax,tmp_fcst,levels=np.arange(-40,30,2),linewidths=1,kwargs=tmp_fcst_contour_kwargs)
+    obj.img['tmp_bias_contourf'] = contourf_method.contourf_2d(obj.ax,tmp_bias,levels=np.arange(-5,5.1,0.25),cmap='ncl/BlueYellowRed',cb_label='温度偏差 (degC)',kwargs=tmp_bias_contourf_kwargs)
+    obj.img['tmp_bias_contour'] = contour_method.contour_2d(obj.ax,tmp_bias,levels=np.arange(-5.,5.,1),linewidths=0.5,colors='red',cb_colors='red',cb_fontsize=10,kwargs=tmp_bias_contour_kwargs)
+    obj.img['tmp_fcst'] = contour_method.contour_2d(obj.ax,tmp_fcst,levels=np.arange(-40,30,2),linewidths=1,kwargs=tmp_fcst_contour_kwargs)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 def draw_veri_gust10m(gust10m_fcst,gust10m_obs,gustdir10m_obs,
                       map_extent=(60, 145, 15, 55),
@@ -129,7 +131,8 @@ def draw_veri_gust10m(gust10m_fcst,gust10m_obs,gustdir10m_obs,
                 color=cmap.colors[0], kwargs=gust10m_barb_kwargs)
     utl.add_colorbar(obj.ax,mpl.cm.ScalarMappable(norm=norm,cmap=cmap),extend='both',label='deviation (m/s)', kwargs=colorbar_kwargs)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 def draw_veri_heatwave(tmx24_2m_fcst, tmx24_2m_obs,
                       map_extent=(60, 145, 15, 55),
@@ -151,7 +154,7 @@ def draw_veri_heatwave(tmx24_2m_fcst, tmx24_2m_obs,
 
     
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    heatwave_contourf(obj.ax, tmx24_2m_fcst, kwargs=heatwave_contourf_kwargs)
+    obj.img['heatwave_contourf'] = heatwave_contourf(obj.ax, tmx24_2m_fcst, kwargs=heatwave_contourf_kwargs)
 
     col_data=tmx24_2m_obs.attrs['data_start_columns']
     _x = tmx24_2m_obs[tmx24_2m_obs.iloc[:,col_data] >= 33]['lon'].values
@@ -159,9 +162,10 @@ def draw_veri_heatwave(tmx24_2m_fcst, tmx24_2m_obs,
     _z = tmx24_2m_obs[tmx24_2m_obs.iloc[:,col_data] >= 33].iloc[:,col_data].values
     cmap, norm = cm_collected.get_cmap('YlOrBr', extend='max', levels=[33,35,37,40])
     cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
-    obj.ax.scatter(_x,_y,c=_z,s=(_z-33)*3+3,cmap=cmap,transform=ccrs.PlateCarree(), norm=norm,alpha=0.5)
+    obj.img['heatwave_scatter'] = obj.ax.scatter(_x,_y,c=_z,s=(_z-33)*3+3,cmap=cmap,transform=ccrs.PlateCarree(), norm=norm,alpha=0.5)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
 
 def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
                       hgt_fcst, u_fcst, v_fcst,
@@ -184,9 +188,10 @@ def draw_compare_gh_uv(hgt_ana, u_ana, v_ana,
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
     
-    uv_barbs(obj.ax, u_ana, v_ana, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt_ana, kwargs=hgt_contour_kwargs)
-    uv_barbs(obj.ax, u_fcst, v_fcst, color='blue', kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt_fcst, colors='blue', kwargs=hgt_contour_kwargs)
+    obj.img['uv_anl'] = uv_barbs(obj.ax, u_ana, v_ana, kwargs=uv_barbs_kwargs)
+    obj.img['hgt_anl'] = hgt_contour(obj.ax, hgt_ana, kwargs=hgt_contour_kwargs)
+    obj.img['uv_fcst'] = uv_barbs(obj.ax, u_fcst, v_fcst, color='blue', kwargs=uv_barbs_kwargs)
+    obj.img['hgt_fcst'] = hgt_contour(obj.ax, hgt_fcst, colors='blue', kwargs=hgt_contour_kwargs)
 
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()

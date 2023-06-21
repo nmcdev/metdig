@@ -12,7 +12,7 @@ import metdig.cal as mdgcal
 
 @date_init('init_time')
 def high_low_center(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=1000, is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -21,7 +21,8 @@ def high_low_center(data_source='cassandra', data_name='ecmwf', init_time=None, 
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
 
-    caldata = mdgcal.high_low_center(hgt, smooth_times=10)
+    smooth_times = identify_kwargs.pop('smooth_times', 10)
+    caldata = mdgcal.high_low_center(hgt, smooth_times=smooth_times, **identify_kwargs)
     ids = caldata['ids']
 
     hgt = mdgcal.smooth_n_point(hgt, 5)
@@ -47,7 +48,7 @@ def high_low_center(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
 @date_init('init_time')
 def vortex(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
-           area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+           area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -56,7 +57,7 @@ def vortex(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
 
-    caldata = mdgcal.vortex(u, v)
+    caldata = mdgcal.vortex(u, v, **identify_kwargs)
     ids = caldata['ids']
 
     if is_return_data:
@@ -80,7 +81,7 @@ def vortex(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
 
 @date_init('init_time')
 def trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
-           area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+           area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -89,7 +90,9 @@ def trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
 
-    caldata = mdgcal.trough(hgt, smooth_times=10, min_size=500)
+    smooth_times = identify_kwargs.pop('smooth_times', 10)
+    min_size = identify_kwargs.pop('min_size', 500)
+    caldata = mdgcal.trough(hgt, smooth_times=smooth_times, min_size=min_size, **identify_kwargs)
     graphy = caldata['graphy']
 
     hgt = mdgcal.smooth_n_point(hgt, 5)
@@ -113,7 +116,7 @@ def trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
 
 @date_init('init_time')
 def reverse_trough(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
-                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                   area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -122,7 +125,8 @@ def reverse_trough(data_source='cassandra', data_name='ecmwf', init_time=None, f
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
 
-    caldata = mdgcal.reverse_trough(hgt, smooth_times=10)
+    smooth_times = identify_kwargs.pop('smooth_times', 10)
+    caldata = mdgcal.reverse_trough(hgt, smooth_times=smooth_times, **identify_kwargs)
     graphy = caldata['graphy']
 
     hgt = mdgcal.smooth_n_point(hgt, 5)
@@ -146,7 +150,7 @@ def reverse_trough(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
 @date_init('init_time')
 def convergence_line(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
-                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                     area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -155,7 +159,8 @@ def convergence_line(data_source='cassandra', data_name='ecmwf', init_time=None,
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
 
-    caldata = mdgcal.convergence_line(u, v, min_size=300)
+    min_size = identify_kwargs.pop('min_size', 300)
+    caldata = mdgcal.convergence_line(u, v, min_size=min_size, **identify_kwargs)
     graphy = caldata['graphy']
 
     if is_return_data:
@@ -178,7 +183,7 @@ def convergence_line(data_source='cassandra', data_name='ecmwf', init_time=None,
 
 @date_init('init_time')
 def shear(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
-          area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+          area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -187,7 +192,8 @@ def shear(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, 
     u = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
     v = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
 
-    caldata = mdgcal.shear(u, v, min_size=400)
+    min_size = identify_kwargs.pop('min_size', 400)
+    caldata = mdgcal.shear(u, v, min_size=min_size, **identify_kwargs)
     graphy = caldata['graphy']
 
     if is_return_data:
@@ -210,7 +216,7 @@ def shear(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, 
 
 @date_init('init_time')
 def jet(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv_lev=850, is_mask_terrain=True,
-        area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+        area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -221,7 +227,9 @@ def jet(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, uv
 
     wsp = mdgcal.wind_speed(u, v)
 
-    caldata = mdgcal.jet(u, v, min_size=300, only_south_jet=True)
+    min_size = identify_kwargs.pop('min_size', 300)
+    only_south_jet = identify_kwargs.pop('only_south_jet', True)
+    caldata = mdgcal.jet(u, v, min_size=min_size, only_south_jet=only_south_jet, **identify_kwargs)
     graphy = caldata['graphy']
 
     if is_return_data:
@@ -247,7 +255,7 @@ if __name__ == '__main__':
 
 
 def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
-                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                     area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -256,7 +264,8 @@ def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None,
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
 
-    caldata = mdgcal.subtropical_high(hgt, smooth_times=20)
+    smooth_times = identify_kwargs.pop('smooth_times', 20)
+    caldata = mdgcal.subtropical_high(hgt, smooth_times=smooth_times, **identify_kwargs)
     graphy = caldata['graphy']
 
     hgt = mdgcal.smooth_n_point(hgt, 5)
@@ -281,7 +290,7 @@ def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None,
 
 
 def south_asia_high(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=100, is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
 
     # get area
@@ -290,7 +299,9 @@ def south_asia_high(data_source='cassandra', data_name='ecmwf', init_time=None, 
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour,
                          data_name=data_name, var_name='hgt', level=hgt_lev, extent=map_extent)
 
-    caldata = mdgcal.south_asia_high(hgt, smooth_times=20, sn_height=16680)
+    smooth_times = identify_kwargs.pop('smooth_times', 20)
+    sn_height = identify_kwargs.pop('sn_height', 16680)
+    caldata = mdgcal.south_asia_high(hgt, smooth_times=smooth_times, sn_height=sn_height, **identify_kwargs)
     graphy = caldata['graphy']
 
     hgt = mdgcal.smooth_n_point(hgt, 5)

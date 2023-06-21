@@ -234,7 +234,8 @@ def cref_contourf(ax, stda, xdim='lon', ydim='lat',
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)  # mm
-    z[z<15]=np.nan
+    # z[z<15]=np.nan
+    z = np.where(z<15, np.nan, z)
     colors = ['#01A0F6', '#00ECEC', '#00D800', '#019000', '#FFFF00', '#E7C000', '#FF9000', '#FF0000', '#D60000', '#D60000', '#FF00F0', '#9600B4', '#AD90F0']
     cmap, norm = cm_collected.get_cmap(colors, extend='max', levels=levels)
 
@@ -354,7 +355,8 @@ def tmpadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e4  # 1e-4/s
     if(filter_low):
-        z[np.abs(z)<1]=np.nan
+        # z[np.abs(z)<1]=np.nan
+        z = np.where(np.abs(z)<1, np.nan, z)
     cmap = cm_collected.get_cmap(cmap,levels)
 
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
@@ -374,7 +376,8 @@ def vortadv_contourf(ax, stda,  xdim='lon', ydim='lat',
     z = stda.stda.get_value(ydim, xdim)  # 1/s
     z = z * 1e8  # 1e-8/s
     if if_mask:
-        z[np.abs(z)<np.sort(np.abs(levels))[1]]=np.nan
+        # z[np.abs(z)<np.sort(np.abs(levels))[1]]=np.nan
+        z = np.where(np.abs(z)<np.sort(np.abs(levels))[1], np.nan, z)
     cmap = cm_collected.get_cmap(cmap)
     img = ax.contourf(x, y, z, levels, cmap=cmap, alpha=alpha, transform=transform, extend=extend, **kwargs)
     if add_colorbar:
@@ -563,7 +566,7 @@ def cross_rh_contourf(ax, stda, xdim='lon', ydim='level',
     if cmap is None:
         cmap = col.LinearSegmentedColormap.from_list('own2', ['#1E90FF','#94D8F6','#F1F1F1','#BFBFBF','#696969'])
     else:
-        cmap = cm_collected.get_cmap(cmap, extend=extend,)
+        cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, extend=extend,**kwargs)
     if add_colorbar:

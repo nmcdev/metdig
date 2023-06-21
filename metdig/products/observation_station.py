@@ -26,6 +26,7 @@ def draw_blowup_sounding(pres,thta,theta,thetaes,u,v,extent=(260,400,1000,100),u
          color='black', length=6, fill_empty=False, sizes=dict(emptybarb=0.05),barb_increments={'half': 2, 'full': 4, 'flag': 20})
     obj.ax.legend(fontsize=15)
     obj.save()
+    return obj.get_mpl()
 
 
 def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp,
@@ -83,5 +84,6 @@ def draw_obs_uv_tmp_rh_rain(tmp, u, v, rh, rain, wsp,
     obj.ax_tmp.legend(fontsize=15, loc='upper right')
 
     # save
-    return obj.save()
+    obj.save()
+    return obj.get_mpl()
     

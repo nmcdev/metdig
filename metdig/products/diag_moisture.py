@@ -26,10 +26,11 @@ def draw_hgt_uv_wvfldiv(hgt, u, v, wvfldiv, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_水汽通量散度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    wvfldiv_contourf(obj.ax, wvfldiv, kwargs=wvfldiv_countourf_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['wvfldiv'] = wvfldiv_contourf(obj.ax, wvfldiv, kwargs=wvfldiv_countourf_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 def draw_hgt_uv_tcwv(hgt, u, v, tcwv, map_extent=(60, 145, 15, 55),
                      tcwv_pcolormesh_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
@@ -45,10 +46,11 @@ def draw_hgt_uv_tcwv(hgt, u, v, tcwv, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_整层可降水量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    tcwv_pcolormesh(obj.ax, tcwv, kwargs=tcwv_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['tcwv'] = tcwv_pcolormesh(obj.ax, tcwv, kwargs=tcwv_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_hgt_uv_rh(hgt, u, v, rh, map_extent=(60, 145, 15, 55),
@@ -65,10 +67,11 @@ def draw_hgt_uv_rh(hgt, u, v, rh, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_相对湿度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    rh_pcolormesh(obj.ax, rh, kwargs=rh_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['rh'] = rh_pcolormesh(obj.ax, rh, kwargs=rh_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
@@ -85,10 +88,11 @@ def draw_hgt_uv_spfh(hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度_风_绝对湿度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    spfh_pcolormesh(obj.ax, spfh, kwargs=spfh_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['spfh'] = spfh_pcolormesh(obj.ax, spfh, kwargs=spfh_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()
 
 
 def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55),
@@ -105,7 +109,8 @@ def draw_hgt_uv_wvfl(hgt, u, v, wvfl, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_水汽通量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    wvfl_pcolormesh(obj.ax, wvfl, kwargs=wvfl_pcolormesh_kwargs)
-    uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
-    hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
-    return obj.save()
+    obj.img['wvfl'] = wvfl_pcolormesh(obj.ax, wvfl, kwargs=wvfl_pcolormesh_kwargs)
+    obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
+    obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
+    obj.save()
+    return obj.get_mpl()

@@ -49,12 +49,18 @@ def java_class_func(jar_path, class_name, func_name, jvm_path=None, *args):
     """
     # jar包路径的配置
     if jar_path is None or not os.path.exists(jar_path):
-        raise Exception("jar not exists, please set jar_path such as: metdig.cal.set_jar_path(r'd:/sysIdentify2023.jar')")
+        raise Exception("jar not exists")
     # 这里指定了jvm
     if jvm_path:
         jvmpath = jvm_path
     else:
-        jvmpath = jpype.getDefaultJVMPath()
+        try:
+            jvmpath = jpype.getDefaultJVMPath()
+        except Exception as e:
+            msg = str(e)
+            msg += "\n"
+            msg += "jre not found, please install jre first, you can download jre installation package from https://www.java.com/zh-CN/download\n"
+            raise Exception("jvm path error")
 
     try:
         jpype.startJVM(jvmpath, "-ea", "-Djava.class.path=%s" % jar_path)
@@ -155,7 +161,7 @@ def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
@@ -352,7 +358,7 @@ def convergence_line(u, v, resolution="low", smooth_times=0, min_size=100):
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
@@ -417,7 +423,7 @@ def shear(u, v, resolution="low", smooth_times=0, min_size=100):
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，
@@ -482,7 +488,7 @@ def jet(u, v, resolution="low", smooth_times=0, min_size=100, jet_min_speed=12, 
     u : `stda`
         u分量风场数据，暂时只支持数据只包含单个平面的情景
     v : `stda`
-        u分量风场数据，暂时只支持数据只包含单个平面的情景
+        v分量风场数据，暂时只支持数据只包含单个平面的情景
 
     resolution : `str`, optional
         系统识别算法涉及较多参数，而这些参数的最有值和网格分辨率有关，为了简化系统识别算法的使用，

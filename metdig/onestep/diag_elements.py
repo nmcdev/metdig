@@ -44,7 +44,7 @@ def t2m_mx24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
                 raise Exception('can not get any data')
 
         tmx24_2m = t2m.isel(dtime=[-1]).copy()
-        tmx24_2m.values[:, :, :, 0, :, :] = t2m.max(dim='dtime').values
+        tmx24_2m[dict(dtime=0)] = t2m.max(dim='dtime').values
         tmx24_2m.attrs['var_name'] = 'tmx24_2m'
         tmx24_2m.attrs['var_cn_name'] = '过去24小时2米最高温度'
         tmx24_2m.attrs['valid_time'] = 24
@@ -81,7 +81,7 @@ def t2m_mn24(data_source='cassandra', data_name='nwfd_scmoc', init_time=None, fh
                 raise Exception('can not get any data')
 
         tmn24_2m = t2m.isel(dtime=[-1]).copy()
-        tmn24_2m.values[:, :, :, 0, :, :] = t2m.min(dim='dtime').values
+        tmn24_2m[dict(dtime=0)] = t2m.min(dim='dtime').values
         tmn24_2m.attrs['var_name'] = 'tmn24_2m'
         tmn24_2m.attrs['var_cn_name'] = '过去24小时2米最低温度'
         tmn24_2m.attrs['valid_time'] = 24
@@ -214,7 +214,11 @@ def dt2m_mx24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
             raise Exception('can not get any data')
 
     dtmx_2m = t_2m_1.isel(dtime=[-1]).copy()
+<<<<<<< HEAD
     dtmx_2m[:, :, :, 0, :, :] = t_2m_1.max(dim='dtime').values - t_2m_2.max(dim='dtime').values
+=======
+    dtmx_2m[dict(dtime=0)] = t_2m_1.max(dim='dtime').values - t_2m_2.max(dim='dtime').values
+>>>>>>> 98293b8be4bc96563be1b03db8f1d9233cb0bab9
     dtmx_2m.attrs['var_name'] = 'dtmx_2m'
     dtmx_2m.attrs['var_cn_name'] = '2米最高温度24小时变温'
 
@@ -268,7 +272,7 @@ def dt2m_mn24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
             raise Exception('can not get any data')
 
     dtmn_2m = t_2m_1.isel(dtime=[-1]).copy()
-    dtmn_2m.values[:, :, :, 0, :, :] = t_2m_1.min(dim='dtime').values - t_2m_2.min(dim='dtime').values
+    dtmn_2m[dict(dtime=0)] = t_2m_1.min(dim='dtime').values - t_2m_2.min(dim='dtime').values
     dtmn_2m.attrs['var_name'] = 'dtmn_2m'
     dtmn_2m.attrs['var_cn_name'] = '2米最低温度24小时变温'
 
@@ -311,7 +315,7 @@ def dt2m_mean24(data_source='cassandra', data_name='cma_gfs', init_time=None, fh
                              var_name='t2m', extent=map_extent)
 
     dtmean_2m = t_2m_1.isel(dtime=[-1]).copy()
-    dtmean_2m.values[:, :, :, 0, :, :] = t_2m_1.mean(dim='dtime').values - t_2m_2.mean(dim='dtime').values
+    dtmean_2m[dict(dtime=0)] = t_2m_1.mean(dim='dtime').values - t_2m_2.mean(dim='dtime').values
     dtmean_2m.attrs['var_name'] = 'dtmean_2m'
     dtmean_2m.attrs['var_cn_name'] = '2米平均温度24小时变温'
 
