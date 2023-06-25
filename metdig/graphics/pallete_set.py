@@ -222,7 +222,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 @kwargs_wrapper
 def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None, st_point=None, ed_point=None, 
                           title='', forcast_info='', title_loc='right', title_fontsize=25,
-                          nmc_logo=False,add_tag=True,logyaxis=True,**kwargs):
+                          nmc_logo=False, add_tag=True, logyaxis=True, yoffset=0,**kwargs):
 
     plt_base_env()  # 初始化字体中文等
 
@@ -240,6 +240,10 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
     ax.set_yticklabels(np.arange(levels[0], levels[-1]-1, -100))
     ax.set_ylim(levels[0], levels[-1])
     ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
+    if levels is not None:
+        # ax.set_ylim(levels.max(), levels.min())
+        yoffset = abs(levels[0] - levels[-1]) * yoffset
+        ax.set_ylim(levels.max() + yoffset, levels.min() - yoffset)
 
     if index is not None and lon_cross is not None and index is not lat_cross:
         # 先以index为x轴刻度，把刻度替换成经纬度
@@ -267,7 +271,7 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
             endpoints = np.vstack([st, ed[-1, :].reshape(-1, 2)]) # [[lat, lon]]
             for i, (plat, plon) in enumerate(endpoints):
                 idx = np.argmin((lon_cross - plon) ** 2 + (lat_cross - plat) ** 2)
-                ax.text(index[idx], levels[0], f'${i + 1}$', ha='center', va='bottom', fontsize=13, zorder=101, rotation=-15)
+                ax.text(index[idx], ax.get_ylim()[0], f'${i + 1}$', ha='center', va='bottom', fontsize=13, zorder=101, rotation=-15)
 
     for label in ax.get_xticklabels():
         label.set_fontsize(15)
