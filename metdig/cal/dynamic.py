@@ -14,6 +14,7 @@ from metpy.units import units
 from metdig.cal.other import distance
 from metdig.cal.lib import utility as utl
 import metdig.utl.utl_stda_grid as utl_stda_grid
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
     'geostrophic_wind',
@@ -29,6 +30,7 @@ __all__ = [
 
 ]
 
+@check_stda(['hgt'])
 def geostrophic_wind(hgt):
     ug=hgt.copy()
     vg=hgt.copy()
@@ -49,6 +51,8 @@ def geostrophic_wind(hgt):
     vg = utl.quantity_to_stda_byreference('vg', vg.values *  ug2d.units, vg)
     return ug,vg
 
+@check_stda(['w', 'tmp'])
+@unifydim_stda(['w', 'tmp'])
 def vertical_velocity_pressure(w, tmp, mir=0):
     '''
 
@@ -56,8 +60,8 @@ def vertical_velocity_pressure(w, tmp, mir=0):
 
     Arguments:
         w  {[stda]} -- [ Vertical velocity in terms of height.]
-        temperature {[stda]} -- [x component of the wind.]
-        mir {[stda]} -- [y component of the wind. ]
+        temperature {[stda]} -- [Air temperature.]
+        mir {[stda]} -- [Mixing ratio of air. ]
     '''
     omega = utl.stda_to_quantity(w)
     temperature = utl.stda_to_quantity(tmp)
@@ -67,6 +71,8 @@ def vertical_velocity_pressure(w, tmp, mir=0):
     vvel = utl.quantity_to_stda_byreference('vvel', vvel, w)
     return vvel
 
+@check_stda(['vvel', 'tmp'])
+@unifydim_stda(['vvel', 'tmp'])
 def vertical_velocity(vvel, tmp, mir=0):
     '''
 
@@ -74,8 +80,8 @@ def vertical_velocity(vvel, tmp, mir=0):
 
     Arguments:
         vvel {[stda]} -- [omega.]
-        temperature {[stda]} -- [x component of the wind.]
-        mir {[stda]} -- [y component of the wind. ]
+        temperature {[stda]} -- [Air temperature.]
+        mir {[stda]} -- [Mixing ratio of air. ]
     '''
     omega = utl.stda_to_quantity(vvel)
     temperature = utl.stda_to_quantity(tmp)
@@ -85,6 +91,8 @@ def vertical_velocity(vvel, tmp, mir=0):
     w = utl.quantity_to_stda_byreference('w', w, vvel)
     return w
 
+@check_stda(['var', 'u', 'v'])
+@unifydim_stda(['var', 'u', 'v'])
 def var_advect(var, u, v):
     '''
 
@@ -115,6 +123,8 @@ def var_advect(var, u, v):
     return adv
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def vorticity(u, v):
     '''
 
@@ -152,6 +162,8 @@ def vorticity(u, v):
     return vort
 
 
+@check_stda(['thta', 'u', 'v'])
+@unifydim_stda(['thta', 'u', 'v'])
 def frontogenesis(thta, u, v):
     '''
 
@@ -191,6 +203,8 @@ def frontogenesis(thta, u, v):
     return fg
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def absolute_vorticity(u, v):
     '''
 
@@ -228,6 +242,8 @@ def absolute_vorticity(u, v):
     return absv
 
 
+@check_stda(['thta', 'pres', 'u', 'v'])
+@unifydim_stda(['thta', 'pres', 'u', 'v'])
 def potential_vorticity_baroclinic(thta, pres, u, v):
     '''
 
@@ -274,6 +290,8 @@ def potential_vorticity_baroclinic(thta, pres, u, v):
     return pv
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def divergence(u, v):
     '''
 
@@ -304,6 +322,8 @@ def divergence(u, v):
     return div
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def shear_vorticity(u, v, fill_value=np.nan):
     '''
 

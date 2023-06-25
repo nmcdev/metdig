@@ -9,6 +9,7 @@ import xarray as xr
 import metpy.calc as mpcalc
 
 from metdig.cal.lib import utility as utl
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
     'dry_static_energy',
@@ -86,6 +87,7 @@ __all__ = [
 #     pres=metdig.utl.gridstda_full_like_by_levels(spfh,spfh['level'].values)
 #     geohgt=mean_pressure_weighted(pres,spfh,hgt=hgt)
 #     print(geohgt)
+@check_stda(['pressure'])
 def pressure_to_height_std(pressure):
     #Convert pressure data to height using the U.S. standard atmosphere [NOAA1976].
     #The implementation uses the formula outlined in [Hobbs1977] pg.60-61.
@@ -95,6 +97,7 @@ def pressure_to_height_std(pressure):
     return height
 
 
+@check_stda(['hgt'])
 def height_to_geopotential(hgt):
     """_summary_
 
@@ -107,6 +110,7 @@ def height_to_geopotential(hgt):
 
     return geohgt
 
+@check_stda(['geohgt'])
 def geopotential_to_height(geohgt):
     """_summary_
 
@@ -130,6 +134,8 @@ def geopotential_to_height(geohgt):
     hgt=utl.quantity_to_stda_byreference('hgt', hgt_p, geohgt)
     return hgt
 
+@check_stda(['hgt', 'tmp'])
+@unifydim_stda(['hgt', 'tmp'])
 def dry_static_energy(hgt,tmp):
     """_summary_
 
@@ -155,6 +161,8 @@ def dry_static_energy(hgt,tmp):
     drsteg=utl.quantity_to_stda_byreference('drsteg', drsteg_p, tmp)
     return drsteg
 
+@check_stda(['pres', 'tmp'])
+@unifydim_stda(['pres', 'tmp'])
 def dry_lapse(pres,tmp,reference_pres=None,vertical_dim=0):
     """_summary_
     Calculate the temperature at a level assuming only dry processes.
@@ -177,6 +185,8 @@ def dry_lapse(pres,tmp,reference_pres=None,vertical_dim=0):
     tmp2=utl.quantity_to_stda_byreference('tmp', tmp_p2, tmp)
     return tmp2
 
+@check_stda(['pres', 'tmp', 'mixr'])
+@unifydim_stda(['pres', 'tmp', 'mixr'])
 def air_density(pres,tmp,mixr,**kwargs):
     """_summary_
         Calculate air parcel air_density.
@@ -194,6 +204,8 @@ def air_density(pres,tmp,mixr,**kwargs):
 
     return density
 
+@check_stda(['pres', 'hgt'])
+@unifydim_stda(['hgt', 'pres'])
 def add_pres_to_hgt(hgt,pres):
     """_summary_
     'Calculate the height at a certain pressure above another height.'
@@ -210,6 +222,8 @@ def add_pres_to_hgt(hgt,pres):
     return addhgt
 
 
+@check_stda(['pres', 'hgt'])
+@unifydim_stda(['pres', 'hgt'])
 def add_hgt_to_pres(pres,hgt):
     """_summary_
     'Calculate the pressure at a certain height above another pressure level.'
@@ -226,6 +240,7 @@ def add_hgt_to_pres(pres,hgt):
     return addpres
 
 
+@check_stda(['stda_data'])
 def smooth_n_point(stda_data, n=5, passes=1):
     '''
     see detail:
@@ -242,6 +257,7 @@ def smooth_n_point(stda_data, n=5, passes=1):
     return result
 
 
+@check_stda(['input_stda'])
 def gaussian_filter(input_stda, sigma, order=0, output=None, mode='reflect', cval=0.0, truncate=4.0):
     '''
     see detail: 
@@ -259,6 +275,8 @@ def gaussian_filter(input_stda, sigma, order=0, output=None, mode='reflect', cva
     return result
 
 
+@check_stda(['wsp', 'wdir'])
+@unifydim_stda(['wsp', 'wdir'])
 def wind_components(wsp, wdir):
     '''
 
@@ -281,7 +299,8 @@ def wind_components(wsp, wdir):
 
     return u, v
 
-
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def wind_direction(u, v):
     '''
 
@@ -304,6 +323,7 @@ def wind_direction(u, v):
     return wdir
 
 
+@unifydim_stda(['u', 'v'])
 def wind_speed(u, v):
     '''
 

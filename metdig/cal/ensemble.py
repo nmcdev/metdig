@@ -2,6 +2,7 @@ from datetime import datetime,timedelta
 import xarray as xr
 import numpy as np
 from scipy.stats import t
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
     'ensemble_sensitive',
@@ -19,6 +20,8 @@ def critical_r(sig_lev,n):
     r=np.sqrt((tt**2/(n-2+tt**2)))
     return r
 
+@check_stda(['var_x', 'var_y'])
+@unifydim_stda(['var_x', 'var_y'])
 def ensemble_sensitive(var_x,var_y,mean_area,sig_lev):
     #var_x敏感度自变量
     #var_y敏感度因变量
@@ -43,23 +46,17 @@ if __name__ == '__main__':
     test=ensemble_sensitive(var1,var2,mean_area=[100,110,30,40],sig_lev=0.95)
     print(test)
 
-'''
 
-
-author: 郭楠楠
-date: 2023-6-12
-
-'''
-
+@check_stda(['stda'])
 def tubing(stda, extent_tube_based=None, threshold_tube=0.5):
     r"""Tubing算法
-    By 郭楠楠
+    author: 郭楠楠
+    date: 2023-6-12
 
     Parameters
     ----------
     hgt : `stda`
         暂时只支持数据只包含单个平面的情景
-
 
     extent_tube_based : `list`, optional
         extent of the tube, such as [70., 136., 10., 55.]
