@@ -337,9 +337,41 @@ class __STDADataArrayAccessor(object):
     def __init__(self, xr):
         self._xr = xr
 
+    def print(self):
+        print(f'<stda {self._xr.name} {dict(self._xr.sizes)}')
+        print(f'array([[[[[[{self._xr.values[0,0,0,0,0,0]} ... {self._xr.values[-1,-1,-1,-1,-1,-1]}]]]]]]], {self._xr.size} values with dtype={self._xr.dtype})')
+        print(self._xr.coords)
+        print('Attributes:')
+        for k, v in self._xr.attrs.items():
+            print(f"    {k + ':':14s} {v}")
+
+    def is_stda(self):
+        if self._xr.ndim == 6 and self._xr.dims == ('member', 'level', 'time', 'dtime', 'lat', 'lon'):
+            return True
+        return False
+    
+    def equal_dim(self, other, compare_dim_value=True):
+        """[判断当前stda和other维度信息是否一样]
+        Returns:
+            [bool]: []
+        """
+        if self._xr.dims != other.dims:
+            return False
+        for dim in self._xr.dims:
+            a = self._xr[dim].values
+            b = other[dim].values
+            if a.shape != b.shape: # 判断维度长度是否一致
+                return False
+            if compare_dim_value and (a == b).all() == False: # 判断维度内容是否一致
+                return False
+        return True
+
+    @property
+    def type(self):
+        return 'DataArray'
+
     @property
     def horizontal_resolution(self):
-
         """[获取水平分辨率,仅对格点数据有效]
         Returns:
             [pd.series]: [level]
