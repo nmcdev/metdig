@@ -227,7 +227,7 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
-    ax = plt.axes()
+    ax = fig.add_subplot()
 
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
@@ -316,7 +316,7 @@ def cross_timepres_pallete(figsize=(22, 15), levels=None, times=None, title='', 
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
-    ax = plt.axes()
+    ax = fig.add_subplot()
 
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
@@ -368,7 +368,7 @@ def cross_timeheight_pallete(figsize=(22, 15), heights=None, times=None, title='
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
-    ax = plt.axes()
+    ax = fig.add_subplot()
 
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
@@ -573,7 +573,7 @@ def twod_pallete(figsize=(14, 12), title='', forcast_info='', nmc_logo=False,add
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
-    ax = plt.axes()
+    ax = fig.add_subplot()
 
     ax.set_title(title, loc='right', fontsize=23)
 

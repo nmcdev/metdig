@@ -28,7 +28,7 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
         stda ([type]): [stda标准格式]
         xdim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lon'.
         ydim (type, optional): [stda维度名 member, level, time dtime, lat, lon或fcst_time]. Defaults to 'lat'.
-        add_clabel (bool, optional): [是否调用plt.clabel]. Defaults to True.
+        add_clabel (bool, optional): [是否调用ax.clabel]. Defaults to True.
         cb_fontsize (int, optional): [clabel字体大小]. Defaults to None.
         cb_fmt (str, optional): [clabel字体格式]. Defaults to None.
         cb_colors (str, optional): [clabel字体颜色]. Defaults to None.
@@ -53,9 +53,9 @@ def contour_2d(ax, stda, xdim='lon', ydim='lat',
     if add_clabel:
         cb_level = levels if cb_level is None else cb_level
         if cb_level is None:
-            plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
+            ax.clabel(img, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
         else:
-            plt.clabel(img, cb_level, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
+            ax.clabel(img, cb_level, inline=1, fontsize=cb_fontsize, fmt=cb_fmt, colors=cb_colors)
     
     return img
 
@@ -76,7 +76,7 @@ def spfh_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=13, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=13, fmt='%.0f', colors=colors)
     return img
 
 @kwargs_wrapper
@@ -92,7 +92,7 @@ def ulj_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=13, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=13, fmt='%.0f', colors=colors)
     return img
 
 
@@ -110,7 +110,7 @@ def rain_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, norm=norm, cmap=cmap, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+        ax.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
     return img
 
 @kwargs_wrapper
@@ -137,7 +137,7 @@ def hgt_spaghetti_contour(ax, stda,  xdim='lon', ydim='lat',
     z=stda.mean('member').stda.get_value(ydim, xdim)
     img.append(ax.contour(x, y, z, levels=levels, transform=transform, colors='black', linewidths=linewidths,label='集合平均', **kwargs))
     if add_clabel:
-        plt.clabel(img[-1], inline=1, fontsize=20, fmt='%.0f', colors='black')
+        ax.clabel(img[-1], inline=1, fontsize=20, fmt='%.0f', colors='black')
 
     return img
 
@@ -154,7 +154,7 @@ def hgt_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, transform=transform, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
+        ax.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors='black')
     return img
 
 @kwargs_wrapper
@@ -169,7 +169,7 @@ def vort_contour(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
     return img
 
 @kwargs_wrapper
@@ -184,7 +184,7 @@ def div_contour(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=20, fmt='%.0f', colors=colors)
     return img
 
 @kwargs_wrapper
@@ -198,7 +198,7 @@ def cape_contour(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=cb_fontsize, fmt='%.0f', colors=colors)
     return img
 
 
@@ -215,7 +215,7 @@ def pv_contour(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=cb_fontsize, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=cb_fontsize, fmt='%.0f', colors=colors)
     return img
 
 
@@ -230,7 +230,7 @@ def prmsl_contour(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        plt.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors=colors)
+        ax.clabel(img, inline=1, fontsize=15, fmt='%.0f', colors=colors)
     return img
 
 
@@ -245,7 +245,7 @@ def tmp_contour(ax, stda,  xdim='lon', ydim='lat',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, transform=transform, **kwargs)
     if add_clabel:
-        cl = plt.clabel(img, inline=1, fontsize=15, fmt='%i', colors=colors)
+        cl = ax.clabel(img, inline=1, fontsize=15, fmt='%i', colors=colors)
         if cl is not None:
             for t in cl:
                 t.set_path_effects([mpatheffects.Stroke(linewidth=2, foreground='white'), mpatheffects.Normal()])
@@ -271,7 +271,7 @@ def dt2m_contour(ax, stda, xdim='lon', ydim='lat',
         for iclev in levels:
             per_color = cm_collected.get_part_clev_and_cmap(cmap=cmap, clev_range=[-16, 16], clev_slt=iclev)
             clev_colors.append(np.squeeze(per_color[:]))
-        cl = plt.clabel(img, inline=1, fontsize=15, fmt='%i', colors=clev_colors)
+        cl = ax.clabel(img, inline=1, fontsize=15, fmt='%i', colors=clev_colors)
         if cl is not None:
             for t in cl:
                 t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'), mpatheffects.Normal()])
@@ -289,7 +289,7 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+        ax.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
     return img
 
 
@@ -308,12 +308,12 @@ def cross_tmp_contour(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contour(x, y, z, levels=levels, colors=colors,linewidths=linewidths, **kwargs)
     if add_clabel:
-        plt.clabel(img, fontsize=17, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+        ax.clabel(img, fontsize=17, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
     
     if z.min() < 0 and z.max() > 0:
         img = ax.contour(x, y, z, levels=[0], colors=single_color, linewidths=linewidths+2)
         if add_clabel:
-            plt.clabel(img, [0], fontsize=22, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+            ax.clabel(img, [0], fontsize=22, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
     return img
 
 @kwargs_wrapper
@@ -343,5 +343,5 @@ def cross_vvel_contour(ax, stda, xdim='lon', ydim='level',
     img = ax.contour(x, y, z, levels=levels, cmap=cmap,linewidths=linewidths,linestyles=linestyles, **kwargs)
 
     if add_clabel:
-        plt.clabel(img, fontsize=10, inline=1, inline_spacing=8, fmt='%.1f', rightside_up=True, use_clabeltext=True)
+        ax.clabel(img, fontsize=10, inline=1, inline_spacing=8, fmt='%.1f', rightside_up=True, use_clabeltext=True)
     return img

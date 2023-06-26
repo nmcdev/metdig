@@ -16,7 +16,7 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
         l, b, w, h = ax.get_position().bounds
         h_pos = [l, b + h - 0.22, 0.25, 0.2]
     # ax_inset = fig.add_axes(h_pos, projection=crs)
-    ax_inset = plt.axes(h_pos, projection=crs)
+    ax_inset = ax.get_figure().add_axes(h_pos, projection=crs)
     ax_inset.set_extent(map_extent, crs=crs)
     # Add geographic features
     ax_inset.coastlines()
@@ -52,7 +52,7 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
 def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fontsize=25, reverse_time=True, xtickfmt='%m月%d日%H时'):
     
     l, b, w, h = ax.get_position().bounds
-    ax_inset = plt.axes([l, b - h*0.4 - 0.1, w, h * 0.4])
+    ax_inset = ax.get_figure().add_axes([l, b - h*0.4 - 0.1, w, h * 0.4])
 
     if not title:
         title = f"过去{rain.attrs['valid_time']}小时降水"
