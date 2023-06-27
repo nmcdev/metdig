@@ -52,7 +52,8 @@ setup(
                       'protobuf<=3.20',
                       'ipython',
                       'pint < 0.20.0',
-                      'scikit_learn'],
+                      'scikit_learn',
+                      'JPype1'],
     python_requires='>=3',
     zip_safe = False
 )
