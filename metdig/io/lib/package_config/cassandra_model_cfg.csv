@@ -113,6 +113,7 @@ nwfd_scmoc,v10m,surface,m/s,,10,NWFD_SCMOC/VGRD/10M_ABOVE_GROUND/,model
 nwfd_scmoc,rain24,surface,mm,,0,NWFD_SCMOC/RAIN24/,model
 nwfd_scmoc,rain06,surface,mm,,0,NWFD_SCMOC/RAIN06/,model
 nwfd_scmoc,rain03,surface,mm,,0,NWFD_SCMOC/RAIN03/,model
+nwfd_scmoc_1h,rain01,surface,mm,,0,NWFD_SCMOC_1H/RAIN01/,model
 nwfd_scmoc,tmx24_2m,surface,degC,,2,NWFD_SCMOC/MAXIMUM_TEMPERATURE/2M_ABOVE_GROUND/,model
 nwfd_scmoc,tmn24_2m,surface,degC,,2,NWFD_SCMOC/MINIMUM_TEMPERATURE/2M_ABOVE_GROUND/,model
 nwfd_scmoc,t2m,surface,degC,,2,NWFD_SCMOC/TMP/2M_ABOVE_GROUND/,model
