@@ -120,13 +120,13 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp=None, **pallete_kwargs)
     # rain
     rain_x = rain.stda.fcst_time.values
     rain_y = rain.stda.values
-    bars_rn = ax_t2m.bar(rain_x, rain_y, bottom=bottom_t2m, width=0.1, color='#1E78B4', label='{}小时降水'.format(hourstep))
+    bars_rn = ax_t2m.bar(rain_x, rain_y, bottom=bottom_t2m, width=0.05, color='#1E78B4', label='{}小时降水'.format(hourstep))
 
     def bars_autolabel(ax, rects,bottom=0):
         for rect in rects:
             height = rect.get_height()
             if(height > 0):
-                ax.annotate('%.2f' % height,
+                ax.annotate('%.1f' % height,
                             xy=(rect.get_x() + rect.get_width() / 2, height+bottom),
                             xytext=(0, 3),  # 3 points vertical offset
                             textcoords="offset points",

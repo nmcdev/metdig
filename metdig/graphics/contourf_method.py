@@ -443,6 +443,23 @@ def prmsl_contourf(ax, stda, xdim='lon', ydim='lat',
     return img
 
 @kwargs_wrapper
+def wsp_contourf(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,
+                   levels=[12, 15, 18, 21, 24, 27, 30], cmap='met/wsp', extend='max',
+                   transform=ccrs.PlateCarree(), alpha=0.5, colorbar_kwargs={}, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # hPa
+
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, levels, cmap=cmap, transform=transform, alpha=alpha, extend=extend, **kwargs)
+    if add_colorbar:
+        # utl.add_colorbar(ax, img, ticks=levels, label='mean sea level pressure (hPa)', extend='max',kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, ticks=levels, label='Wind Speed (m/s)', extend='max',kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
 def pres_contourf(ax, stda, xdim='lon', ydim='lat',
                    add_colorbar=True,
                    levels=None, cmap='guide/cs26', extend='both',
