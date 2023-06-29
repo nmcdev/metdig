@@ -44,6 +44,7 @@ __all__ = [
     'wind_w_tmpadv_tmp',
     'wind_vortadv_tmp',
     'wind_tmp_rh_vvel',
+    'wind_w_theta_spfh_vvel',
     'time_wind_qcld_qsn_tmp',
     'time_wind_qcld_qice_tmp',
     'time_div_vort_spfh_uv',
@@ -1756,6 +1757,98 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
                                    lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                    map_extent=map_extent, h_pos=h_pos,
                                    **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+    
+
+def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+                levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
+                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+
+    # points to 一维
+    st_point = point_to1dim(st_point)
+    ed_point = point_to1dim(ed_point)
+
+    # get area
+    map_extent = get_map_area(area)
+
+    # 以st_point和ed_point包含的小区域
+    minor_extent = get_minor_extent(st_point, ed_point)
+
+
+    rh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                           var_name='rh', levels=levels, extent=minor_extent)
+    u = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='u', levels=levels, extent=minor_extent)
+    v = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='v', levels=levels, extent=minor_extent)
+    tmp = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='tmp', levels=levels, extent=minor_extent)
+    hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                         var_name='hgt', level=500, extent=map_extent)
+    w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            levels=levels, extent=minor_extent)
+
+    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            var_name='spfh', levels=levels, extent=minor_extent)
+    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          var_name='psfc', extent=minor_extent) 
+    vvel = read_vvel3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                            levels=levels, extent=minor_extent)
+
+    res=rh.stda.horizontal_resolution
+    if(lon_mean is not None):
+        pnts_mean_lon=int(round(lon_mean/res))
+    else:
+        pnts_mean_lon=1
+    if(lat_mean is not None):
+        pnts_mean_lat=int(round(lat_mean/res))
+    else:
+        pnts_mean_lat=1
+    rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    vvel=vvel.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+
+    # +form 3D psfc
+    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+
+    cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
+    cross_u = mdgcal.cross_section(u, st_point, ed_point)
+    cross_v = mdgcal.cross_section(v, st_point, ed_point)
+    cross_w = mdgcal.cross_section(w, st_point, ed_point)
+    cross_t, cross_n = mdgcal.cross_section_components(cross_u, cross_v)
+    cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
+    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+    cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
+    cross_spfh = mdgcal.specific_humidity_from_dewpoint(pressure, cross_td)
+    cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
+    cross_vvel = mdgcal.cross_section(vvel, st_point, ed_point)
+
+    cross_terrain = pressure - cross_psfc
+    cross_terrain.attrs['var_units'] = ''
+
+    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
+    if is_return_data:
+        dataret = {'spfh': cross_spfh, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'terrain': cross_terrain, 'hgt': hgt}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_cross.draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w*ratio, cross_terrain, cross_vvel, hgt,
+                                       st_point=st_point, ed_point=ed_point,
+                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
+                                       map_extent=map_extent, h_pos=h_pos,
+                                       **products_kwargs)
         ret.update(drawret)
 
     if ret:

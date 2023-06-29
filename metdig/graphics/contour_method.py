@@ -293,6 +293,7 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
     return img
 
 
+
 @kwargs_wrapper
 def cross_tmp_contour(ax, stda, xdim='lon', ydim='level', 
                       add_clabel=True, 
@@ -314,6 +315,23 @@ def cross_tmp_contour(ax, stda, xdim='lon', ydim='level',
         img = ax.contour(x, y, z, levels=[0], colors=single_color, linewidths=linewidths+2)
         if add_clabel:
             ax.clabel(img, [0], fontsize=22, colors=single_color, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+    return img
+
+
+@kwargs_wrapper
+def cross_spfh_contour(ax, stda, xdim='lon', ydim='level',
+                        add_clabel=True, cmap='ncl/WhiteBlue',
+                        levels=np.arange(0, 20, 2), 
+                        linewidths=2, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) 
+    
+    cmap, norm = cm_collected.get_cmap(cmap, levels=np.arange(0, 20, 2), isLinear=True)
+
+    img = ax.contour(x, y, z, levels=levels, cmap=cmap, norm=norm, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        ax.clabel(img, levels, fontsize=17, colors='black', inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
     return img
 
 @kwargs_wrapper

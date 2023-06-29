@@ -577,6 +577,41 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     return obj.get_mpl()
 
 
+def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, cross_vvel, hgt,
+                           st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                           h_pos=[0.125, 0.665, 0.25, 0.2],
+                           spfh_contour_kwargs={}, theta_contourf_kwargs={}, wind_quiver_kwargs={}, vvel_contour_kwargs={}, terrain_contourf_kwargs={},
+                           **pallete_kwargs):
+    init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhour = int(hgt['dtime'].values[0])
+    fcst_time = init_time + datetime.timedelta(hours=fhour)
+    data_name = str(hgt['member'].values[0]).upper()
+    levels = cross_spfh['level'].values
+    index = cross_spfh['index'].values
+
+    title = '[{}]相当位温, 绝对湿度, 沿剖面垂直环流，气压垂直运动速度'.format(data_name)
+    forcast_info = hgt.stda.description()
+    png_name = '{2}_相当位温_绝对湿度_沿剖面垂直环流_气压垂直运动速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+
+    wind_slc_vert = list(range(0, len(levels), 1))
+    wind_slc_horz = slice(5, len(index), len(index) // 40)
+    cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
+    cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
+
+    obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, st_point=st_point, ed_point=ed_point, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
+
+    obj.img['spfh'] = cross_spfh_contour(obj.ax, cross_spfh, xdim='index', kwargs=spfh_contour_kwargs)
+    obj.img['theta'] = cross_theta_contourf(obj.ax, cross_theta, xdim='index', kwargs=theta_contourf_kwargs)
+    obj.img['w'] = uv_quiver(obj.ax, cross_t, cross_w, xdim='index', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
+    obj.img['vvel'] = cross_vvel_contour(obj.ax, cross_vvel, xdim='index', cmap='black',linewidths=2,levels=np.arange(-10,10,0.5), kwargs=vvel_contour_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj.img['hgt'] = cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
+    obj.save()
+    return obj.get_mpl()
+
+
+
+
 def draw_time_rh_uv_theta(rh, u, v, theta, terrain,rh_contourf_kwargs={}, uv_barbs_kwargs={}, theta_contour_kwargs={},terrain_contourf_kwargs={}, **pallete_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
