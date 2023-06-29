@@ -142,7 +142,6 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -231,7 +230,6 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -322,7 +320,6 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -408,7 +405,6 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_absv(cross_vort, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -494,7 +490,6 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if is_draw:
         drawret = draw_cross.draw_wind_theta_fg(cross_u, cross_v, cross_theta, cross_fg,  cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -583,7 +578,6 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
     if is_draw:
         drawret = draw_cross.draw_wind_thetaes_mpvg(cross_mpvg, cross_thetaes, cross_ug, cross_vg, cross_terrain, hgtlvl,
                                       st_point=st_point, ed_point=ed_point,
-                                      lon_cross=cross_ug['lon_cross'].values, lat_cross=cross_ug['lat_cross'].values,
                                       map_extent=map_extent, h_pos=h_pos,
                                       **products_kwargs)
         ret.update(drawret)
@@ -674,7 +668,6 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     if is_draw:
         drawret = draw_cross.draw_wind_theta_w(cross_u, cross_v, cross_theta, cross_w,  cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -754,7 +747,6 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if is_draw:
         drawret = draw_cross.draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                      st_point=st_point, ed_point=ed_point,
-                                     lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                      map_extent=map_extent, h_pos=h_pos,
                                      **products_kwargs)
         ret.update(drawret)
@@ -792,8 +784,8 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             levels=levels, extent=minor_extent)
 
-    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='spfh', levels=levels, extent=minor_extent)
+    # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+    #                         var_name='spfh', levels=levels, extent=minor_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='psfc', extent=minor_extent)
 
@@ -811,7 +803,7 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    # spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
     # +form 3D psfc
@@ -833,15 +825,13 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
         dataret = {'spfh': cross_spfh, 'theta': cross_theta, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'terrain': cross_terrain, 'hgt': hgt}
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_cross.draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w*ratio, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -913,7 +903,6 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -983,15 +972,13 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
         dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n,'wind_t': cross_t, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_cross.draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w*ratio, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terrain, hgt,
                                          st_point=st_point, ed_point=ed_point,
-                                         lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                          map_extent=map_extent, h_pos=h_pos,
                                          **products_kwargs)
         ret.update(drawret)
@@ -1064,7 +1051,6 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
     if is_draw:
         drawret = draw_cross.draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                                         st_point=st_point, ed_point=ed_point,
-                                        lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                         map_extent=map_extent, h_pos=h_pos,
                                         **products_kwargs)
         ret.update(drawret)
@@ -1141,7 +1127,6 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if is_draw:
         drawret = draw_cross.draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                       st_point=st_point, ed_point=ed_point,
-                                      lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                       map_extent=map_extent, h_pos=h_pos,
                                       **products_kwargs)
         ret.update(drawret)
@@ -1233,7 +1218,6 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -1313,7 +1297,6 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if is_draw:
         drawret = draw_cross.draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                      st_point=st_point, ed_point=ed_point,
-                                     lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                      map_extent=map_extent, h_pos=h_pos,
                                      **products_kwargs)
         ret.update(drawret)
@@ -1403,7 +1386,6 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
@@ -1484,7 +1466,6 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     if is_draw:
         drawret = draw_cross.draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel,cross_terrain, hgt,
                                    st_point=st_point, ed_point=ed_point,
-                                   lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                    map_extent=map_extent, h_pos=h_pos,
                                    **products_kwargs)
         ret.update(drawret)
@@ -1523,8 +1504,8 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
     w=read_w3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             levels=levels, extent=minor_extent)
 
-    spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                            var_name='spfh', levels=levels, extent=minor_extent)
+    # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+    #                         var_name='spfh', levels=levels, extent=minor_extent)
     psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           var_name='psfc', extent=minor_extent) 
     vvel = read_vvel3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
@@ -1544,7 +1525,7 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+    # spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     vvel=vvel.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
@@ -1568,15 +1549,13 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
     cross_terrain = pressure - cross_psfc
     cross_terrain.attrs['var_units'] = ''
 
-    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
         dataret = {'spfh': cross_spfh, 'theta': cross_theta, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'vvel': cross_vvel,'terrain': cross_terrain, 'hgt': hgt}
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_cross.draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w*ratio, cross_vvel, cross_terrain, hgt,
+        drawret = draw_cross.draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       lon_cross=cross_u['lon_cross'].values, lat_cross=cross_u['lat_cross'].values,
                                        map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)

@@ -20,7 +20,7 @@ from metdig.graphics.other_method import *
 from metdig.graphics.draw_compose import *
 
 def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          wvfldiv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -30,6 +30,8 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{0:}]相当位温, 沿剖面风和水汽通量散度'.format(data_name,cross_wvfldiv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -52,7 +54,7 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
 
 
 def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          wvfl_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -62,6 +64,8 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{0:}]相当位温, 沿剖面风和水汽通量'.format(data_name,cross_wvfl.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -84,7 +88,7 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
     return obj.get_mpl()
 
 def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          wsp_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -94,6 +98,8 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{0:}]相当位温, 沿剖面风和风速'.format(data_name,cross_wsp.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -116,7 +122,7 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
     return obj.get_mpl()
 
 def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          fg_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -126,6 +132,8 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]相当位温, 锋生函数, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -146,7 +154,7 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
     return obj.get_mpl()
 
 def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          w_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -156,6 +164,8 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]相当位温, 垂直运动速度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -176,7 +186,7 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     return obj.get_mpl()
 
 def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                       st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                       st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                        h_pos=[0.125, 0.665, 0.25, 0.2],
                        div_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                        **pallete_kwargs):
@@ -186,6 +196,8 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]相当位温, 水平散度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -269,7 +281,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
 
 
 def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terrain, hgt,
-                           st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                           st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                            h_pos=[0.125, 0.665, 0.25, 0.2],
                            tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, wind_quiver_kwargs={},terrain_contourf_kwargs={},
                            **pallete_kwargs):
@@ -279,6 +291,8 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_tmpadv['level'].values
     index = cross_tmpadv['index'].values
+    lon_cross = cross_tmpadv['lon_cross'].values
+    lat_cross = cross_tmpadv['lat_cross'].values
 
     title = '[{}]温度, 温度平流, 沿剖垂直环流'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -288,6 +302,8 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
     wind_slc_horz = slice(5, len(index), len(index) // 40)
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
+    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
+    cross_w = cross_w*ratio
 
     obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, st_point=st_point, ed_point=ed_point, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     obj.img['tmpadv'] = tmpadv_contourf(obj.ax, cross_tmpadv, xdim='index', ydim='level', transform=None, colorbar_kwargs={'pos': 'right'}, kwargs=tmpadv_contourf_kwargs)
@@ -300,7 +316,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
 
 
 def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -310,6 +326,8 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]温度, 温度平流, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -331,7 +349,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
 
 
 def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
-                          st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                           h_pos=[0.125, 0.665, 0.25, 0.2],
                           vortadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                           **pallete_kwargs):
@@ -341,6 +359,8 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]温度, 垂直涡度平流, 水平风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -361,7 +381,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     return obj.get_mpl()
 
 def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                        st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                        st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                         h_pos=[0.125, 0.665, 0.25, 0.2],
                         mpv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                         **pallete_kwargs):
@@ -371,6 +391,8 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]饱和相当位温, 准地转湿位涡, 沿剖面准地转风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -391,7 +413,7 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     return obj.get_mpl()
 
 def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                        st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                        st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                         h_pos=[0.125, 0.665, 0.25, 0.2],
                         mpv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                         **pallete_kwargs):
@@ -401,6 +423,8 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]相当位温, 湿位涡, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -422,7 +446,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
 
 
 def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          absv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -432,6 +456,8 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{0:}]相当位温, {1:}, 沿剖面风'.format(data_name,cross_absv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
@@ -453,7 +479,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
 
 
 def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                       st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                       st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                        h_pos=[0.125, 0.665, 0.25, 0.2],
                        rh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                        **pallete_kwargs):
@@ -463,6 +489,8 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]相当位温, 相对湿度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -483,7 +511,7 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     return obj.get_mpl()
 
 def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          spfh_contourf_kwargs={}, theta_contour_kwargs={}, wind_quiver_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -493,6 +521,8 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_spfh['level'].values
     index = cross_spfh['index'].values
+    lon_cross = cross_spfh['lon_cross'].values
+    lat_cross = cross_spfh['lat_cross'].values
 
     title = '[{}]相当位温, 绝对湿度, 沿剖面垂直环流'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -502,6 +532,8 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     wind_slc_horz = slice(5, len(index), len(index) // 40)
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
+    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
+    cross_w = cross_w*ratio
 
     obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, st_point=st_point, ed_point=ed_point, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
     obj.img['spfh'] = cross_spfh_contourf(obj.ax, cross_spfh, xdim='index', levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
@@ -514,7 +546,7 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     return obj.get_mpl()
 
 def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
-                         st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                          h_pos=[0.125, 0.665, 0.25, 0.2],
                          spfh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
@@ -524,6 +556,8 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -545,7 +579,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
 
 
 def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cross_terrain, hgt,
-                     st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                     st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                      h_pos=[0.125, 0.665, 0.25, 0.2],
                      rh_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},vvel_contour_kwargs={},terrain_contourf_kwargs={},
                      **pallete_kwargs):
@@ -555,6 +589,8 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_u['level'].values
     index = cross_u['index'].values
+    lon_cross = cross_u['lon_cross'].values
+    lat_cross = cross_u['lat_cross'].values
 
     title = '[{}]温度 相对湿度 水平风 气压垂直运动速度'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -578,7 +614,7 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
 
 
 def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
-                           st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
+                           st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                            h_pos=[0.125, 0.665, 0.25, 0.2],
                            spfh_contour_kwargs={}, theta_contourf_kwargs={}, wind_quiver_kwargs={}, vvel_contour_kwargs={}, terrain_contourf_kwargs={},
                            **pallete_kwargs):
@@ -588,6 +624,8 @@ def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross
     data_name = str(hgt['member'].values[0]).upper()
     levels = cross_spfh['level'].values
     index = cross_spfh['index'].values
+    lon_cross = cross_spfh['lon_cross'].values
+    lat_cross = cross_spfh['lat_cross'].values
 
     title = '[{}]相当位温, 绝对湿度, 沿剖面垂直环流，气压垂直运动速度'.format(data_name)
     forcast_info = hgt.stda.description()
@@ -597,6 +635,8 @@ def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross
     wind_slc_horz = slice(5, len(index), len(index) // 40)
     cross_t = cross_t.isel(lon=wind_slc_horz, level=wind_slc_vert)
     cross_w = cross_w.isel(lon=wind_slc_horz, level=wind_slc_vert)
+    ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
+    cross_w = cross_w*ratio
 
     obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, st_point=st_point, ed_point=ed_point, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
 
