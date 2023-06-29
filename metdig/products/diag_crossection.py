@@ -577,7 +577,7 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     return obj.get_mpl()
 
 
-def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, cross_vvel, hgt,
+def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
                            st_point=None, ed_point=None, lon_cross=None, lat_cross=None, map_extent=(50, 150, 0, 65),
                            h_pos=[0.125, 0.665, 0.25, 0.2],
                            spfh_contour_kwargs={}, theta_contourf_kwargs={}, wind_quiver_kwargs={}, vvel_contour_kwargs={}, terrain_contourf_kwargs={},
