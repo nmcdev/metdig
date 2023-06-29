@@ -404,10 +404,10 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
     cross_v = cross_v.isel(lon=wind_slc_horz, level=wind_slc_vert)
 
     obj = cross_lonpres_compose(levels, index=index, lon_cross=lon_cross, lat_cross=lat_cross, st_point=st_point, ed_point=ed_point, title=title, description=forcast_info, png_name=png_name, kwargs=pallete_kwargs)
-    obj.img['mpvg'] = cross_mpv_contourf(obj.ax, cross_mpvg, dim='index',levels=np.arange(-20, 21, 1),kwargs=mpv_contourf_kwargs)
-    obj.img['thetaes'] = cross_theta_contour(obj.ax, cross_theta, dim='index',kwargs=theta_contour_kwargs)
+    obj.img['mpvg'] = cross_mpv_contourf(obj.ax, cross_mpvg, xdim='index',levels=np.arange(-20, 21, 1),kwargs=mpv_contourf_kwargs)
+    obj.img['thetaes'] = cross_theta_contour(obj.ax, cross_theta, xdim='index',kwargs=theta_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    obj.img['terrain'] = cross_terrain_contourf(obj.ax, cross_terrain, dim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, cross_terrain, xdim='index',levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     obj.img['hgt'] = cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     obj.save()
     return obj.get_mpl()
