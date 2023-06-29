@@ -37,7 +37,7 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
         endpoints = np.vstack([st, ed[-1, :].reshape(-1, 2)]) # [[lat, lon]]
         endpoints = crs.transform_points(ccrs.Geodetic(), endpoints[:, 1], endpoints[:, 0])
         for i, (plon, plat, _) in enumerate(endpoints):
-            ax_inset.text(plon, plat, f'${i + 1}$', ha='left', va='bottom', fontsize=13, rotation=-15)
+            ax_inset.text(plon, plat, f'${i + 1}$', color='red', ha='left', va='bottom', fontsize=13, rotation=-15)
         ax_inset.scatter(endpoints[:, 0], endpoints[:, 1], c='k', zorder=2)
         pass
     
