@@ -8,8 +8,13 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 
 @kwargs_wrapper
 def add_extrema_on_ax(ax, stda, transform=ccrs.PlateCarree(), size=20,zorder=12, color='red',va='bottom',ha='right',**kwargs):
+    slon = ax.transLimits._boxin.x0
+    elon = ax.transLimits._boxin.x1
+    slat = ax.transLimits._boxin.y0
+    elat = ax.transLimits._boxin.y1
     extrema=stda.where(stda==stda.max(),drop=True)
-    if(extrema.size == 1):
+    # modify by wzj 2023.7.10 修复只绘制区域内的数值
+    if(extrema.size == 1) and (extrema.lon.values[0] >= slon and extrema.lon.values <= elon and extrema.lat.values >= slat and extrema.lat.values <= elat):
         img = ax.text(extrema.lon,extrema.lat,
                     'Max: '+'%.1f' % np.squeeze(extrema.values.flatten()[0]),
                     family='SimHei',size=size, transform=transform,zorder=zorder,color=color,va=va,ha=ha, **kwargs)
