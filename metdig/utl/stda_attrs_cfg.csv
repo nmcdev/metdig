@@ -45,14 +45,22 @@ rainc24,24小时对流性降水,mm,24
 es,饱和水汽压,hPa,0
 u10m,10mU风,m/s,0
 v10m,10mV风,m/s,0
+uave12_10m,12小时10米平均U风,m/s,12
+vave12_10m,12小时10米平均V风,m/s,12
+uave24_10m,24小时10米平均U风,m/s,24
+vave24_10m,24小时10米平均V风,m/s,24
 u100m,100mU风,m/s,0
 v100m,100mV风,m/s,0
 t2m,2m温度,degC,0
 rh2m,2m相对湿度,percent,0
+rhave24_2m,24小时2米平均相对湿度,percent,24
+rhmx24_2m,24小时2米最大相对湿度,percent,24
+rhmn24_2m,24小时2米最小相对湿度,percent,24
 td2m,2m露点温度,degC,0
 psfc,地面气压,hPa,0
 lcdc,低云量,percent,0
 tcdc,总云量,percent,0
+tcdcave24,24小时平均总云量,percent,24
 hcdc,高云量,percent,0
 mcdc,中云量,percent,0
 vis,能见度,km ,0
@@ -65,6 +73,8 @@ at,体感温度,degC,0
 absv,绝对涡度,1/s,0
 tmx,最高温度,degC,0
 tmn,最低温度,degC,0
+tmx_2m,2米最高温度,degC,0
+tmn_2m,2米最低温度,degC,0
 tmx6_2m,过去6小时2米最高温度,degC,6
 tmn6_2m,过去6小时2米最低温度,degC,6
 tmx3_2m,过去3小时2米最高温度,degC,3
