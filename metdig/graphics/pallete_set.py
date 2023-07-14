@@ -223,7 +223,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None, st_point=None, ed_point=None, 
                           title='', forcast_info='', title_loc='right', title_fontsize=25,
                           nmc_logo=False, add_tag=True, logyaxis=True, yoffset=0,**kwargs):
-
+    
     plt_base_env()  # 初始化字体中文等
 
     fig = plt.figure(figsize=figsize)
@@ -271,7 +271,12 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
             endpoints = np.vstack([st, ed[-1, :].reshape(-1, 2)]) # [[lat, lon]]
             for i, (plat, plon) in enumerate(endpoints):
                 idx = np.argmin((lon_cross - plon) ** 2 + (lat_cross - plat) ** 2)
-                ax.text(index[idx], ax.get_ylim()[0], f'${i + 1}$', color='red', ha='center', va='bottom', fontsize=13, zorder=101, rotation=-15)
+                if idx == 0:
+                    ax.text(index[idx], ax.get_ylim()[0], f'${i + 1}$', color='red', ha='right', va='bottom', fontsize=16, zorder=101, rotation=-15)
+                elif idx == len(index) - 1:
+                    ax.text(index[idx], ax.get_ylim()[0], f'${i + 1}$', color='red', ha='left', va='bottom', fontsize=16, zorder=101, rotation=-15)
+                else:
+                    ax.text(index[idx], ax.get_ylim()[0], f'${i + 1}$', color='red', ha='center', va='bottom', fontsize=16, zorder=101, rotation=-15)
 
     for label in ax.get_xticklabels():
         label.set_fontsize(15)
@@ -290,7 +295,7 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
 
     if(add_tag):
-        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+        ax.text(0.002, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
                 color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
 
@@ -355,7 +360,7 @@ def cross_timepres_pallete(figsize=(22, 15), levels=None, times=None, title='', 
         # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
     if add_tag:
-        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
+        ax.text(0.002, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14,
                 color='gray', alpha=1.0, va='bottom',  ha='left', zorder=100)  # 左下角图的里面
     return fig, ax
 
@@ -399,7 +404,7 @@ def cross_timeheight_pallete(figsize=(22, 15), heights=None, times=None, title='
         # utl.add_logo_extra_in_axes(pos=[l - 0.02, b + h, 0.07, 0.07], which='nmc', size='Xlarge')# 左上角
         utl.add_logo_extra_in_axes(pos=[l + w - 0.08, b + h - 0.1, .1, .1], which='nmc', size='Xlarge')  # 右上角
     if add_tag:
-        ax.text(0.00, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='left')  # 左下角图的里面
+        ax.text(0.002, 0.001, 'Powered by MetDig', transform=ax.transAxes, size=14, color='gray', alpha=1.0, va='bottom',  ha='left')  # 左下角图的里面
     return fig, ax
 
 @kwargs_wrapper
