@@ -234,7 +234,7 @@ class __STDADataFrameAccessor(object):
         #     'id' in self._df.columns and 'lon' in self._df.columns and 'lat' in self._df.columns:
         #     return True
         # 严格判断
-        if self._df.columns > 6 and \
+        if len(self._df.columns) > 6 and \
            self._df.columns[0] == 'level' and self._df.columns[1] == 'time' and self._df.columns[2] == 'dtime' and \
            self._df.columns[3] == 'id' and self._df.columns[4] == 'lon' and self._df.columns[5] == 'lat':
             return True
@@ -247,6 +247,15 @@ class __STDADataFrameAccessor(object):
         """
         # 待更新
         return True
+    
+    def standard_dim(self):
+        """[维度标准化，经度从-180到180，纬度从-90到90，均为递增]
+        Returns:
+            [stda]: [标准化后的stda]
+        """
+        data = self._df
+        data['lon'] = ((data['lon'] + 180) % 360) - 180 # 0-360转-180-180
+        return data
 
     @property
     def type(self):
