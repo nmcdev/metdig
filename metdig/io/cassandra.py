@@ -3,6 +3,12 @@
 import os
 import sys
 
+from pathlib import Path
+cfg_Path = Path.home() / ".nmcdev" / "config.ini"
+if not os.path.exists(cfg_Path):
+    from metdig.io.lib import config
+    config.init_nmcdev_cfg()
+    
 import datetime
 import xarray as xr
 import numpy as np
