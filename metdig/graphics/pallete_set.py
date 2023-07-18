@@ -40,8 +40,8 @@ def plt_base_env():
 @kwargs_wrapper
 def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_loc='left', title_fontsize=18, forcast_info='', nmc_logo=False,
-                       add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=False, add_county_city=False, 
-                       add_background_style=None, add_south_china_sea=False, add_grid=False, add_ticks=False,
+                       add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=False, add_county_city=False, add_nation=True,
+                       add_background_style='borders', add_south_china_sea=False, add_grid=False, add_ticks=False,
                        background_zoom_level=5,add_tag=True,**kwargs):
     """[水平分布图画板设置]]
 
@@ -80,7 +80,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         ax.set_global()
     else:
         # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
-        ax.set_extent(map_extent, crs=crs)
+        ax.set_extent(map_extent, crs=ccrs.PlateCarree())
 
     # add grid lines
     # if add_grid: 
@@ -92,7 +92,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     if add_coastline:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.5, zorder=19, alpha=1,crs=ccrs.PlateCarree())
     if add_china:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='black', lw=1.5, zorder=19,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='gray', lw=1.5, zorder=19,crs=ccrs.PlateCarree())
     if add_province:
         utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree())
     
@@ -101,7 +101,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         # add_china_map_2basemap(ax, name="province", edgecolor='gray', lw=0.5, encoding='gbk', zorder=0) 
         # add_china_map_2basemap(ax, name="nation", edgecolor='black', lw=0.8, encoding='gbk', zorder=0) 
     if add_county:
-        add_china_map_2basemap(ax, name="county", edgecolor='#D9D9D9', lw=0.1, encoding='gbk',zorder=0) 
+        add_china_map_2basemap(ax, name="county", edgecolor='#D9D9D9', lw=0.7, encoding='gbk',zorder=19) 
         # add_china_map_2basemap(ax, name="river", edgecolor='#74b9ff', lw=0.8, encoding='gbk', zorder=1) 
         pass
 
@@ -120,7 +120,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
                                     zorder=101, size=13, city_type='county')
 
     # 背景图
-    if add_background_style is None:
+    if add_background_style is 'borders':
         # ax.add_feature(cfeature.OCEAN, facecolor='#EDFBFE')
         # ax.add_feature(cfeature.LAND, facecolor='#FCF6EA')
         # add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=19) 
@@ -137,10 +137,10 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         request = utl.TDT_img()  # 卫星图像
         ax.add_image(request, background_zoom_level)  # level=10 缩放等级
     elif add_background_style == 'terrain':
-        request = utl.TDT_Hillshade()  # 地形阴影
-        ax.add_image(request, background_zoom_level)  # level=10 缩放等
+        # request = utl.TDT_Hillshade()  # 地形阴影
+        # ax.add_image(request, background_zoom_level)  # level=10 缩放等
         request = utl.TDT_ter()  # 地形
-        ax.add_image(request, background_zoom_level,alpha=0.5)  # level=10 缩放等
+        ax.add_image(request, background_zoom_level,alpha=1)  # level=10 缩放等
 
     elif add_background_style == 'terrain2':
         tiler = Stamen('terrain-background')
