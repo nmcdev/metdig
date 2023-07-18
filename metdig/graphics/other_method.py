@@ -9,7 +9,7 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 
 def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
                       st_point=None, ed_point=None, lon_cross=None, lat_cross=None,
-                      map_extent=(60, 145, 15, 55), h_pos=[0.125, 0.665, 0.25, 0.2]):
+                      map_extent=(70, 145, 15, 55), h_pos=[0.125, 0.765, 0.15, 0.1]):
     x, y, z = hgt['lon'].values, hgt['lat'].values, hgt.values.squeeze()
     crs = ccrs.PlateCarree()
     if not h_pos:

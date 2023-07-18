@@ -929,7 +929,7 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 
     ratio = np.nanmax(np.abs(cross_t.values))/np.nanmax(np.abs(cross_w.values))
     if is_return_data:
-        dataret = {'spfh': cross_spfh, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'terrain': cross_terrain, 'hgt': hgt}
+        dataret = {'spfh': cross_spfh, 'theta':cross_theta, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'terrain': cross_terrain, 'hgt': hgt}
         ret.update({'data': dataret})
 
     if is_draw:
@@ -1747,7 +1747,7 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     cross_rh = cross_rh.where(cross_rh < 100, 100)  # 大于100的赋值成100
 
     if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
+        dataret = {'rh': cross_rh, 'u': cross_u, 'v': cross_v, 'tmp': cross_tmp, 'hgt': hgt,'vvel':cross_vvel, 'terrain': cross_terrain}
         ret.update({'data': dataret})
 
     if is_draw:

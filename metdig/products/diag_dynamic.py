@@ -13,7 +13,7 @@ from metdig.graphics.draw_compose import *
 
 
 def draw_hgt_uv_vort(hgt, u, v, vort, map_extent=(60, 145, 15, 55),
-                        vortadv_contourf_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
+                        vort_contourf_kwargs={}, uv_barbs_kwargs={}, hgt_contour_kwargs={},
                         **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhour = int(hgt['dtime'].values[0])
