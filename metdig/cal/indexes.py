@@ -6,6 +6,8 @@
 
 import numpy as np
 import pandas as pd
+from metdig.cal.lib.utility import unifydim_stda, check_stda
+
 __all__ = [
     'westerly_index',
     'area_index_of_subtropical_high',
@@ -13,6 +15,7 @@ __all__ = [
     'ridge_latitude_of_wpsh'
 ]
 
+@check_stda(['hgt'])
 def westerly_index(hgt):
     hgt1=hgt.sel(lon=slice(65,155),lat=65).drop('lat')
     hgt2=hgt.sel(lon=slice(65,155),lat=45).drop('lat')
@@ -30,6 +33,7 @@ def westerly_index(hgt):
 #     widx=westerly_index(hgt500)
 #     print(widx)
 
+@check_stda(['hgt'])
 def area_index_of_subtropical_high(hgt):
     # hgt.stda.hor
     aish=(hgt.sel(lon=slice(110,180,int(10/hgt.stda.horizontal_resolution)),lat=slice(10,90,int(5/hgt.stda.horizontal_resolution)))>588).sum(['lon','lat'])
@@ -47,6 +51,7 @@ def area_index_of_subtropical_high(hgt):
 #     widx=area_index_of_subtropical_high(hgt500)
 #     print(widx)
 
+@check_stda(['hgt'])
 def west_end_of_wpsh(hgt):
     hgt1=hgt.sel(lon=slice(90,180),lat=slice(10,90))
     wsph=hgt1.where(hgt1>=588,drop=True)
@@ -78,6 +83,7 @@ def west_end_of_wpsh(hgt):
 #     we_wsph=west_end_of_wpsh(hgt500)
 #     print(we_wsph)
 
+@check_stda(['hgt', 'u'])
 def ridge_latitude_of_wpsh(hgt,u):
     temp1=hgt.sel(lon=[110,120,130],lat=slice(0,90)).where(hgt>586,drop=True)
     u_slt=u.where(temp1.isnull())

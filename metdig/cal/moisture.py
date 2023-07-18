@@ -10,6 +10,7 @@ from metpy.units import units
 
 from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 
 __all__ = [
@@ -22,6 +23,8 @@ __all__ = [
     'relative_humidity_from_dewpoint',
     'water_wapor_flux_divergence'
 ]
+
+
 def integrated_water_vapor_flux(spfh,u,v, psfc=None):
     for itime in spfh.stda.get_dim_value('time'):
         for idtime in spfh.stda.get_dim_value('dtime'):
@@ -46,6 +49,8 @@ if __name__ == '__main__':
     wvfldiv=integrated_water_vapor_flux(u,v,spfh)
     print (wvfldiv)
 
+@check_stda(['tmp', 'td'])
+@unifydim_stda(['tmp', 'td'])
 def relative_humidity_from_dewpoint(tmp,td):
     tmp_p = utl.stda_to_quantity(tmp)  # degC
     td_p = utl.stda_to_quantity(td)  # degC
@@ -56,6 +61,8 @@ def relative_humidity_from_dewpoint(tmp,td):
 
     return rh
 
+@check_stda(['tmp', 'rh'])
+@unifydim_stda(['tmp', 'rh'])
 def dewpoint_from_relative_humidity(tmp, rh):
     '''
 
@@ -78,6 +85,8 @@ def dewpoint_from_relative_humidity(tmp, rh):
 
     return td
 
+@check_stda(['pres', 'tmp', 'spfh'])
+@unifydim_stda(['pres', 'tmp', 'spfh'])
 def dewpoint_from_specific_humidity(pres, tmp, spfh):
     
     '''
@@ -102,6 +111,7 @@ def dewpoint_from_specific_humidity(pres, tmp, spfh):
 
     return td
 
+@check_stda(['tmp'])
 def saturation_vapor_pressure(tmp):
     '''
 
@@ -122,14 +132,16 @@ def saturation_vapor_pressure(tmp):
     return es
 
 
+@check_stda(['pres', 'td'])
+@unifydim_stda(['pres', 'td'])
 def specific_humidity_from_dewpoint(pres, td):
     '''
 
     [Calculate the specific humidity from the dewpoint temperature and pressure.]
 
     Arguments:
-        td {[stda]} -- [dewpoint temperature]
         pres {[stda]} -- [pressure]
+        td {[stda]} -- [dewpoint temperature]
 
     Returns:
         [stda] -- [Specific humidity]
@@ -143,6 +155,8 @@ def specific_humidity_from_dewpoint(pres, td):
     return spfh
 
 
+@check_stda(['spfh', 'wsp'])
+@unifydim_stda(['spfh', 'wsp'])
 def cal_ivt_singlelevel(spfh, wsp):
     '''
 
@@ -175,13 +189,15 @@ def cal_ivt_singlelevel(spfh, wsp):
     return iq
 
 
+@check_stda(['tmp', 'rh'])
+@unifydim_stda(['tmp', 'rh'])
 def cal_p_vapor(tmp, rh):
     '''
 
     [计算水汽压]
 
     Arguments:
-        tmp {[stda]} -- [relative humidity]
+        tmp {[stda]} -- [air temperature]
         rh {[stda]} -- [relative humidity]
 
     Returns:
@@ -199,6 +215,8 @@ def cal_p_vapor(tmp, rh):
 
     return p_vapor
 
+@check_stda(['u', 'v', 'spfh'])
+@unifydim_stda(['u', 'v', 'spfh'])
 def water_wapor_flux_divergence(u,v,spfh):
     uwvfl=cal_ivt_singlelevel(u,spfh)
     vwvfl=cal_ivt_singlelevel(v,spfh)

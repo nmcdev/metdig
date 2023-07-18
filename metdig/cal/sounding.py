@@ -10,6 +10,7 @@ from metpy.units import units
 
 from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
+from metdig.cal.lib.utility import unifydim_stda
 
 __all__ = [
     'lfc',

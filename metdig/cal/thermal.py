@@ -10,6 +10,7 @@ from metpy.units import units
 
 from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
     'potential_temperature',
@@ -18,6 +19,8 @@ __all__ = [
 ]
 
 
+@check_stda(['pres', 'tmp'])
+@unifydim_stda(['pres', 'tmp'])
 def potential_temperature(pres, tmp):
     '''
 
@@ -38,6 +41,8 @@ def potential_temperature(pres, tmp):
 
     return thta
 
+@check_stda(['pres', 'tmp'])
+@unifydim_stda(['pres', 'tmp'])
 def saturation_equivalent_potential_temperature(pres, tmp):
     '''
 
@@ -69,6 +74,8 @@ if __name__=='__main__':
     thetaes=saturation_equivalent_potential_temperature(pressure,tmp)
     print(thetaes)
 
+@check_stda(['pres', 'tmp', 'td'])
+@unifydim_stda(['pres', 'tmp', 'td'])
 def equivalent_potential_temperature(pres, tmp, td):
     '''
 
@@ -93,6 +100,8 @@ def equivalent_potential_temperature(pres, tmp, td):
     return theta
 
 
+@check_stda(['tmp', 'wsp', 'p_vapor'])
+@unifydim_stda(['tmp', 'wsp', 'p_vapor'])
 def apparent_temperature(tmp, wsp, p_vapor):
     '''
 

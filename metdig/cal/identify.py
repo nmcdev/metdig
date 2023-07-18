@@ -14,6 +14,7 @@ import pkg_resources
 import meteva.base as meb
 
 from metdig.cal.lib import utility as utl
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 from metdig.io.lib import config as CONFIG
 
@@ -77,6 +78,7 @@ def java_class_func(jar_path, class_name, func_name, jvm_path=None, *args):
     return res
 
 
+@check_stda(['hgt'])
 def high_low_center(hgt, resolution="low", smooth_times=0, min_size=100, grade_interval=5):
     r"""高低压中心识别
     从输入的气压场或位势高度场中识别出高压和低压的范围、中心位置，并计算出面积和强度
@@ -126,8 +128,8 @@ def high_low_center(hgt, resolution="low", smooth_times=0, min_size=100, grade_i
     para = {"type": "high_low_center",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution, "grade_interval": grade_interval,
             "level": int(hgt.stda.level[0]), "time": hgt.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(hgt.stda.dtime[0]),
-            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": hgt['lon'].values[0], "startlat": hgt['lat'].values[0],
-            "dlon": hgt.stda.horizontal_resolution.round(5), "dlat": hgt.stda.vertical_resolution.round(5),
+            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": float(hgt['lon'].values[0]), "startlat": float(hgt['lat'].values[0]),
+            "dlon": float(hgt.stda.horizontal_resolution.round(5)), "dlat": float(hgt.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -150,6 +152,7 @@ def high_low_center(hgt, resolution="low", smooth_times=0, min_size=100, grade_i
         return None
 
 
+@check_stda(['u', 'v'])
 def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
     r"""涡旋识别
     从输入的风场中识别出涡旋中心位置，以涡旋中心为中心，以涡旋中心到最近的一个鞍点的距离为半径，画一个圆作为涡旋的范围，
@@ -198,8 +201,8 @@ def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
     para = {"type": "vortex",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution,
             "level": int(u.stda.level[0]), "time": u.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(u.stda.dtime[0]),
-            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": u['lon'].values[0], "startlat": u['lat'].values[0],
-            "dlon": u.stda.horizontal_resolution.round(5), "dlat": u.stda.vertical_resolution.round(5),
+            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": float(u['lon'].values[0]), "startlat": float(u['lat'].values[0]),
+            "dlon": float(u.stda.horizontal_resolution.round(5)), "dlat": float(u.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -222,6 +225,7 @@ def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
         return None
 
 
+@check_stda(['hgt'])
 def trough(hgt, resolution="low", smooth_times=0, min_size=100):
     r"""槽线识别
     从输入的500hPa位势高度场中识别出槽线，并计算出面积和强度
@@ -268,8 +272,8 @@ def trough(hgt, resolution="low", smooth_times=0, min_size=100):
     para = {"type": "trough",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution,
             "level": int(hgt.stda.level[0]), "time": hgt.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(hgt.stda.dtime[0]),
-            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": hgt['lon'].values[0], "startlat": hgt['lat'].values[0],
-            "dlon": hgt.stda.horizontal_resolution.round(5), "dlat": hgt.stda.vertical_resolution.round(5),
+            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": float(hgt['lon'].values[0]), "startlat": float(hgt['lat'].values[0]),
+            "dlon": float(hgt.stda.horizontal_resolution.round(5)), "dlat": float(hgt.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -286,6 +290,7 @@ def trough(hgt, resolution="low", smooth_times=0, min_size=100):
         return None
 
 
+@check_stda(['hgt'])
 def reverse_trough(hgt, resolution="low", smooth_times=0, min_size=100):
     r"""倒槽识别
     从输入的气压场或位势高度场中识别出倒槽，并计算出面积和强度。倒槽的识别方法和槽线类似，只不过增加了对槽线起止点相对位置的判断。
@@ -331,8 +336,8 @@ def reverse_trough(hgt, resolution="low", smooth_times=0, min_size=100):
     para = {"type": "reverse_trough",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution,
             "level": int(hgt.stda.level[0]), "time": hgt.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(hgt.stda.dtime[0]),
-            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": hgt['lon'].values[0], "startlat": hgt['lat'].values[0],
-            "dlon": hgt.stda.horizontal_resolution.round(5), "dlat": hgt.stda.vertical_resolution.round(5),
+            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": float(hgt['lon'].values[0]), "startlat": float(hgt['lat'].values[0]),
+            "dlon": float(hgt.stda.horizontal_resolution.round(5)), "dlat": float(hgt.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -348,6 +353,8 @@ def reverse_trough(hgt, resolution="low", smooth_times=0, min_size=100):
         return None
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def convergence_line(u, v, resolution="low", smooth_times=0, min_size=100):
     r"""辐合线识别
     从输入的风场中识别出辐合线，并计算出面积和强度。
@@ -394,8 +401,8 @@ def convergence_line(u, v, resolution="low", smooth_times=0, min_size=100):
     para = {"type": "convergence_line",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution,
             "level": int(u.stda.level[0]), "time": u.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(u.stda.dtime[0]),
-            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": u['lon'].values[0], "startlat": u['lat'].values[0],
-            "dlon": u.stda.horizontal_resolution.round(5), "dlat": u.stda.vertical_resolution.round(5),
+            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": float(u['lon'].values[0]), "startlat": float(u['lat'].values[0]),
+            "dlon": float(u.stda.horizontal_resolution.round(5)), "dlat": float(u.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -412,6 +419,8 @@ def convergence_line(u, v, resolution="low", smooth_times=0, min_size=100):
         return None
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def shear(u, v, resolution="low", smooth_times=0, min_size=100):
     r"""切变线识别
     从输入的风场中识别出切变线，并计算出面积和强度。
@@ -459,8 +468,8 @@ def shear(u, v, resolution="low", smooth_times=0, min_size=100):
     para = {"type": "shear",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution,
             "level": int(u.stda.level[0]), "time": u.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(u.stda.dtime[0]),
-            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": u['lon'].values[0], "startlat": u['lat'].values[0],
-            "dlon": u.stda.horizontal_resolution.round(5), "dlat": u.stda.vertical_resolution.round(5),
+            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": float(u['lon'].values[0]), "startlat": float(u['lat'].values[0]),
+            "dlon": float(u.stda.horizontal_resolution.round(5)), "dlat": float(u.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -477,6 +486,8 @@ def shear(u, v, resolution="low", smooth_times=0, min_size=100):
         return None
 
 
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
 def jet(u, v, resolution="low", smooth_times=0, min_size=100, jet_min_speed=12, only_south_jet=False):
     r"""急流识别
     从输入的风场中识别出急流区、急流轴线，并计算出面积和强度。
@@ -532,8 +543,8 @@ def jet(u, v, resolution="low", smooth_times=0, min_size=100, jet_min_speed=12, 
     para = {"type": "jet",
             "smooth_times": smooth_times, "min_size": min_size, "resolution": resolution, "jet_min_speed": jet_min_speed, "only_south_jet": str(only_south_jet),
             "level": int(u.stda.level[0]), "time": u.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(u.stda.dtime[0]),
-            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": u['lon'].values[0], "startlat": u['lat'].values[0],
-            "dlon": u.stda.horizontal_resolution.round(5), "dlat": u.stda.vertical_resolution.round(5),
+            "nlon": u['lon'].size, "nlat": u['lat'].size, "startlon": float(u['lon'].values[0]), "startlat": float(u['lat'].values[0]),
+            "dlon": float(u.stda.horizontal_resolution.round(5)), "dlat": float(u.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -550,6 +561,7 @@ def jet(u, v, resolution="low", smooth_times=0, min_size=100, jet_min_speed=12, 
         return None
 
 
+@check_stda(['hgt'])
 def subtropical_high(hgt, smooth_times=0, min_size=500, necessary_height=5840, sufficient_height=5880):
     r"""副高识别
     从输入的500hPa高度场中识别出副高、副高轴线，并计算出面积和强度。
@@ -604,8 +616,8 @@ def subtropical_high(hgt, smooth_times=0, min_size=500, necessary_height=5840, s
     para = {"type": "subtropical_high",
             "smooth_times": smooth_times, "min_size": min_size, "necessary_height": necessary_height, "sufficient_height": sufficient_height,
             "level": int(hgt.stda.level[0]), "time": hgt.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(hgt.stda.dtime[0]),
-            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": hgt['lon'].values[0], "startlat": hgt['lat'].values[0],
-            "dlon": hgt.stda.horizontal_resolution.round(5), "dlat": hgt.stda.vertical_resolution.round(5),
+            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": float(hgt['lon'].values[0]), "startlat": float(hgt['lat'].values[0]),
+            "dlon": float(hgt.stda.horizontal_resolution.round(5)), "dlat": float(hgt.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,
@@ -622,6 +634,7 @@ def subtropical_high(hgt, smooth_times=0, min_size=500, necessary_height=5840, s
         return None
 
 
+@check_stda(['hgt'])
 def south_asia_high(hgt, smooth_times=0, min_size=800, sn_height=16680):
     r"""南亚高压识别
     从输入的100hPa或200hPa高度场中识别出南亚高压、南亚高压轴线，并计算出面积和强度。
@@ -671,8 +684,8 @@ def south_asia_high(hgt, smooth_times=0, min_size=800, sn_height=16680):
     para = {"type": "south_asia_high",
             "smooth_times": smooth_times, "min_size": min_size, "sn_height": sn_height,
             "level": int(hgt.stda.level[0]), "time": hgt.stda.time[0].strftime("%Y%m%d%H"), "dtime": int(hgt.stda.dtime[0]),
-            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": hgt['lon'].values[0], "startlat": hgt['lat'].values[0],
-            "dlon": hgt.stda.horizontal_resolution.round(5), "dlat": hgt.stda.vertical_resolution.round(5),
+            "nlon": hgt['lon'].size, "nlat": hgt['lat'].size, "startlon": float(hgt['lon'].values[0]), "startlat": float(hgt['lat'].values[0]),
+            "dlon": float(hgt.stda.horizontal_resolution.round(5)), "dlat": float(hgt.stda.vertical_resolution.round(5)),
             "data": data, "output_dir_root": output_dir,
             "h_nlon": grid_h.nlon, "h_nlat": grid_h.nlat,
             "h_slon": grid_h.slon, "h_slat": grid_h.slat,

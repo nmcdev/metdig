@@ -260,7 +260,7 @@ def save(fig, ax, png_name, output_dir=None, is_return_imgbuf=False, is_clean_pl
         _log.info(out_png)
         ret['output_dir'] = output_dir
         ret['pic_path'] = out_png
-        plt.savefig(out_png, dpi=dpi, bbox_inches='tight')
+        fig.savefig(out_png, dpi=dpi, bbox_inches='tight')
 
     if is_return_imgbuf:
         ret['img_buf'] = get_imgbuf_from_fig(fig)
@@ -291,39 +291,39 @@ def add_colorbar(ax, img, ticks=None,tick_label=None, label='', label_size=20, t
         pad (float, optional): [colorbar和ax的偏移距离]. Defaults to 0.
     """
     if rect:
-        cax = plt.axes(rect)
+        cax = ax.get_figure().add_axes(rect)
     else:
         if pos == 'bottom':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l, b - h * 0.06 - pad, w, h * 0.02])
+            cax = ax.get_figure().add_axes([l, b - h * 0.06 - pad, w, h * 0.02])
             orientation = 'horizontal'
         elif pos == 'right':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w + pad, b, 0.015, h])
+            cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b, 0.015, h])
             orientation = 'vertical'
         elif pos == 'lower center':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l+w/3., b - h * 0.05 + pad, w/3, h * 0.02])
+            cax = ax.get_figure().add_axes([l+w/3., b - h * 0.05 + pad, w/3, h * 0.02])
         elif pos == 'lower left':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l, b - h * 0.05 + pad, w/3, h * 0.02])
+            cax = ax.get_figure().add_axes([l, b - h * 0.05 + pad, w/3, h * 0.02])
         elif pos == 'lower right':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l+w*2/3, b - h * 0.05 + pad, w/3, h * 0.02])
+            cax = ax.get_figure().add_axes([l+w*2/3, b - h * 0.05 + pad, w/3, h * 0.02])
         elif pos == 'right center':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w + pad, b+h/3, 0.015, h/3])
+            cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b+h/3, 0.015, h/3])
             orientation = 'vertical'
         elif pos == 'right top':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w + pad, b+h*2/3, 0.015, h/3])
+            cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b+h*2/3, 0.015, h/3])
             orientation = 'vertical'
         elif pos == 'right bottom':
             l, b, w, h = ax.get_position().bounds
-            cax = plt.axes([l + 0.01 + w + pad, b, 0.015, h/3])
+            cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b, 0.015, h/3])
             orientation = 'vertical'
 
-    cb = plt.colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
+    cb = ax.get_figure().colorbar(img, cax=cax, ticks=ticks, orientation=orientation, **kwargs)
     # cb.ax.tick_params(labelsize='x-large')
     cb.ax.tick_params(labelsize=tick_size)
     cb.set_label(label, size=label_size)

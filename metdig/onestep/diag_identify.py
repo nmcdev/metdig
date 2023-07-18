@@ -10,6 +10,19 @@ from metdig.products import diag_identify as draw_identify
 import metdig.cal as mdgcal
 
 
+__all__ = [
+    'high_low_center',
+    'vortex',
+    'trough',
+    'reverse_trough',
+    'convergence_line',
+    'shear',
+    'jet',
+    'subtropical_high',
+    'south_asia_high',
+]
+
+
 @date_init('init_time')
 def high_low_center(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=1000, is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):

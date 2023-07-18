@@ -49,7 +49,7 @@ def shear_plot(ax, graphy,linewidth=1):
 
     rlon = elon - slon
     rlat = elat - slat
-    fig = plt.gcf()
+    fig = ax.get_figure()
     map_width = ax.bbox.width / fig.dpi
 
     line_width = rlon *  0.015/ map_width

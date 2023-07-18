@@ -15,6 +15,7 @@ from metpy.plots.mapping import CFProjection
 
 from metdig.cal.lib import utility as utl
 import metdig.utl as mdgstda
+from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 
 __all__ = [
@@ -23,6 +24,7 @@ __all__ = [
 ]
 
 
+@check_stda(['data'])
 def cross_section(data, start, end, steps=101, interp_type='linear'):
     '''
 
@@ -106,6 +108,8 @@ def cross_section(data, start, end, steps=101, interp_type='linear'):
     return cross_stda
 
 
+@check_stda(['cross_x', 'cross_y'])
+@unifydim_stda(['cross_x', 'cross_y'])
 def cross_section_components(cross_x, cross_y):
     '''
 

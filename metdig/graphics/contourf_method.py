@@ -56,6 +56,7 @@ def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
             cb_label = '{}({})'.format(stda.attrs['var_cn_name'], stda.attrs['var_units']) if not cb_label else cb_label
         except:
             print('输入变量请添加"var_cn_name"属性和"var_units"属性')
+            cb_label = ""
         utl.add_colorbar(ax, img, ticks=cb_ticks, pos=cb_pos, extend=extend, label=cb_label, kwargs=colorbar_kwargs)
         return img
     return img
@@ -659,6 +660,23 @@ def cross_mpv_contourf(ax, stda, xdim='lon', ydim='level',
         # utl.add_colorbar(ax, img, label='Moisture Potential Vorticity (10$^{-6}$ K*m**2/(s*kg))',
         #                  label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
         utl.add_colorbar(ax, img, label='湿位涡 (10$^{-6}$ K*m**2/(s*kg))',
+                         label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
+def cross_theta_contourf(ax, stda, xdim='lon', ydim='level',
+                       add_colorbar=True,extend='both',
+                       levels=np.arange(310, 370, 2), cmap='jet',colorbar_kwargs={},
+                       **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) 
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, norm=norm, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='绝对湿度 (kelven)',
                          label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
     return img
 
