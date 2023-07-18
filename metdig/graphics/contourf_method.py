@@ -65,6 +65,23 @@ def contourf_2d(ax, stda,levels, xdim='lon', ydim='lat',
 ############################################################################################################################
 
 @kwargs_wrapper
+def tmp_contourf(ax, stda, xdim='lon', ydim='lat',
+                   add_colorbar=True,extend='both',
+                   cmap='met/temp',levels=range(-40,41),
+                   transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={}, 
+                   **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # degC
+
+    cmap = cm_collected.get_cmap(cmap)
+
+    img = ax.contourf(x, y, z, cmap=cmap, levels=levels,transform=transform, alpha=alpha,extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='Temperature (°C)',kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
 def extreme_contourf(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,alpha=0.8,
                     levels=np.arange(-6,-1.5,0.5).tolist()+[0]+np.arange(2,6.5,.5).tolist(), cmap='ncl/BlueWhiteOrangeRed',extend='both',
