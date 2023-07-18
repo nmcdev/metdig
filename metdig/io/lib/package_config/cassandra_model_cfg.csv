@@ -119,6 +119,7 @@ nwfd_scmoc,tmn24_2m,surface,degC,,2,NWFD_SCMOC/MINIMUM_TEMPERATURE/2M_ABOVE_GROU
 nwfd_scmoc,t2m,surface,degC,,2,NWFD_SCMOC/TMP/2M_ABOVE_GROUND/,model
 nwfd_scmoc,vis,surface,km,,0,NWFD_SCMOC/VIS/,model
 nwfd_scmoc,rh2m,surface,percent,,0,NWFD_SCMOC/RH/2M_ABOVE_GROUND/,model
+nwfd_scmoc,gust10m,surface,m/s,,10,NWFD_SCMOC/WIND_GUST/10M_ABOVE_GROUND/,model
 nwfd_smerage,u10m,surface,m/s,,10,NWFD_SMERGE/UGRD/10M_ABOVE_GROUND/,model
 nwfd_smerage,v10m,surface,m/s,,10,NWFD_SMERGE/VGRD/10M_ABOVE_GROUND/,model
 nwfd_smerage,rain24,surface,mm,,0,NWFD_SMERGE/RAIN24/,model
