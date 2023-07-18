@@ -171,6 +171,7 @@ ecmwf_hr,snow_density,surface,kg*m**-3,SNDE,雪密度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,snow_depth,surface,m,SDE,雪深,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tsfc,surface,K,SKTE,表面温度,1,0,NAFP_ECMF_D1D_FOR,model
 #,,,,,,,,,
+cldas,t2m,surface,K,TMP,2米温度,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
 cldas,rain01,surface,mm,PRE,小时降水,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
 #EC集合预报,,,,,,,,,
 ecmwf_ens,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
