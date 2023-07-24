@@ -25,7 +25,7 @@ def draw_hgt_uv_vort(hgt, u, v, vort, map_extent=(60, 145, 15, 55),
     png_name = '{2}_位势高度场_风场_涡度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper())
     
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
-    obj.img['vort'] = vort_contourf(obj.ax, vort, levels=np.arange(-10, 11, 1),cmap='ncl/BlueWhiteOrangeRed',extend='both', kwargs=vortadv_contourf_kwargs)
+    obj.img['vort'] = vort_contourf(obj.ax, vort, levels=np.arange(-10, 11, 1),cmap='ncl/BlueWhiteOrangeRed',extend='both', kwargs=vort_contourf_kwargs)
     obj.img['uv'] = uv_barbs(obj.ax, u, v, kwargs=uv_barbs_kwargs)
     obj.img['hgt'] = hgt_contour(obj.ax, hgt, kwargs=hgt_contour_kwargs)
     obj.save()
