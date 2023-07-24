@@ -141,10 +141,10 @@ ecmwf_hr,vvel,high,Pa/s,VVP,垂直速度,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmp,high,kelvin,TEM,气温,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,rh,high,percent,RHU,相对湿度,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,u10m,surface,m/s,WIU10,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,v10m,surface,m/s,WIV10,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,u100m,surface,m/s,WIU100,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,v100m,surface,m/s,WIV100,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,u10m,surface,m/s,10U,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,v10m,surface,m/s,10V,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,u100m,surface,m/s,100U,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,v100m,surface,m/s,100V,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmn3_2m,surface,kelvin,MN2T3,过去3小时最低温度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,t2m,surface,kelvin,TEM,气温,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,psfc,surface,Pa,PRS,气压,1,0,NAFP_ECMF_D1D_FOR,model
