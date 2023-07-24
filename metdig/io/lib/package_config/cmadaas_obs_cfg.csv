@@ -41,3 +41,5 @@ sfc_chn_hor,tmx24_2m,degC,TEM_Max_24h,过去24小时最高气温,SURF_CHN_MUL_HOR
 sfc_chn_hor,tmn24_2m,degC,TEM_Min_24h,过去24小时最高气温,SURF_CHN_MUL_HOR
 sfc_chn_hor,gust10m,m/s,WIN_S_INST_Max,极大风速,SURF_CHN_MUL_HOR
 sfc_chn_hor,gustdir10m,degree,WIN_D_INST_Max,极大风向,SURF_CHN_MUL_HOR
+surf_chn_mul_day_n,rain24_08,mm,PRE_Time_0808,08-08时降水量,SURF_CHN_MUL_DAY_N
+surf_chn_mul_day_n,rain24_20,mm,PRE_Time_2020,20-20时降水量,SURF_CHN_MUL_DAY_N
