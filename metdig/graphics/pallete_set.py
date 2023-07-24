@@ -120,7 +120,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
                                     zorder=101, size=13, city_type='county')
 
     # 背景图
-    if add_background_style is 'borders':
+    if add_background_style == 'borders':
         # ax.add_feature(cfeature.OCEAN, facecolor='#EDFBFE')
         # ax.add_feature(cfeature.LAND, facecolor='#FCF6EA')
         # add_china_map_2basemap(ax, name="world", edgecolor='gray', lw=0.1, encoding='gbk',zorder=19) 
