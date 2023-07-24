@@ -156,7 +156,7 @@ class skewt_compose(object):
     def get_mpl(self):
         return {
             'fig': self.fig,
-            'ax': self.ax,
+            'ax': self.skew.ax,
             'img': self.img,
         }
     
@@ -185,7 +185,7 @@ class time_series_left_right_bottom_compose(object):
     def get_mpl(self):
         return {
             'fig': self.fig,
-            'ax': self.ax,
+            'ax': [self.ax_tmp, self.ax_rh, self.ax_uv],
             'img': self.img,
         }
     
