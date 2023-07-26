@@ -2,15 +2,41 @@
 
 import xarray as xr
 import numpy as np
+import pyproj
+import math
+import metpy.interpolate as mpinterp
 
 import inspect
 from functools import wraps
 import datetime
 
 
-def get_minor_extent(st_point=[20, 120.0], ed_point=[50, 130.0], offset=1):
-    _p = np.vstack([np.array(st_point).reshape(-1, 2), np.array(ed_point).reshape(-1, 2)]) # [[lat, lon]]
-    minor_extent = [_p[:, 1].min() - offset, _p[:, 1].max() + offset, _p[:, 0].min() - offset, _p[:, 0].max() + offset]
+def cross_minor_extent(st_point=[20, 120.0], ed_point=[50, 130.0]):
+    '''
+    空间剖面根据起止点计算经纬度范围
+    参考metpy.cross_section方法, 弧线方式计算经纬度范围后往外扩一度，以保证剖面线上的点都在范围内
+    '''
+    
+    npts = len(st_point) // 2 # 线段数
+
+    # 等经纬度坐标系
+    crs = pyproj.crs.CRS.from_proj4('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+
+    lons = []
+    lats = []
+    for i in range(npts): # 循环每一段线
+        _stp = st_point[i * 2:i * 2 + 2] # 开始点[lat, lon]
+        _edp = ed_point[i * 2:i * 2 + 2] # 结束点[lat, lon]
+        points1 = mpinterp.geodesic(crs, _stp, _edp, 100) 
+        lons.append(points1[:, 0].min())
+        lons.append(points1[:, 0].max())
+        lats.append(points1[:, 1].min())
+        lats.append(points1[:, 1].max())
+    min_lon = min(lons)
+    max_lon = max(lons)
+    min_lat = min(lats)
+    max_lat = max(lats)
+    minor_extent = [math.floor(min_lon) - 1, math.ceil(max_lon) + 1, math.floor(min_lat) - 1, math.ceil(max_lat) + 1]
     return minor_extent
 
 def point_to1dim(point):
