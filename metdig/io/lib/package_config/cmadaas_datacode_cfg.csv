@@ -5,8 +5,8 @@
 #    2. 以data_name,fhour_flag,列作为查询列，保证能确定一一行
 # ,,
 data_name,fhour_flag,data_code
-cma_gfs,0,NAFP_ANA_FTM_GRAPES_GFS_NEHE
-cma_gfs,1,NAFP_FOR_FTM_GRAPES_CFSV2_NEHE
+cma_gfs,0,NAFP_ANA_FTM_GRAPES_GFS_25KM_GLB
+cma_gfs,1,NAFP_FOR_FTM_GRAPES_GFS_25KM_GLB
 cma_meso_3km,0,NAFP_GRAPES_MESO_ANA_3KM
 cma_meso_3km,1,NAFP_GRAPES_MESO_FOR_3KM
 cma_rafs_3km,0,NAFP_ANA_GRAPES_RAFS_3KM
