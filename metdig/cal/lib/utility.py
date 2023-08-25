@@ -109,7 +109,8 @@ def check_stda(check_lst):
                 except Exception as e:
                     tag = False
                 if tag == False:
-                    raise Exception(f'{func.__name__} Argument {arg_name} is not stda!')
+                    # raise Exception(f'{func.__name__} Argument {arg_name} is not stda!')
+                    print(f'{func.__name__} Argument {arg_name} is not stda!')
             return func(*args, **kwargs)
         return wrapper
     return decorator

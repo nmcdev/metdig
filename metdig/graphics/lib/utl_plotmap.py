@@ -187,6 +187,7 @@ def forcast_info(ax, x=0.1 ,y=0.99 ,info=None ,transform=None , size=12, va='top
                     ha='left', bbox=dict(facecolor='#FFFFFFCC', edgecolor='black', pad=3.0),zorder=20,**kwargs):
     ax.text(x, y, info, transform=ax.transAxes, size=size, va=va, ha=ha, bbox=bbox,zorder=zorder) 
 
+@kwargs_wrapper
 def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
                                   edgecolor='c', lw=2,crs=ccrs.PlateCarree(), **kwargs):
     """

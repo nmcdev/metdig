@@ -90,10 +90,6 @@ def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
     vvel=read_vvel(data_source=data_source, init_time=init_time, fhour=fhour,
                           data_name=data_name, level=vvel_lev, extent=map_extent)
 
-    if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'vvel': vvel}
-        ret.update({'data': dataret})
-
     vvel = mdgcal.gaussian_filter(vvel, smth_step)
 
     # 隐藏被地形遮挡地区
@@ -103,7 +99,11 @@ def hgt_uv_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
         vvel = mask_terrian(psfc, vvel)
-
+        
+    if is_return_data:
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'vvel': vvel}
+        ret.update({'data': dataret})
+        
     # plot
     if is_draw:
         drawret = draw_dynamic.draw_hgt_uv_vvel(hgt, u, v, vvel, map_extent=map_extent, **products_kwargs)

@@ -189,7 +189,7 @@ def tcwv_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     z = stda.stda.get_value(ydim, xdim)  # mm
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
-    cmap.set_under(color=[0, 0, 0, 0], alpha=0.0)
+    cmap.set_under(color=[1, 1, 1, 1], alpha=1)
 
     img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
@@ -216,22 +216,41 @@ def rh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     return img
 
 
+# @kwargs_wrapper
+# def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+#                     add_colorbar=True,
+#                     levels=np.arange(2, 24, 0.5), cmap='met/specific_humidity_nws',
+#                     transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},
+#                     **kwargs):
+#     x = stda.stda.get_dim_value(xdim)
+#     y = stda.stda.get_dim_value(ydim)
+#     z = stda.stda.get_value(ydim, xdim)  # g/kg
+
+#     cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
+
+#     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
+#     if add_colorbar:
+#         utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',kwargs=colorbar_kwargs)
+#     return img
+
 @kwargs_wrapper
 def spfh_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                     add_colorbar=True,
                     levels=np.arange(2, 24, 0.5), cmap='met/specific_humidity_nws',
-                    transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},
+                    transform=ccrs.PlateCarree(), alpha=0.8,colorbar_kwargs={},extend='max',
                     **kwargs):
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
-    z = stda.stda.get_value(ydim, xdim)  # g/kg
+    z = stda.stda.get_value(ydim, xdim)  # mm
 
-    cmap, norm = cm_collected.get_cmap(cmap, extend='both', levels=levels)
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+    cmap.set_under(color=[1, 1, 1, 1], alpha=1)
 
-    img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
+    img = ax.pcolormesh(x, y, z, norm=norm, cmap=cmap, transform=transform, alpha=alpha, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)',kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='Specific Humidity (g/kg)', extend=extend,kwargs=colorbar_kwargs)
     return img
+
 
 
 @kwargs_wrapper
