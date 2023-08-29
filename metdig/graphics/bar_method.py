@@ -8,7 +8,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.lines as lines
-from pint import unit
 
 import metdig.graphics.pallete_set as pallete_set
 from metdig.graphics.lib.utility import save

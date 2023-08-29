@@ -45,6 +45,8 @@ rainc24,24小时对流性降水,mm,24
 es,饱和水汽压,hPa,0
 u10m,10mU风,m/s,0
 v10m,10mV风,m/s,0
+wsp10m,10m风速,m/s,0
+wdir10m,10m风向,degree,0
 uave12_10m,12小时10米平均U风,m/s,12
 vave12_10m,12小时10米平均V风,m/s,12
 uave24_10m,24小时10米平均U风,m/s,24

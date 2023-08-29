@@ -55,7 +55,7 @@ def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fonts
     ax_inset = ax.get_figure().add_axes([l, b - h*0.4 - 0.1, w, h * 0.4])
 
     if not title:
-        title = f"过去{rain.attrs['valid_time']}小时降水"
+        title = f"{rain.attrs['valid_time']}小时降水"
     ax_inset.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
     xstklbls = mpl.dates.DateFormatter(xtickfmt)
