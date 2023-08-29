@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import matplotlib.path as mpath
 import matplotlib.patheffects as mpatheffects
 
 from mpl_toolkits.axisartist.parasite_axes import HostAxes, ParasiteAxes
@@ -66,6 +67,25 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     Returns:
         [type]: [description]
     """    
+    if isinstance(crs, ccrs.NorthPolarStereo):
+        # 北极极射投影，关闭如下参数
+        add_province = False
+        add_river = False
+        add_city = False
+        add_county_city = False
+        add_background_style = ''
+        add_south_china_sea = False
+        if map_extent[2] < 0:
+            map_extent = (-180,180,0,90)
+        else:
+            map_extent = (-180,180, map_extent[2],90)
+    elif isinstance(crs, ccrs.LambertConformal):
+        # lambert投影，关闭如下参数
+        add_south_china_sea = False
+        # 设中心经纬度
+        crs = ccrs.LambertConformal(central_longitude=((map_extent[0]+ map_extent[1])/2), central_latitude=((map_extent[2]+ map_extent[3])/2))
+  
+
     plt_base_env()  # 初始化字体中文等
     if(ax is None): # 
         fig = plt.figure(figsize=figsize)
@@ -76,11 +96,30 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
     # set_map_extent
-    if((map_extent[1]-map_extent[0] > 350) and (map_extent[3]-map_extent[2] > 170)):
-        ax.set_global()
-    else:
-        # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
+    if isinstance(crs, ccrs.PlateCarree):
+        # 等经纬度投影
+        if((map_extent[1]-map_extent[0] > 350) and (map_extent[3]-map_extent[2] > 170)):
+            ax.set_global()
+        else:
+            # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
+            ax.set_extent(map_extent, crs=ccrs.PlateCarree())
+    elif isinstance(crs, ccrs.NorthPolarStereo):
+        # 非等经纬度投影，设置extent会出错
         ax.set_extent(map_extent, crs=ccrs.PlateCarree())
+        #######以下为网格线的参数######
+        theta = np.linspace(0, 2*np.pi, 100)
+        center, radius = [0.5, 0.5], 0.5
+        verts = np.vstack([np.sin(theta), np.cos(theta)]).T
+        circle = mpath.Path(verts * radius + center)
+        # 设置axes边界，为圆形边界，否则为正方形的极地投影
+        ax.set_boundary(circle, transform=ax.transAxes)
+    elif isinstance(crs, ccrs.LambertConformal):
+        # lambert非等经纬度投影
+        ax.set_extent([map_extent[0],map_extent[1],map_extent[2],map_extent[3]])
+        vertices = [(lon, map_extent[2]) for lon in range(map_extent[0], map_extent[1] + 1, 1)] + [(lon, map_extent[3]) for lon in range(map_extent[1], map_extent[0] - 1, -1)]
+        boundary = mpath.Path(vertices)
+        ax.set_boundary(boundary, transform=ccrs.PlateCarree())
+        pass
 
     # add grid lines
     # if add_grid: 
@@ -176,25 +215,51 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
         ax.add_image(request, background_zoom_level)  # level=10 缩放等级
 
     # 增加坐标和网格线
-    if add_ticks:
-        if(isinstance(add_ticks,bool)):
-            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
-                                  yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid)
-        else:
-            utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
-                                  yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid,kwargs=add_ticks)
-        # plt.tick_params(labelsize=15)
-        # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=crs)
-        # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=crs)
-        # lon_formatter = LongitudeFormatter(dateline_direction_label=True)
-        # lat_formatter = LatitudeFormatter()
-        # ax.xaxis.set_major_formatter(lon_formatter)
-        # ax.yaxis.set_major_formatter(lat_formatter)
-    else:  
+    if isinstance(crs, ccrs.PlateCarree):
+        if add_ticks:
+            if(isinstance(add_ticks,bool)):
+                utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
+                                    yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid)
+            else:
+                utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
+                                    yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid,kwargs=add_ticks)
+            # plt.tick_params(labelsize=15)
+            # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=crs)
+            # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=crs)
+            # lon_formatter = LongitudeFormatter(dateline_direction_label=True)
+            # lat_formatter = LatitudeFormatter()
+            # ax.xaxis.set_major_formatter(lon_formatter)
+            # ax.yaxis.set_major_formatter(lat_formatter)
+        else:  
+            if add_grid:
+                gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+                gl.xlocator = mpl.ticker.FixedLocator(np.arange(-180, 181, 10))
+                gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
+    elif isinstance(crs, ccrs.NorthPolarStereo):
+        utl_plotmap.add_ticks_NorthPolarStereo(ax, map_extent, add_grid=add_grid, add_ticks=add_ticks)
+
+    elif isinstance(crs, ccrs.LambertConformal):
+        if add_ticks:
+            # ticks方法无法使用，用text代替
+            xticks = np.arange(map_extent[0],  map_extent[1]+1, 10)
+            yticks = np.arange(map_extent[2], map_extent[3]+1, 10)
+            for lon in xticks:
+                if lon > 0:
+                    lon_str = f"{lon}°E"
+                else:
+                    lon_str = f"{abs(lon)}°W"
+                ax.text(lon, map_extent[2]-1, lon_str, va='top', ha='center', transform=ccrs.PlateCarree(), fontsize=15)
+            for lat in yticks:
+                if lat > 0:
+                    lat_str = f"{lat}°N"
+                else:
+                    lat_str = f"{abs(lat)}°S"
+                ax.text(map_extent[0]-1, lat, lat_str, va='center', ha='right', transform=ccrs.PlateCarree(), fontsize=15)
         if add_grid:
-            gl = ax.gridlines(crs=crs, linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+            gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
             gl.xlocator = mpl.ticker.FixedLocator(np.arange(-180, 181, 10))
             gl.ylocator = mpl.ticker.FixedLocator(np.arange(-90, 90, 10))
+
 
     # 南海
     if add_south_china_sea:
@@ -267,12 +332,12 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
             if x > 0:
                 x = f'{x:.2f}°E'
             else:
-                x = f'{x:.2f}°W'
+                x = f'{abs(x):.2f}°W'
 
             if y > 0:
                 y = f'{y:.2f}°N'
             else:
-                y = f'{y:.2f}°S'
+                y = f'{abs(y):.2f}°S'
             x_labels.append(f'{x}\n{y}')
         ax.set_xticklabels(x_labels)
 

@@ -468,12 +468,12 @@ class __STDADataFrameAccessor(object):
         if point_lon > 0:
             point_lon = str(point_lon) + 'E'
         else:
-            point_lon = str(point_lon) + 'W'
+            point_lon = str(abs(point_lon)) + 'W'
 
         if point_lat > 0:
             point_lat = str(point_lat) + 'N'
         else:
-            point_lat = str(point_lat) + 'S'
+            point_lat = str(abs(point_lat)) + 'S'
 
         title = ''
         if(fhour != 0):

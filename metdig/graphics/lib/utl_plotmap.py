@@ -181,6 +181,57 @@ def add_ticks(ax, xticks=None, yticks=None, labelsize=16, crs=ccrs.PlateCarree()
     
     if add_grid:
         ax.gridlines(crs=crs, xlocs=xticks, ylocs=yticks, linewidth=1, color='gray', alpha=0.5, linestyle='--', zorder=100)
+
+
+@kwargs_wrapper
+def add_ticks_NorthPolarStereo(ax, map_extent=[-180,180,0,90], add_grid=True, add_ticks=True):
+    if add_grid:
+        gl = ax.gridlines(crs=ccrs.PlateCarree(), linewidth=2, color='gray', alpha=0.5, linestyle='--', zorder=100)
+        gl.xlocator = mpl.ticker.FixedLocator(np.arange(-180, 181, 30))
+        gl.ylocator = mpl.ticker.FixedLocator([0, 15, 30, 45, 60, 75, 90])
+    if add_ticks:
+        # for label alignment
+        va = 'center' # also bottom, top
+        ha = 'center' # right, left
+        # degree_symbol=u'\u00B0'
+         # for locations of (meridional/longitude) labels
+        lond = np.arange(-150, 181, 30)
+        latd = np.full(len(lond),map_extent[2])
+        for (alon, alat) in zip(lond, latd):
+            projx1, projy1 = ax.projection.transform_point(alon, alat, ccrs.Geodetic())
+            if alon>0 and alon<180:
+                ha = 'left'
+                va = 'center'
+            if alon<0:
+                ha = 'right'
+                va = 'center'
+            if np.abs(alon-180)<0.01:
+                ha = 'center'
+                va = 'bottom'
+            if alon==0.:
+                ha = 'center'
+                va = 'top'
+            if (alon<360.):
+                alon = int(alon)
+                if alon > 0:
+                    txt = f'{alon}°E'
+                else:
+                    txt = f'{abs(alon)}°W'
+                ax.text(projx1, projy1, txt, va=va, ha=ha, color='black')
+        # for locations of (meridional/longitude) labels
+        # select longitude: 315 for label positioning
+        # lond2 = 315*np.ones(len(lond))
+        latd2 = np.array([0, 15, 30, 45, 60, 75, 90])
+        latd2 = latd2[latd2>=map_extent[2]]
+        lond2 =  315*np.ones(len(latd2))
+
+        va, ha = 'center', 'center'
+        for (alon, alat) in zip(lond2, latd2):
+            projx1, projy1 = ax.projection.transform_point(alon, alat, ccrs.Geodetic())
+            # txt =  ' {0} '.format(str(int(alat)))+degree_symbol
+            txt = f'{int(alat)}°N'
+            ax.text(projx1, projy1, txt, va=va, ha=ha, color='black') 
+
     
 @kwargs_wrapper
 def forcast_info(ax, x=0.1 ,y=0.99 ,info=None ,transform=None , size=12, va='top',
