@@ -201,7 +201,7 @@ def dt2m_mx24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
                              extent=map_extent, x_percent=0, y_percent=0, var_name='tmx3_2m')
     if t_2m_1 is None:
         t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1,
-                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t_2m')
+                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t2m')
         if t_2m_1 is None:
             raise Exception('can not get any data')
 
@@ -209,7 +209,7 @@ def dt2m_mx24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
                              extent=map_extent, x_percent=0, y_percent=0, var_name='tmx3_2m')
     if t_2m_2 is None:
         t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2,
-                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t_2m')
+                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t2m')
         if t_2m_2 is None:
             raise Exception('can not get any data')
 
@@ -255,7 +255,7 @@ def dt2m_mn24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
                              extent=map_extent, x_percent=0, y_percent=0, var_name='tmn3_2m')
     if t_2m_1 is None:
         t_2m_1 = get_model_grids(data_source=data_source, init_time=init_time1, fhours=fhours1,
-                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t_2m')
+                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t2m')
         if t_2m_1 is None:
             raise Exception('can not get any data')
 
@@ -263,7 +263,7 @@ def dt2m_mn24(data_source='cassandra', data_name='cma_gfs', init_time=None, fhou
                              extent=map_extent, x_percent=0, y_percent=0, var_name='tmn3_2m')
     if t_2m_2 is None:
         t_2m_2 = get_model_grids(data_source=data_source, init_time=init_time2, fhours=fhours2,
-                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t_2m')
+                                 data_name=data_name, extent=map_extent, x_percent=0, y_percent=0, var_name='t2m')
         if t_2m_2 is None:
             raise Exception('can not get any data')
 
