@@ -27,13 +27,12 @@ def draw_rain_ens_boxplot(rain,rain_boxplot_kwargs={}, **pallete_kwargs):
     png_name = '{0}_降水_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(rain['id'].values[0], init_time)
     rain_ylabel = str(rain.attrs['valid_time'])+'小时降水(mm)'
 
-    fig = pallete_set.time_series_left_right_bottom_v2(
+    fig, ax_rain, _, _ = pallete_set.time_series_left_right_bottom_v2(
         figsize=(16, 4.5),if_add_bottom=False,if_add_right=False,
         title_left=title_left,title_right=title_right,
         label_leftax=rain_ylabel,kwargs=pallete_kwargs
     )
 
-    ax_rain=fig[1]
     boxplot_1D(ax_rain,rain,kwargs=rain_boxplot_kwargs)
 
     ax_rain.set_ylim(0,np.ceil(np.nanmax(rain.stda.get_value()) / 5) * 5)
@@ -56,13 +55,12 @@ def draw_t2m_ens_boxplot(t2m,t2m_boxplot_kwargs={}, **pallete_kwargs):
     png_name = '{0}_温度_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时起报.jpg'.format(t2m['id'].values[0], init_time)
     t2m_ylabel = '2米温度($^\circ$C)'
 
-    fig = pallete_set.time_series_left_right_bottom_v2(
+    fig, ax_t2m, _, _  = pallete_set.time_series_left_right_bottom_v2(
         figsize=(16, 4.5),if_add_bottom=False,if_add_right=False,
         title_left=title_left,title_right=title_right,
         label_leftax=t2m_ylabel,kwargs=pallete_kwargs
     )
 
-    ax_t2m=fig[1]
     boxplot_1D(ax_t2m,t2m,kwargs=t2m_boxplot_kwargs)
 
     ax_t2m.set_ylim(np.floor(np.nanmin(t2m.stda.get_value()) / 5) * 5 - 2,np.ceil(np.nanmax(t2m.stda.get_value()) / 5) * 5)

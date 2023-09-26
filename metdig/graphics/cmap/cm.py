@@ -154,7 +154,8 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
             else:
                 colors = guide_cmaps(name[6:]).colors
         else:
-            if name in matplotlib.cm.cmap_d.keys():
+            # if name in matplotlib.cm.cmap_d.keys():
+            if name in plt.colormaps():
                 if name.startswith('Pastel1'):
                     colors = plt.get_cmap(name)(range(9))
                 elif name.startswith('Pastel2'):
@@ -209,7 +210,7 @@ def get_cmap(name, extend='neither', levels=None, isLinear=False):
     # 确定对应levels和extend的颜色列表
     # 如果颜色少于N则会拉伸颜色列表和N等长
     # 如果颜色大于N则会等会自动跳跃
-    idx = np.linspace(0, colors.shape[0] - 1, N, dtype=np.int)
+    idx = np.linspace(0, colors.shape[0] - 1, N, dtype=np.int32)
     colors = colors[idx]
     # print(N, idx, colors)
 
