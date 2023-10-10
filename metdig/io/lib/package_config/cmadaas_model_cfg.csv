@@ -173,6 +173,10 @@ ecmwf_hr,tsfc,surface,K,SKTE,表面温度,1,0,NAFP_ECMF_D1D_FOR,model
 #,,,,,,,,,
 cldas,t2m,surface,K,TMP,2米温度,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
 cldas,rain01,surface,mm,PRE,小时降水,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
+cldas,u10m,surface,m/s,WIU,东西风风速,999,0,NAFP_GRID_ANA_REALTIME_HOR_CHN,analysis
+cldas,v10m,surface,m/s,WIV,南北风风速,999,0,NAFP_GRID_ANA_REALTIME_HOR_CHN,analysis
+cldas,rh2m,surface,%,RHU,2m相对湿度,999,0,NAFP_GRID_ANA_REALTIME_HOR_CHN,analysis
+cldas,vis,surface,m,VIS,能见度,999,0,NAFP_GRID_ANA_REALTIME_HOR_CHN,analysis
 #EC集合预报,,,,,,,,,
 ecmwf_ens,hgt,high,gpm,GPH,位势高度,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
 ecmwf_ens,tmp,high,K,TEM,气温,100,any,NAFP_FOR_FTM_LOW_C3E_EHE,ens_0-50
