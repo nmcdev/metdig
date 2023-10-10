@@ -224,7 +224,8 @@ ncep_gfs,lcdc,surface,100*percent,LCC,低云量,214,0,NAFP_KWBC_GFS_FOR_0P25_GLB,mo
 ncep_gfs,rainc,surface,m,CPE,对流性降水,1,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
 ncep_gfs,cape,surface,J*kg**-1,CAPE,对流有效位能,1,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
 ncep_gfs,tcdc,surface,100*percent,TCC,总云量,10,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
-ncep_gfs,tmx,surface,K,MXT,最高气温,103,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
+ncep_gfs,tmn_2m,surface,K,MNT,最低气温,103,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
+ncep_gfs,tmx_2m,surface,K,MXT,最高气温,103,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
 ncep_gfs,snow_depth,surface,m,SDE,雪深,1,0,NAFP_KWBC_GFS_FOR_0P25_GLB,model
 #cra40再分析,,,,,,,,,
 cma_ra,t2m,surface,K,TEM,2米温度,999,2,NAFP_CRALAND_FTM_3HOR,model
