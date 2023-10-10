@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os
 import datetime
 import numpy as np
 import pandas as pd
 
-import cartopy.crs as ccrs
-import matplotlib.pyplot as plt
 import matplotlib.lines as lines
-
-from metdig.graphics.lib import utility as utl
 
 from metdig.graphics.barbs_method import *
 from metdig.graphics.contour_method import *

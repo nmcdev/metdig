@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import io
-import datetime
 import os
 import numba as nb
 import numpy as np
@@ -20,10 +19,7 @@ _log = logging.getLogger(__name__)
 
 pkg_name = 'metdig.graphics'
 
-
-
 import cartopy.io.img_tiles as cimgt
-import cartopy.crs as ccrs
 class TDT_img(cimgt.GoogleWTS):
     def _image_url(self, tile):
         x, y, z = tile

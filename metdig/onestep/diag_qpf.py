@@ -59,11 +59,6 @@ def rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, a
     ret = {}
     map_extent = get_map_area(area)
 
-    if atime > 3:
-        fhour_gh = int(fhour - atime / 2)
-    else:
-        fhour_gh = fhour
-
     rain = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                           atime=atime, extent=map_extent)
 
