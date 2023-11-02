@@ -17,8 +17,8 @@ rmaps_st_3km,0,NAFP_RMAPS_ST_3KM_NCN
 rmaps_st_3km,1,NAFP_RMAPS_ST_3KM_NCN
 ecmwf,0,any
 ecmwf,1,any
-cldas,0,NAFP_CLDAS2.0_RT_HOR_ASI
-cldas,1,NAFP_CLDAS2.0_RT_HOR_ASI
+cldas,0,any
+cldas,1,any
 ncep_gfs,0,NAFP_KWBC_GFS_ANA_0P25_GLB
 ncep_gfs,1,NAFP_KWBC_GFS_FOR_0P25_GLB
 ecmwf_ens,0,any
