@@ -47,16 +47,23 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     '''
     # 从配置中获取相关信息
     try:
+        if(data_name=='ecmwf_ens_unclipped'):
+            data_name2='ecmwf_ens'
+        else:
+            data_name2=data_name
         if level:
             level_type = 'high'
-            cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name,
+            cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name2,
                                                               var_name=var_name, level=level)  # cassandra数据路径
         else:
             level_type = 'surface'
-            cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据路径
-        cassandra_units = cassandra_model_cfg().model_cassandra_units(level_type=level_type, data_name=data_name, var_name=var_name)  # cassandra数据单位
-        cassandra_level = cassandra_model_cfg().model_cassandra_level(level_type=level_type, data_name=data_name, var_name=var_name, level=level)
-        cassandra_prod_type = cassandra_model_cfg().model_cassandra_prod_type(level_type=level_type, data_name=data_name, var_name=var_name)
+            cassandra_dir = cassandra_model_cfg().model_cassandra_dir(level_type=level_type, data_name=data_name2, var_name=var_name)  # cassandra数据路径
+        if(data_name=='ecmwf_ens_unclipped'):
+            keyword=cassandra_dir.split('/')[-2]
+            cassandra_dir=cassandra_dir.replace(keyword,keyword+'_UNCLIPPED')
+        cassandra_units = cassandra_model_cfg().model_cassandra_units(level_type=level_type, data_name=data_name2, var_name=var_name)  # cassandra数据单位
+        cassandra_level = cassandra_model_cfg().model_cassandra_level(level_type=level_type, data_name=data_name2, var_name=var_name, level=level)
+        cassandra_prod_type = cassandra_model_cfg().model_cassandra_prod_type(level_type=level_type, data_name=data_name2, var_name=var_name)
         # print(cassandra_prod_type)
     except Exception as e:
         raise Exception(str(e))
@@ -69,9 +76,9 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     #读取集合预报
     if('number' in list(data.coords.keys())):
         member = data.coords['number'].values
-        member = list(map(lambda x: data_name + '-' + str(x), member))
+        member = list(map(lambda x: data_name2 + '-' + str(x), member))
     else:
-        member = [data_name]
+        member = [data_name2]
     # 数据裁剪
     data = utl.area_cut(data, extent, x_percent, y_percent)
 
