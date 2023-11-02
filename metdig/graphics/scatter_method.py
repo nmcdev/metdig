@@ -43,12 +43,12 @@ def scatter_2d(ax, stda, xdim='lon', ydim='lat',
         if not size_changable:
             img = ax.scatter(x, y, s, norm=norm, cmap=cmap,c=z, alpha=alpha, **kwargs)
         else:
-            img = ax.scatter(x, y, z*s, norm=norm, cmap=cmap,c=z, alpha=alpha, **kwargs)
+            img = ax.scatter(x, y, np.abs(z)*s, norm=norm, cmap=cmap,c=z, alpha=alpha, **kwargs)
     else:
         if not size_changable:
             img = ax.scatter(x, y, s, norm=norm, cmap=cmap,c=z, alpha=alpha, **kwargs)
         else:
-            img = ax.scatter(x, y, z*s, norm=norm, cmap=cmap,c=z, transform=transform, alpha=alpha, **kwargs)
+            img = ax.scatter(x, y, np.abs(z)*s, norm=norm, cmap=cmap,c=z, transform=transform, alpha=alpha, **kwargs)
 
 
     if add_colorbar:
