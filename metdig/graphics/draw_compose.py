@@ -37,14 +37,20 @@ class horizontal_compose(object):
 
         self.img = {}
 
-    def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        self.img_buf = None
 
+    def save(self):
+        ret = save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
+    
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': self.ax,
             'img': self.img,
+            'img_buf': self.img_buf,
         }
 
 @kwargs_wrapper
@@ -65,14 +71,20 @@ class cross_lonpres_compose(object):
 
         self.img = {}
 
+        self.img_buf = None
+
     def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        ret = save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
 
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': self.ax,
             'img': self.img,
+            'img_buf': self.img_buf,
         }
     
 @kwargs_wrapper
@@ -94,14 +106,20 @@ class cross_timepres_compose(object):
         
         self.img = {}
 
-    def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        self.img_buf = None
 
+    def save(self):
+        ret = save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
+    
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': self.ax,
             'img': self.img,
+            'img_buf': self.img_buf,
         }
     
 @kwargs_wrapper
@@ -122,14 +140,20 @@ class cross_timeheight_compose(object):
 
         self.img = {}
 
+        self.img_buf = None
+
     def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        ret = save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
 
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': self.ax,
             'img': self.img,
+            'img_buf': self.img_buf,
         }
     
 @kwargs_wrapper
@@ -150,14 +174,20 @@ class skewt_compose(object):
 
         self.img = {}
 
+        self.img_buf = None
+
     def save(self):
-        return save(self.fig, self.skew.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        ret = save(self.fig, self.skew.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
 
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': self.skew.ax,
             'img': self.img,
+            'img_buf': self.img_buf,
         }
     
 @kwargs_wrapper
@@ -179,14 +209,20 @@ class time_series_left_right_bottom_compose(object):
 
         self.img = {}
 
+        self.img_buf = None
+
     def save(self):
-        return save(self.fig, [self.ax_tmp, self.ax_rh, self.ax_uv], self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        ret = save(self.fig, [self.ax_tmp, self.ax_rh, self.ax_uv], self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
 
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': [self.ax_tmp, self.ax_rh, self.ax_uv],
             'img': self.img,
+            'img_buf': self.img_buf,
         }
     
 @kwargs_wrapper
@@ -207,13 +243,19 @@ class twod_compose(object):
 
         self.img = {}
 
+        self.img_buf = None
+
     def save(self):
-        return save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        ret = save(self.fig, self.ax, self.png_name, self.output_dir, self.is_return_imgbuf, self.is_clean_plt, self.is_return_figax, self.is_return_pngname, self.dpi)
+        if 'img_buf' in ret.keys():
+            self.img_buf = ret['img_buf']
+        return ret
 
     def get_mpl(self):
         return {
             'fig': self.fig,
             'ax': self.ax,
             'img': self.img,
+            'img_buf': self.img_buf,
         }
     
