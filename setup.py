@@ -42,6 +42,7 @@ setup(
                       'metpy == 1.0',
                       'meteva > 1.3',
                       'xarray <= 0.19.0 ',
+                      'netcdf4 <= 1.6.4 ',
                       'cdsapi',
                       'numba',
                       'folium',
