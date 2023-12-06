@@ -743,7 +743,7 @@ class __STDADataArrayAccessor(object):
         for i_lv, _lv in enumerate(points_xr['level'].values):
             for i_t, _t in enumerate(points_xr['time'].values):
                 for i_d, _d in enumerate(points_xr['dtime'].values):
-                    _d = int(_d)
+                    # _d = int(_d) # 有小数的情况出现
                     for i_id, _id in enumerate(id):
                         _other = [points[_o][i_id] for _o in points_keys]  # 除去lon lat id之外的其它坐标信息名称对应的数据
                         _lon = lon[i_id]
