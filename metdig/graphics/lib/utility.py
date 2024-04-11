@@ -54,6 +54,14 @@ class TDT_Hillshade(cimgt.GoogleTiles):
         # url = 'http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/tile/%s/%s/%s'% (z, y, x)
         url = 'http://server.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade/MapServer/tile/%s/%s/%s'% (z, y, x)
         return url
+    
+class TDT_ter_google(cimgt.GoogleTiles):
+    def _image_url(self, tile, cache=True):
+        x, y, z = tile
+        # url = 'http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/tile/%s/%s/%s'% (z, y, x)
+        url = 'http://mt1.google.com/vt/lyrs={style}&x={x}&y={y}&z={z}'
+        return url
+
 def kwargs_wrapper(func):
     '''
     关键字传参时，使用kwargs={...}字典的方式，顶替掉原函数中的同名的关键字参数

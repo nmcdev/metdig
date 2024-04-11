@@ -102,7 +102,7 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
             ax.set_global()
         else:
             # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
-            ax.set_extent(map_extent, crs=ccrs.PlateCarree())
+            ax.set_extent(map_extent, crs=crs)
     elif isinstance(crs, ccrs.NorthPolarStereo):
         # 非等经纬度投影，设置extent会出错
         ax.set_extent(map_extent, crs=ccrs.PlateCarree())
@@ -195,11 +195,11 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
 
     elif add_background_style == 'terrain2':
         tiler = Stamen('terrain-background')
-        ax.add_image(tiler, background_zoom_level,interpolation='spline36')
+        ax.add_image(tiler, background_zoom_level) #,interpolation='spline36'
 
     elif add_background_style == 'terrain3':
-        # request = utl.TDT_ter2()  # 地形
-        request = GoogleTiles(style='terrain')
+        request = utl.TDT_ter2()  # 地形
+        # request = GoogleTiles(style='terrain')
             # url='http://mt1.google.com/vt/lyrs={style}&x={x}&y={y}&z={z}')  # 谷歌地形
         ax.add_image(request, background_zoom_level)  
 

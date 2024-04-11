@@ -218,10 +218,6 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
                             u.rolling(lon=smth_stp, lat=smth_stp, min_periods=1, center=True).mean(skipna=True),
                             v.rolling(lon=smth_stp, lat=smth_stp, min_periods=1, center=True).mean(skipna=True))
 
-    if is_return_data:
-        dataret = {'u': u, 'v': v, 'thta': thta, 'fg': fg}
-        ret.update({'data': dataret})
-
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
@@ -229,6 +225,10 @@ def uv_fg_thta(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
         v = mask_terrian(psfc, v)
         thta = mask_terrian(psfc, thta)
         fg = mask_terrian(psfc, fg)
+
+    if is_return_data:
+        dataret = {'u': u, 'v': v, 'thta': thta, 'fg': fg, 'psfc':psfc}
+        ret.update({'data': dataret})
 
     # plot
     if is_draw:

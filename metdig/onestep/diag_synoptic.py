@@ -134,10 +134,6 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     prmsl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='prmsl', extent=map_extent)
     tcwv = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='tcwv', extent=map_extent)
 
-    if is_return_data:
-        dataret = {'hgt': hgt500, 'u850': u850, 'v850': v850, 'wsp200': wsp200, 'prmsl': prmsl}
-        ret.update({'data': dataret})
-
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
@@ -145,6 +141,10 @@ def syn_composite(data_source='cassandra', data_name='ecmwf', init_time=None, fh
         vort500 = mask_terrian(psfc, vort500)
         u850 = mask_terrian(psfc, u850)
         v850 = mask_terrian(psfc, v850)
+
+    if is_return_data:
+        dataret = {'hgt': hgt500, 'u850': u850, 'v850': v850, 'wsp200': wsp200, 'prmsl': prmsl}
+        ret.update({'data': dataret})
 
     prmsl_attrs = prmsl.attrs
     prmsl = prmsl.rolling(lon=10, lat=10, min_periods=1, center=True).mean()

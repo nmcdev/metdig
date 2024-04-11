@@ -81,9 +81,7 @@ def hgt_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     theta = read_theta(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                        level=theta_lev, extent=map_extent)
 
-    if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'theta': theta}
-        ret.update({'data': dataret})
+
 
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
@@ -92,6 +90,10 @@ def hgt_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fho
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
         theta = mask_terrian(psfc, theta)
+
+    if is_return_data:
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'theta': theta, 'psfc': psfc}
+        ret.update({'data': dataret})
 
     # plot
     if is_draw:

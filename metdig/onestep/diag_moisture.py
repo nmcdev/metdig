@@ -53,7 +53,7 @@ def hgt_uv_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=None, f
         wvfldiv = mask_terrian(psfc, wvfldiv)
 
     if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'wvfldiv': wvfldiv}
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'wvfldiv': wvfldiv,'psfc': psfc}
         ret.update({'data': dataret})
 
     # plot
@@ -208,7 +208,7 @@ def hgt_uv_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhou
         wvfl = mask_terrian(psfc, wvfl)
 
     if is_return_data:
-        dataret = {'hgt': hgt, 'u': u, 'v': v, 'wvfl': wvfl}
+        dataret = {'hgt': hgt, 'u': u, 'v': v, 'wvfl': wvfl, 'psfc': psfc}
         ret.update({'data': dataret})
 
     # plot
