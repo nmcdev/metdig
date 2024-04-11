@@ -161,6 +161,11 @@ def _split_psl(savefile, var_name, extent, pressure_level):
     # 拆分下载的psl数据到cache目录下
     if os.path.exists(savefile):
         data = xr.open_dataarray(savefile)
+        # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
+        if 'expver' in data.dims:
+            max_expver = data['expver'].max().values
+            data = data.sel(expver=max_expver)
+            data = data.drop('expver')
         if 'level' not in data.dims: # 增加单层数据拆分的时候假如没有level的判断
             _level = pressure_level
             _lvltg = False
@@ -190,6 +195,11 @@ def _split_sfc(savefile, var_name, extent):
     # 拆分下载的sfc数据到cache目录下
     if os.path.exists(savefile):
         data = xr.open_dataarray(savefile)
+        # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
+        if 'expver' in data.dims:
+            max_expver = data['expver'].max().values
+            data = data.sel(expver=max_expver)
+            data = data.drop('expver')
         for dt_utc in data['time'].values:
             dt_utc = pd.to_datetime(dt_utc)
             # cache目录为世界时
