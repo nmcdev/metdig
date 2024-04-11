@@ -7,7 +7,7 @@ import metdig.graphics.lib.utility as  utl
 from  metdig.graphics.lib.utility import kwargs_wrapper
 
 @kwargs_wrapper
-def add_extrema_on_ax(ax, stda, transform=ccrs.PlateCarree(), size=20,zorder=12, color='red',va='bottom',ha='right',**kwargs):
+def add_extrema_on_ax(ax, stda, transform=ccrs.PlateCarree(), size=20,zorder=12, color='red',va='bottom',ha='right',custom_words='Max: ',**kwargs):
     slon = ax.transLimits._boxin.x0
     elon = ax.transLimits._boxin.x1
     slat = ax.transLimits._boxin.y0
@@ -16,12 +16,12 @@ def add_extrema_on_ax(ax, stda, transform=ccrs.PlateCarree(), size=20,zorder=12,
     # modify by wzj 2023.7.10 修复只绘制区域内的数值
     if(extrema.size == 1) and (extrema.lon.values[0] >= slon and extrema.lon.values <= elon and extrema.lat.values >= slat and extrema.lat.values <= elat):
         img = ax.text(extrema.lon,extrema.lat,
-                    'Max: '+'%.1f' % np.squeeze(extrema.values.flatten()[0]),
+                    custom_words+'%.1f' % np.squeeze(extrema.values.flatten()[0]),
                     family='SimHei',size=size, transform=transform,zorder=zorder,color=color,va=va,ha=ha, **kwargs)
-        img.set_path_effects([path_effects.Stroke(linewidth=3, foreground='#D9D9D9'),
+        img.set_path_effects([path_effects.Stroke(linewidth=2, foreground='#D9D9D9'),
                             path_effects.Normal()])
         img2 = ax.scatter(extrema.lon,extrema.lat,s=size, color=color, transform=transform,zorder=zorder, **kwargs)
-        img2.set_path_effects([path_effects.Stroke(linewidth=3, foreground='#D9D9D9'),
+        img2.set_path_effects([path_effects.Stroke(linewidth=2, foreground='#D9D9D9'),
                             path_effects.Normal()])
     else:
         print('there are more than one extrema values')
