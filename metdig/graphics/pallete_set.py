@@ -314,10 +314,12 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
     # Adjust the y-axis to be logarithmic
     if(logyaxis):
         ax.set_yscale('symlog')
-    ax.set_yticklabels(np.arange(levels[0], levels[-1]-1, -100))
-    ax.set_ylim(levels[0], levels[-1])
-    ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
     if levels is not None:
+        if levels[0] < levels[-1]:
+            levels = levels[::-1] # 保证levels是从大到小的
+        ax.set_yticklabels(np.arange(levels[0], levels[-1]-1, -100))
+        ax.set_ylim(levels[0], levels[-1])
+        ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
         # ax.set_ylim(levels.max(), levels.min())
         yoffset = abs(levels[0] - levels[-1]) * yoffset
         ax.set_ylim(levels.max() + yoffset, levels.min() - yoffset)

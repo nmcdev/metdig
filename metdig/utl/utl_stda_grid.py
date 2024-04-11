@@ -365,6 +365,23 @@ class __STDADataArrayAccessor(object):
             if compare_dim_value and (a == b).all() == False: # 判断维度内容是否一致
                 return False
         return True
+    
+    def standard_dim(self):
+        """[维度标准化，经度从-180到180，纬度从-90到90，均为递增]
+        Returns:
+            [stda]: [标准化后的stda]
+        """
+        # 经度递增
+        if self._xr.lon.values[0] > self._xr.lon.values[-1]:
+            self._xr = self._xr.sel(Lon=self._xr['lon'][::-1])
+        # 纬度递增
+        if self._xr.lat.values[0] > self._xr.lat.values[-1]:
+            self._xr = self._xr.sel(Lat=self._xr['lat'][::-1])
+        # print(self._xr)
+        if self._xr.lon.values[-1] > 180:
+            self._xr = self._xr.assign_coords(lon=(((self._xr.lon + 180) % 360) - 180)) # 0-360转-180-180
+            self._xr = self._xr.sortby('lon') # 经度从小到大，此处sortby可能导致效率低
+        return self._xr
 
     @property
     def type(self):
@@ -534,7 +551,9 @@ class __STDADataArrayAccessor(object):
                 ydim = 'time'
         xdim2 = self._xr.coords[xdim].dims[0]  # 一个dim可能对应多个coord,所以要取到对应的dim
         ydim2 = self._xr.coords[ydim].dims[0]  # 一个dim可能对应多个coord,所以要取到对应的dim
-        data = self._xr.squeeze().transpose(ydim2, xdim2).values
+        # data = self._xr.squeeze().transpose(ydim2, xdim2).values
+        # modify by wzj 2024.3.27解决维度为1时squeeze后维度删除的bug
+        data = self._xr.squeeze(dim=list(set(self._xr.dims) - set([xdim2, ydim2]))).transpose(ydim2, xdim2).values
         return data
 
     def description(self):
@@ -726,7 +745,6 @@ class __STDADataArrayAccessor(object):
 
         # 其它坐标信息名称
         points_keys = list(set(other.keys()).difference(set(['lon', 'lat', 'id'])))
-        points = {k: _to_list(other[k]) for k in points_keys}
 
         # get points data
         points_xr = self._xr.interp(lon=('points', lon), lat=('points', lat), method=method)
@@ -738,24 +756,58 @@ class __STDADataArrayAccessor(object):
         attrs['data_start_columns'] = 6 + len(points_keys)
 
         # points data to pd.DataFrame
-        columns = ['level', 'time', 'dtime', 'id', 'lon', 'lat'] + points_keys + list(self._xr['member'].values)
-        lines = []
-        for i_lv, _lv in enumerate(points_xr['level'].values):
-            for i_t, _t in enumerate(points_xr['time'].values):
-                for i_d, _d in enumerate(points_xr['dtime'].values):
-                    # _d = int(_d) # 有小数的情况出现
-                    for i_id, _id in enumerate(id):
-                        _other = [points[_o][i_id] for _o in points_keys]  # 除去lon lat id之外的其它坐标信息名称对应的数据
-                        _lon = lon[i_id]
-                        _lat = lat[i_id]
-                        _data = points_xr.values[:, i_lv, i_t, i_d, i_id]
-                        line = [_lv, _t, _d, _id, _lon, _lat] + _other + list(_data)
-                        lines.append(line)
+        ''''
+        # points = {k: _to_list(other[k]) for k in points_keys}
+        # columns = ['level', 'time', 'dtime', 'id', 'lon', 'lat'] + points_keys + list(self._xr['member'].values)
+        # lines = []
+        # for i_lv, _lv in enumerate(points_xr['level'].values):
+        #     for i_t, _t in enumerate(points_xr['time'].values):
+        #         for i_d, _d in enumerate(points_xr['dtime'].values):
+        #             _d = int(_d)
+        #             for i_id, _id in enumerate(id):
+        #                 _other = [points[_o][i_id] for _o in points_keys]  # 除去lon lat id之外的其它坐标信息名称对应的数据
+        #                 _lon = lon[i_id]
+        #                 _lat = lat[i_id]
+        #                 _data = points_xr.values[:, i_lv, i_t, i_d, i_id]
+        #                 line = [_lv, _t, _d, _id, _lon, _lat] + _other + list(_data)
+        #                 lines.append(line)
 
-        df = pd.DataFrame(lines, columns=columns)
-        df.attrs = attrs
+        # df = pd.DataFrame(lines, columns=columns)
 
-        return df
+        # df.attrs = attrs
+
+        # return df
+        '''
+        
+        name = self._xr.name
+        if name is None:
+            name = 'required_name'
+        df = points_xr.to_dataframe(name=name).reset_index()
+
+        if self._xr['member'].values.size == 1:
+            member = self._xr['member'].values[0]
+            newdf = df.rename(columns={name: member})
+            newdf = pd.merge(newdf, pd.DataFrame({'id': id, 'points': np.arange(len(id))}), on='points', how='left')
+            newdf = newdf.drop(columns=['member', 'points'])
+            newdf = newdf[['level', 'time', 'dtime', 'id', 'lon', 'lat'] + [member]]
+        else:
+            # 待优化 循环member效率比较低
+            newdf = None
+            for member in self._xr['member'].values:
+                _ = df[df['member'] == member]
+                _ = _.rename(columns={name: member})
+                _ = pd.merge(_, pd.DataFrame({'id': id, 'points': np.arange(len(id))}), on='points', how='left')
+                _ = _.drop(columns=['member', 'points'])
+                _ = _[['level', 'time', 'dtime', 'id', 'lon', 'lat'] + [member]]
+                if newdf is None:
+                    newdf = _.copy(deep=True)
+                    newdf = newdf.reset_index(drop=True)
+                else:
+                    newdf[member] = _[member]
+
+        newdf.attrs = attrs
+
+        return newdf
 
 
 if __name__ == '__main__':

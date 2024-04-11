@@ -2,6 +2,7 @@
 
 import xarray as xr
 import numpy as np
+import pandas as pd
 import pyproj
 import math
 import metpy.interpolate as mpinterp
@@ -72,7 +73,8 @@ def get_map_area(area):
             '青藏': (68, 105, 18, 46),
             '东北冷涡':(100,150,30,65),
             '西南涡':(96,124,18,40),
-            '南海':(105,125,0,25)
+            '南海':(105,125,0,25),
+            '欧亚大陆':(10, 170, 0, 80),
             # '江南': (),
             # '江淮': (),
             # '西欧': (),
@@ -96,6 +98,12 @@ def get_map_area(area):
 
 
 def mask_terrian(psfc, stda_input, get_terrain=False):
+    # time dtime 维度取交集
+    time_dim = list(set(psfc['time'].values.tolist()) & set(stda_input['time'].values.tolist()))
+    time_dim = pd.Series(pd.to_datetime(time_dim)).to_list()
+    dtime_dim = list(set(psfc['dtime'].values.tolist()) & set(stda_input['dtime'].values.tolist()))
+    psfc = psfc.sel(time=time_dim, dtime=dtime_dim)
+    stda_input = stda_input.sel(time=time_dim, dtime=dtime_dim)
     #输入的任何维度气压坐标系的stda均能够mask
     if((stda_input.lon.shape[0]==1) and (stda_input.lat.shape[0]==1)):
         psfc_new=psfc.values.repeat(stda_input['level'].size, axis=1)
