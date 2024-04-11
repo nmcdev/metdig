@@ -27,6 +27,7 @@ sfc_chn_hor_n,gust10m,m/s,WIN_S_INST_Max,极大风速,SURF_CHN_MUL_HOR_N
 sfc_chn_hor_n,gustdir10m,degree,WIN_D_INST_Max,极大风向,SURF_CHN_MUL_HOR_N
 sfc_chn_hor_n,psfc,hPa,PRS,地面汽压,SURF_CHN_MUL_HOR_N
 sfc_chn_hor_n,mslp,hPa,PRS_Sea,海平面汽压,SURF_CHN_MUL_HOR_N
+sfc_chn_hor_n,snow_depth,cm,Snow_Depth,积雪深度,SURF_CHN_MUL_HOR_N
 sfc_chn_hor,rain24,mm,PRE_24h,过去24小时降水量,SURF_CHN_MUL_HOR
 sfc_chn_hor,rain12,mm,PRE_12h,过去12小时降水量,SURF_CHN_MUL_HOR
 sfc_chn_hor,rain06,mm,PRE_6h,过去6小时降水量,SURF_CHN_MUL_HOR
@@ -45,5 +46,6 @@ sfc_chn_hor,gust10m,m/s,WIN_S_INST_Max,极大风速,SURF_CHN_MUL_HOR
 sfc_chn_hor,gustdir10m,degree,WIN_D_INST_Max,极大风向,SURF_CHN_MUL_HOR
 sfc_chn_hor,psfc,hPa,PRS,地面汽压,SURF_CHN_MUL_HOR
 sfc_chn_hor,mslp,hPa,PRS_Sea,海平面汽压,SURF_CHN_MUL_HOR
+sfc_chn_hor,snow_depth,cm,Snow_Depth,积雪深度,SURF_CHN_MUL_HOR
 surf_chn_mul_day_n,rain24_08,mm,PRE_Time_0808,08-08时降水量,SURF_CHN_MUL_DAY_N
 surf_chn_mul_day_n,rain24_20,mm,PRE_Time_2020,20-20时降水量,SURF_CHN_MUL_DAY_N
