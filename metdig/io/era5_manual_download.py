@@ -164,8 +164,8 @@ def _split_psl(savefile, var_name, extent, pressure_level):
         # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
         if 'expver' in data.dims:
             # print(f'{savefile} drop expver')
-            data = data.to_array()
             name = list(data.data_vars.keys())[0]
+            data = data.to_array()
             expver = data['expver'].values
             expver = np.sort(expver)[::-1]
             for exp in expver:
@@ -207,8 +207,8 @@ def _split_sfc(savefile, var_name, extent):
         # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
         if 'expver' in data.dims:
             # print(f'{savefile} drop expver')
-            data = data.to_array()
             name = list(data.data_vars.keys())[0]
+            data = data.to_array()
             expver = data['expver'].values
             expver = np.sort(expver)[::-1]
             for exp in expver:
