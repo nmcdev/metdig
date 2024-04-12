@@ -287,9 +287,15 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
     data = data.to_array()
     # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
     if 'expver' in data.dims:
-        max_expver = data['expver'].max().values
-        data = data.sel(expver=max_expver)
-        data = data.drop('expver')
+        # print(f'{cache_file} drop expver')
+        expver = data['expver'].values
+        expver = np.sort(expver)[::-1]
+        for exp in expver:
+            d = data.sel(expver=exp)
+            if d.isnull().values.sum() != d.size: # 只要存在有效值，则判定为有效的
+                data = d
+                data = data.drop('expver')
+                break
     data = data.squeeze().transpose('latitude', 'longitude')
     data = data.rename({'latitude': 'lat', 'longitude': 'lon'})
 
