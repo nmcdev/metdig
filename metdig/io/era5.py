@@ -284,7 +284,9 @@ def get_model_grid(init_time=None, var_name=None, level=None, extent=None, x_per
 
     # 此处读到的dataset应该只有一个数据集，维度=[time=1,latitude,longitude]，因为下载的时候均是单层次下载
     data = xr.open_dataset(cache_file)
-    data = data.to_array()
+    # data = data.to_array()  # 弃用to_array，to_array会导致dim多一个叫variable的dim
+    name = list(data.data_vars.keys())[0]
+    data = data[name]
     # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
     if 'expver' in data.dims:
         # print(f'{cache_file} drop expver')

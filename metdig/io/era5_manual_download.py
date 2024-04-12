@@ -165,7 +165,8 @@ def _split_psl(savefile, var_name, extent, pressure_level):
         if 'expver' in data.dims:
             # print(f'{savefile} drop expver')
             name = list(data.data_vars.keys())[0]
-            data = data.to_array()
+            # data = data.to_array() # 弃用to_array，to_array会导致dim多一个叫variable的dim
+            data = data[name]
             expver = data['expver'].values
             expver = np.sort(expver)[::-1]
             for exp in expver:
@@ -208,7 +209,8 @@ def _split_sfc(savefile, var_name, extent):
         if 'expver' in data.dims:
             # print(f'{savefile} drop expver')
             name = list(data.data_vars.keys())[0]
-            data = data.to_array()
+            # data = data.to_array() # 弃用to_array，to_array会导致dim多一个叫variable的dim
+            data = data[name]
             expver = data['expver'].values
             expver = np.sort(expver)[::-1]
             for exp in expver:
