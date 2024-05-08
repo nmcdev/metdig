@@ -685,6 +685,10 @@ def cross_theta_contourf(ax, stda, xdim='lon', ydim='level',
 def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
                            levels=np.arange(0, 500, 1), cmap=None,
                            **kwargs):
+    if stda is None:
+        return
+    if stda.max() <= 0:
+        return
     x = stda.stda.get_dim_value(xdim)
     y = stda.stda.get_dim_value(ydim)
     z = stda.stda.get_value(ydim, xdim)
