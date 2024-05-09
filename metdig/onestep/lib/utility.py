@@ -101,7 +101,9 @@ def mask_terrian(psfc, stda_input, get_terrain=False):
     # time dtime 维度取交集
     time_dim = list(set(psfc['time'].values.tolist()) & set(stda_input['time'].values.tolist()))
     time_dim = pd.Series(pd.to_datetime(time_dim)).to_list()
+    time_dim.sort()
     dtime_dim = list(set(psfc['dtime'].values.tolist()) & set(stda_input['dtime'].values.tolist()))
+    dtime_dim.sort()
     psfc = psfc.sel(time=time_dim, dtime=dtime_dim)
     stda_input = stda_input.sel(time=time_dim, dtime=dtime_dim)
     #输入的任何维度气压坐标系的stda均能够mask
