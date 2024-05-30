@@ -28,9 +28,9 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, 沿剖面风和水汽通量散度'.format(data_name,cross_wvfldiv.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, 沿剖面水平风和水汽通量散度'.format(data_name,cross_wvfldiv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_沿剖面风和水汽通量散度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_沿剖面水平风和水汽通量散度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -62,9 +62,9 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, 沿剖面风和水汽通量'.format(data_name,cross_wvfl.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, 沿剖面水平风和水汽通量'.format(data_name,cross_wvfl.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_沿剖面风和水汽通量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_沿剖面水平风和水汽通量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -96,9 +96,9 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, 沿剖面风和风速'.format(data_name,cross_wsp.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, 沿剖面水平风和风速'.format(data_name,cross_wsp.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_沿剖面风和风速_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_沿剖面水平风和风速_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -130,9 +130,9 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 锋生函数, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 锋生函数, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_锋生函数_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_锋生函数_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -162,9 +162,9 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 垂直运动速度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 垂直运动速度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_垂直运动速度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_垂直运动速度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -194,9 +194,9 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 水平散度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 水平散度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_水平散度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_水平散度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -322,9 +322,9 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]温度, 温度平流, 沿剖面风'.format(data_name)
+    title = '[{}]温度, 温度平流, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_温度平流_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_温度平流_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -355,9 +355,9 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]温度, 垂直涡度平流, 水平风'.format(data_name)
+    title = '[{}]温度, 垂直涡度平流, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_垂直涡度平流_水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_垂直涡度平流_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -419,9 +419,9 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 湿位涡, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 湿位涡, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_湿位涡_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -452,9 +452,9 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, {1:}, 沿剖面风'.format(data_name,cross_absv.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, {1:}, 沿剖面水平风'.format(data_name,cross_absv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_{3:}_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name,cross_absv.attrs['var_cn_name'])
+    png_name = '{2}_相当位温_{3:}_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name,cross_absv.attrs['var_cn_name'])
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -485,9 +485,9 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 相对湿度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 相对湿度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_相对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_相对湿度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -552,9 +552,9 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 绝对湿度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_绝对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_绝对湿度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -585,9 +585,9 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]温度 相对湿度 水平风 气压垂直运动速度'.format(data_name)
+    title = '[{}]温度 相对湿度 沿剖面水平风 气压垂直运动速度'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_相对湿度_水平风_气压垂直运动速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_相对湿度_沿剖面水平风_气压垂直运动速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
