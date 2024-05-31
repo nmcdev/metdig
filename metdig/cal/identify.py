@@ -34,7 +34,7 @@ __all__ = [
 
 pkg_name = 'metdig.cal'
 
-ws_jar_path = pkg_resources.resource_filename(pkg_name, "resources/sysIdentify2023.jar")
+ws_jar_path = pkg_resources.resource_filename(pkg_name, "resources/sysIdentify2024.jar")
 height_oy = pkg_resources.resource_filename(pkg_name, "resources/height_oy.nc")
 
 output_dir_root = os.path.join(CONFIG.get_cache_dir(), 'cal_identify')
