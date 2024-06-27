@@ -21,7 +21,6 @@ def critical_r(sig_lev,n):
     return r
 
 @check_stda(['var_x', 'var_y'])
-@unifydim_stda(['var_x', 'var_y'])
 def ensemble_sensitive(var_x,var_y,mean_area,sig_lev):
     #var_x敏感度自变量
     #var_y敏感度因变量
