@@ -16,6 +16,7 @@ __all__ = [
     'interpolate_3d_whole_area'
 ]
 
+
 def trajectory_on_pressure_level(u,v,vvel,var_diag=None,
     s_point={'lon':[119.3,119.31],'lat':[32.4,32.41],'level':[925,900],'id':[1,2]},
     t_s=None,t_e=None,dt=1800):
@@ -62,7 +63,7 @@ def trajectory_on_pressure_level(u,v,vvel,var_diag=None,
     const={'a':r_earth,'dis2lat':dis2lat} 
 
     while ((t_now <= max((t_s,t_e))) and (t_now >= min((t_s,t_e)))):
-        print(t_now)
+        # print(t_now)
         dx=u_s*dt 
         dlon=dx*180/(const['a']*math.sin(math.pi/2-math.radians(s_point['lat'][-1]))*math.pi) 
         dy=v_s*dt
@@ -80,7 +81,17 @@ def trajectory_on_pressure_level(u,v,vvel,var_diag=None,
         var_s=xr.concat([var_s,temp],dim='fcst_time')    
         t_now = t_now+timedelta(seconds=dt)
 
-    var_stda=var_s.rename({'fcst_time':trans_dim}).squeeze().to_dataframe(var_s.member.values[0]).reset_index().drop('member',axis=1)
+    # modify by wzj 2024.5.24 尝试解决当输入为模式数据dtime有多个时，程序错误的bug
+    if trans_dim == 'time':
+        # time多个
+        var_stda=var_s.rename({'fcst_time':trans_dim}).squeeze().to_dataframe(var_s.member.values[0]).reset_index().drop('member',axis=1)
+    else:
+        # dtime多个
+        if 'dtime' not in var_s.dims and 'dtime' in var_s.coords:
+            var_s = var_s.drop(['dtime']) # delete 冗余维度
+        var_stda=var_s.rename({'fcst_time':trans_dim}).squeeze().to_dataframe(var_s.member.values[0]).reset_index().drop('member',axis=1)   
+        var_stda[['dtime', 'time']] = var_stda[['time', 'dtime']]
+        var_stda['dtime'] = 0
     var_stda.attrs=var_s.attrs
     var_stda.attrs['data_start_columns'] = 6
     return var_stda
@@ -211,12 +222,14 @@ def interpolate_3d_whole_area(stda, hgt, points, stda_sfc=None, psfc=None):
     if (stda_sfc is not None):
         stda_sfc_sta=stda_sfc.interp({'lon':('id',points['lon']),'lat':('id',points['lat'])}).assign_coords({'id':points['id']})
         hgt_sta=hgt.interp({'lon':('id',points['lon']),'lat':('id',points['lat'])}).assign_coords({'id':ids})*10
+        hgt_sta_level = list(hgt_sta['level'].values) # add by wzj 增加离地最近层次查找
+        hgt_sta_level_max_index = hgt_sta_level.index(max(hgt_sta_level))
         for idx_member,imember in enumerate(stda.member.values):
             for idx_time,itime in enumerate(stda.time.values):
                 for idx_dtime,idtime in enumerate(stda.dtime.values):
                     try:#防止某一数据不全
                         for idx,iid in enumerate(ids):
-                            if((hgt_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).isel(level=0).values > points['alt'][idx]) or (stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)].values[0] == np.nan)): #psfc参数所用
+                            if((hgt_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).isel(level=hgt_sta_level_max_index).values > points['alt'][idx]) or (stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)].values[0] == np.nan)): #psfc参数所用
                                 stda_sta[imember].loc[(stda_sta['dtime']==idtime)&(stda_sta['dtime']==idtime)&(stda_sta['time']==itime)&(stda_sta['id']==iid)]=stda_sfc_sta.sel(dtime=idtime,time=itime,member=imember,id=iid).values[0]
                             else:
                                 continue
