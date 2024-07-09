@@ -65,7 +65,7 @@ __all__ = [
 @date_init('init_time')
 def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -95,8 +95,6 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
                             levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
     wvfldiv=mdgcal.water_wapor_flux_divergence(u,v,spfh)
 
     res=rh.stda.horizontal_resolution
@@ -113,17 +111,11 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_wvfldiv = mdgcal.cross_section(wvfldiv, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -132,8 +124,18 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'wvfldiv':cross_wvfldiv, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain, 'hgt': hgt}
@@ -152,7 +154,7 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
 @date_init('init_time')
 def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -181,8 +183,6 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
                             levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
     wsp=mdgcal.wind_speed(u,v)
     wvfl=mdgcal.cal_ivt_singlelevel(wsp,spfh)
 
@@ -201,17 +201,11 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_wvfl = mdgcal.cross_section(wvfl, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -220,8 +214,18 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'wvfl':cross_wvfl, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain, 'hgt': hgt}
@@ -245,7 +249,7 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -272,8 +276,6 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -289,11 +291,6 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     wsp = mdgcal.other.wind_speed(u, v)
 
@@ -301,7 +298,6 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_wsp = mdgcal.cross_section(wsp, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -310,8 +306,18 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'wsp':cross_wsp, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain, 'hgt': hgt}
@@ -330,7 +336,7 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -357,8 +363,6 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -374,11 +378,6 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     vort = mdgcal.vorticity(u, v)
 
@@ -386,7 +385,6 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_vort = mdgcal.cross_section(vort, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -395,8 +393,18 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'vort': cross_vort, 'u': cross_u, 'v': cross_v, 'theta': cross_theta, 'hgt': hgt, 'terrain':cross_terrain}
@@ -415,7 +423,7 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -439,8 +447,6 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     pressure_3d = mdgstda.gridstda_full_like_by_levels(tmp, tmp['level'].values)
     thta=mdgcal.thermal.potential_temperature(pressure_3d,tmp)
@@ -461,17 +467,11 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     fg=fg.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_fg = mdgcal.cross_section(fg, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -480,8 +480,18 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'theta':cross_theta, 'fg':cross_fg, 'u':cross_u, 'v':cross_v, 'terrain':cross_terrain, 'hgt':hgt}
@@ -500,7 +510,7 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 @date_init('init_time')
 def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
 
     ret = {}
@@ -530,8 +540,6 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
     ug,vg=mdgcal.dynamic.geostrophic_wind(hgt)
     pressure = mdgstda.gridstda_full_like_by_levels(hgt, hgt.level.values.tolist())
     thetaes=mdgcal.thermal.saturation_equivalent_potential_temperature(pressure,tmp)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
     mpvg=mdgcal.dynamic.potential_vorticity_baroclinic(thetaes,pressure,ug,vg)
     hgtlvl = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
@@ -550,26 +558,26 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
     ug=ug.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     vg=vg.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     mpvg=mpvg.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-
-    if is_return_data:
-        dataret = {'thetaes': thetaes, 'ug': ug, 'vg': vg, 'mpvg': mpvg, 'hgt': hgt, 'terrain': cross_terrain}
-        ret.update({'data': dataret})
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(thetaes, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_thetaes = mdgcal.cross_section(thetaes, st_point, ed_point)
     cross_ug = mdgcal.cross_section(ug, st_point, ed_point)
     cross_vg = mdgcal.cross_section(vg, st_point, ed_point)
     cross_mpvg = mdgcal.cross_section(mpvg, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
 
     pressure = mdgstda.gridstda_full_like_by_levels(cross_thetaes, cross_thetaes['level'].values)
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(thetaes, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'mpvg':cross_mpvg, 'thetaes':cross_thetaes, 'ug':cross_ug, 'vg':cross_vg, 'terrain':cross_terrain, 'hgt':hgt}
@@ -588,7 +596,7 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time')
 def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -616,8 +624,6 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     #                         var_name='vvel', levels=levels, extent=map_extent)
     # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
     #                         var_name='spfh', levels=levels, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     # w = mdgcal.vertical_velocity(vvel, tmp, spfh)
 
@@ -639,17 +645,11 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     rh=rh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_w = mdgcal.cross_section(w, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -658,8 +658,18 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(v, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'theta':cross_theta, 'w':cross_w, 'u':cross_u, 'v':cross_v, 'terrain':cross_terrain, 'hgt':hgt}
@@ -678,7 +688,7 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 @date_init('init_time')
 def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                  st_point=[20, 120.0], ed_point=[50, 130.0],h_pos=[0.125, 0.665, 0.25, 0.2],
+                  st_point=[20, 120.0], ed_point=[50, 130.0],h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -700,8 +710,6 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -718,18 +726,12 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     div=div.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_div = mdgcal.cross_section(div, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
 
@@ -737,8 +739,18 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(v, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'div':cross_div, 'theta':cross_theta, 'u':cross_u, 'v':cross_v, 'terrain':cross_terrain, 'hgt':hgt}
@@ -757,7 +769,7 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -786,8 +798,6 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 
     # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
     #                         var_name='spfh', levels=levels, extent=minor_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -804,11 +814,6 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     # spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
@@ -816,14 +821,23 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_w = mdgcal.cross_section(w, st_point, ed_point)
     cross_t, cross_n = mdgcal.cross_section_components(cross_u, cross_v)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
     pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
     cross_spfh = mdgcal.specific_humidity_from_dewpoint(pressure, cross_td)
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'spfh': cross_spfh, 'theta': cross_theta, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'terrain': cross_terrain, 'hgt': hgt}
@@ -843,7 +857,7 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time')
 def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -865,8 +879,6 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=tmp.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -880,21 +892,26 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()                          
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     tmpadv = mdgcal.var_advect(tmp, u, v)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_tmpadv = mdgcal.cross_section(tmpadv, st_point, ed_point)
     pressure = mdgstda.gridstda_full_like_by_levels(cross_tmp, cross_tmp['level'].values)
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'tmpadv': cross_tmpadv, 'u': cross_u, 'v': cross_v, 'tmp': cross_tmp, 'hgt': hgt, 'terrain': cross_terrain}
@@ -913,7 +930,7 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                       levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                      st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                      st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                       area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -938,8 +955,6 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=w.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -954,11 +969,6 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     tmpadv = mdgcal.var_advect(tmp, u, v)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
@@ -966,11 +976,21 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     cross_w = mdgcal.cross_section(w, st_point, ed_point)
     cross_t, cross_n = mdgcal.cross_section_components(cross_u, cross_v)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_tmpadv = mdgcal.cross_section(tmpadv, st_point, ed_point)
     pressure = mdgstda.gridstda_full_like_by_levels(cross_tmp, cross_tmp['level'].values)
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'tmpadv': cross_tmpadv, 'wind_n': cross_n,'wind_t': cross_t, 'w': cross_w, 'tmp': cross_tmp, 'hgt': hgt, 'terrain': cross_terrain}
@@ -989,7 +1009,7 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time')
 def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                      levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                      area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1011,8 +1031,6 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=tmp.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1026,11 +1044,6 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     vort = mdgcal.vorticity(u, v)
     vortadv = mdgcal.var_advect(vort, u, v)
@@ -1038,11 +1051,21 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_vortadv = mdgcal.cross_section(vortadv, st_point, ed_point)
     pressure = mdgstda.gridstda_full_like_by_levels(cross_tmp, cross_tmp['level'].values)
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'vortadv': cross_vortadv, 'u': cross_u, 'v': cross_v, 'tmp': cross_tmp, 'hgt': hgt, 'terrain': cross_terrain}
@@ -1061,7 +1084,7 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
 @date_init('init_time')
 def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
 
     ret = {}
@@ -1087,8 +1110,6 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=mpv.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1104,21 +1125,26 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     mpv=mpv.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(theta, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_theta = mdgcal.cross_section(theta, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_mpv = mdgcal.cross_section(mpv, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
 
     pressure = mdgstda.gridstda_full_like_by_levels(cross_theta, cross_theta['level'].values)
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(theta, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'mpv': cross_mpv, 'hgt': hgt, 'terrain': cross_terrain}
@@ -1138,7 +1164,7 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1182,16 +1208,7 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
 
-
-    if is_return_data:
-        dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp, 'hgt': hgt, 'terrain': cross_terrain}
-        ret.update({'data': dataret})
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     absv = mdgcal.absolute_vorticity(u, v)
 
@@ -1199,7 +1216,6 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_absv = mdgcal.cross_section(absv, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
@@ -1208,8 +1224,18 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'absv': cross_absv, 'u': cross_u, 'v': cross_v, 'theta': cross_theta, 'terrain':cross_terrain,'hgt': hgt}
@@ -1228,7 +1254,7 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                  st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                  st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1252,8 +1278,6 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1269,17 +1293,11 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
 
@@ -1287,8 +1305,18 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'rh': cross_rh, 'u': cross_u, 'v': cross_v, 'theta': cross_theta, 'terrain':cross_terrain,'hgt': hgt}
@@ -1315,7 +1343,7 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 @date_init('init_time')
 def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1339,8 +1367,6 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
                             var_name='tmp', levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1356,17 +1382,11 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     u=u.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
 
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
 
@@ -1376,8 +1396,18 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'spfh': cross_spfh, 'theta': cross_theta, 'u': cross_u, 'v': cross_v, 'terrain':cross_terrain,'hgt': hgt}
@@ -1396,7 +1426,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1422,8 +1452,6 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
                             levels=levels, extent=minor_extent)
     hgt = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                          var_name='hgt', level=500, extent=map_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent)
 
     res=rh.stda.horizontal_resolution
     if(lon_mean is not None):
@@ -1440,22 +1468,27 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     v=v.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     vvel=vvel.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000  # (1, 12, 1, 1, 901, 1801)
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
     cross_vvel = mdgcal.cross_section(vvel, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
 
     _, pressure = xr.broadcast(cross_rh, cross_tmp['level'])
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     cross_rh = cross_rh.where(cross_rh < 100, 100)  # 大于100的赋值成100
 
@@ -1476,7 +1509,7 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
 
 def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2],
+                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
                 area='全国', is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1506,8 +1539,6 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
 
     # spfh = get_model_3D_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
     #                         var_name='spfh', levels=levels, extent=minor_extent)
-    psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
-                          var_name='psfc', extent=minor_extent) 
     vvel = read_vvel3d(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
                             levels=levels, extent=minor_extent)
 
@@ -1526,12 +1557,7 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
     tmp=tmp.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     w=w.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     # spfh=spfh.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-    psfc=psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
     vvel=vvel.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
-
-    # +form 3D psfc
-    _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
-    psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
 
     cross_rh = mdgcal.cross_section(rh, st_point, ed_point)
     cross_u = mdgcal.cross_section(u, st_point, ed_point)
@@ -1539,15 +1565,24 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
     cross_w = mdgcal.cross_section(w, st_point, ed_point)
     cross_t, cross_n = mdgcal.cross_section_components(cross_u, cross_v)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
-    cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
     cross_td = mdgcal.dewpoint_from_relative_humidity(cross_tmp, cross_rh)
     pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
     cross_spfh = mdgcal.specific_humidity_from_dewpoint(pressure, cross_td)
     cross_theta = mdgcal.equivalent_potential_temperature(pressure, cross_tmp, cross_td)
     cross_vvel = mdgcal.cross_section(vvel, st_point, ed_point)
 
-    cross_terrain = pressure - cross_psfc
-    cross_terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    cross_terrain = None
+    if is_mask_terrain:
+        psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=minor_extent)
+        if psfc is not None:
+            psfc = psfc.rolling(lon=pnts_mean_lon, lat=pnts_mean_lat, min_periods=1, center=True).mean()
+            # +form 3D psfc
+            _, psfc_bdcst = xr.broadcast(tmp, psfc.squeeze())
+            psfc_bdcst = psfc_bdcst.where(psfc_bdcst > -10000, drop=True)  # 去除小于-10000
+            cross_psfc = mdgcal.cross_section(psfc_bdcst, st_point, ed_point)
+            cross_terrain = pressure - cross_psfc
+            cross_terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'spfh': cross_spfh, 'theta': cross_theta, 'wind_n': cross_n, 'wind_t': cross_t, 'wind_w': cross_w, 'vvel': cross_vvel,'terrain': cross_terrain, 'hgt': hgt}
@@ -1570,7 +1605,7 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                           levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                          points={'lon': [90], 'lat': [30]}, mean_area=None,
+                          points={'lon': [90], 'lat': [30]}, mean_area=None, is_mask_terrain=True,
                           is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1579,7 +1614,6 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
     else:
         extent=[min(points['lon'])-mean_area,max(points['lon'])+mean_area,min(points['lat'])-mean_area,min(points['lat'])+mean_area]
     vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
                              data_name=data_name, var_name='tmp', levels=levels, extent=extent)
     vortadv = mdgcal.var_advect(vort, u, v)
@@ -1589,20 +1623,29 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
         v = v.interp(lon=points['lon'], lat=points['lat'])
         vortadv = vortadv.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         vortadv = vortadv.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         tmp = tmp.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+    
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain = pressure - psfc.values
+            terrain.attrs['var_units'] = ''
 
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values
-    terrain.attrs['var_units'] = ''
     if is_return_data:
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'vortadv': vortadv,'terrain':terrain}
         ret.update({'data': dataret})
+
     if is_draw:
         drawret = draw_cross.draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, **products_kwargs)
         ret.update(drawret)
@@ -1613,7 +1656,7 @@ def time_wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                         points={'lon': [118], 'lat': [34]}, mean_area=None,
+                         points={'lon': [118], 'lat': [34]}, mean_area=None, is_mask_terrain=True,
                          is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1630,7 +1673,6 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_ti
                         var_name='qcld', levels=levels, extent=extent)
     qsn = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                         var_name='qsn', levels=levels, extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
                              data_name=data_name, var_name='tmp', levels=levels, extent=extent)
 
@@ -1640,18 +1682,25 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_ti
         qsn = qsn.interp(lon=points['lon'], lat=points['lat'])
         qcld = qcld.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         qsn = qsn.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         qcld = qcld.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         tmp = tmp.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values
-    terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain = pressure - psfc.values
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'u': u, 'v': v, 'qsn' : qsn, 'qcld':qcld,'tmp': tmp,'terrain':terrain}
@@ -1667,7 +1716,7 @@ def time_wind_qcld_qsn_tmp(data_source='cassandra', data_name='cma_gfs', init_ti
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                         points={'lon': [118], 'lat': [34]}, mean_area=None,
+                         points={'lon': [118], 'lat': [34]}, mean_area=None, is_mask_terrain=True,
                          is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1684,7 +1733,6 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_t
                         var_name='qcld', levels=levels, extent=extent)
     qice = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                         var_name='qice', levels=levels, extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
                              data_name=data_name, var_name='tmp', levels=levels, extent=extent)
 
@@ -1694,18 +1742,25 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_t
         qice = qice.interp(lon=points['lon'], lat=points['lat'])
         qcld = qcld.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         qice = qice.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         qcld = qcld.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         tmp = tmp.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values
-    terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain = pressure - psfc.values
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'u': u, 'v': v, 'qice' : qice, 'qcld':qcld,'tmp': tmp,'terrain':terrain}
@@ -1721,7 +1776,7 @@ def time_wind_qcld_qice_tmp(data_source='cassandra', data_name='cma_gfs', init_t
 @date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                      levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                     points={'lon': [116.3833], 'lat': [39.9]},mean_area=None,
+                     points={'lon': [116.3833], 'lat': [39.9]},mean_area=None, is_mask_terrain=True,
                      is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1733,20 +1788,17 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=extent)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=extent)
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
 
     if (mean_area is None):
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         rh = rh.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         tmp = tmp.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         rh = rh.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'tmp': tmp}
@@ -1756,9 +1808,19 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
     pressure = mdgstda.gridstda_full_like_by_levels(rh, rh['level'].values)
     theta = mdgcal.equivalent_potential_temperature(pressure, tmp, td)
 
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
+    
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'theta': theta, 'terrain': terrain}
@@ -1776,7 +1838,7 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                           levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                          points={'lon': [113], 'lat': [22]},mean_area=None,
+                          points={'lon': [113], 'lat': [22]},mean_area=None, is_mask_terrain=True,
                           is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1788,30 +1850,37 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
     div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
     vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
     spfh = read_spfh_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
-
+    
     if (mean_area is None):
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         div = div.interp(lon=points['lon'], lat=points['lat'])
         vort = vort.interp(lon=points['lon'], lat=points['lat'])
         spfh = spfh.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         div = div.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         vort = vort.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         spfh = spfh.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+    
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'spfh': spfh, 'u': u, 'v': v, 'tmp': div, 'vort': vort}
         ret.update({'data': dataret})
 
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'div': div, 'u': u, 'v': v, 'spfh': spfh, 'vort': vort,'terrain':terrain}
@@ -1827,7 +1896,7 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
 @date_init('init_time', method=date_init.special_series_set)
 def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                         levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                        points={'lon': [90], 'lat': [30]},mean_area=None,
+                        points={'lon': [90], 'lat': [30]},mean_area=None, is_mask_terrain=True,
                         is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1838,7 +1907,6 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
 
     div, u, v = read_div_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     vort, u, v = read_vort_uv_4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
 
     if (mean_area is None):
@@ -1847,18 +1915,25 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
         div = div.interp(lon=points['lon'], lat=points['lat'])
         vort = vort.interp(lon=points['lon'], lat=points['lat'])
         rh = rh.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         div = div.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         vort = vort.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         rh = rh.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'div': div, 'vort': vort,'terrain':terrain}
@@ -1875,7 +1950,7 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                          levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                         points={'lon': [90], 'lat': [30]}, mean_area=None,
+                         points={'lon': [90], 'lat': [30]}, mean_area=None, is_mask_terrain=True,
                          is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1887,7 +1962,6 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
                            var_name='u', levels=levels, extent=extent)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                            var_name='v', levels=levels, extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc', extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours,
                              data_name=data_name, var_name='tmp', levels=levels, extent=extent)
     tmpadv = mdgcal.var_advect(tmp, u, v)
@@ -1897,17 +1971,24 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
         v = v.interp(lon=points['lon'], lat=points['lat'])
         tmpadv = tmpadv.interp(lon=points['lon'], lat=points['lat'])
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         tmpadv = tmpadv.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         tmp = tmp.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain = pressure - psfc.values
-    terrain.attrs['var_units'] = ''
+    
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain = pressure - psfc.values
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv': tmpadv,'terrain':terrain}
@@ -1923,7 +2004,7 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                   points={'lon': [115], 'lat': [22.3]},mean_area=None,
+                   points={'lon': [115], 'lat': [22.3]},mean_area=None, is_mask_terrain=True,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
@@ -1941,8 +2022,6 @@ def time_wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=No
                           var_name='v', levels=levels,extent=extent)
     pres = mdgstda.gridstda_full_like_by_levels(u, levels)
     mpv = mdgcal.potential_vorticity_baroclinic(theta, pres, u, v)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
-                          var_name='psfc', extent=extent)
 
     if (mean_area is None):
         # 区域插值
@@ -1950,18 +2029,25 @@ def time_wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=No
         u = u.interp(lon=points['lon'], lat=points['lat'])
         v = v.interp(lon=points['lon'], lat=points['lat'])
         mpv = mpv.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         # 区域平均
         theta = theta.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         u = u.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         mpv = mpv.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
     
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'theta': theta, 'u': u, 'v': v, 'mpv': mpv, 'terrain': terrain}
@@ -1982,7 +2068,7 @@ if __name__ == '__main__':
 @date_init('init_time', method=date_init.special_series_set)
 def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                   points={'lon': [115], 'lat': [22.3]},mean_area=None,
+                   points={'lon': [115], 'lat': [22.3]},mean_area=None, is_mask_terrain=True,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
     if (mean_area is None):
@@ -1994,8 +2080,7 @@ def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time
     # v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=extent)
     tmp = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='tmp', levels=levels,extent=extent)
     hgt = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='hgt', levels=levels,extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
-
+    
     ug,vg=mdgcal.dynamic.geostrophic_wind(hgt)
     pressure = mdgstda.gridstda_full_like_by_levels(hgt, hgt.level.values.tolist())
     thetaes=mdgcal.thermal.saturation_equivalent_potential_temperature(pressure,tmp)
@@ -2007,18 +2092,25 @@ def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time
         ug = ug.interp(lon=points['lon'], lat=points['lat'])
         vg = vg.interp(lon=points['lon'], lat=points['lat'])
         mpvg = mpvg.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         # 区域平均
         thetaes = thetaes.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         ug = ug.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         vg = vg.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         mpvg = mpvg.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
     
-    _, pressure = xr.broadcast(vg, vg['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(vg, vg['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'thetaes': thetaes, 'ug': ug, 'vg': vg, 'mpvg': mpvg, 'terrain': terrain}
@@ -2036,7 +2128,7 @@ def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time
 @date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3),
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                   points={'lon': [115], 'lat': [22.3]},mean_area=None,
+                   points={'lon': [115], 'lat': [22.3]},mean_area=None, is_mask_terrain=True,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
     if (mean_area is None):
@@ -2049,8 +2141,7 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
     # vvel = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='vvel', levels=levels,extent=extent)
     vvel = read_vvel3ds(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
-
+    
     if (mean_area is None):
         # 区域插值
         tmp = tmp.interp(lon=points['lon'], lat=points['lat'])
@@ -2058,7 +2149,6 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
         v = v.interp(lon=points['lon'], lat=points['lat'])
         rh = rh.interp(lon=points['lon'], lat=points['lat'])
         vvel = vvel.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
     else:
         # 区域平均
         tmp = tmp.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
@@ -2066,11 +2156,19 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         rh = rh.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         vvel = vvel.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
     
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 
@@ -2089,7 +2187,7 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
 @date_init('init_time', method=date_init.special_series_set)
 def time_rh_uv_tmp_vvel_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhours=range(0, 48, 3), atime=6,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],
-                   points={'lon': [115], 'lat': [22.3]},mean_area=None,
+                   points={'lon': [115], 'lat': [22.3]},mean_area=None, is_mask_terrain=True,
                    is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
     if (mean_area is None):
@@ -2102,7 +2200,6 @@ def time_rh_uv_tmp_vvel_rain(data_source='cassandra', data_name='ecmwf', init_ti
     rh = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='rh', levels=levels,extent=extent)
     # vvel = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='vvel', levels=levels,extent=extent)
     vvel = read_vvel3ds(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
-    psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
     rain = read_rains(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name,
                           atime=atime, extent=extent)
 
@@ -2113,7 +2210,6 @@ def time_rh_uv_tmp_vvel_rain(data_source='cassandra', data_name='ecmwf', init_ti
         v = v.interp(lon=points['lon'], lat=points['lat'])
         rh = rh.interp(lon=points['lon'], lat=points['lat'])
         vvel = vvel.interp(lon=points['lon'], lat=points['lat'])
-        psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
         rain = rain.interp(lon=points['lon'], lat=points['lat'])
     else:
         # 区域平均
@@ -2122,12 +2218,20 @@ def time_rh_uv_tmp_vvel_rain(data_source='cassandra', data_name='ecmwf', init_ti
         v = v.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         rh = rh.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         vvel = vvel.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
-        psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
         rain = rain.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
     
-    _, pressure = xr.broadcast(v, v['level'])
-    terrain= mask_terrian(psfc, pressure,get_terrain=True)
-    terrain.attrs['var_units'] = ''
+    # 隐藏被地形遮挡地区
+    terrain = None
+    if is_mask_terrain:
+        psfc = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='psfc',extent=extent)
+        if psfc is not None:
+            if (mean_area is None):
+                psfc = psfc.interp(lon=points['lon'], lat=points['lat'])
+            else:
+                psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
+            _, pressure = xr.broadcast(v, v['level'])
+            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 

@@ -28,9 +28,9 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, 沿剖面风和水汽通量散度'.format(data_name,cross_wvfldiv.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, 沿剖面水平风和水汽通量散度'.format(data_name,cross_wvfldiv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_沿剖面风和水汽通量散度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_沿剖面水平风和水汽通量散度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -62,9 +62,9 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, 沿剖面风和水汽通量'.format(data_name,cross_wvfl.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, 沿剖面水平风和水汽通量'.format(data_name,cross_wvfl.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_沿剖面风和水汽通量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_沿剖面水平风和水汽通量_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -96,9 +96,9 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, 沿剖面风和风速'.format(data_name,cross_wsp.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, 沿剖面水平风和风速'.format(data_name,cross_wsp.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_沿剖面风和风速_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_沿剖面水平风和风速_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -130,9 +130,9 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 锋生函数, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 锋生函数, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_锋生函数_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_锋生函数_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -162,9 +162,9 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 垂直运动速度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 垂直运动速度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_垂直运动速度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_垂直运动速度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -194,9 +194,9 @@ def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain,
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 水平散度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 水平散度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_水平散度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_水平散度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -235,8 +235,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
     obj.img['qsn'] = qsn_contourf(obj.ax, qsn, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['tmp'] = cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc='upper left', title=None, framealpha=1)
@@ -265,8 +264,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
     obj.img['qice'] = qice_contourf(obj.ax, qice, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right bottom'}, transform=None, kwargs=qice_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['tmp'] = cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',kwargs=tmp_contourf_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='#0A1F5D', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc='upper left', title=None, framealpha=1)
@@ -324,9 +322,9 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]温度, 温度平流, 沿剖面风'.format(data_name)
+    title = '[{}]温度, 温度平流, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_温度平流_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_温度平流_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -357,9 +355,9 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]温度, 垂直涡度平流, 水平风'.format(data_name)
+    title = '[{}]温度, 垂直涡度平流, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_垂直涡度平流_水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_垂直涡度平流_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -421,9 +419,9 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 湿位涡, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 湿位涡, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_湿位涡_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_湿位涡_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -454,9 +452,9 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{0:}]相当位温, {1:}, 沿剖面风'.format(data_name,cross_absv.attrs['var_cn_name'])
+    title = '[{0:}]相当位温, {1:}, 沿剖面水平风'.format(data_name,cross_absv.attrs['var_cn_name'])
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_{3:}_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name,cross_absv.attrs['var_cn_name'])
+    png_name = '{2}_相当位温_{3:}_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name,cross_absv.attrs['var_cn_name'])
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -487,9 +485,9 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 相对湿度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 相对湿度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_相对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_相对湿度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -554,9 +552,9 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]相当位温, 绝对湿度, 沿剖面风'.format(data_name)
+    title = '[{}]相当位温, 绝对湿度, 沿剖面水平风'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_相当位温_绝对湿度_沿剖面风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_相当位温_绝对湿度_沿剖面水平风_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -587,9 +585,9 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
     lon_cross = cross_u['lon_cross'].values
     lat_cross = cross_u['lat_cross'].values
 
-    title = '[{}]温度 相对湿度 水平风 气压垂直运动速度'.format(data_name)
+    title = '[{}]温度 相对湿度 沿剖面水平风 气压垂直运动速度'.format(data_name)
     forcast_info = hgt.stda.description()
-    png_name = '{2}_温度_相对湿度_水平风_气压垂直运动速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
+    png_name = '{2}_温度_相对湿度_沿剖面水平风_气压垂直运动速度_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name)
 
     wind_slc_vert = list(range(0, len(levels), 1))
     wind_slc_horz = slice(5, len(index), len(index) // 40)
@@ -665,8 +663,7 @@ def draw_time_rh_uv_theta(rh, u, v, theta, terrain,rh_contourf_kwargs={}, uv_bar
     obj.img['rh'] = cross_rh_contourf(obj.ax, rh, xdim='fcst_time', ydim='level', levels=np.arange(0, 100.5, 5), extend='max', kwargs=rh_contourf_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['theta'] = cross_theta_contour(obj.ax, theta, xdim='fcst_time', ydim='level', levels=np.arange(250, 450, 5), colors='#A0522D', kwargs=theta_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     obj.save()
     return obj.get_mpl()
 
@@ -693,8 +690,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['div'] = div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
     obj.img['vort'] = vort_contour(obj.ax, vort, xdim='fcst_time', ydim='level', colors='black', transform=None, kwargs=div_contour_kwargs)
-    if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='horizontal divergence')
     black_line = lines.Line2D([], [], color='black', label='vertical vorticity')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
@@ -724,8 +720,7 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
     obj.img['tmpadv'] = tmpadv_contourf(obj.ax, tmpadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=tmpadv_contourf_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['tmp'] = cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
-    if terrain.max() > 0:
-        cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
+    cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='black', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc='upper left', title=None, framealpha=1)
@@ -755,8 +750,7 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
     obj.img['vortadv'] = vortadv_contourf(obj.ax, vortadv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None, if_mask=False,kwargs=vortadv_contourf_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['tmp'] = cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level', kwargs=tmp_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     red_line = lines.Line2D([], [], color='red', label='temperature')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
     leg = obj.ax.legend(handles=[red_line, brown_line], loc='upper left', title=None, framealpha=1)
@@ -785,8 +779,7 @@ def draw_time_wind_theta_mpv(theta, mpv, u, v, terrain, mean_area=None,
     obj.img['mpv'] = mpv_contourf(obj.ax, mpv, xdim='fcst_time', ydim='level', colorbar_kwargs={'pos': 'right'}, transform=None,kwargs=mpv_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['theta'] = cross_theta_contour(obj.ax, theta, xdim='fcst_time', ydim='level', kwargs=theta_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     obj.save()
     return obj.get_mpl()
 
@@ -812,8 +805,7 @@ def draw_time_wind_thetaes_mpvg(thetaes, mpvg, u, v, terrain, mean_area=None,
     obj.img['mpvg'] = mpv_contourf(obj.ax, mpvg, xdim='fcst_time', ydim='level', levels=np.arange(-20, 21, 1), colorbar_kwargs={'pos': 'right'}, transform=None, kwargs=mpv_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['thetaes'] = cross_theta_contour(obj.ax, thetaes, xdim='fcst_time', ydim='level', kwargs=theta_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100)
     obj.save()
     return obj.get_mpl()
 
@@ -840,8 +832,7 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['div'] = div_contour(obj.ax, div, xdim='fcst_time', ydim='level', colors='red', transform=None, kwargs=div_contour_kwargs)
     obj.img['vort'] = vort_contour(obj.ax, vort, xdim='fcst_time', ydim='level', colors='black', transform=None, kwargs=vort_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     red_line = lines.Line2D([], [], color='red', label='horizontal divergence')
     black_line = lines.Line2D([], [], color='black', label='vertical verticity')
     brown_line = lines.Line2D([], [], color='brown', label='terrain')
@@ -871,8 +862,7 @@ def draw_time_rh_uv_tmp_vvel(rh, u, v, tmp, vvel, terrain,  rh_contourf_kwargs={
     obj.img['vvel'] = cross_vvel_contour(obj.ax, vvel, xdim='fcst_time', ydim='level',linewidths=2,kwargs=vvel_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['tmp'] = cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',  kwargs=tmp_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
     obj.save()
     return obj.get_mpl()
 
@@ -898,8 +888,7 @@ def draw_time_rh_uv_tmp_vvel_rain(rh, u, v, tmp, vvel, rain, terrain,  rh_contou
     obj.img['vvel'] = cross_vvel_contour(obj.ax, vvel, xdim='fcst_time', ydim='level',linewidths=2,kwargs=vvel_contour_kwargs)
     obj.img['uv'] = barbs_2d(obj.ax, u, v, xdim='fcst_time', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
     obj.img['tmp'] = cross_tmp_contour(obj.ax, tmp, xdim='fcst_time', ydim='level',  kwargs=tmp_contour_kwargs)
-    if terrain.max() > 0:
-        obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
+    obj.img['terrain'] = cross_terrain_contourf(obj.ax, terrain, xdim='fcst_time', ydim='level', levels=np.arange(0, 500, 1), zorder=20,kwargs=terrain_contourf_kwargs)
     obj.img['rain'] = cross_section_rain(obj.ax, rain, times, kwargs=rain_kwargs)
     obj.save()
     return obj.get_mpl()
