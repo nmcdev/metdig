@@ -8,10 +8,10 @@
 #    6. 以data_name,var_name,channel列作为查询列，保证能确定唯一一行,,,
 # ,,,,,
 data_name,var_name,channel,var_units,cassandra_discription,cassandra_path
-fy4al1,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4A/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
-fy4al1,tbb,7/8/9/10/11/12/13/14,kelvin,,SATELLITE/FY4A/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
-fy4al1_disk,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4A/L1/DISK/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
-fy4al1_disk,tbb,7/8/9/10/11/12/13/14,kelvin,,SATELLITE/FY4A/L1/DISK/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4A.AWX
+fy4bl1,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4B/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4B.AWX
+fy4bl1,tbb,7/8/9/10/11/12/13/14,kelvin,,SATELLITE/FY4B/L1/CHINA/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4B.AWX
+fy4bl1_disk,ref,1/2/3/4/5/6,percent,,SATELLITE/FY4B/L1/DISK/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4B.AWX
+fy4bl1_disk,tbb,7/8/9/10/11/12/13/14,kelvin,,SATELLITE/FY4B/L1/DISK/C0{channel:02d}/C0{channel:02d}_{Y}{m}{d}{H}{M}{S}_FY4B.AWX
 hmw8,ref,3,percent,,SATELLITE/HMW8/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
 hmw8,tbb,8月13日,kelvin,,SATELLITE/HMW8/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX
 hmw8_disk,ref,3,percent,,SATELLITE/HMW8/DISK/B{channel:02d}/B{channel:02d}_{Y}{m}{d}_{H}{M}_HMW8.AWX

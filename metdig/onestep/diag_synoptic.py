@@ -204,7 +204,11 @@ def hgt_uv_prmsl(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 
     if ret:
         return ret
-
+if __name__=='__main__':
+    import matplotlib.pyplot as plt
+    from datetime import datetime
+    ret=hgt_uv_prmsl(data_source='cmadaas',data_name='cma_ra',init_time=datetime(2023,1,3,8),fhour=0,is_return_data=True,is_draw=True)
+    plt.show()
 
 @date_init('init_time')
 def hgt_uv_rain(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,atime=6,
@@ -306,10 +310,6 @@ def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
     pv, div, u, v = read_pv_div_uv(data_source=data_source, init_time=init_time, fhour=fhour,
                                    data_name=data_name, lvl_ana=lvl_ana, levels=levels, extent=map_extent)
 
-    if is_return_data:
-        dataret = {'pv': pv, 'u': u, 'v': v, 'div': div}
-        ret.update({'data': dataret})
-
     # 隐藏被地形遮挡地区
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
@@ -317,7 +317,10 @@ def pv_div_uv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=
         div = mask_terrian(psfc, div)
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
-
+        
+    if is_return_data:
+        dataret = {'pv': pv, 'u': u, 'v': v, 'div': div}
+        ret.update({'data': dataret})
     # smooth
     pv = mdgcal.smooth_n_point(pv, 9, 2)
     div = mdgcal.smooth_n_point(div, 9, 2)
