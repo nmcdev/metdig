@@ -13,6 +13,7 @@ from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
     'dry_static_energy',
+    'moist_static_energy',
     'add_hgt_to_pres',
     'smooth_n_point',
     'gaussian_filter',
@@ -89,6 +90,14 @@ __all__ = [
 #     print(geohgt)
 @check_stda(['pressure'])
 def pressure_to_height_std(pressure):
+    """Convert pressure data to height using the U.S. standard atmosphere [NOAA1976]_.
+
+    The implementation uses the formula outlined in [Hobbs1977]_ pg.60-61.
+
+    Args:
+        pressure (stda): _description_
+
+    """
     #Convert pressure data to height using the U.S. standard atmosphere [NOAA1976].
     #The implementation uses the formula outlined in [Hobbs1977] pg.60-61.
     pressure_p=pressure.stda.quantity
@@ -99,7 +108,7 @@ def pressure_to_height_std(pressure):
 
 @check_stda(['hgt'])
 def height_to_geopotential(hgt):
-    """_summary_
+    """Compute geopotential for a given height above sea level.
 
     Args:
         hgt (stda): height
@@ -112,7 +121,7 @@ def height_to_geopotential(hgt):
 
 @check_stda(['geohgt'])
 def geopotential_to_height(geohgt):
-    """_summary_
+    """Compute height above sea level from a given geopotential.
 
     Args:
         geohgt (stda): geopotential height
@@ -137,13 +146,16 @@ def geopotential_to_height(geohgt):
 @check_stda(['hgt', 'tmp'])
 @unifydim_stda(['hgt', 'tmp'])
 def dry_static_energy(hgt,tmp):
-    """_summary_
+    """Calculate the dry static energy of parcels.
+
+    This function will calculate the dry static energy following the first two terms of
+    equation 3.72 in [Hobbs2006]_.
 
     Args:
         Parameters
-        height (pint.Quantity) – Atmospheric height
+        height (stda) – Atmospheric height
 
-        temperature (pint.Quantity) – Air temperature
+        temperature (stda) – Air temperature
 
     example:
         import metdig
@@ -161,10 +173,34 @@ def dry_static_energy(hgt,tmp):
     drsteg=utl.quantity_to_stda_byreference('drsteg', drsteg_p, tmp)
     return drsteg
 
+@check_stda(['hgt', 'tmp', 'spfh'])
+@unifydim_stda(['hgt', 'tmp', 'spfh'])
+def moist_static_energy(hgt,tmp, sfph):
+    """Calculate the moist static energy of parcels.
+
+    This function will calculate the moist static energy following
+    equation 3.72 in [Hobbs2006]_.
+
+    Args:
+        Parameters
+        height (stda) – Atmospheric height
+
+        temperature (stda) – Air temperature
+
+        sfph (stda) – specific_humidity
+      
+    """    
+    hgt_p=hgt.stda.quantity
+    tmp_p=tmp.stda.quantity
+    spfh_p=sfph.stda.quantity
+    mosteg_p=mpcalc.moist_static_energy(hgt_p,tmp_p,spfh_p)
+    mosteg=utl.quantity_to_stda_byreference('mosteg', mosteg_p, tmp)
+    return mosteg
+
 @check_stda(['pres', 'tmp'])
 @unifydim_stda(['pres', 'tmp'])
 def dry_lapse(pres,tmp,reference_pres=None,vertical_dim=0):
-    """_summary_
+    """
     Calculate the temperature at a level assuming only dry processes.
 
     This function lifts a parcel starting at temperature, conserving potential temperature. The starting pressure can be given by reference_pressure.
@@ -188,13 +224,13 @@ def dry_lapse(pres,tmp,reference_pres=None,vertical_dim=0):
 @check_stda(['pres', 'tmp', 'mixr'])
 @unifydim_stda(['pres', 'tmp', 'mixr'])
 def air_density(pres,tmp,mixr,**kwargs):
-    """_summary_
+    """
         Calculate air parcel air_density.
         This calculation must be given an air parcel’s pressure, temperature, and mixing ratio. The implementation uses the formula outlined in [Hobbs2006] pg.67.
     Args:
-        pres (_type_): _description_
-        tmp (_type_): _description_
-        mixr (_type_): _description_
+        pres (stda): _description_
+        tmp (stda): _description_
+        mixr (stda): _description_
     """
     pres_p = pres.stda.quantity
     tmp_p = tmp.stda.quantity
@@ -207,9 +243,12 @@ def air_density(pres,tmp,mixr,**kwargs):
 @check_stda(['pres', 'hgt'])
 @unifydim_stda(['hgt', 'pres'])
 def add_pres_to_hgt(hgt,pres):
-    """_summary_
+    """
     'Calculate the height at a certain pressure above another height.'
+
+    see detail:
     metpy.calc.add_pressure_to_height
+        
     Args:
         pressure (stda): _description_
         height (stda): _description_
@@ -225,9 +264,12 @@ def add_pres_to_hgt(hgt,pres):
 @check_stda(['pres', 'hgt'])
 @unifydim_stda(['pres', 'hgt'])
 def add_hgt_to_pres(pres,hgt):
-    """_summary_
+    """
     'Calculate the pressure at a certain height above another pressure level.'
+
+    see detail:
     metpy.calc.add_height_to_pressure
+        
     Args:
         pressure (stda): _description_
         height (stda): _description_
