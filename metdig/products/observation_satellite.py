@@ -14,7 +14,7 @@ from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.draw_compose import *
 from metdig.graphics.text_method import *
 
-def draw_fy4a_c009_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c009_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, prmsl_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -27,10 +27,10 @@ def draw_fy4a_c009_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 5
     ir_name = '水汽(6.25微米)'
     ir_cmap = 'met/wv_enhancement_r'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 海平面气压'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 海平面气压'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -43,7 +43,7 @@ def draw_fy4a_c009_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 5
     return obj.get_mpl()
 
 
-def draw_fy4a_c009_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c009_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, wsp_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -56,10 +56,10 @@ def draw_fy4a_c009_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
     ir_name = '水汽(6.25微米)'
     ir_cmap = 'met/wv_enhancement_r'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa风速'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],wsp.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa风速'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],wsp.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -70,7 +70,7 @@ def draw_fy4a_c009_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
     obj.save()
     return obj.get_mpl()
 
-def draw_fy4a_c012_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c012_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, pv_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -83,10 +83,10 @@ def draw_fy4a_c012_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 5
     ir_name = '红外(10.8微米)'
     ir_cmap = 'met/ir_enhancement1'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 海平面气压'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 海平面气压'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -99,7 +99,7 @@ def draw_fy4a_c012_hgt_uv_prmsl(ir, hgt, u, v, prmsl, map_extent=(60, 145, 15, 5
     return obj.get_mpl()
 
 
-def draw_fy4a_c012_hgt_uv_cape(ir, hgt, u, v, cape, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c012_hgt_uv_cape(ir, hgt, u, v, cape, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, pv_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -112,10 +112,10 @@ def draw_fy4a_c012_hgt_uv_cape(ir, hgt, u, v, cape, map_extent=(60, 145, 15, 55)
     ir_name = '红外(10.8微米)'
     ir_cmap = 'met/ir_enhancement1'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 对流有效位能'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 对流有效位能'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -126,7 +126,7 @@ def draw_fy4a_c012_hgt_uv_cape(ir, hgt, u, v, cape, map_extent=(60, 145, 15, 55)
     obj.save()
     return obj.get_mpl()
 
-def draw_fy4a_c012_hgt_uv_pv(ir, hgt, u, v, pv, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c012_hgt_uv_pv(ir, hgt, u, v, pv, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, cape_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -139,10 +139,10 @@ def draw_fy4a_c012_hgt_uv_pv(ir, hgt, u, v, pv, map_extent=(60, 145, 15, 55),
     ir_name = '红外(10.8微米)'
     ir_cmap = 'met/ir_enhancement1'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa位涡'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],pv.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa位涡'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],pv.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -157,7 +157,7 @@ def draw_fy4a_c012_hgt_uv_pv(ir, hgt, u, v, pv, map_extent=(60, 145, 15, 55),
     obj.save()
     return obj.get_mpl()
 
-def draw_fy4a_c012_hgt_uv_div(ir, hgt, u, v, div, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c012_hgt_uv_div(ir, hgt, u, v, div, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, div_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -170,10 +170,10 @@ def draw_fy4a_c012_hgt_uv_div(ir, hgt, u, v, div, map_extent=(60, 145, 15, 55),
     ir_name = '红外(10.8微米)'
     ir_cmap = 'met/ir_enhancement1'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa散度'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],div.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa散度'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],div.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -185,7 +185,7 @@ def draw_fy4a_c012_hgt_uv_div(ir, hgt, u, v, div, map_extent=(60, 145, 15, 55),
     return obj.get_mpl()
 
 
-def draw_fy4a_c012_hgt_uv_spfh(ir, hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
+def draw_fy4b_c012_hgt_uv_spfh(ir, hgt, u, v, spfh, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, spfh_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -198,10 +198,10 @@ def draw_fy4a_c012_hgt_uv_spfh(ir, hgt, u, v, spfh, map_extent=(60, 145, 15, 55)
     ir_name = '红外(10.8微米)'
     ir_cmap = 'met/ir_enhancement1'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa比湿'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],spfh.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa比湿'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],spfh.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -212,7 +212,7 @@ def draw_fy4a_c012_hgt_uv_spfh(ir, hgt, u, v, spfh, map_extent=(60, 145, 15, 55)
     obj.save()
     return obj.get_mpl()
 
-def draw_fy4a_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
+def draw_fy4b_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={}, wsp_contour_kwargs={},
                              **pallete_kwargs):
 
@@ -225,10 +225,10 @@ def draw_fy4a_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
     ir_name = '红外(10.8微米)'
     ir_cmap = 'met/ir_enhancement1'
 
-    title = '[FY4A] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa风速'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],wsp.stda.level[0])
+    title = '[fy4b] {0:}观测 [{1:}] {2:}hPa高度场 {3:}hPa风场 {4:}hPa风速'.format(ir_name,data_name.upper(),hgt.stda.level[0],u.stda.level[0],wsp.stda.level[0])
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n模式起报时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n预报时效: {2:}小时'.format(
         ir_time, hgt_time, fhour)
-    png_name = 'FY4A卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
+    png_name = 'fy4b卫星观测{0:}_观测时间_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时_模式起报时间_{2:%Y}年{2:%m}月{2:%d}日{2:%H}时_预报时效_{3:}小时.png'.format(
         ir_name,ir_time, hgt_time, fhour)
 
     obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
@@ -267,7 +267,7 @@ def draw_fy2g_ir1_hgt_uv_wsp(ir, hgt, u, v, wsp, map_extent=(60, 145, 15, 55),
     return obj.get_mpl()
 
 
-def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 145, 15, 55),
+def draw_fy4bir_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 145, 15, 55),
                              ir_pcolormesh_kwargs={},  hgt_contour_kwargs={}, uv_barbs_kwargs={},
                              **pallete_kwargs):
 
@@ -285,7 +285,7 @@ def draw_fy4air_sounding_hgt(ir, hgt, sounding_u, sounding_v, map_extent=(60, 14
         ir_cmap = 'met/ir_enhancement1'
         uv_color = 'white'
 
-    title = 'FY4A{}观测 探空观测 高度场'.format(ir_name)
+    title = 'fy4b{}观测 探空观测 高度场'.format(ir_name)
     forcast_info = '卫星观测时间: {0:%Y}年{0:%m}月{0:%d}日{0:%H}时\n探空观测时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n高度场时间: {2:%Y}年{2:%m}月{2:%d}日{2:%H}时'.format(
         ir_time, sounding_time, hgt_time)
     png_name = '卫星观测{1}_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时.png'.format(ir_time, ir_name)
