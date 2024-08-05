@@ -74,7 +74,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
                                              time_str=timestr+'0000', level_type=cmadaas_level_type,#limit=limit, #暂时去除limit参数，因为nmc_met_io的缓存数据不能判断空间范围，导致重复读取数据
                                              fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear,**kwargs) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     elif cmadaas_prod_type == 'model':
-        data = nmc_cmadaas_io.cmadaas_model_grid(data_code=cmadaas_data_code,
+        data = nmc_cmadass_helper.cmadaas_model_grid(data_code=cmadaas_data_code,
                                                 init_time=timestr, valid_time=fhour, level_type=cmadaas_level_type,limit=limit, #暂时去除limit参数，因为nmc_met_io的缓存数据不能判断空间范围，导致重复读取数据
                                                 fcst_level=cmadaas_level, fcst_ele=cmadaas_var_name,cache_clear=cache_clear,**kwargs) # ['time', 'level', 'lat', 'lon'] 注意（nmc_micaps_io返回的维度不统一）
     elif cmadaas_prod_type.startswith('ens'):
