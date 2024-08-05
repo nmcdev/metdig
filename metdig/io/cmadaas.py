@@ -64,6 +64,10 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     else:
         limit=None
 
+    # 特殊处理
+    if cmadaas_data_code == 'NAFP_CRA_FTM_6HOR':
+        kwargs['eleValueRanges'] = 'PROD_PARA3:0P25'
+
     if cmadaas_prod_type == 'analysis':
         #针对大数据云平台中的实况格点数据，入cldas
         data = nmc_cmadaas_io.cmadaas_analysis_by_time(data_code=cmadaas_data_code,
