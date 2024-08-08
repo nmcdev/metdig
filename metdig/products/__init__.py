@@ -12,3 +12,4 @@ from . import observation_station
 from . import observation_unusual
 from . import veri_synop
 from . import diag_identify
+from . import diag_trajectory

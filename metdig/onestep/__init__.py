@@ -14,3 +14,4 @@ from .veri_synop import *
 from .diag_ensemble import *
 from .lib import *
 from .diag_identify import *
+from .diag_trajectory import *

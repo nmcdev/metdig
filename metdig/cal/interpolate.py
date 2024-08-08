@@ -13,22 +13,25 @@ import xarray as xr
 
 __all__ = [
     'interpolate_3d',
-    'interpolate_3d_whole_area'
+    'interpolate_3d_whole_area',
+    'trajectory_on_pressure_level',
 ]
 
 
 def trajectory_on_pressure_level(u,v,vvel,var_diag=None,
     s_point={'lon':[119.3,119.31],'lat':[32.4,32.41],'level':[925,900],'id':[1,2]},
-    t_s=None,t_e=None,dt=1800):
+    t_s=None,t_e=None,dt=None):
 
     #气压坐标下的空气质点追踪算法，输入垂直运动速度为气压速度
     #stda标准u 东西风 v 南北风 vvel气压垂直速度
     #var_diag 为任意stda标准格式的诊断两，如spfh、rh等
-    #s_points 为字典型，质点起始位置，如{'lon':[100,101.1],'lat':[30,30.1],'level':[875,875.5],'id':[1,2]}，如果用户没有给定id，则自动生成连续数字
+    #s_points 为字典型，质点起始位置，如{'lon':[100,101.1],'lat':[30,30.1],'level':[875,875.5],'id':[1,2]}，如果用户没有给定id，则自动生成从1开始的连续数字
     #t_s 起始时间，t_e终止时间，datetime格式，如未给定，则为u的预报时间的起止时间
-    #dt追踪时间步长 单位为s
+    #dt追踪时间步长 单位为s，如果未给定则为1800
     if('id' not in list(s_point.keys())):
-        s_point['id']=list(range(0,len(s_point['lon'])))
+        s_point['id']=list(range(1,len(s_point['lon'])+1))
+    if dt is None:
+        dt = 1800
 
     if(len(u['time'])>1):
         trans_dim='time'
