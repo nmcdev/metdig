@@ -48,7 +48,7 @@ def high_low_center(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt)
-        ids = mask_terrian(psfc, ids)
+        # ids = mask_terrian(psfc, ids)
 
     # plot
     if is_draw:
@@ -82,7 +82,7 @@ def vortex(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         u = mask_terrian(psfc, u)
         v = mask_terrian(psfc, v)
-        ids = mask_terrian(psfc, ids)
+        # ids = mask_terrian(psfc, ids)
 
     # plot
     if is_draw:
@@ -291,7 +291,7 @@ def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None,
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt)
-        ids = mask_terrian(psfc, ids)
+        # ids = mask_terrian(psfc, ids)
 
     # plot
     if is_draw:
@@ -327,7 +327,7 @@ def south_asia_high(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_mask_terrain:
         psfc = get_model_grid(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name, var_name='psfc', extent=map_extent)
         hgt = mask_terrian(psfc, hgt)
-        ids = mask_terrian(psfc, ids)
+        # ids = mask_terrian(psfc, ids)
 
     # plot
     if is_draw:
