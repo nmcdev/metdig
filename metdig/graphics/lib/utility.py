@@ -299,35 +299,27 @@ def add_colorbar(ax, img, cax=None, ticks=None,tick_label=None, label='', label_
             if pos == 'bottom':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l, b - h * 0.06 - pad, w, h * 0.02])
-                orientation = 'horizontal'
             elif pos == 'right':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b, 0.015, h])
-                orientation = 'vertical'
             elif pos == 'lower center':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l+w/3., b - h * 0.05 + pad, w/3, h * 0.02])
-                orientation = 'horizontal'
             elif pos == 'lower left':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l, b - h * 0.05 + pad, w/3, h * 0.02])
-                orientation = 'horizontal'
             elif pos == 'lower right':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l+w*2/3, b - h * 0.05 + pad, w/3, h * 0.02])
-                orientation = 'horizontal'
             elif pos == 'right center':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b+h/3, 0.015, h/3])
-                orientation = 'vertical'
             elif pos == 'right top':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b+h*2/3, 0.015, h/3])
-                orientation = 'vertical'
             elif pos == 'right bottom':
                 l, b, w, h = ax.get_position().bounds
                 cax = ax.get_figure().add_axes([l + 0.01 + w + pad, b, 0.015, h/3])
-                orientation = 'vertical'
     if pos == 'bottom':
         orientation = 'horizontal'
     elif pos == 'right':

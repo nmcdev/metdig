@@ -205,7 +205,10 @@ def jet_plot(ax, graphy):
         ax.arrow(point[ns,0],point[ns,1],dx*0.01,dy*0.01,head_width=0.3,head_length = 0.3,fc = "yellow",ec = "yellow")
         ax.plot(point[:ns, 0], point[:ns, 1], "yellow", linewidth=2)
 
-def collection_2d(ax, x, y, z, cmap, norm, linewidth=6):
+def lccm_2d(ax, x, y, z, cmap, norm, linewidth=6):
+    """
+    根据z值在xy二维平面上绘制渐变色线条
+    """
     # 创建线段
     points = np.array([x, y]).T.reshape(-1, 1, 2)
     segments = np.concatenate([points[:-1], points[1:]], axis=1)
@@ -227,7 +230,7 @@ def collection_2d(ax, x, y, z, cmap, norm, linewidth=6):
     return img
 
 @kwargs_wrapper
-def vvel_plot(ax, stda, xdim='fcst_time', ydim='lat',
+def vvel_lccm_2d(ax, stda, xdim='fcst_time', ydim='lat',
               add_colorbar=True,
               levels=[-30, -20, -10, -5, -2.5, -1, -0.5, 0.5, 1, 2.5, 5, 10, 20, 30], cmap='met/vertical_velocity_nws', extend='both',
               linewidth=6, colorbar_kwargs={}, 
@@ -243,14 +246,14 @@ def vvel_plot(ax, stda, xdim='fcst_time', ydim='lat',
 
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
-    img = collection_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
+    img = lccm_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
 
     if add_colorbar:
         utl.add_colorbar(ax, img, ticks=levels, label='Vertical Velocity (0.1*Pa/s)', extend=extend, kwargs=colorbar_kwargs)
 
 
 @kwargs_wrapper
-def rh_plot(ax, stda, xdim='fcst_time', ydim='lat',
+def rh_lccm_2d(ax, stda, xdim='fcst_time', ydim='lat',
               add_colorbar=True,
               levels=[0, 1, 5, 10, 20, 30, 40, 50, 60, 65, 70, 75, 80, 85, 90, 99], cmap='met/relative_humidity_nws',extend='max',
               linewidth=6, colorbar_kwargs={}, 
@@ -263,14 +266,14 @@ def rh_plot(ax, stda, xdim='fcst_time', ydim='lat',
     
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
-    img = collection_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
+    img = lccm_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
 
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(%)', extend=extend,kwargs=colorbar_kwargs)
 
 
 @kwargs_wrapper
-def tmp_plot(ax, stda, xdim='fcst_time', ydim='lat',
+def tmp_lccm_2d(ax, stda, xdim='fcst_time', ydim='lat',
               add_colorbar=True,
               levels=np.arange(-45, 46,1), cmap='met/temp',extend='both',
               linewidth=6, colorbar_kwargs={}, 
@@ -283,18 +286,18 @@ def tmp_plot(ax, stda, xdim='fcst_time', ydim='lat',
     
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
-    img = collection_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
+    img = lccm_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
 
     if add_colorbar:
         utl.add_colorbar(ax, img, label='(°C)', extend=extend,kwargs=colorbar_kwargs)
 
 
 @kwargs_wrapper
-def theta_plot(ax, stda, xdim='fcst_time', ydim='lat',
-              add_colorbar=True,
-              levels=np.arange(300, 365, 1), cmap='met/theta',extend='both',
-              linewidth=6, colorbar_kwargs={}, 
-              **kwargs):
+def theta_lccm_2d(ax, stda, xdim='fcst_time', ydim='lat',
+                add_colorbar=True,
+                levels=np.arange(300, 365, 1), cmap='met/theta',extend='both',
+                linewidth=6, colorbar_kwargs={}, 
+                **kwargs):
     x = stda.stda.get_dim_value(xdim)
     if xdim == 'fcst_time' or xdim == 'time':
         x = mdates.date2num(x) # 转换时间数据到matplotlib日期格式，否则LineCollection不识别
@@ -303,7 +306,7 @@ def theta_plot(ax, stda, xdim='fcst_time', ydim='lat',
     
     cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
 
-    img = collection_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
+    img = lccm_2d(ax, x, y, z, cmap, norm, linewidth=linewidth)
 
     if add_colorbar:
         utl.add_colorbar(ax, img, label='Theta-E (K)', extend=extend,kwargs=colorbar_kwargs)

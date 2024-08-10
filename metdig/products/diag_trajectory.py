@@ -32,14 +32,15 @@ def draw_trajectory(u, v, trajectories, var_diag=None, dt=None, **products_kwarg
         forcast_info += '\n追踪步长: {}秒'.format(dt)
     
     png_name = '{2}_质点追踪路径_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时.png'.format(init_time, fcst_time.iloc[0], fcst_time.iloc[-1])
+    # 区域放大，使其满足长宽比要求
     map_extent = ( # 数据区域
         np.nanmin(trajectories.lon.values) - 5,
         np.nanmax(trajectories.lon.values) + 5,
         np.nanmin(trajectories.lat.values) - 5,
         np.nanmax(trajectories.lat.values) + 5,
     )
-    map_extent = utl_plotmap.adjust_extent_to_aspect_ratio(map_extent, 1.6) # 区域放大，使其满足长宽比要求
-    #
+    map_extent = utl_plotmap.adjust_extent_to_aspect_ratio(map_extent, 1.6)
+    # 层次放大，到整100层
     levels = np.arange(
         math.ceil(np.nanmax(trajectories.level.values) / 100) * 100,
         math.floor(np.nanmin(trajectories.level.values) / 100) * 100 - 0.1,
@@ -51,7 +52,7 @@ def draw_trajectory(u, v, trajectories, var_diag=None, dt=None, **products_kwarg
     fig = plt.figure(figsize=(16, 16))
     gs = GridSpec(3, 1, height_ratios=[0.55, 0.05, 0.4])  # 定义高度比例
     ax_horizontal = fig.add_subplot(gs[0, 0], projection=ccrs.PlateCarree()) # 空间分布
-    ax_colorbar = fig.add_subplot(gs[1, 0]) # colorbar
+    ax_colorbar = fig.add_subplot(gs[1, 0]) # colorbar预留位置
     ax_colorbar.axis('off')
     ax_timepres = fig.add_subplot(gs[2, 0]) # 时间剖面
     # 空间剖面暂时不画，因为每根线的位置不一样
@@ -70,13 +71,13 @@ def draw_trajectory(u, v, trajectories, var_diag=None, dt=None, **products_kwarg
             t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
                                 mpatheffects.Normal()])
         if var_diag == 'vvel':
-            vvel_plot(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
+            vvel_lccm_2d(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
         elif var_diag == 'rh':
-            rh_plot(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
+            rh_lccm_2d(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
         elif var_diag == 'tmp':
-            tmp_plot(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
+            tmp_lccm_2d(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
         elif var_diag == 'theta':
-            theta_plot(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
+            theta_lccm_2d(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, add_colorbar=False)
         else:
             plot_2d(obj.ax, trajectories_slt, xdim='fcst_time', ydim='level', linewidth=3, c=None)
 
@@ -94,13 +95,13 @@ def draw_trajectory(u, v, trajectories, var_diag=None, dt=None, **products_kwarg
             t.set_path_effects([mpatheffects.Stroke(linewidth=3, foreground='#D9D9D9'),
                                 mpatheffects.Normal()])
         if var_diag == 'vvel':
-            vvel_plot(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
+            vvel_lccm_2d(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
         elif var_diag == 'rh':
-            rh_plot(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
+            rh_lccm_2d(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
         elif var_diag == 'tmp':
-            tmp_plot(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
+            tmp_lccm_2d(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
         elif var_diag == 'theta':
-            theta_plot(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
+            theta_lccm_2d(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6)
         else:
             plot_2d(obj.ax, trajectories_slt, xdim='lon', ydim='lat', linewidth=6, c=None)
         
