@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pandas as pd
+
 from metdig.io import get_model_3D_grids
 
 from metdig.onestep.lib.utility import get_map_area
@@ -19,11 +21,7 @@ __all__ = [
 ]
 
 
-'''
-平面质点追踪 trajectory_horizontal 线的颜色代表物理量的值，五角星代表起始点
-时间剖面质点追踪  气压-时间     trajectory_crossection_time    
-空间剖面质点追踪  气压-经纬度   trajectory_crossection_lonlat
-'''
+
 @date_init('init_time', method=date_init.special_series_set)
 def trajectory(data_source='cassandra', data_name='ecmwf', 
                init_time=None, 
@@ -44,8 +42,10 @@ def trajectory(data_source='cassandra', data_name='ecmwf',
     u = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', levels=levels,extent=extent)
     v = get_model_3D_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', levels=levels,extent=extent)
     vvel = read_vvel3ds(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels,extent=extent)
-    if var_diag is None or var_diag == 'vvel':
-        diag = None
+    if var_diag is None or var_diag == '':
+        var_diag = 'vvel'
+    if var_diag == 'vvel':
+        diag = vvel.copy()
     elif var_diag == 'theta':
         diag = read_theta4d(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, levels=levels, extent=extent)
     else:
@@ -56,12 +56,14 @@ def trajectory(data_source='cassandra', data_name='ecmwf',
                                                        t_s=t_s,
                                                        t_e=t_e,
                                                        dt=dt)
+    # trajectories = pd.read_csv('d:/trajectories.csv') # 测试
+        
     if is_return_data:
         dataret = {'u': u, 'v': v, 'vvel': vvel, var_diag: diag, 'trajectories': trajectories}
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_trajectory.draw_trajectory(u, v, trajectories, dt=dt, **products_kwargs)
+        drawret = draw_trajectory.draw_trajectory(u, v, trajectories, var_diag=var_diag, dt=dt, **products_kwargs)
         ret.update(drawret)
 
     if ret:
