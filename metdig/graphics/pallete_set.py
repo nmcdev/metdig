@@ -39,7 +39,7 @@ def plt_base_env():
         locale.setlocale(locale.LC_CTYPE, 'chinese')
         
 @kwargs_wrapper
-def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
+def horizontal_pallete(fig=None,ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_extent=(60, 145, 15, 55),
                        title='', title_loc='left', title_fontsize=18, forcast_info='', nmc_logo=False,
                        add_coastline=True,add_china=True, add_province=True,add_river=True,add_city=True,add_county=False, add_county_city=False, add_nation=True,
                        add_background_style='borders', add_south_china_sea=False, add_grid=False, add_ticks=False,
@@ -87,11 +87,11 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
   
 
     plt_base_env()  # 初始化字体中文等
-    if(ax is None): # 
+    if fig is None:
         fig = plt.figure(figsize=figsize)
+    if ax is None: # 
         ax = fig.add_subplot(projection=crs)
-    else:
-        fig=None
+
     # 标题
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
@@ -297,14 +297,16 @@ def horizontal_pallete(ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(), map_exte
     return fig, ax
 
 @kwargs_wrapper
-def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None, st_point=None, ed_point=None, 
+def cross_lonpres_pallete(fig=None, ax=None, figsize=(22, 15), levels=None, index=None, lon_cross=None, lat_cross=None, st_point=None, ed_point=None, 
                           title='', forcast_info='', title_loc='right', title_fontsize=25,
                           nmc_logo=False, add_tag=True, logyaxis=True, yoffset=0,**kwargs):
     
     plt_base_env()  # 初始化字体中文等
 
-    fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot()
+    if fig is None:
+        fig = plt.figure(figsize=figsize)
+    if ax is None: 
+        ax = fig.add_subplot()
 
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
@@ -323,6 +325,11 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
         # ax.set_ylim(levels.max(), levels.min())
         yoffset = abs(levels[0] - levels[-1]) * yoffset
         ax.set_ylim(levels.max() + yoffset, levels.min() - yoffset)
+    else:
+        ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
+        ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
+        ax.set_ylim(1000, 100)
+
 
     if index is not None and lon_cross is not None and index is not lat_cross:
         # 先以index为x轴刻度，把刻度替换成经纬度
@@ -379,7 +386,7 @@ def cross_lonpres_pallete(figsize=(22, 15), levels=None, index=None, lon_cross=N
     return fig, ax
 
 @kwargs_wrapper
-def cross_timepres_pallete(figsize=(22, 15), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
+def cross_timepres_pallete(fig=None, ax=None, figsize=(22, 15), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
                            nmc_logo=False, reverse_time=True, logyaxis=True, yoffset=0, add_tag=True, xtickfmt='%m月%d日%H时',**kwargs):
     """[时间剖面画板初始化]
 
@@ -399,8 +406,11 @@ def cross_timepres_pallete(figsize=(22, 15), levels=None, times=None, title='', 
 
     plt_base_env()  # 初始化字体中文等
 
-    fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot()
+    if fig is None:
+        fig = plt.figure(figsize=figsize)
+    if ax is None:
+        ax = fig.add_subplot()
+    
 
     ax.set_title(title, loc=title_loc, fontsize=title_fontsize)
 
@@ -422,12 +432,20 @@ def cross_timepres_pallete(figsize=(22, 15), levels=None, times=None, title='', 
         ax.set_yscale('symlog')
     # ax.set_ylabel('Pressure (hPa)', fontsize=15)
     ax.set_ylabel('气压 （hPa）', fontsize=15)
-    ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
-    ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
     if levels is not None:
+        if levels[0] < levels[-1]:
+            levels = levels[::-1] # 保证levels是从大到小的
+        ax.set_yticklabels(np.arange(levels[0], levels[-1]-1, -100))
+        ax.set_ylim(levels[0], levels[-1])
+        ax.set_yticks(np.arange(levels[0], levels[-1]-1, -100))
         # ax.set_ylim(levels.max(), levels.min())
         yoffset = abs(levels[0] - levels[-1]) * yoffset
         ax.set_ylim(levels.max() + yoffset, levels.min() - yoffset)
+    else:
+        ax.set_yticklabels([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
+        ax.set_yticks([1000, 925, 850, 700, 600, 500, 400, 300, 200, 100])
+        ax.set_ylim(1000, 100)
+
     ax.set_xlim(times[0], times[-1])
 
     if forcast_info:

@@ -3,6 +3,7 @@
 import sys
 import pkg_resources
 import os
+import math
 import numpy as np
 import pandas as pd
 
@@ -305,6 +306,46 @@ def adjust_map_ratio(ax, map_extent=None, datacrs=None):
             map_extent2 = [map_extent2[0], map_extent2[1], bottom, top]
         ax.set_extent(map_extent2, crs=datacrs)
     return map_extent2
+
+
+def adjust_extent_to_aspect_ratio(map_extent, target_aspect_ratio):
+    """放大地图的范围，使其满足长宽比例
+
+    Args:
+        map_extent (list): 地图范围 [开始经度，结束经度，开始纬度，结束纬度]，如[70, 140, 15, 55]
+        target_aspect_ratio (float): 长宽比例,如1.5
+
+    Returns:
+        list: 新的地图范围
+    """
+    west, east, south, north = map_extent
+    center_lon = (west + east) / 2
+    center_lat = (south + north) / 2
+
+    current_width = east - west
+    current_height = north - south
+
+    # 计算当前长宽比
+    current_aspect_ratio = current_width / current_height
+
+    if current_aspect_ratio < target_aspect_ratio:
+        # 需要扩大宽度
+        half_diff = (target_aspect_ratio * current_height - current_width) / 2
+        west -= half_diff
+        east += half_diff
+    elif current_aspect_ratio > target_aspect_ratio:
+        # 需要扩大高度
+        half_diff = ((current_width / target_aspect_ratio) - current_height) / 2
+        south -= half_diff
+        north += half_diff
+
+    # 确保边界在合法范围内
+    west = max(west, -180)
+    east = min(east, 180)
+    south = max(south, -90)
+    north = min(north, 90)
+
+    return [math.floor(west), math.ceil(east), math.floor(south), math.ceil(north)]
 
 
 def add_cartopy_background(ax, name='RD'):
