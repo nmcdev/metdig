@@ -10,6 +10,7 @@ import os
 import json
 import numpy as np
 import pandas as pd
+from datetime import datetime, timedelta
 import pkg_resources
 import meteva.base as meb
 
@@ -21,6 +22,7 @@ from metdig.io.lib import config as CONFIG
 __all__ = [
     'high_low_center',
     'vortex',
+    'vortex_trace',
     'trough',
     'reverse_trough',
     'convergence_line',
@@ -223,6 +225,89 @@ def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
         return {'graphy': graphy, 'ids': ids}
     else:
         return None
+
+
+
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
+def vortex_trace(u, v):
+
+    trace_list = []
+    id = 0
+    last_ob_time = None
+    for fo_time in u.stda.time:
+        for dtime in u.stda.dtime:
+            ob_time = fo_time + timedelta(hours=dtime)
+            # print(fo_time, dtime, ob_time)
+            ret = vortex(u.sel(time=[fo_time],dtime=[dtime]), 
+                         v.sel(time=[fo_time],dtime=[dtime]))
+            if ret is None:
+                continue
+            graphy = ret["graphy"]
+            # print(graphy)
+
+            cent_list = []
+            for key in graphy["features"].keys():
+                cent = graphy["features"][key]["center"]
+                cent["time"] = fo_time
+                cent["dtime"] = dtime
+                cent["area"] = graphy["features"][key]["region"]["area"]
+                cent["ob_time"] = ob_time
+                cent_list.append(cent)
+
+            if len(cent_list)>0:
+                used_list = np.zeros(len(cent_list))
+
+                if len(trace_list)>0:
+                    dis_array = np.zeros((len(cent_list),len(trace_list))) + 999999
+                    for k in range(len(cent_list)):
+                        cent = cent_list[k]
+                        for t in range(len(trace_list)):
+                            trace = trace_list[t]
+                            if trace[-1]["ob_time"] == last_ob_time: #轨迹的最后一个时刻在前一刻还存在
+                                if len(trace) ==1:
+                                    next_lon = trace[0]["lon"]
+                                    next_lat = trace[0]["lat"]
+                                else:
+                                    dh0 = (trace[-1]["ob_time"] - trace[-2]["ob_time"]).total_seconds()/3600
+                                    dlon = trace[-1]["lon"] - trace[-2]["lon"]
+                                    dlat = trace[-1]["lat"] - trace[-2]["lat"]
+                                    dh1 = (ob_time - trace[-1]["ob_time"]).total_seconds()/3600
+                                    next_lon = trace[-1]["lon"] + dh1 * dlon / dh0
+                                    next_lat = trace[-1]["lat"] + dh1 * dlat / dh0
+
+                                dis = meb.tool.math_tools.distance_on_earth_surface(next_lon,next_lat,cent["lon"],cent["lat"])
+                                dis_array[k,t] = dis
+                    mindis = np.min(dis_array)
+                    while mindis <500:
+                        index = np.where(dis_array == mindis)
+                        km = index[0][0]
+                        tm = index[1][0]
+                        cent = cent_list[km]
+                        cent["id"] = tm
+                        trace_list[tm].append(cent)
+                        dis_array[km,:] = 999999
+                        dis_array[:,tm] = 999999
+                        mindis = np.min(dis_array)
+                        used_list[km] = 1
+
+
+                for k in range(len(used_list)):
+                    if used_list[k]==0:
+                        cent = cent_list[k]
+                        cent["id"] = id
+                        trace = [cent]
+                        trace_list.append(trace)
+                        id += 1
+            last_ob_time = ob_time  #记录上一个场的时间
+
+    trace_all = []
+    for trace in trace_list:
+        trace_all.extend(trace)
+    df = pd.DataFrame(trace_all)
+    df1 = df[["time","dtime","id","lon","lat","ob_time","area"]]
+    df1.sort_values(by=["id","time","dtime"],inplace=True)
+    return df1
 
 
 @check_stda(['hgt'])

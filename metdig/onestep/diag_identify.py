@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
+
 from metdig.io import get_model_grid
+from metdig.io import get_model_grids
 
 from metdig.onestep.lib.utility import get_map_area
 from metdig.onestep.lib.utility import mask_terrian
@@ -87,6 +90,32 @@ def vortex(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
     # plot
     if is_draw:
         drawret = draw_identify.draw_vortex(u, v, ids, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+
+
+@date_init('init_time')
+def vortex_trace(data_source='cassandra', data_name='ecmwf', init_time=None,  fhours=range(0, 72, 3), uv_lev=850, is_mask_terrain=True,
+           area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
+    ret = {}
+
+    # get area
+    map_extent = get_map_area(area)
+
+    u = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='u', level=uv_lev, extent=map_extent)
+    v = get_model_grids(data_source=data_source, init_time=init_time, fhours=fhours, data_name=data_name, var_name='v', level=uv_lev, extent=map_extent)
+
+    trace = mdgcal.vortex_trace(u, v, **identify_kwargs)
+
+    if is_return_data:
+        dataret = {'u': u, 'v': v, 'trace': trace}
+        ret.update({'data': dataret})
+
+    # plot
+    if is_draw:
+        drawret = draw_identify.draw_vortex_trace(u, v, trace, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
     if ret:

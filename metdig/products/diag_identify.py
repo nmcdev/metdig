@@ -51,6 +51,30 @@ def draw_vortex(u, v, ids, map_extent=(60, 145, 15, 55),
     return obj.get_mpl()
 
 
+def draw_vortex_trace(u, v, trace, map_extent=(60, 145, 15, 55),
+                trace_kwargs={}, 
+                **pallete_kwargs):
+    init_time = pd.to_datetime(u.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fcst_time = u.stda.fcst_time
+    data_name = str(u['member'].values[0])
+    idlist = list(trace['id'].drop_duplicates().values)
+
+    title = '[{}] {}hPa 涡旋轨迹'.format(data_name.upper(), u['level'].values[0])
+
+    forcast_info = '[{0}]\n开始时间: {1:%Y}年{1:%m}月{1:%d}日{1:%H}时\n结束时间: {2:%Y}年{2:%m}月{2:%d}日{2:%H}时'.format(
+         data_name.upper(), fcst_time.iloc[0], fcst_time.iloc[-1])
+    png_name = '{2}_涡旋轨迹_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时_{1:%Y}年{1:%m}月{1:%d}日{1:%H}时.png'.format(fcst_time.iloc[0], fcst_time.iloc[-1], data_name.upper())
+
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
+    for id in idlist:
+        trace_slt = trace.loc[trace.id == id]
+        if len(trace_slt) == 1:
+            continue
+        plot_2d(obj.ax, trace_slt, xdim='lon', ydim='lat', linewidth=3, c=None, marker='.', markersize=13)
+    obj.save()
+    return obj.get_mpl()
+
+
 def draw_trough(hgt, graphy, map_extent=(60, 145, 15, 55),
                 graphy_plot_kwargs={}, hgt_contour_kwargs={},
                 **pallete_kwargs):
