@@ -323,7 +323,7 @@ def get_obs_stations(obs_time=None, data_name=None, var_name=None, level=None, i
 
     # 转成stda
     return mdgstda.numpy_to_stastda(
-        data[var_name].values, [data_name], levels, data['time'].values, 0, data.iloc[:,0], data['lat'].values, data['lon'].values,
+        data[var_name].values, [data_name], levels, data['time'].values, 0, data.index.values, data['lat'].values, data['lon'].values,
         np_input_units=cassandra_units, var_name=var_name, other_input=other_input,
         data_source='cassandra', data_name=data_name
     )
@@ -369,7 +369,13 @@ def get_obs_stations_multitime(obs_times=None, data_name=None, var_name=None, id
 
     return None
 
-
+if __name__ == '__main__':
+    init_time = datetime.datetime(2024,8,4,12)
+    obs_times =[]
+    for i in range(36):
+        obs_times.append(init_time + datetime.timedelta(hours=i))
+    obs=get_obs_stations_multitime(obs_times=obs_times,data_name='sfc_chn_hor',var_name='rain01')
+    print(obs['id'])
 def get_fy_awx(obs_time=None, data_name=None, var_name=None, channel=None, extent=None, x_percent=0, y_percent=0, isnearesttime=False):
     """[获取卫星观测数据]
 

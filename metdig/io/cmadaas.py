@@ -65,7 +65,7 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
         limit=None
 
     # 特殊处理
-    if cmadaas_data_code == 'NAFP_CRA_FTM_6HOR':
+    if ((cmadaas_data_code == 'NAFP_CRA_FTM_6HOR') & (extent==None)):
         kwargs['eleValueRanges'] = 'PROD_PARA3:0P25'
 
     if cmadaas_prod_type == 'analysis':

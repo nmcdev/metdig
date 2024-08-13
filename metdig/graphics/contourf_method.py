@@ -676,7 +676,7 @@ def cross_theta_contourf(ax, stda, xdim='lon', ydim='level',
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap, norm=norm, extend=extend, **kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='绝对湿度 (kelven)',
+        utl.add_colorbar(ax, img, label='相当位温 (Kelvin)',
                          label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
     return img
 
