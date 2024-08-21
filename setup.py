@@ -43,7 +43,7 @@ setup(
                       'meteva > 1.3',
                       'xarray <= 0.19.0 ',
                       'netcdf4 <= 1.6.4 ',
-                      'cdsapi',
+                      'cdsapi >= 0.7.0',
                       'numba',
                       'folium',
                       'pandas < 1.5',
