@@ -161,6 +161,10 @@ def _split_psl(savefile, var_name, extent, pressure_level):
     # 拆分下载的psl数据到cache目录下
     if os.path.exists(savefile):
         data = xr.open_dataarray(savefile)
+        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中部分维度信息和旧版不一致的bug
+        data = data.rename({'valid_time': 'time', 'pressure_level': 'level'})
+        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中会多出一些冗余维度的bug
+        data = data.drop([i for i in data.coords if i not in data.dims])
         # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
         if 'expver' in data.dims:
             # print(f'{savefile} drop expver')
@@ -180,6 +184,8 @@ def _split_psl(savefile, var_name, extent, pressure_level):
             _level = pressure_level
             _lvltg = False
         else:
+            # add by wzj 2024.8.23 修复新版cds下载到的level是浮点类型，此处强制转换为int32类型
+            data['level'] = data['level'].astype('int32')
             _level = data['level'].values
             _lvltg = True
         for dt_utc in data['time'].values:
@@ -205,6 +211,10 @@ def _split_sfc(savefile, var_name, extent):
     # 拆分下载的sfc数据到cache目录下
     if os.path.exists(savefile):
         data = xr.open_dataarray(savefile)
+        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中部分维度信息和旧版不一致的bug
+        data = data.rename({'valid_time': 'time'})
+        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中会多出一些冗余维度的bug
+        data = data.drop([i for i in data.coords if i not in data.dims])
         # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
         if 'expver' in data.dims:
             # print(f'{savefile} drop expver')
@@ -469,8 +479,11 @@ def test():
     # era5_psl_download_usepool(dt_start, dt_end, hour=np.arange(2,24,3))
 
     hours = [2, 5, 8, 11, 14, 17, 20, 23]
-    era5_sfc_download_usepool(dt_start=datetime.datetime(2022,1,30),dt_end=datetime.datetime(2022,1,30),hour=hours, var_names=['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl','t2m','td2m'],extent=[50, 160, 0, 70])
-    era5_psl_download_usepool(dt_start=datetime.datetime(2022,1,30),dt_end=datetime.datetime(2022,1,30),hour=hours, var_names=['hgt', 'u', 'v', 'rh', 'tmp', 'pv','spfh'],extent=[50, 160, 0, 70],pressure_level=[500,600,700,800,850,900,925,950,1000])
+    is_overwrite = False
+    var_names = ['u10m', 'v10m', 'psfc', 'tcwv', 'prmsl','t2m','td2m']
+    era5_sfc_download_usepool(dt_start=datetime.datetime(2022,1,30),dt_end=datetime.datetime(2022,1,30),hour=hours, var_names=var_names,extent=[50, 160, 0, 70], is_overwrite=is_overwrite)
+    var_names = ['hgt', 'u', 'v', 'rh', 'tmp', 'pv','spfh']
+    era5_psl_download_usepool(dt_start=datetime.datetime(2022,1,30),dt_end=datetime.datetime(2022,1,30),hour=hours, var_names=var_names,extent=[50, 160, 0, 70],pressure_level=[500,600,700,800,850,900,925,950,1000], is_overwrite=is_overwrite)
 
     # dt_start = datetime.datetime(2021,7,17,0)  # 北京时
     # dt_end = datetime.datetime(2021,7,22,0)
