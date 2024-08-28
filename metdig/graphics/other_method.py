@@ -11,14 +11,8 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
                       st_point=None, ed_point=None, lon_cross=None, lat_cross=None,
                       map_extent=(70, 145, 15, 55), h_pos=[0.125, 0.765, 0.15, 0.1]):
-    plot_extent = utl_plotmap.adjust_extent_to_aspect_ratio(map_extent, 1.875) # 区域放大，使其满足长宽比要求
-    if map_extent[0] >= 70 and map_extent[0] <= 145 and \
-        map_extent[1] >= 70 and map_extent[1] <= 145 and \
-        map_extent[2] >= 15 and map_extent[2] <= 55 and \
-        map_extent[3] >= 15 and map_extent[3] <= 55:
-        plot_extent = (70, 145, 15, 55)
-    else:
-        plot_extent = utl_plotmap.adjust_extent_to_aspect_ratio(map_extent, 1.875) # 区域放大，使其满足长宽比要求
+    plot_extent = [hgt['lon'].values.min(), hgt['lon'].values.max(), hgt['lat'].values.min(), hgt['lat'].values.max()]
+    plot_extent = utl_plotmap.adjust_extent_to_aspect_ratio(plot_extent, 1.75) # 区域放大，使其满足 (70, 140, 15, 55) 这样的长宽比要求
 
     x, y, z = hgt['lon'].values, hgt['lat'].values, hgt.values.squeeze()
     crs = ccrs.PlateCarree()
