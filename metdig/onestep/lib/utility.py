@@ -12,7 +12,7 @@ from functools import wraps
 import datetime
 
 
-def cross_minor_extent(st_point=[20, 120.0], ed_point=[50, 130.0]):
+def cross_extent(st_point=[20, 120.0], ed_point=[50, 130.0], area=None):
     '''
     空间剖面根据起止点计算经纬度范围
     参考metpy.cross_section方法, 弧线方式计算经纬度范围后往外扩一度，以保证剖面线上的点都在范围内
@@ -38,7 +38,11 @@ def cross_minor_extent(st_point=[20, 120.0], ed_point=[50, 130.0]):
     min_lat = min(lats)
     max_lat = max(lats)
     minor_extent = [math.floor(min_lon) - 1, math.ceil(max_lon) + 1, math.floor(min_lat) - 1, math.ceil(max_lat) + 1]
-    return minor_extent
+    if area == None:
+        map_extent = [minor_extent[0], minor_extent[1], minor_extent[2], minor_extent[3]]
+    else:
+        map_extent = get_map_area(area)
+    return minor_extent, map_extent
 
 def point_to1dim(point):
     return np.array(point).flatten()
