@@ -16,7 +16,7 @@ from metdig.graphics.draw_compose import *
 
 def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          wvfldiv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -50,7 +50,7 @@ def draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_
 
 def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          wvfl_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -84,7 +84,7 @@ def draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrai
 
 def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          wsp_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -118,7 +118,7 @@ def draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain,
 
 def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          fg_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -150,7 +150,7 @@ def draw_wind_theta_fg( cross_u, cross_v, cross_theta, cross_fg, cross_terrain, 
 
 def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          w_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -182,7 +182,7 @@ def draw_wind_theta_w( cross_u, cross_v, cross_theta, cross_w, cross_terrain, hg
 
 def draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                        st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                       h_pos=[0.125, 0.665, 0.25, 0.2],
+                       h_pos=None,
                        div_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                        **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -275,7 +275,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
 
 def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terrain, hgt,
                            st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                           h_pos=[0.125, 0.665, 0.25, 0.2],
+                           h_pos=None,
                            tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, wind_quiver_kwargs={},terrain_contourf_kwargs={},
                            **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -310,7 +310,7 @@ def draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terr
 
 def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -343,7 +343,7 @@ def draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrai
 
 def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                           st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                          h_pos=[0.125, 0.665, 0.25, 0.2],
+                          h_pos=None,
                           vortadv_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                           **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -375,7 +375,7 @@ def draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terr
 
 def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                        h_pos=[0.125, 0.665, 0.25, 0.2],
+                        h_pos=None,
                         mpv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                         **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -407,7 +407,7 @@ def draw_wind_thetaes_mpvg(cross_mpvg, cross_theta, cross_u, cross_v, cross_terr
 
 def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                         st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                        h_pos=[0.125, 0.665, 0.25, 0.2],
+                        h_pos=None,
                         mpv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                         **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -440,7 +440,7 @@ def draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain,
 
 def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          absv_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -473,7 +473,7 @@ def draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrai
 
 def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                        st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                       h_pos=[0.125, 0.665, 0.25, 0.2],
+                       h_pos=None,
                        rh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                        **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -505,7 +505,7 @@ def draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, h
 
 def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          spfh_contourf_kwargs={}, theta_contour_kwargs={}, wind_quiver_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -540,7 +540,7 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
 
 def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                          st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                         h_pos=[0.125, 0.665, 0.25, 0.2],
+                         h_pos=None,
                          spfh_contourf_kwargs={}, theta_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
                          **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -573,7 +573,7 @@ def draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrai
 
 def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cross_terrain, hgt,
                      st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                     h_pos=[0.125, 0.665, 0.25, 0.2],
+                     h_pos=None,
                      rh_contourf_kwargs={}, tmp_contour_kwargs={}, uv_barbs_kwargs={},vvel_contour_kwargs={},terrain_contourf_kwargs={},
                      **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
@@ -608,7 +608,7 @@ def draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel, cro
 
 def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
                            st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
-                           h_pos=[0.125, 0.665, 0.25, 0.2],
+                           h_pos=None,
                            spfh_contour_kwargs={}, theta_contourf_kwargs={}, wind_quiver_kwargs={}, vvel_contour_kwargs={}, terrain_contourf_kwargs={},
                            **pallete_kwargs):
     init_time = pd.to_datetime(hgt.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()

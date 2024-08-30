@@ -10,18 +10,30 @@ from  metdig.graphics.lib.utility import kwargs_wrapper
 
 def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
                       st_point=None, ed_point=None, lon_cross=None, lat_cross=None,
-                      map_extent=(70, 145, 15, 55), h_pos=[0.125, 0.765, 0.15, 0.1]):
-    plot_extent = [hgt['lon'].values.min()-1, hgt['lon'].values.max()+1, hgt['lat'].values.min()-1, hgt['lat'].values.max()+1]
-    plot_extent = utl_plotmap.adjust_extent_to_aspect_ratio(plot_extent, 1.75) # 区域放大，使其满足 (70, 140, 15, 55) 这样的长宽比要求
+                      map_extent=(70, 145, 15, 55), h_pos=None):
 
     x, y, z = hgt['lon'].values, hgt['lat'].values, hgt.values.squeeze()
     crs = ccrs.PlateCarree()
     if not h_pos:
+        # h_pos为空，则固定自动计算显示到左上角
         l, b, w, h = ax.get_position().bounds
-        h_pos = [l, b + h - 0.22, 0.25, 0.2]
+        # h_pos = [l, b + h - 0.22, 0.25, 0.2]
+        map_width = map_extent[1] - map_extent[0]
+        map_height = map_extent[3] - map_extent[2]
+        if map_width > map_height:
+            width_inset = 0.25
+            height_inset = width_inset * map_height / map_width
+            xpad = -0.02 # ?遗留问题，正常逻辑是加上l+pad，可能是matplotlib自适应引起的
+        else:
+            height_inset = 0.25
+            width_inset = height_inset * map_width / map_height
+            xpad = 0.02 # ?遗留问题，正常逻辑是加上l+pad，可能是matplotlib自适应引起的
+        ypad = 0.01
+        h_pos = [l + xpad, b + h - height_inset - ypad, width_inset, height_inset]
+
     # ax_inset = fig.add_axes(h_pos, projection=crs)
     ax_inset = ax.get_figure().add_axes(h_pos, projection=crs)
-    ax_inset.set_extent(plot_extent, crs=crs)
+    ax_inset.set_extent(map_extent, crs=crs)
     # Add geographic features
     ax_inset.coastlines()
     utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='province', edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())

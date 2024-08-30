@@ -65,8 +65,8 @@ __all__ = [
 @date_init('init_time')
 def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -137,7 +137,7 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wvfldiv(cross_wvfldiv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -147,8 +147,8 @@ def wind_theta_wvfldiv(data_source='cassandra', data_name='ecmwf', init_time=Non
 @date_init('init_time')
 def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -221,7 +221,7 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wvfl(cross_wvfl, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -236,8 +236,8 @@ def wind_theta_wvfl(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -307,7 +307,7 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if is_draw:
         drawret = draw_cross.draw_wind_theta_wsp(cross_wsp, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -317,8 +317,8 @@ def wind_theta_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -388,7 +388,7 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_absv(cross_vort, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -398,8 +398,8 @@ def wind_theta_vort(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -472,7 +472,7 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if is_draw:
         drawret = draw_cross.draw_wind_theta_fg(cross_u, cross_v, cross_theta, cross_fg,  cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -482,8 +482,8 @@ def wind_theta_fg(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 @date_init('init_time')
 def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                   area=None, is_return_data=False, is_draw=True, **products_kwargs):
 
     ret = {}
 
@@ -555,7 +555,7 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
     if is_draw:
         drawret = draw_cross.draw_wind_thetaes_mpvg(cross_mpvg, cross_thetaes, cross_ug, cross_vg, cross_terrain, hgtlvl,
                                       st_point=st_point, ed_point=ed_point,
-                                      map_extent=minor_extent, h_pos=h_pos,
+                                      map_extent=map_extent, h_pos=h_pos,
                                       **products_kwargs)
         ret.update(drawret)
 
@@ -565,8 +565,8 @@ def wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time')
 def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -644,7 +644,7 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
     if is_draw:
         drawret = draw_cross.draw_wind_theta_w(cross_u, cross_v, cross_theta, cross_w,  cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -654,8 +654,8 @@ def wind_theta_w(data_source='cassandra', data_name='ecmwf', init_time=None, fho
 @date_init('init_time')
 def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                  st_point=[20, 120.0], ed_point=[50, 130.0],h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                  area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                  st_point=[20, 120.0], ed_point=[50, 130.0],h_pos=None, is_mask_terrain=True,
+                  area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -722,7 +722,7 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if is_draw:
         drawret = draw_cross.draw_wind_theta_div(cross_div, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                      st_point=st_point, ed_point=ed_point,
-                                     map_extent=minor_extent, h_pos=h_pos,
+                                     map_extent=map_extent, h_pos=h_pos,
                                      **products_kwargs)
         ret.update(drawret)
 
@@ -732,8 +732,8 @@ def wind_theta_div(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -806,7 +806,7 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
     if is_draw:
         drawret = draw_cross.draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -817,8 +817,8 @@ def wind_w_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time')
 def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -877,7 +877,7 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
     if ret:
@@ -887,8 +887,8 @@ def wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                       levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                      st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                      area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                      st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                      area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -953,7 +953,7 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
     if is_draw:
         drawret = draw_cross.draw_wind_w_tmpadv_tmp(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_terrain, hgt,
                                          st_point=st_point, ed_point=ed_point,
-                                         map_extent=minor_extent, h_pos=h_pos,
+                                         map_extent=map_extent, h_pos=h_pos,
                                          **products_kwargs)
         ret.update(drawret)
     if ret:
@@ -963,8 +963,8 @@ def wind_w_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None
 @date_init('init_time')
 def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                      levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                     area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                     st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                     area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -1025,7 +1025,7 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
     if is_draw:
         drawret = draw_cross.draw_wind_vortadv_tmp(cross_vortadv, cross_tmp, cross_u, cross_v, cross_terrain, hgt,
                                         st_point=st_point, ed_point=ed_point,
-                                        map_extent=minor_extent, h_pos=h_pos,
+                                        map_extent=map_extent, h_pos=h_pos,
                                         **products_kwargs)
         ret.update(drawret)
     if ret:
@@ -1035,8 +1035,8 @@ def wind_vortadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=None,
 @date_init('init_time')
 def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                   area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                   st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                   area=None, is_return_data=False, is_draw=True, **products_kwargs):
 
     ret = {}
 
@@ -1101,7 +1101,7 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
     if is_draw:
         drawret = draw_cross.draw_wind_theta_mpv(cross_mpv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                       st_point=st_point, ed_point=ed_point,
-                                      map_extent=minor_extent, h_pos=h_pos,
+                                      map_extent=map_extent, h_pos=h_pos,
                                       **products_kwargs)
         ret.update(drawret)
 
@@ -1112,8 +1112,8 @@ def wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=None, f
 @date_init('init_time')
 def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -1186,7 +1186,7 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_absv(cross_absv, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -1196,8 +1196,8 @@ def wind_theta_absv(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                   levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                  st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                  area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                  st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                  area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -1264,7 +1264,7 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
     if is_draw:
         drawret = draw_cross.draw_wind_theta_rh(cross_rh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                      st_point=st_point, ed_point=ed_point,
-                                     map_extent=minor_extent, h_pos=h_pos,
+                                     map_extent=map_extent, h_pos=h_pos,
                                      **products_kwargs)
         ret.update(drawret)
 
@@ -1282,8 +1282,8 @@ def wind_theta_rh(data_source='cassandra', data_name='ecmwf', init_time=None, fh
 @date_init('init_time')
 def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                     levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                    area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -1352,7 +1352,7 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
     if is_draw:
         drawret = draw_cross.draw_wind_theta_spfh(cross_spfh, cross_theta, cross_u, cross_v, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
@@ -1362,8 +1362,8 @@ def wind_theta_spfh(data_source='cassandra', data_name='ecmwf', init_time=None, 
 @date_init('init_time')
 def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -1432,7 +1432,7 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     if is_draw:
         drawret = draw_cross.draw_wind_tmp_rh_vvel(cross_rh, cross_tmp, cross_u, cross_v, cross_vvel,cross_terrain, hgt,
                                    st_point=st_point, ed_point=ed_point,
-                                   map_extent=minor_extent, h_pos=h_pos,
+                                   map_extent=map_extent, h_pos=h_pos,
                                    **products_kwargs)
         ret.update(drawret)
 
@@ -1442,8 +1442,8 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
 
 def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                 levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
-                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=[0.125, 0.665, 0.25, 0.2], is_mask_terrain=True,
-                area='全国', is_return_data=False, is_draw=True, **products_kwargs):
+                st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
+                area=None, is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
 
     # points to 一维
@@ -1521,7 +1521,7 @@ def wind_w_theta_spfh_vvel(data_source='cassandra', data_name='ecmwf', init_time
     if is_draw:
         drawret = draw_cross.draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
                                        st_point=st_point, ed_point=ed_point,
-                                       map_extent=minor_extent, h_pos=h_pos,
+                                       map_extent=map_extent, h_pos=h_pos,
                                        **products_kwargs)
         ret.update(drawret)
 
