@@ -295,7 +295,7 @@ if __name__ == '__main__':
     jet(data_source='cmadaas', data_name='ecmwf_hr', init_time='2023050408', fhour=24, uv_lev=850, 
                      is_mask_terrain=False)
 
-
+@date_init('init_time')
 def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=500, is_mask_terrain=True,
                      area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
@@ -330,7 +330,7 @@ def subtropical_high(data_source='cassandra', data_name='ecmwf', init_time=None,
     if ret:
         return ret
 
-
+@date_init('init_time')
 def south_asia_high(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24, hgt_lev=100, is_mask_terrain=True,
                     area='全国', is_return_data=False, is_draw=True, identify_kwargs={}, **products_kwargs):
     ret = {}
