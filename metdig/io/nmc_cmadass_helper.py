@@ -99,7 +99,7 @@ def cmadaas_ens_model_grid(data_code, init_time, valid_time, fcst_ele, fcst_leve
 
     # get time information
     init_time = datetime.strptime(init_time_str, '%Y%m%d%H')
-    fhour = np.array([valid_time], dtype=np.float)
+    fhour = np.array([valid_time], dtype=np.float64)
     time = init_time + timedelta(hours=fhour[0])
     init_time = np.array([init_time], dtype='datetime64[ms]')
     time = np.array([time], dtype='datetime64[ms]')
@@ -283,7 +283,7 @@ def cmadaas_model_grid(data_code, init_time, valid_time, fcst_ele, fcst_level, l
 
     # get time information
     init_time = datetime.strptime(init_time_str, '%Y%m%d%H')
-    fhour = np.array([valid_time], dtype=np.float)
+    fhour = np.array([valid_time], dtype=np.float64)
     time = init_time + timedelta(hours=fhour[0])
     init_time = np.array([init_time], dtype='datetime64[ms]')
     time = np.array([time], dtype='datetime64[ms]')
