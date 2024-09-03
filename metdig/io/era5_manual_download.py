@@ -160,17 +160,17 @@ def _check_cache(var_name, era5_utctime, extent, levels=None):
 def _split_psl(savefile, var_name, extent, pressure_level):
     # 拆分下载的psl数据到cache目录下
     if os.path.exists(savefile):
-        data = xr.open_dataarray(savefile)
-        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中部分维度信息和旧版不一致的bug
-        data = data.rename({'valid_time': 'time', 'pressure_level': 'level'})
-        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中会多出一些冗余维度的bug
-        data = data.drop([i for i in data.coords if i not in data.dims])
-        # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
+        data = xr.open_dataset(savefile)
+        for var in list(data.data_vars):
+            if 'latitude' in data[var].dims and 'longitude' in data[var].dims:
+                data = data[var]
+                break
+        if 'valid_time' in data.dims:
+            data = data.rename({'valid_time': 'time'})
+        if 'pressure_level' in data.dims:
+            data = data.rename({'pressure_level': 'level'})
+        data = data.drop([i for i in data.coords if i not in data.dims]) # 删除冗余维度
         if 'expver' in data.dims:
-            # print(f'{savefile} drop expver')
-            name = list(data.data_vars.keys())[0]
-            # data = data.to_array() # 弃用to_array，to_array会导致dim多一个叫variable的dim
-            data = data[name]
             expver = data['expver'].values
             expver = np.sort(expver)[::-1]
             for exp in expver:
@@ -179,7 +179,6 @@ def _split_psl(savefile, var_name, extent, pressure_level):
                     data = d
                     data = data.drop('expver')
                     break
-            data = data.to_dataset(name=name)
         if 'level' not in data.dims: # 增加单层数据拆分的时候假如没有level的判断
             _level = pressure_level
             _lvltg = False
@@ -210,17 +209,15 @@ def _split_psl(savefile, var_name, extent, pressure_level):
 def _split_sfc(savefile, var_name, extent):
     # 拆分下载的sfc数据到cache目录下
     if os.path.exists(savefile):
-        data = xr.open_dataarray(savefile)
-        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中部分维度信息和旧版不一致的bug
-        data = data.rename({'valid_time': 'time'})
-        # add by wzj 2024.8.23 修复新版cds下载到的nc数据中会多出一些冗余维度的bug
-        data = data.drop([i for i in data.coords if i not in data.dims])
-        # add by wzj 2024.4.11 修复出现expver维度时，选取其最大进行导入的问题,保证stda数据的一致性
+        data = xr.open_dataset(savefile)
+        for var in list(data.data_vars):
+            if 'latitude' in data[var].dims and 'longitude' in data[var].dims:
+                data = data[var]
+                break
+        if 'valid_time' in data.dims:
+            data = data.rename({'valid_time': 'time'})
+        data = data.drop([i for i in data.coords if i not in data.dims]) # 删除冗余维度
         if 'expver' in data.dims:
-            # print(f'{savefile} drop expver')
-            name = list(data.data_vars.keys())[0]
-            # data = data.to_array() # 弃用to_array，to_array会导致dim多一个叫variable的dim
-            data = data[name]
             expver = data['expver'].values
             expver = np.sort(expver)[::-1]
             for exp in expver:
@@ -229,7 +226,6 @@ def _split_sfc(savefile, var_name, extent):
                     data = d
                     data = data.drop('expver')
                     break
-            data = data.to_dataset(name=name)
         for dt_utc in data['time'].values:
             dt_utc = pd.to_datetime(dt_utc)
             # cache目录为世界时
