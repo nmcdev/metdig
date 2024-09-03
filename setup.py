@@ -37,25 +37,25 @@ setup(
     exclude_package_data={'': ['.gitignore']},
 
     install_requires=[
-                      'matplotlib ==3.2.2',
-                      'nmc_met_io <= 0.1.10.4',
-                      'metpy == 1.0',
+                      'cartopy >= 0.22.0',
+                      'nmc_met_io >= 0.1.13.0',
+                      'metpy <= 1.5',
                       'meteva > 1.3',
                       'xarray <= 0.19.0 ',
-                      'netcdf4 <= 1.6.4 ',
+                      'netcdf4',
                       'cdsapi >= 0.7.0',
                       'numba',
                       'folium',
-                      'pandas < 1.5',
-                      'shapely < 1.8.0',
+                      'pandas<1.5',
+                      'shapely',
                       'imageio',
-                      'numpy < 1.21',
+                      'numpy < 2.0',
                       'protobuf<=3.20',
                       'ipython',
                       'pint < 0.20.0',
                       'scikit_learn',
                       'JPype1'],
-    python_requires='>=3',
+    python_requires='>=3.9',
     zip_safe = False
 )
 
