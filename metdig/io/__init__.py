@@ -21,7 +21,7 @@ _log = logging.getLogger(__name__)
 def config_init(CMADaaS_DNS=None, CMADaaS_PORT=None, CMADaaS_USER_ID=None, CMADaaS_PASSWORD=None, CMADaaS_serviceNodeId=None,
                 MICAPS_GDS_IP=None, MICAPS_GDS_PORT=None,
                 THREDDS_IP=None, THREDDS_PORT=None,
-                CDS_UID=None, CDS_AIP_KEY=None,
+                CDS_API_TOKEN=None, 
                 CACHE_DIR=None,
                 ):
     """[io数据接口参数初始化方法，不存在则创建。不传参保持原配置不变。]
@@ -36,15 +36,14 @@ def config_init(CMADaaS_DNS=None, CMADaaS_PORT=None, CMADaaS_USER_ID=None, CMADa
         MICAPS_GDS_PORT ([string], optional): [MICAPS配置 xx]. Defaults to None.
         THREDDS_IP ([string], optional): [THREDDS配置 xx.xx.xx.xx]. Defaults to None.
         THREDDS_PORT ([string], optional): [THREDDS配置 xx]. Defaults to None.
-        CDS_UID ([string], optional): [CDS配置 xxxxx]. Defaults to None.
-        CDS_AIP_KEY ([string], optional): [CDS配置 xxxxx]. Defaults to None.
+        CDS_API_TOKEN ([string], optional): [CDS配置 xxxxx]. Defaults to None.
         CACHE_DIR ([string], optional): [缓存路径 ~]. Defaults to None.
     """
     config.init_nmcdev_cfg(
         CMADaaS_DNS=CMADaaS_DNS, CMADaaS_PORT=CMADaaS_PORT, CMADaaS_USER_ID=CMADaaS_USER_ID, CMADaaS_PASSWORD=CMADaaS_PASSWORD,
         CMADaaS_serviceNodeId=CMADaaS_serviceNodeId, MICAPS_GDS_IP=MICAPS_GDS_IP, MICAPS_GDS_PORT=MICAPS_GDS_PORT, CACHE_DIR=CACHE_DIR)
     config.init_metdig_cfg(THREDDS_IP=THREDDS_IP, THREDDS_PORT=THREDDS_PORT, CACHE_DIR=CACHE_DIR)
-    config.init_cds_cfg(CDS_UID=CDS_UID, CDS_AIP_KEY=CDS_AIP_KEY)
+    config.init_cds_cfg(CDS_API_TOKEN=CDS_API_TOKEN)
     pass
 
 
