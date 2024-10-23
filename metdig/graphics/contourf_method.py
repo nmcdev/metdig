@@ -191,7 +191,7 @@ def cross_fg_contourf(ax, stda, xdim='lon', ydim='level',
     if add_colorbar:
         # utl.add_colorbar(ax, img, label='Frontogenesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)',  
         #                  orientation='vertical', extend='both', pos='right', kwargs=colorbar_kwargs)
-        utl.add_colorbar(ax, img, label='锋生函数 (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)',  
+        utl.add_colorbar(ax, img, label='锋生函数 (1${0^{-9}}$K*s${^{-1}}$ m${^{-1}}$)',  
                          orientation='vertical', extend='both', pos='right', kwargs=colorbar_kwargs)
     return img
 

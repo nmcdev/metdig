@@ -269,7 +269,7 @@ def fg_pcolormesh(ax, stda, xdim='lon', ydim='lat',
 
     img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha,**kwargs)
     if add_colorbar:
-        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-8}}$K*s${^{-1}}$ m${^{-1}}$)', extend='both',kwargs=colorbar_kwargs)
+        utl.add_colorbar(ax, img, label='Front Genesis Function (1${0^{-9}}$K*s${^{-1}}$ m${^{-1}}$)', extend='both',kwargs=colorbar_kwargs)
     return img
             
 
