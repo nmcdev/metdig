@@ -365,6 +365,25 @@ class __STDADataArrayAccessor(object):
             if compare_dim_value and (a == b).all() == False: # 判断维度内容是否一致
                 return False
         return True
+
+    def equal_lonlat(self, other, precision=1e-4):
+        """[判断当前stda和other经纬度信息是否一样]
+        Returns:
+            [bool]: []
+        """
+        if self._xr.lon.shape != other.lon.shape:
+            return False
+        if self._xr.lat.shape != other.lat.shape:
+            return False
+        if abs(self._xr.lon.values[0] - other.lon.values[0]) > precision:
+            return False
+        if abs(self._xr.lat.values[0] - other.lat.values[0]) > precision:
+            return False
+        if abs(self._xr.lon.values[-1] - other.lon.values[-1]) > precision:
+            return False
+        if abs(self._xr.lat.values[-1] - other.lat.values[-1]) > precision:
+            return False
+        return True
     
     def standard_dim(self):
         """[维度标准化，经度从-180到180，纬度从-90到90，均为递增]
