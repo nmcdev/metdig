@@ -105,7 +105,12 @@ def check_stda(check_lst):
             bound_args = sig.bind(*args, **kwargs)
             for arg_name in check_lst:
                 try:
+                    if bound_args.arguments[arg_name] is None:
+                        continue
                     tag = bound_args.arguments[arg_name].stda.is_stda()
+                    # if tag == True:
+                    #     # 如果是stda，对stda维度进行标准化，此处暂时不作标准化，只给出提示，因为入参可能性太多，无法完全适配，将标准化操作留给用户
+                    #     bound_args.arguments[arg_name] = bound_args.arguments[arg_name].stda.standard_dim()
                 except Exception as e:
                     tag = False
                 if tag == False:
