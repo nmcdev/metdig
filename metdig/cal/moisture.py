@@ -101,7 +101,11 @@ def dewpoint_from_specific_humidity(pres, tmp, spfh):
     Returns:
         [stda] -- [The dewpoint temperature]
     '''
-    pres_p = utl.stda_to_quantity(pres)  # hPa
+    if pres is None: # 简化pres，如果传None，则使用入参stda的层次，无需外部初始化了
+        pres_p = tmp.stda.broadcast_dim(dim='level') * units('hPa')  # hPa
+    else:
+        pres_p = utl.stda_to_quantity(pres)  # hPa
+
     tmp_p = utl.stda_to_quantity(tmp)  # degC
     spfh_p = utl.stda_to_quantity(spfh)  # g/kg
 
