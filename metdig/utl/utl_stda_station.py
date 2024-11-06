@@ -369,6 +369,15 @@ class __STDADataFrameAccessor(object):
         """
         self._df.loc[:, self.member] = values
 
+    def broadcast_dim(self, dim='level'):
+        """[将dim维度扩展到stda维度，除了dim这一维，其他维长度全为1，
+            注意：此处重写xarray.stda同名方法，因为数据是pd.DataFrame，无需广播，直接返回即可]
+
+        Returns:
+            [np.ndarray]: []
+        """
+        return self._df[dim].values
+
     def set_values(self, values, var_name=None, **attrs_kwargv):
         """[set values，如果给定var_name。则自动赋值stda属性]
 

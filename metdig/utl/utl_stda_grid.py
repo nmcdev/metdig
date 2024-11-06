@@ -327,6 +327,25 @@ def gridstda_full_like_by_levels(a, levels, dtype=None, var_name='pres', **attrs
         stda_data.loc[dict(level=lev)] = lev
     return stda_data
 
+def broadcast_to_shape(a, l, x):
+    """将长度n的一维数组a，广播到shape长为l的数组，除了第x维长度为n，其他维长度为1
+    例如：a=[500,600,700], l=6, x=2，返回的shape为[1,3,1,1,1,1]
+
+    Args:
+        a (_type_): 一个长度为n的一维数组
+        l (_type_): 广播后的总维度数
+        x (_type_): n 固定在第 x 维度
+
+    Returns:
+        np.ndarray: _description_
+    """
+    # 构造切片元组
+    slices = [None] * l  # 初始化一个长度为 l 的列表，所有元素都是 None
+    slices[x] = slice(None)  # 在第 x 维度使用 slice(None) 即取所有元素
+    
+    # 应用切片
+    return a[tuple(slices)]
+
 
 @xr.register_dataarray_accessor('stda')
 class __STDADataArrayAccessor(object):
@@ -433,6 +452,7 @@ class __STDADataArrayAccessor(object):
         """
         return pd.Series(self._xr['level'].values)
 
+
     @property
     def fcst_time(self):
         """[get fcst_time*dtime)]
@@ -520,6 +540,15 @@ class __STDADataArrayAccessor(object):
             values ([int or float or numpy]]): [values]
         """
         self._xr.values = values
+
+    def broadcast_dim(self, dim='level'):
+        """[将dim维度扩展到stda维度，除了dim这一维，其他维长度全为1]
+
+        Returns:
+            [np.ndarray]: []
+        """
+        dims = list(self._xr.dims)
+        return broadcast_to_shape(self._xr[dim].values, len(dims), dims.index(dim))
 
     def set_values(self, values, var_name=None, **attrs_kwargv):
         """[set values，如果给定var_name。则自动赋值stda属性]
