@@ -102,6 +102,8 @@ def get_map_area(area):
 
 
 def mask_terrian(psfc, stda_input, get_terrain=False):
+    if psfc is None or stda_input is None:
+        return stda_input
     # time dtime 维度取交集
     time_dim = list(set(psfc['time'].values.tolist()) & set(stda_input['time'].values.tolist()))
     time_dim = pd.Series(pd.to_datetime(time_dim)).to_list()
