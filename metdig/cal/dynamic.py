@@ -27,6 +27,8 @@ __all__ = [
     'potential_vorticity_baroclinic',
     'divergence',
     'shear_vorticity',
+    'storm_relative_helicity',
+    'kinematic_flux',
 
 ]
 
@@ -457,3 +459,71 @@ def __vorticity(u, v, lon, lat, fill_value):
         curve = np.where(np.isnan(curve), fill_value, curve)
     return vor, shear, curve
 
+@check_stda(['hgt', 'u', 'v'])
+@unifydim_stda(['hgt', 'u', 'v'])
+def storm_relative_helicity(hgt, u, v, depth, bottom=None, storm_u=None, storm_v=None):
+    """Calculate storm relative helicity.（螺旋度）
+
+    Calculates storm relative helicity following [Markowski2010]_ pg.230-231
+
+    Args:
+        hgt (stda): _description_
+        u (stda): _description_
+        v (stda): _description_
+        depth (float or int): Depth of the layer (unit: km)
+        bottom (float or int, optional): Height of layer bottom AGL (default is surface). Defaults to None.
+        storm_u (float or int, optional): U component of storm motion (default is 0 m/s). Defaults to None.
+        storm_v (float or int, optional): V component of storm motion (default is 0 m/s). Defaults to None.
+
+    Returns:
+        [stda] -- [Positive storm-relative helicity]
+        [stda] -- [Negative storm-relative helicity]
+        [stda] -- [Total storm-relative helicity]
+    """
+    hgt_p = hgt.stda.quantity
+    u_p = u.stda.quantity
+    v_p = v.stda.quantity
+
+    positive_srh, negative_srh, total_srh = mpcalc.storm_relative_helicity(hgt_p, u_p, v_p, depth * units('km'), bottom=bottom, storm_u=storm_u, storm_v=storm_v)
+    
+    return positive_srh, negative_srh, total_srh
+
+
+
+@check_stda(['vel', 'b'])
+@unifydim_stda(['vel', 'v'])
+def kinematic_flux(vel, b, axes, perturbation=False):
+    """扰动通量，通用函数，注：可以计算动能收支
+    Compute the kinematic flux from two time series.
+
+    Compute the kinematic flux from the time series of two variables `vel`
+    and b. Note that to be a kinematic flux, at least one variable must be
+    a component of velocity.
+
+    Args:
+        vel (stda): A component of velocity
+        b (stda): May be a component of velocity or a scalar variable (e.g. Temperature)
+        axes (str): The index of the time axis, along which the calculations will be
+           performed，e.g. 'member', 'level', 'time', 'dtime', 'lat', 'lon'
+        perturbation (bool, optional): `True` if the `vel` and `b` variables are perturbations. If `False`, perturbations
+            will be calculated by removing the mean value from each variable. Defaults to `False`. Defaults to False.
+
+    Returns:
+        stda: _description_
+    """
+    vel_p = vel.stda.quantity
+    b_p = b.stda.quantity
+
+    stda_axes = ['member', 'level', 'time', 'dtime', 'lat', 'lon']
+    axis = stda_axes.index(axes)
+
+    kf_p = mpcalc.kinematic_flux(vel_p, b_p, perturbation=perturbation, axis=axis)
+    kf_p = np.expand_dims(kf_p, axis=axis)
+
+    kf = vel.isel({axes: [0]}) # 上述计算内部对axis这一维度平均计算，用第一个值代替这一维保证stda维度完整
+    kf.name = 'data'
+    kf.values = kf_p.magnitude
+    kf.attrs['var_name'] = 'kinematic_flux'
+    kf.attrs['var_cn_name'] = ''
+    kf.attrs['var_units'] = str(kf_p.units)
+    return kf

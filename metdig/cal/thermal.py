@@ -14,6 +14,7 @@ from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
     'potential_temperature',
+    'saturation_equivalent_potential_temperature',
     'equivalent_potential_temperature',
     'apparent_temperature',
     'dry_static_energy',
@@ -164,7 +165,7 @@ def dry_static_energy(hgt,tmp):
 
 @check_stda(['hgt', 'tmp', 'spfh'])
 @unifydim_stda(['hgt', 'tmp', 'spfh'])
-def moist_static_energy(hgt,tmp, sfph):
+def moist_static_energy(hgt,tmp, spfh):
     """Calculate the moist static energy of parcels.
 
     This function will calculate the moist static energy following
@@ -176,12 +177,12 @@ def moist_static_energy(hgt,tmp, sfph):
 
         temperature (stda) – Air temperature
 
-        sfph (stda) – specific_humidity
+        spfh (stda) – specific_humidity
       
     """    
     hgt_p = hgt.stda.quantity
     tmp_p = tmp.stda.quantity
-    spfh_p = sfph.stda.quantity
+    spfh_p = spfh.stda.quantity
     mosteg_p = mpcalc.moist_static_energy(hgt_p, tmp_p, spfh_p)
     mosteg = utl.quantity_to_stda_byreference('mosteg', mosteg_p, tmp)
     return mosteg
