@@ -680,6 +680,23 @@ def cross_theta_contourf(ax, stda, xdim='lon', ydim='level',
                          label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
     return img
 
+@kwargs_wrapper
+def cross_div_contourf(ax, stda, xdim='lon', ydim='level',
+                       add_colorbar=True,extend='both',
+                       levels=np.arange(-20,20,2), cmap='guide/cs4',colorbar_kwargs={},
+                       **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)
+    z = z * 1e5
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend=extend, levels=levels)
+
+    img = ax.contourf(x, y, z, levels=levels, cmap=cmap, norm=norm, extend=extend, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='散度 10' + '$^{-5}$s$^{-1}$',
+                         label_size=15, orientation='vertical', extend=extend, pos='right', kwargs=colorbar_kwargs)
+    return img
 
 @kwargs_wrapper
 def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',

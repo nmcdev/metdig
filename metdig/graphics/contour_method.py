@@ -292,7 +292,34 @@ def cross_theta_contour(ax, stda, xdim='lon', ydim='level',
         ax.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
     return img
 
+@kwargs_wrapper
+def cross_fg_contour(ax, stda, xdim='lon', ydim='level',
+                        add_clabel=True, 
+                        levels=np.arange(1,100,1), colors='blue',
+                        linewidths=2, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)
+    z = z * 1e9
 
+    img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        ax.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+    return img
+
+@kwargs_wrapper
+def cross_wsp_contour(ax, stda, xdim='lon', ydim='level',
+                        add_clabel=True, 
+                        levels=np.arange(0,100,2), colors='blue',
+                        linewidths=2, **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim) # kelvin
+
+    img = ax.contour(x, y, z, levels=levels, colors=colors, linewidths=linewidths, **kwargs)
+    if add_clabel:
+        ax.clabel(img, fontsize=17, colors=colors, inline=1, inline_spacing=8, fmt='%i', rightside_up=True, use_clabeltext=True)
+    return img
 
 @kwargs_wrapper
 def cross_tmp_contour(ax, stda, xdim='lon', ydim='level', 

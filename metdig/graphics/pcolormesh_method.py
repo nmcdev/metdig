@@ -122,6 +122,26 @@ def cape_pcolormesh(ax, stda, xdim='lon', ydim='lat',
     return img
 
 @kwargs_wrapper
+def K_idx_pcolormesh(ax, stda, xdim='lon', ydim='lat',
+                     add_colorbar=True,
+                     levels=np.arange(24, 50, 2), cmap='guide/cs2',
+                     transform=ccrs.PlateCarree(), alpha=0.5,colorbar_kwargs={}, 
+                     **kwargs):
+    x = stda.stda.get_dim_value(xdim)
+    y = stda.stda.get_dim_value(ydim)
+    z = stda.stda.get_value(ydim, xdim)  # K
+
+    if levels is not None:
+        z = np.where(z >= levels[0], z, np.nan)
+
+    cmap, norm = cm_collected.get_cmap(cmap, extend='max', levels=levels)
+
+    img = ax.pcolormesh(x, y, z, cmap=cmap, norm=norm, transform=transform, alpha=alpha, **kwargs)
+    if add_colorbar:
+        utl.add_colorbar(ax, img, label='K指数 (℃)', extend='max',kwargs=colorbar_kwargs)
+    return img
+
+@kwargs_wrapper
 def theta_pcolormesh(ax, stda, xdim='lon', ydim='lat',
                      add_colorbar=True,
                      levels=np.arange(300, 365, 1), cmap='met/theta',
