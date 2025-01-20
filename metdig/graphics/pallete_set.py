@@ -387,7 +387,7 @@ def cross_lonpres_pallete(fig=None, ax=None, figsize=(22, 15), levels=None, inde
 
 @kwargs_wrapper
 def cross_timepres_pallete(fig=None, ax=None, figsize=(22, 15), levels=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
-                           nmc_logo=False, reverse_time=True, logyaxis=True, yoffset=0, add_tag=True, xtickfmt='%m月%d日%H时',**kwargs):
+                           nmc_logo=False, reverse_time=True, logyaxis=True, yoffset=0, add_tag=True, xtickfmt='%m月%d日%H时',if_minor=True,**kwargs):
     """[时间剖面画板初始化]
 
     Args:
@@ -423,7 +423,7 @@ def cross_timepres_pallete(fig=None, ax=None, figsize=(22, 15), levels=None, tim
         label.set_horizontalalignment('right')
 
     #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
-    utl_plotmap.time_ticks_formatter(ax,times,if_minor=True)
+    utl_plotmap.time_ticks_formatter(ax,times,if_minor=if_minor)
 
     for label in ax.get_yticklabels():
         label.set_fontsize(15)
@@ -463,7 +463,7 @@ def cross_timepres_pallete(fig=None, ax=None, figsize=(22, 15), levels=None, tim
 
 @kwargs_wrapper
 def cross_timeheight_pallete(figsize=(22, 15), heights=None, times=None, title='', forcast_info='', title_loc='right', title_fontsize=25,
-                             nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000],xtickfmt='%m月%d日%H时',**kwargs):
+                             nmc_logo=False, reverse_time=True,add_tag=True,ylim=[0,5000],xtickfmt='%m月%d日%H时',if_minor=True,**kwargs):
     if(reverse_time):
         times = times[::-1]
 
@@ -481,7 +481,7 @@ def cross_timeheight_pallete(figsize=(22, 15), heights=None, times=None, title='
         label.set_fontsize(15)
         label.set_horizontalalignment('right')
     #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
-    utl_plotmap.time_ticks_formatter(ax,times,if_minor=True)
+    utl_plotmap.time_ticks_formatter(ax,times,if_minor=if_minor)
 
     for label in ax.get_yticklabels():
         label.set_fontsize(15)
