@@ -122,7 +122,7 @@ def cross_section_prmsl(ax, prmsl, levels=np.arange(800, 1100, 2.5), cmap='infer
     return ax_inset
 
 @kwargs_wrapper
-def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fontsize=25, reverse_time=True, xtickfmt='%m月%d日%H时'):
+def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fontsize=25, reverse_time=True, xtickfmt='%m月%d日%H时', if_minor=True):
     
     l, b, w, h = ax.get_position().bounds
     ax_inset = ax.get_figure().add_axes([l, b - h*0.4 - 0.1, w, h * 0.4])
@@ -138,7 +138,7 @@ def cross_section_rain(ax, rain, times, title='', title_loc='right', title_fonts
         label.set_fontsize(15)
         label.set_horizontalalignment('right')
     #要放到以上get_xtcklabels之后，否则get_xticklabels会失效，原因未明
-    utl_plotmap.time_ticks_formatter(ax_inset, times, if_minor=True)
+    utl_plotmap.time_ticks_formatter(ax_inset, times, if_minor=if_minor)
 
     for label in ax_inset.get_yticklabels():
         label.set_fontsize(15)
