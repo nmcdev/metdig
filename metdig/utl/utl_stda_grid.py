@@ -346,6 +346,28 @@ def broadcast_to_shape(a, l, x):
     # 应用切片
     return a[tuple(slices)]
 
+def intersect_time_dtime(stda1, stda2):
+    """两个stda之间的在time和dtime上的交集
+
+    Args:
+        stda1 (stda): _description_
+        stda2 (stda): _description_
+
+    Returns:
+        stda1, stda2: _description_
+    """
+    if stda1 is None or stda2 is None:
+        return stda2
+    # time dtime 维度取交集
+    time_dim = list(set(stda1['time'].values.tolist()) & set(stda2['time'].values.tolist()))
+    time_dim = pd.Series(pd.to_datetime(time_dim)).to_list()
+    time_dim.sort()
+    dtime_dim = list(set(stda1['dtime'].values.tolist()) & set(stda2['dtime'].values.tolist()))
+    dtime_dim.sort()
+    stda1 = stda1.sel(time=time_dim, dtime=dtime_dim)
+    stda2 = stda2.sel(time=time_dim, dtime=dtime_dim)
+    return stda1, stda2
+
 
 @xr.register_dataarray_accessor('stda')
 class __STDADataArrayAccessor(object):

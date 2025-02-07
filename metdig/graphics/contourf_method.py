@@ -716,6 +716,8 @@ def cross_terrain_contourf(ax, stda, xdim='lon', ydim='level',
         cmap = col.LinearSegmentedColormap.from_list('own3', [endcolor, startcolor])
 
     img = ax.contourf(x, y, z, levels=levels, cmap=cmap,  **kwargs)
+
+    ax.contour(x, y, z, levels=levels[0], colors='black', linestyles='-')
     return img
 
 @kwargs_wrapper
