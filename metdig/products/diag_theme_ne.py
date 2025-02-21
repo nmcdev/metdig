@@ -230,7 +230,7 @@ def draw_cape(cape, map_extent=(60, 145, 15, 55), cape_pcolormesh_kwargs={}, **p
     obj.save()
     return obj.get_mpl()
 
-def draw_theta_fg_mpv(cross_theta, cross_fg, cross_mpv, cross_terrain, hgt,
+def draw_cross_theta_fg_mpv(cross_theta, cross_fg, cross_mpv, cross_terrain, hgt,
                       st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                       h_pos=None,
                       mpv_contourf_kwargs={}, fg_contourf_kwargs={}, theta_contour_kwargs={}, terrain_contourf_kwargs={},
@@ -257,7 +257,7 @@ def draw_theta_fg_mpv(cross_theta, cross_fg, cross_mpv, cross_terrain, hgt,
     obj.save()
     return obj.get_mpl()
 
-def draw_div_uv_wsp(cross_div, cross_wsp, cross_u, cross_v, cross_terrain, prmsl,
+def draw_cross_div_uv_wsp(cross_div, cross_wsp, cross_u, cross_v, cross_terrain, prmsl,
                     st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                     h_pos=None,
                     div_contourf_kwargs={}, wsp_contour_kwargs={}, uv_barbs_kwargs={},terrain_contourf_kwargs={},
@@ -289,7 +289,7 @@ def draw_div_uv_wsp(cross_div, cross_wsp, cross_u, cross_v, cross_terrain, prmsl
     obj.save()
     return obj.get_mpl()
 
-def draw_wind_w_tmp_vvel_tmpadv(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
+def draw_cross_wind_w_tmp_vvel_tmpadv(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
                            st_point=None, ed_point=None, map_extent=(50, 150, 0, 65),
                            h_pos=None,
                            tmpadv_contourf_kwargs={}, tmp_contour_kwargs={}, vvel_contour_kwargs={}, wind_quiver_kwargs={}, terrain_contourf_kwargs={},
@@ -431,5 +431,37 @@ def draw_obs_wind_wsp_div_dtmp(u10m, v10m, wsp, div, dtmp, map_extent=(60, 145, 
     obj.img['dtmp'] = contour_2d(obj.ax, dtmp, levels=np.arange(-100,-2,0.5),kwargs=dtmp_contour_kwargs)
     obj.img['wsp'] = contour_2d(obj.ax, wsp, colors='blue',cb_colors='blue',levels=np.arange(12,100,1),linewidths=1,cb_fontsize=15, kwargs=wsp_contour_kwargs)
     obj.img['uv10m'] = barbs_2d(obj.ax, u10m.dropna(), v10m.dropna(), length=5.5, lw=0.5, sizes=dict(emptybarb=0.0), regrid_shape=None, color='black',kwargs=uv_barbs_kwargs)
+    obj.save()
+    return obj.get_mpl()
+
+
+def draw_obs_rain24(rain, map_extent=(60, 145, 15, 55),add_extrema=True,clip_area=None,
+                  rain_contourf_kwargs={},
+                  rain_contour_kwargs={},
+                  extrema_text_kwargs={},
+                  **pallete_kwargs):
+    init_time = pd.to_datetime(rain.coords['time'].values[0]).replace(tzinfo=None).to_pydatetime()
+    fhour = int(rain['dtime'].values[0])
+    fcst_time = init_time + datetime.timedelta(hours=fhour)
+
+    valid_time = rain.attrs['valid_time']
+    data_name = str(rain['member'].values[0])
+    var_cn_name = rain.attrs['var_cn_name']
+    title = '[{}] {}小时降水'.format(data_name.upper(), valid_time)
+
+    forcast_info = rain.stda.description()
+    png_name = '{2}_降水_{3}_预报_起报时间_{0:%Y}年{0:%m}月{0:%d}日{0:%H}时预报时效_{1:}小时.png'.format(init_time, fhour, data_name.upper(), var_cn_name)
+
+    obj = horizontal_compose(title=title, description=forcast_info, png_name=png_name, map_extent=map_extent, kwargs=pallete_kwargs)
+
+    img_qpf=contourf_2d(obj.ax, rain, levels=[1,10,25,50,100,250], linewidths=1, extend='max', cb_fontsize=10, map='met/rain')
+    obj.img['rain_contourf'] = img_qpf
+
+    if (clip_area != None):
+        utl_plotmap.shp2clip_by_region_name(img_qpf, obj.ax, clip_area)
+
+    if(add_extrema):
+        extrma_text=add_extrema_on_ax(obj.ax,rain,kwargs=extrema_text_kwargs)
+        
     obj.save()
     return obj.get_mpl()

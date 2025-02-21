@@ -21,6 +21,7 @@ from metdig.onestep.complexgrid_var.spfh import read_spfh
 from metdig.onestep.complexgrid_var.theta import read_theta
 from metdig.onestep.complexgrid_var.theta import read_theta3d
 from metdig.onestep.complexgrid_var.w import read_w3d
+from metdig.onestep.complexgrid_var.get_rain import read_rain
 
 from metdig.products import diag_theme_ne as draw_theme_ne
 
@@ -28,10 +29,18 @@ import metdig.cal as mdgcal
 import metdig.utl as mdgstda
 import meteva.base as meb
 
-from metdig.onestep.diag_synoptic import vpbt_img
+from metdig.onestep.diag_synoptic import hgt_uv_wsp
+from metdig.onestep.diag_moisture import hgt_uv_spfh
+from metdig.onestep.diag_crossection import wind_theta_rh
+from metdig.onestep.diag_crossection import time_rh_uv_tmp_vvel
+from metdig.onestep.diag_qpf import rain
 
 
 __all__ = [
+    'obs_wind_div_td',
+    'obs_wind_div_tmp',
+    'obs_wind_wsp_div_dtmp',
+    'obs_rain24',
     'prmsl_dprmsl24',
     'hgt_ana_fcst_bias',
     'wsp_ana_fcst_bias',
@@ -43,15 +52,12 @@ __all__ = [
     'uv_fg_thta',
     'K_idx',
     'cape',
-    'theta_fg_mpv',
-    'div_uv_wsp',
-    'wind_w_tmp_vvel_tmpadv',
+    'cross_theta_fg_mpv',
+    'cross_div_uv_wsp',
+    'cross_wind_w_tmp_vvel_tmpadv',
     'hgt_fcst_change',
     'wind_fcst_change',
     'prmsl_fcst_change',
-    'obs_wind_div_td',
-    'obs_wind_div_tmp',
-    'obs_wind_wsp_div_dtmp',
 ]
 
 @date_init('init_time')
@@ -478,7 +484,7 @@ def cape(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
     
     
 @date_init('init_time')
-def theta_fg_mpv(data_source='cmadaas', data_name='ecmwf', init_time=None, fhour=24,
+def cross_theta_fg_mpv(data_source='cmadaas', data_name='ecmwf', init_time=None, fhour=24,
                  levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                  st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
                  area=None, is_return_data=False, is_draw=True, **products_kwargs):
@@ -552,7 +558,7 @@ def theta_fg_mpv(data_source='cmadaas', data_name='ecmwf', init_time=None, fhour
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_theme_ne.draw_theta_fg_mpv(cross_theta, cross_fg, cross_mpv, cross_terrain, hgt,
+        drawret = draw_theme_ne.draw_cross_theta_fg_mpv(cross_theta, cross_fg, cross_mpv, cross_terrain, hgt,
                                                   st_point=st_point, ed_point=ed_point,
                                                   map_extent=minor_extent, h_pos=h_pos,
                                                   **products_kwargs)
@@ -562,7 +568,7 @@ def theta_fg_mpv(data_source='cmadaas', data_name='ecmwf', init_time=None, fhour
         return ret
     
 @date_init('init_time')
-def div_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+def cross_div_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                    levels=[1000, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                    st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
                    area=None, is_return_data=False, is_draw=True, **products_kwargs):
@@ -623,7 +629,7 @@ def div_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_theme_ne.draw_div_uv_wsp(cross_div, cross_wsp, cross_u, cross_v, cross_terrain, prmsl,
+        drawret = draw_theme_ne.draw_cross_div_uv_wsp(cross_div, cross_wsp, cross_u, cross_v, cross_terrain, prmsl,
                                                 st_point=st_point, ed_point=ed_point,
                                                 map_extent=minor_extent, h_pos=h_pos,
                                                 **products_kwargs)
@@ -633,7 +639,7 @@ def div_uv_wsp(data_source='cassandra', data_name='ecmwf', init_time=None, fhour
         return ret
     
 @date_init('init_time')
-def wind_w_tmp_vvel_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
+def cross_wind_w_tmp_vvel_tmpadv(data_source='cassandra', data_name='ecmwf', init_time=None, fhour=24,
                       levels=[1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 200],lon_mean=None,lat_mean=None,
                       st_point=[20, 120.0], ed_point=[50, 130.0], h_pos=None, is_mask_terrain=True,
                       area=None, is_return_data=False, is_draw=True, **products_kwargs):
@@ -703,7 +709,7 @@ def wind_w_tmp_vvel_tmpadv(data_source='cassandra', data_name='ecmwf', init_time
         ret.update({'data': dataret})
 
     if is_draw:
-        drawret = draw_theme_ne.draw_wind_w_tmp_vvel_tmpadv(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
+        drawret = draw_theme_ne.draw_cross_wind_w_tmp_vvel_tmpadv(cross_tmpadv, cross_tmp, cross_t, cross_w, cross_vvel, cross_terrain, hgt,
                                                             st_point=st_point, ed_point=ed_point,
                                                             map_extent=minor_extent, h_pos=h_pos,
                                                             **products_kwargs)
@@ -832,7 +838,7 @@ def prmsl_fcst_change(data_source='cassandra', data_name='ecmwf', init_time=None
     if ret:
         return ret
 
-@date_init('obs_times')
+
 def obs_wind_div_td(data_source='cassandra', data_name='sfc_chn_hor', obs_time=None,
                     area='全国',is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -874,7 +880,7 @@ def obs_wind_div_td(data_source='cassandra', data_name='sfc_chn_hor', obs_time=N
         return ret
     
     
-@date_init('obs_times')
+
 def obs_wind_div_tmp(data_source='cassandra', data_name='sfc_chn_hor', obs_time=None,
                      area='全国',is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -916,7 +922,7 @@ def obs_wind_div_tmp(data_source='cassandra', data_name='sfc_chn_hor', obs_time=
         return ret
     
     
-@date_init('obs_times')
+
 def obs_wind_wsp_div_dtmp(data_source='cassandra', data_name='sfc_chn_hor', obs_time=None,
                           area='全国',is_return_data=False, is_draw=True, **products_kwargs):
     ret = {}
@@ -955,6 +961,29 @@ def obs_wind_wsp_div_dtmp(data_source='cassandra', data_name='sfc_chn_hor', obs_
     # plot
     if is_draw:
         drawret = draw_theme_ne.draw_obs_wind_wsp_div_dtmp(gustu10m, gustv10m, gust10m_grid, div, dtmp_grid, map_extent=map_extent, **products_kwargs)
+        ret.update(drawret)
+
+    if ret:
+        return ret
+        
+        
+@date_init('init_time')
+def obs_rain24(data_source='cassandra', data_name='cldas', init_time=None, fhour=24, atime=6, hgt_lev=500, area='全国',
+             is_return_data=False, is_draw=True, **products_kwargs):
+    ret = {}
+    map_extent = get_map_area(area)
+
+    rain = read_rain(data_source=data_source, init_time=init_time, fhour=fhour, data_name=data_name,
+                          atime=atime, extent=map_extent)
+    
+    rain=rain.rolling(lon=1, lat=1, min_periods=1, center=True).mean(skipna=True)
+
+    if is_return_data:
+        dataret = {'rain': rain}
+        ret.update({'data': dataret})
+
+    if is_draw:
+        drawret = draw_theme_ne.draw_obs_rain24(rain, map_extent=map_extent, **products_kwargs)
         ret.update(drawret)
 
     if ret:
