@@ -1,5 +1,5 @@
-# 天气学诊断分析工具(Meteorological Diagnostic Tools, metdig)
-## 详细使用说明请参考该网站内容：https://www.showdoc.com.cn/metdig
+# Meteorological Diagnostic Tools (metdig)
+## Detailed documentation can be found at：https://www.showdoc.com.cn/metdig
 
 ## Dependencies
 Other required packages:
@@ -38,5 +38,5 @@ or download the package and install:
   python setup.py install
 ```
 
-## 欢迎在Issues留言交流
+## Welcome to discuss in Issues
 https://github.com/nmcdev/metdig/issues
