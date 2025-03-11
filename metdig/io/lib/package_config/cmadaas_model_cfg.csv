@@ -124,7 +124,7 @@ ecmwf,rainc,surface,m,CPE,对流性降水,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,rainnc,surface,m,LPE,大尺度降水,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,capes,surface,m**2/s**2,CAPES,对流有效位能切变,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,div,high,s**-1,ADI,散度,100,any,NAFP_FOR_FTM_HIGH_EC_ANEA,model
-ecmwf,cape,surface,J*kg**-1,CAPE,对流有效位能,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
+ecmwf,cape,surface,J*kg**-1,MUCAPE,对流有效位能,17,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,tcdc,surface,100*percent,TCC,总云量,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,tmx6_2m,surface,K,MX2T6,过去6小时2米最高温度,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf,tmn6_2m,surface,K,MN2T6,过去6小时2米最低温度,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
@@ -161,7 +161,7 @@ ecmwf_hr,rainc,surface,m,CPE,对流性降水,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,rainnc,surface,m,LPE,大尺度降水,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,capes,surface,m**2/s**2,CAPES,对流有效位能切变,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,div,high,s**-1,ADI,散度,100,any,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,cape,surface,J*kg**-1,CAPE,对流有效位能,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,cape,surface,J*kg**-1,MUCAPE,对流有效位能,17,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tcdc,surface,100*percent,TCC,总云量,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmx6_2m,surface,K,MX2T6,过去6小时2米最高温度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmn6_2m,surface,K,MN2T6,过去6小时2米最低温度,1,0,NAFP_ECMF_D1D_FOR,model
@@ -179,7 +179,7 @@ cldas,wsp10m,surface,m/s,WIN,风速,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
 cldas,tmx24_2m,surface,K,TMP_DAY_MAX,日最高气温,999,2,NAFP_CLDAS2.0_RT_DAY_ASI,analysis
 cldas,tmn24_2m,surface,K,TMP_DAY_MIN,日最低气温,999,2,NAFP_CLDAS2.0_RT_DAY_ASI,analysis
 hrcldas,spfh2m,surface,g/kg,QAIR,比湿,999,2,NAFP_HRCLDAS_CHN_1KM_RT,analysis
-hrcldas,rh2m,surface,%,RHU,相对湿度,999,2,NAFP_HRCLDAS_CHN_1KM_RT,analysis
+hrcldas,rh2m,surface,%,SHU,相对湿度,999,2,NAFP_HRCLDAS_CHN_1KM_RT,analysis
 hrcldas,u10m,surface,m/s,UWIN,风U分量,999,10,NAFP_HRCLDAS_CHN_1KM_RT,analysis
 hrcldas,v10m,surface,m/s,VWIN,风V分量,999,10,NAFP_HRCLDAS_CHN_1KM_RT,analysis
 hrcldas,t2m,surface,K,TAIR,2米温度,999,2,NAFP_HRCLDAS_CHN_1KM_RT,analysis

@@ -57,6 +57,7 @@ def cmadass_psl_download_usepool(
     with futures.ThreadPoolExecutor(max_workers=max_pool) as executor:
         tasks = []
         for var_name in var_names:
+            print(var_name)
             tasks.append(executor.submit(_cmadass_download_hourly_pressure_levels,
                                          init_time, fhours, levels, var_name, data_name, extent))
 
@@ -75,6 +76,7 @@ def cmadass_sfc_download_usepool(
     with futures.ThreadPoolExecutor(max_workers=max_pool) as executor:
         tasks = []
         for var_name in var_names:
+            print(var_name)
             tasks.append(executor.submit(_cmadass_download_hourly_single_levels,
                                          init_time, fhours, var_name, data_name, extent))
 
