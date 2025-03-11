@@ -274,3 +274,27 @@ cra_land,snow_depth,surface,m,SDE,雪深,999,0,NAFP_CRALAND_FTM_3HOR,model
 cmpas_1km,rain01,surface,mm,PRE,小时降水,999,0,SURF_CMPAS_MUL_1KM_RT,analysis
 cmpas_5km,rain01,surface,mm,PRE,小时降水,999,0,SURF_CMPA_FAST_5KM_3S,analysis
 cmpas21_5km,rain01,surface,mm,PRE,小时降水,999,0,SURF_CMPA_NRT_NC,analysis
+# ecmwf_ana,,,,,,,,,
+ecmwf_ana,hgt,high,gpm,GPH,位势高度,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,u,high,m/s,WIU,东西风风速,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,v,high,m/s,WIV,南北风风速,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,vvel,high,Pa/s,VVP,垂直速度,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,tmp,high,kelvin,TEM,气温,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,rh,high,percent,RHU,相对湿度,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,div,high,s**-1,ADI,散度,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,pv,high,K*m**2*kg**-1*s**-1,POV,位势涡度,100,any,NAFP_ECMF_C1D_ANEA_ANA,model
+ecmwf_ana,u10m,surface,m/s,10U_1,东西风风速,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,v10m,surface,m/s,10V_1,南北风风速,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,u100m,surface,m/s,WIU100,东西风风速,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,v100m,surface,m/s,WIV100,南北风风速,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,t2m,surface,kelvin,TEM,气温,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,psfc,surface,Pa,PRS,气压,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,td2m,surface,kelvin,DPT,露点温度,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,prmsl,surface,Pa,SSP,海平面气压,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,tcwv,surface,mm,TCWV,总柱状比湿（整层水汽含量）,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,albedo,surface,100*percent,ALBO,反照率,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,tcdc,surface,100*percent,TCC,总云量,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,lcdc,surface,100*percent,LCC,低云量,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,snow_depth,surface,m,SDE,雪深,1,0,NAFP_ECMF_C1D_GLB_ANA,model
+ecmwf_ana,tsfc,surface,K,SKTE,表面温度,1,0,NAFP_ECMF_C1D_GLB_ANA,model

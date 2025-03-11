@@ -234,7 +234,7 @@ def init_cds_cfg(CDS_API_TOKEN=None):
         if not os.path.exists(os.path.dirname(cfg_Path)):
             os.makedirs(os.path.dirname(cfg_Path))
         content = f'''
-url: https://cds-beta.climate.copernicus.eu/api
+url: https://cds.climate.copernicus.eu/api
 key: xxxxx:xxxx
     '''
         with open(cfg_Path, 'w') as f:
@@ -244,7 +244,7 @@ key: xxxxx:xxxx
         return
 
     content = f'''
-url: https://cds-beta.climate.copernicus.eu/api
+url: https://cds.climate.copernicus.eu/api
 key: {CDS_API_TOKEN}
 '''
     with open(cfg_Path, 'w') as f:

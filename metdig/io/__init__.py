@@ -261,8 +261,8 @@ def get_obs_stations(data_source, throwexp=True, **kwargs):
         if data_source == 'cassandra':
             return cassandra.get_obs_stations(**kwargs)
         elif data_source == 'cmadaas':
-            kwargs.pop('level')
-            kwargs.pop('is_save_other_info')
+            kwargs.pop('level','')
+            kwargs.pop('is_save_other_info','')
             return cmadaas.get_obs_stations(**kwargs)
         else:
             raise Exception('data_source={} error!'.format(data_source))

@@ -12,8 +12,6 @@ from metdig.cal.lib import utility as utl
 from metdig.cal.lib.utility import unifydim_stda, check_stda
 
 __all__ = [
-    'dry_static_energy',
-    'moist_static_energy',
     'add_hgt_to_pres',
     'smooth_n_point',
     'gaussian_filter',
@@ -143,59 +141,6 @@ def geopotential_to_height(geohgt):
     hgt=utl.quantity_to_stda_byreference('hgt', hgt_p, geohgt)
     return hgt
 
-@check_stda(['hgt', 'tmp'])
-@unifydim_stda(['hgt', 'tmp'])
-def dry_static_energy(hgt,tmp):
-    """Calculate the dry static energy of parcels.
-
-    This function will calculate the dry static energy following the first two terms of
-    equation 3.72 in [Hobbs2006]_.
-
-    Args:
-        Parameters
-        height (stda) – Atmospheric height
-
-        temperature (stda) – Air temperature
-
-    example:
-        import metdig
-        from datetime import datetime,timedelta
-        levs=[1000,925,850,700,500]
-        hgt=metdig.io.get_model_3D_grid(init_time=datetime(2022,3,2,20),fhour=24,var_name='hgt',levels=levs,
-            data_source='cassandra',data_name='ecmwf',extent=[100,120,10,20])
-        tmp=metdig.io.get_model_3D_grid(init_time=datetime(2022,3,2,20),fhour=24,var_name='tmp',levels=levs,
-            data_source='cassandra',data_name='ecmwf',extent=[100,120,10,20])
-        dry_static_energy(hgt,tmp)        
-    """    
-    hgt_p=hgt.stda.quantity
-    tmp_p=tmp.stda.quantity
-    drsteg_p=mpcalc.dry_static_energy(hgt_p,tmp_p)
-    drsteg=utl.quantity_to_stda_byreference('drsteg', drsteg_p, tmp)
-    return drsteg
-
-@check_stda(['hgt', 'tmp', 'spfh'])
-@unifydim_stda(['hgt', 'tmp', 'spfh'])
-def moist_static_energy(hgt,tmp, sfph):
-    """Calculate the moist static energy of parcels.
-
-    This function will calculate the moist static energy following
-    equation 3.72 in [Hobbs2006]_.
-
-    Args:
-        Parameters
-        height (stda) – Atmospheric height
-
-        temperature (stda) – Air temperature
-
-        sfph (stda) – specific_humidity
-      
-    """    
-    hgt_p=hgt.stda.quantity
-    tmp_p=tmp.stda.quantity
-    spfh_p=sfph.stda.quantity
-    mosteg_p=mpcalc.moist_static_energy(hgt_p,tmp_p,spfh_p)
-    mosteg=utl.quantity_to_stda_byreference('mosteg', mosteg_p, tmp)
-    return mosteg
 
 @check_stda(['pres', 'tmp'])
 @unifydim_stda(['pres', 'tmp'])
@@ -365,6 +310,7 @@ def wind_direction(u, v):
     return wdir
 
 
+@check_stda(['u', 'v'])
 @unifydim_stda(['u', 'v'])
 def wind_speed(u, v):
     '''

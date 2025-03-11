@@ -39,3 +39,5 @@ cmpas_5km,0,any
 cmpas_5km,1,any
 cmpas21_5km,0,any
 cmpas21_5km,1,any
+ecmwf_ana,0,any
+ecmwf_ana,1,any

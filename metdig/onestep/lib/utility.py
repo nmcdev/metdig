@@ -11,6 +11,8 @@ import inspect
 from functools import wraps
 import datetime
 
+from metdig.utl import utl_stda_grid
+
 
 def cross_extent(st_point=[20, 120.0], ed_point=[50, 130.0], area=None):
     '''
@@ -102,14 +104,17 @@ def get_map_area(area):
 
 
 def mask_terrian(psfc, stda_input, get_terrain=False):
-    # time dtime 维度取交集
-    time_dim = list(set(psfc['time'].values.tolist()) & set(stda_input['time'].values.tolist()))
-    time_dim = pd.Series(pd.to_datetime(time_dim)).to_list()
-    time_dim.sort()
-    dtime_dim = list(set(psfc['dtime'].values.tolist()) & set(stda_input['dtime'].values.tolist()))
-    dtime_dim.sort()
-    psfc = psfc.sel(time=time_dim, dtime=dtime_dim)
-    stda_input = stda_input.sel(time=time_dim, dtime=dtime_dim)
+    """根据pfsc隐藏地形
+
+    Args:
+        psfc (stda): 地面气压
+        stda_input (stda): 需要隐藏的数据
+        get_terrain (bool, optional): 当stda_input传气压的时候，设置成True可以获取地形数据，注意如果get_terrain=True返回的地形只有正值，没有负值（如果要获取地形建议使用get_terrain方法）. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
+    psfc, stda_input = utl_stda_grid.intersect_time_dtime(psfc, stda_input) # 维度取交集
     #输入的任何维度气压坐标系的stda均能够mask
     if((stda_input.lon.shape[0]==1) and (stda_input.lat.shape[0]==1)):
         psfc_new=psfc.values.repeat(stda_input['level'].size, axis=1)
@@ -123,6 +128,33 @@ def mask_terrian(psfc, stda_input, get_terrain=False):
         return (pressure-psfc_new).where(pressure-psfc_new > 0)  # 保留psfc-level>=0的，小于0的赋值成nan
     else:
         return stda_input.where(pressure-psfc_new <= 0)  # 保留psfc-level>=0的，小于0的赋值成nan
+
+
+def get_terrian(psfc, pressure, lt0nan=False):
+    """获取地形数据
+
+    Args:
+        psfc (stda): 地面气压_
+        pressure (stda): 高空气压
+        lt0nan (bool, optional): 当地形小于0时，是否赋值成nan，默认不赋值. Defaults to False.
+
+    Returns:
+        stda: 地形数据
+    """
+    psfc, pressure = utl_stda_grid.intersect_time_dtime(psfc, pressure) # 维度取交集
+    #输入的任何维度气压坐标系的stda均能够mask
+    if((pressure.lon.shape[0] == 1) and (pressure.lat.shape[0] == 1)):
+        psfc_new = psfc.values.repeat(pressure['level'].size, axis=1)
+    else:
+        psfc_new = psfc.interp(lon=pressure['lon'].values,
+                               lat=pressure['lat'].values,
+                               kwargs={'fill_value': None},
+                              ).values.repeat(pressure['level'].size, axis=1)
+    pressure=pressure.level.broadcast_like(pressure)
+    if lt0nan:
+        return (pressure - psfc_new).where(pressure - psfc_new > 0)  # 保留psfc-level>=0的，小于0的赋值成nan
+    else:
+        return pressure - psfc_new
 
 
 class date_init(object):

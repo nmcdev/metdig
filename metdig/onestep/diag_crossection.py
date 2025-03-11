@@ -9,7 +9,7 @@ from metdig.io import get_model_3D_grid
 from metdig.io import get_model_3D_grids
 
 from metdig.onestep.lib.utility import get_map_area, cross_extent, point_to1dim
-from metdig.onestep.lib.utility import mask_terrian
+from metdig.onestep.lib.utility import get_terrian
 from metdig.onestep.lib.utility import date_init
 from metdig.onestep.complexgrid_var.pv_div_uv import read_pv_div_uv, read_pv_div_uv_4d
 from metdig.onestep.complexgrid_var.div_uv import read_div_uv_4d,read_div_uv_3d
@@ -1407,8 +1407,7 @@ def wind_tmp_rh_vvel(data_source='cassandra', data_name='ecmwf', init_time=None,
     cross_v = mdgcal.cross_section(v, st_point, ed_point)
     cross_tmp = mdgcal.cross_section(tmp, st_point, ed_point)
     cross_vvel = mdgcal.cross_section(vvel, st_point, ed_point)
-
-    _, pressure = xr.broadcast(cross_rh, cross_tmp['level'])
+    pressure = mdgstda.gridstda_full_like_by_levels(cross_rh, cross_tmp['level'].values)
 
     # 隐藏被地形遮挡地区
     cross_terrain = None
@@ -1748,7 +1747,7 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain= get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
     
 
@@ -1804,7 +1803,7 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain= get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     if is_return_data:
@@ -1862,7 +1861,7 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain = get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     if is_return_data:
@@ -1917,7 +1916,7 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain = pressure - psfc.values
+            terrain = get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     if is_return_data:
@@ -1976,7 +1975,7 @@ def time_wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=No
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain= get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     if is_return_data:
@@ -2039,7 +2038,7 @@ def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(vg, vg['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain= get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     if is_return_data:
@@ -2097,7 +2096,7 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain= get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
@@ -2160,7 +2159,7 @@ def time_rh_uv_tmp_vvel_rain(data_source='cassandra', data_name='ecmwf', init_ti
             else:
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
-            terrain= mask_terrian(psfc, pressure,get_terrain=True)
+            terrain= get_terrian(psfc, pressure)
             terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100

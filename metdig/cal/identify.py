@@ -22,6 +22,7 @@ from metdig.io.lib import config as CONFIG
 __all__ = [
     'high_low_center',
     'vortex',
+    'vortex_trace_from_vortex',
     'vortex_trace',
     'trough',
     'reverse_trough',
@@ -226,32 +227,35 @@ def vortex(u, v, resolution="low", smooth_times=0, min_size=100):
     else:
         return None
 
+def vortex_trace_from_vortex(vortexs):
+    """基于涡旋，识别涡旋轨迹
 
+    Args:
+        vortexs (pd.DataFrame): ['time', 'dtime', 'lon', 'lat', 'area']
 
-@check_stda(['u', 'v'])
-@unifydim_stda(['u', 'v'])
-def vortex_trace(u, v):
+    Returns:
+        pd.DataFrame: ["time","dtime","id","lon","lat","ob_time","area"]
+    """
 
     trace_list = []
     id = 0
     last_ob_time = None
-    for fo_time in u.stda.time:
-        for dtime in u.stda.dtime:
+    for fo_time in vortexs['time'].drop_duplicates().sort_values():
+        for dtime in vortexs['dtime'].drop_duplicates().sort_values():
             ob_time = fo_time + timedelta(hours=dtime)
-            # print(fo_time, dtime, ob_time)
-            ret = vortex(u.sel(time=[fo_time],dtime=[dtime]), 
-                         v.sel(time=[fo_time],dtime=[dtime]))
-            if ret is None:
-                continue
-            graphy = ret["graphy"]
+            graphy = vortexs[(vortexs['time']==fo_time) & (vortexs['dtime']==dtime)]
+            if len(graphy) == 0:
+                continuecontinue
             # print(graphy)
 
             cent_list = []
-            for key in graphy["features"].keys():
-                cent = graphy["features"][key]["center"]
+            for index, row in graphy.iterrows():
+                cent = {}   
                 cent["time"] = fo_time
                 cent["dtime"] = dtime
-                cent["area"] = graphy["features"][key]["region"]["area"]
+                cent["lon"] = row['lon']
+                cent["lat"] = row['lat']
+                cent["area"] = row['area']
                 cent["ob_time"] = ob_time
                 cent_list.append(cent)
 
@@ -308,6 +312,50 @@ def vortex_trace(u, v):
     df1 = df[["time","dtime","id","lon","lat","ob_time","area"]]
     df1.sort_values(by=["id","time","dtime"],inplace=True)
     return df1
+
+@check_stda(['u', 'v'])
+@unifydim_stda(['u', 'v'])
+def vortex_trace(u, v):
+    """基于uv风场，识别涡旋轨迹
+
+    Args:
+        u (stda): u分量风场数据
+        v (stda): v分量风场数据
+
+    Returns:
+        pd.DataFrame: ["time","dtime","id","lon","lat","ob_time","area"]
+    """
+
+    vortexs = []
+
+    for fo_time in u.stda.time:
+        for dtime in u.stda.dtime:
+            ob_time = fo_time + timedelta(hours=dtime)
+            # print(fo_time, dtime, ob_time)
+            ret = vortex(u.sel(time=[fo_time],dtime=[dtime]), 
+                         v.sel(time=[fo_time],dtime=[dtime]))
+            if ret is None:
+                continue
+            graphy = ret["graphy"]
+
+            cent_list = []
+            for key in graphy["features"].keys():
+                cent = graphy["features"][key]["center"]
+                cent["time"] = fo_time
+                cent["dtime"] = dtime
+                cent["area"] = graphy["features"][key]["region"]["area"]
+                cent["ob_time"] = ob_time
+                cent_list.append(cent)
+            vortexs.extend(cent_list)
+            continue
+    
+    if len(vortexs) == 0:
+        return
+    
+    vortexs = pd.DataFrame(vortexs)
+    vortexs = vortexs[['time', 'dtime', 'lon', 'lat', 'area']]
+    
+    return vortex_trace_from_vortex(vortexs)
 
 
 @check_stda(['hgt'])

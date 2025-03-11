@@ -220,7 +220,7 @@ def draw_time_wind_qcld_qsn_tmp(qcld, qsn, tmp, u, v, terrain, mean_area=None,
 
     init_time = pd.to_datetime(qcld['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = qcld['dtime'].values
-    times = qcld.stda.fcst_time
+    times = pallete_kwargs.pop('times', qcld.stda.fcst_time)
     data_name = str(qcld['member'].values[0]).upper()
     levels = qcld['level'].values
 
@@ -249,7 +249,7 @@ def draw_time_wind_qcld_qice_tmp(qcld, qice, tmp, u, v, terrain, mean_area=None,
 
     init_time = pd.to_datetime(qcld['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = qcld['dtime'].values
-    times = qcld.stda.fcst_time
+    times = pallete_kwargs.pop('times', qcld.stda.fcst_time)
     data_name = str(qcld['member'].values[0]).upper()
     levels = qcld['level'].values
 
@@ -648,7 +648,7 @@ def draw_wind_w_theta_spfh_vvel(cross_spfh, cross_theta, cross_t, cross_w, cross
 def draw_time_rh_uv_theta(rh, u, v, theta, terrain,rh_contourf_kwargs={}, uv_barbs_kwargs={}, theta_contour_kwargs={},terrain_contourf_kwargs={}, **pallete_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
-    times = rh.stda.fcst_time
+    times = pallete_kwargs.pop('times', rh.stda.fcst_time)
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
@@ -674,7 +674,7 @@ def draw_time_div_vort_spfh_uv(div, vort, spfh, u, v, terrain,
 
     init_time = pd.to_datetime(spfh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = spfh['dtime'].values
-    times = spfh.stda.fcst_time
+    times = pallete_kwargs.pop('times', spfh.stda.fcst_time)
     points = {'lon': spfh['lon'].values, 'lat': spfh['lat'].values}
     data_name = str(spfh['member'].values[0]).upper()
     levels = spfh['level'].values
@@ -706,7 +706,7 @@ def draw_time_wind_tmpadv_tmp(tmpadv, tmp, u, v, terrain, mean_area=None,
 
     init_time = pd.to_datetime(tmpadv['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = tmpadv['dtime'].values
-    times = tmpadv.stda.fcst_time
+    times = pallete_kwargs.pop('times', tmpadv.stda.fcst_time)
     data_name = str(tmpadv['member'].values[0]).upper()
     levels = tmpadv['level'].values
 
@@ -735,7 +735,7 @@ def draw_time_wind_vortadv_tmp(vortadv, tmp, u, v, terrain, mean_area=None,
 
     init_time = pd.to_datetime(vortadv['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = vortadv['dtime'].values
-    times = vortadv.stda.fcst_time
+    times = pallete_kwargs.pop('times', vortadv.stda.fcst_time)
     # points = {'lon': vortadv['lon'].values, 'lat': vortadv['lat'].values}
     data_name = str(vortadv['member'].values[0]).upper()
     levels = vortadv['level'].values
@@ -764,7 +764,7 @@ def draw_time_wind_theta_mpv(theta, mpv, u, v, terrain, mean_area=None,
 
     init_time = pd.to_datetime(theta['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = theta['dtime'].values
-    times = theta.stda.fcst_time
+    times = pallete_kwargs.pop('times', theta.stda.fcst_time)
     # points = {'lon': theta['lon'].values, 'lat': theta['lat'].values}
     data_name = str(theta['member'].values[0]).upper()
     levels = theta['level'].values
@@ -790,7 +790,7 @@ def draw_time_wind_thetaes_mpvg(thetaes, mpvg, u, v, terrain, mean_area=None,
 
     init_time = pd.to_datetime(thetaes['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = thetaes['dtime'].values
-    times = thetaes.stda.fcst_time
+    times = pallete_kwargs.pop('times', thetaes.stda.fcst_time)
     # points = {'lon': thetaes['lon'].values, 'lat': thetaes['lat'].values}
     data_name = str(thetaes['member'].values[0]).upper()
     levels = thetaes['level'].values
@@ -816,7 +816,7 @@ def draw_time_div_vort_rh_uv(div, vort, rh, u, v, terrain,
 
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
-    times = rh.stda.fcst_time
+    times = pallete_kwargs.pop('times', rh.stda.fcst_time)
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
@@ -846,7 +846,7 @@ def draw_time_rh_uv_tmp_vvel(rh, u, v, tmp, vvel, terrain,  rh_contourf_kwargs={
             terrain_contourf_kwargs={}, **pallete_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
-    times = rh.stda.fcst_time
+    times = pallete_kwargs.pop('times', rh.stda.fcst_time)
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
@@ -872,7 +872,7 @@ def draw_time_rh_uv_tmp_vvel_rain(rh, u, v, tmp, vvel, rain, terrain,  rh_contou
             **pallete_kwargs):
     init_time = pd.to_datetime(rh['time'].values[0]).replace(tzinfo=None).to_pydatetime()
     fhours = rh['dtime'].values
-    times = rh.stda.fcst_time
+    times = pallete_kwargs.pop('times', rh.stda.fcst_time)
     points = {'lon': rh['lon'].values, 'lat': rh['lat'].values}
     data_name = str(rh['member'].values[0]).upper()
     levels = rh['level'].values
