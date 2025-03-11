@@ -8,6 +8,7 @@ import metdig.graphics.pallete_set as pallete_set
 from metdig.graphics.lib.utility import save
 from metdig.graphics.draw_compose import skewt_compose
 from metdig.graphics.boxplot_method import boxplot_1D
+import matplotlib.ticker as ticker
 import metpy.calc as mpcalc
 
 def draw_rain_ens_boxplot(rain,rain_boxplot_kwargs={}, **pallete_kwargs):
@@ -161,6 +162,65 @@ def draw_uv_tmp_rh_rain(t2m, u10m, v10m, rh2m, rain, wsp=None, **pallete_kwargs)
     is_return_pngname = pallete_kwargs.pop('is_return_pngname', False)
     return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
 
+
+def draw_element(*stda, draw_type='plot', color='#FF6600', linewidth=3, label='', ylim=None, **pallete_kwargs):
+
+    data_name = stda[0].stda.member[0]
+    title_left = '{} {} [{},{}]'.format(data_name.upper(), stda[0]['id'].values[0], stda[0]['lon'].values[0], stda[0]['lat'].values[0])
+    png_name=pallete_kwargs.pop('png_name', None)
+
+    fig, ax_left, ax_right, ax_bottom = pallete_set.time_series_left_right_bottom_v2(
+        if_add_right=False, if_add_bottom=False,
+        title_left=title_left, title_right='',
+        label_leftax=label, label_rightax='', label_bottomax='',kwargs=pallete_kwargs
+    )
+    ax_left.yaxis.set_minor_locator(ticker.AutoLocator()) 
+    ax_left.yaxis.set_major_locator(ticker.AutoLocator()) 
+    
+    _x = stda[0].stda.fcst_time.values
+    if draw_type == 'plot':
+        _y = stda[0].stda.values
+        ax_left.plot(_x, _y, c=color, linewidth=linewidth)
+    elif draw_type == 'bar':
+        _y = stda[0].stda.values
+        bars_rn = ax_left.bar(_x, _y, bottom=0, width=0.05, color=color)
+        def bars_autolabel(ax, rects,bottom=0):
+            for rect in rects:
+                height = rect.get_height()
+                if(height > 0):
+                    ax.annotate('%.1f' % height,
+                                xy=(rect.get_x() + rect.get_width() / 2, height+bottom),
+                                xytext=(0, 3),  # 3 points vertical offset
+                                textcoords="offset points",
+                                ha='center', va='bottom')
+        bars_autolabel(ax_left, bars_rn,bottom=0)
+    elif draw_type == 'barbs':
+        _u = stda[0].stda.values
+        _v = stda[1].stda.values
+        _y = np.sqrt(_u**2 + _v**2)
+        ax_left.barbs(_x, _y, _u, _v,
+                fill_empty=True, color=color, barb_increments={'half': 2, 'full': 4, 'flag': 20},
+                length=5.8, linewidth=1.5, zorder=100)
+
+        
+    
+    ax_left.set_xlim(_x[0] - pd.Timedelta(hours=1), _x[-1] + pd.Timedelta(hours=1))
+    if ylim is not None:
+        ax_left.set_ylim(ylim[0], ylim[1])
+    else:
+        _y = stda[0].stda.values
+        _bottom = np.floor(_y.min() / 5) * 5
+        _top = np.ceil(_y.max() / 5) * 5
+        ax_left.set_ylim(_bottom, _top)
+
+
+    # save
+    output_dir = pallete_kwargs.pop('output_dir', None)
+    is_return_imgbuf = pallete_kwargs.pop('is_return_imgbuf', False)
+    is_clean_plt = pallete_kwargs.pop('is_clean_plt', False)
+    is_return_figax = pallete_kwargs.pop('is_return_figax', False)
+    is_return_pngname = pallete_kwargs.pop('is_return_pngname', False)
+    return save(fig, None, png_name, output_dir, is_return_imgbuf, is_clean_plt, is_return_figax, is_return_pngname)
 
 def draw_SkewT(pres, tmp, td, u, v,  **pallete_kwargs):
     init_time = tmp.stda.time[0]
