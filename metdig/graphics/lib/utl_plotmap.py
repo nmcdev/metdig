@@ -219,43 +219,48 @@ def lat2txt(lat, fmt='%g'):
         latlab = latlabstr % lat
     return latlab
 
-@kwargs_wrapper
-def add_ticks_auto(ax, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False, xy_equal_space=True, **kwargs):
-    tickstep = [0.1, 0.2, 0.5, 1, 2, 5, 10, 15, 20]
-    map_extent = ax.get_extent()
+def auto_create_xytick(map_extent, xy_equal_space=True, xy_start_use_extent=True):
+    """自动生成合适的x,y轴刻度
 
+    Args:
+        map_extent (tuple): 区域范围，(lon_min, lon_max, lat_min, lat_max)
+        xy_equal_space (bool, optional): 经度方向和维度方向的刻度间隔是否保持一致. Defaults to True.
+        xy_start_use_extent (bool, optional): 经度方向和维度方向的起始刻度是否使用map_extentt. Defaults to True.
+
+    Returns:
+        tuple: xticks, yticks
+    """
+    tickstep = [0.1, 0.2, 0.5, 1, 2, 5, 10, 15, 20, 30, 40, 50]
     xstep = None
     ystep = None
     for step in tickstep: # 从细分辨率开始找，找到合适的为止
-        xticks = np.arange(-360, 360+0.0001, step, dtype='float32')
-        xticks = xticks[(xticks >= map_extent[0]) & (xticks <= map_extent[1])]
+        _xticks = np.arange(-360, 360+0.0001, step, dtype='float32')
+        _xticks = _xticks[(_xticks >= map_extent[0]) & (_xticks <= map_extent[1])]
         if step >= 1:
-            # 整数间隔的最多15个刻度
-            # 针对于labelsize为14左右大概设置成15
-            if len(xticks) < 15:
+            # 整数间隔的最多n个刻度
+            if len(_xticks) <= 10:
                 xstep = step
                 break
         else:
-            # 1位小数间隔的最多10个刻度
-            # 针对于labelsize为14左右大概设置成10
-            if len(xticks) < 10:
+            # 1位小数间隔的最多n个刻度
+            if len(_xticks) <= 6:
                 xstep = step
                 break
     for step in tickstep: # 从细分辨率开始找，找到合适的为止
-        yticks = np.arange(-90, 90.0001, step, dtype='float32')
-        yticks = yticks[(yticks >= map_extent[2]) & (yticks <= map_extent[3])]
+        _yticks = np.arange(-90, 90.0001, step, dtype='float32')
+        _yticks = _yticks[(_yticks >= map_extent[2]) & (_yticks <= map_extent[3])]
         if step >= 1:
-            # 整数间隔的最多15个刻度
-            # 针对于labelsize为14左右大概设置成15
-            if len(yticks) < 15: 
+            # 整数间隔的最多n个刻度
+            if len(_yticks) <= 10: 
                 ystep = step
                 break
         else:
-            # 1位小数间隔的最多10个刻度
-            # 针对于labelsize为14左右大概设置成10
-            if len(yticks) < 10:
+            # 1位小数间隔的最多n个刻度
+            if len(_yticks) <= 6:
                 ystep = step
                 break
+    _xticks = None
+    _yticks = None
     if xstep is not None and ystep is not None:
         if xy_equal_space:
             # 保证y轴刻度步长和x轴刻度步长相同，用大的步长的那个
@@ -263,27 +268,66 @@ def add_ticks_auto(ax, labelsize=14, crs=ccrs.PlateCarree(), add_grid=False, xy_
                 xstep = ystep
             else:
                 ystep = xstep
-        xticks = np.arange(-360, 360+0.0001, xstep, dtype='float32')
-        xticks = xticks[(xticks >= map_extent[0]) & (xticks <= map_extent[1])]
-        yticks = np.arange(-90, 90.0001, ystep, dtype='float32')
-        yticks = yticks[(yticks >= map_extent[2]) & (yticks <= map_extent[3])]
-        # print(xticks)
-        # print(yticks)
-        # print(step)
-        xfmt = '%.0f' if xstep >= 1 else '%.1f'
-        yfmt = '%.0f' if ystep >= 1 else '%.1f'
-        xlabels = list(map(lambda _: lon2txt(_, fmt=xfmt), xticks))
-        ylabels = list(map(lambda _: lat2txt(_, fmt=yfmt), yticks))
-        ax.set_xticks(xticks, crs=crs)
-        ax.set_xticklabels(xlabels)
+        if xy_start_use_extent:
+            _xticks = np.arange(map_extent[0], map_extent[1]+0.0001, xstep, dtype='float32')
+            _xticks = _xticks[(_xticks >= map_extent[0]) & (_xticks <= map_extent[1])]
+            _yticks = np.arange(map_extent[2], map_extent[3]+0.0001, ystep, dtype='float32')
+            _yticks = _yticks[(_yticks >= map_extent[2]) & (_yticks <= map_extent[3])]
+        else:
+            _xticks = np.arange(-360, 360+0.0001, xstep, dtype='float32')
+            _xticks = _xticks[(_xticks >= map_extent[0]) & (_xticks <= map_extent[1])]
+            _yticks = np.arange(-90, 90.0001, ystep, dtype='float32')
+            _yticks = _yticks[(_yticks >= map_extent[2]) & (_yticks <= map_extent[3])]
+    # print(xstep, ystep)
+    # print(map_extent)
+    # print(_xticks)
+    # print(_yticks)
+    return _xticks, _yticks
+    
+@kwargs_wrapper
+def add_ticks_auto(ax, map_extent, xticks=None, yticks=None, labelsize=16, add_grid=False, xy_equal_space=True, xy_start_use_extent=True,**kwargs):
+    """自动生成等经纬度刻度标签
+
+    Args:
+        ax (_type_): ax对象
+        xticks (list, optional): 经度方向的刻度，如果外部给定则不自动生成. Defaults to None.
+        yticks (list, optional): 纬度方向的刻度，如果外部给定则不自动生成. Defaults to None.
+        map_extent (tuple, optional): 区域范围，(lon_min, lon_max, lat_min, lat_max). Defaults to None.
+        labelsize (int, optional): 刻度标签大小. Defaults to 16.
+        add_grid (bool, optional): 是否加入网格线. Defaults to False.
+        xy_equal_space (bool, optional): 经度方向和维度方向的刻度间隔是否保持一致，当xticks和yticks均为None时才生效. Defaults to True.
+        xy_start_use_extent (bool, optional): 经度方向和维度方向的起始刻度是否使用ax的extent，当xticks和yticks均为None时才生效. Defaults to True.
+    """
+
+    # 自动生成刻度
+    _xticks, _yticks = auto_create_xytick(map_extent, xy_equal_space=xy_equal_space, xy_start_use_extent=xy_start_use_extent)
+
+    # 如果给了刻度，则不使用自动生成的
+    if xticks is not None:
+        _xticks = np.array(xticks, dtype='float32')
+    if yticks is not None:
+        _yticks = np.array(yticks, dtype='float32')
+    if _xticks is not None:
+        if len(_xticks) == 1:
+            xfmt = '%.1f'
+        else:
+            xfmt = '%.0f' if abs(_xticks[1] - _xticks[0]) >= 1 else '%.1f'
+        _xlabels = list(map(lambda _: lon2txt(_, fmt=xfmt), _xticks))
+        ax.set_xticks(_xticks, crs=ccrs.PlateCarree())
+        ax.set_xticklabels(_xlabels)
         ax.tick_params(axis='x', labelsize=labelsize, **kwargs)
-        ax.set_yticks(yticks, crs=crs)
-        ax.set_yticklabels(ylabels)
+    if _yticks is not None:
+        if len(_yticks) == 1:
+            yfmt = '%.1f'
+        else:
+            yfmt = '%.0f' if abs(_yticks[1] - _yticks[0]) >= 1 else '%.1f'
+        _ylabels = list(map(lambda _: lat2txt(_, fmt=yfmt), _yticks))
+        ax.set_yticks(_yticks, crs=ccrs.PlateCarree())
+        ax.set_yticklabels(_ylabels)
         ax.tick_params(axis='y', labelsize=labelsize, **kwargs)
 
-        if add_grid:
-            ax.gridlines(crs=crs, xlocs=xticks, ylocs=yticks, linewidth=1, color='gray', 
-                         alpha=0.5, linestyle='--', zorder=100)
+    if add_grid and _xticks is not None and _yticks is not None:
+        ax.gridlines(crs=ccrs.PlateCarree(), xlocs=_xticks, ylocs=_yticks, linewidth=1, color='gray', alpha=0.5, linestyle='--', zorder=100)
 
 @kwargs_wrapper
 def add_ticks(ax, xticks=None, yticks=None, labelsize=16, crs=ccrs.PlateCarree(), add_grid=False ,**kwargs):

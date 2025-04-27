@@ -84,6 +84,12 @@ def horizontal_pallete(fig=None,ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(),
         add_south_china_sea = False
         # 设中心经纬度
         crs = ccrs.LambertConformal(central_longitude=((map_extent[0]+ map_extent[1])/2), central_latitude=((map_extent[2]+ map_extent[3])/2))
+    elif isinstance(crs, ccrs.PlateCarree):
+        # 等经纬度投影
+        if map_extent[1] > 180:
+            # # modify by wzj 2025.4.25 跨180度特殊情况，如果用户没有手动设置中心经度，强制设置中心经度为180
+            if crs.proj4_params['lon_0'] == 0:
+                crs = ccrs.PlateCarree(central_longitude=180)
   
 
     plt_base_env()  # 初始化字体中文等
@@ -102,7 +108,9 @@ def horizontal_pallete(fig=None,ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(),
             ax.set_global()
         else:
             # map_extent2 = utl_plotmap.adjust_map_ratio(ax, map_extent=map_extent, datacrs=ccrs.PlateCarree())
-            ax.set_extent(map_extent, crs=crs)
+            # modify by wzj 2025.4.25, 修复当map_extent[1]超过180时的bug，数据默认都是0度中心经度，现在底层默认extent和ticks都以0度
+            # ax.set_extent(map_extent, crs=crs)
+            ax.set_extent(map_extent, crs=ccrs.PlateCarree())
     elif isinstance(crs, ccrs.NorthPolarStereo):
         # 非等经纬度投影，设置extent会出错
         ax.set_extent(map_extent, crs=ccrs.PlateCarree())
@@ -218,11 +226,14 @@ def horizontal_pallete(fig=None,ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(),
     if isinstance(crs, ccrs.PlateCarree):
         if add_ticks:
             if(isinstance(add_ticks,bool)):
-                utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
-                                    yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid)
+                # modify by wzj 2025.4.25 更改为自动生成刻度，避免绘图区域变小后，刻度显示不整齐
+                # utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
+                #                     yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid)
+                utl_plotmap.add_ticks_auto(ax, map_extent,add_grid=add_grid)
             else:
-                utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
-                                    yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid,kwargs=add_ticks)
+                # utl_plotmap.add_ticks(ax,xticks=np.arange(map_extent[0], map_extent[1]+1, 10),
+                #                     yticks=np.arange(map_extent[2], map_extent[3]+1, 10),add_grid=add_grid,kwargs=add_ticks)
+                utl_plotmap.add_ticks_auto(ax, map_extent,add_grid=add_grid,kwargs=add_ticks)
             # plt.tick_params(labelsize=15)
             # ax.set_yticks(np.arange(map_extent[2], map_extent[3]+1, 10), crs=crs)
             # ax.set_xticks(np.arange(map_extent[0], map_extent[1]+1, 10), crs=crs)
