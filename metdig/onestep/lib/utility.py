@@ -114,6 +114,9 @@ def mask_terrian(psfc, stda_input, get_terrain=False):
     Returns:
         _type_: _description_
     """
+    if psfc is None:
+        print('mask_terrian failed because psfc is None!')
+        return stda_input
     psfc, stda_input = utl_stda_grid.intersect_time_dtime(psfc, stda_input) # 维度取交集
     #输入的任何维度气压坐标系的stda均能够mask
     if((stda_input.lon.shape[0]==1) and (stda_input.lat.shape[0]==1)):
@@ -141,6 +144,9 @@ def get_terrian(psfc, pressure, lt0nan=False):
     Returns:
         stda: 地形数据
     """
+    if psfc is None:
+        print('mask_terrian failed because psfc is None!')
+        return None
     psfc, pressure = utl_stda_grid.intersect_time_dtime(psfc, pressure) # 维度取交集
     #输入的任何维度气压坐标系的stda均能够mask
     if((pressure.lon.shape[0] == 1) and (pressure.lat.shape[0] == 1)):

@@ -1748,7 +1748,8 @@ def time_rh_uv_theta(data_source='cassandra', data_name='ecmwf', init_time=None,
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain= get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
     
 
     if is_return_data:
@@ -1804,7 +1805,8 @@ def time_div_vort_spfh_uv(data_source='cassandra', data_name='ecmwf', init_time=
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain= get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'spfh': spfh, 'u': u, 'v': v, 'tmp': div, 'vort': vort}
@@ -1862,7 +1864,8 @@ def time_div_vort_rh_uv(data_source='cassandra', data_name='ecmwf', init_time=No
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain = get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'rh': rh, 'u': u, 'v': v, 'div': div, 'vort': vort,'terrain':terrain}
@@ -1917,7 +1920,8 @@ def time_wind_tmpadv_tmp(data_source='cassandra', data_name='ecmwf', init_time=N
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain = get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'u': u, 'v': v, 'tmp': tmp, 'tmpadv': tmpadv,'terrain':terrain}
@@ -1976,7 +1980,8 @@ def time_wind_theta_mpv(data_source='cassandra', data_name='ecmwf', init_time=No
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain= get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'theta': theta, 'u': u, 'v': v, 'mpv': mpv, 'terrain': terrain}
@@ -2039,7 +2044,8 @@ def time_wind_thetaes_mpvg(data_source='cassandra', data_name='ecmwf', init_time
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(vg, vg['level'])
             terrain= get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     if is_return_data:
         dataret = {'thetaes': thetaes, 'ug': ug, 'vg': vg, 'mpvg': mpvg, 'terrain': terrain}
@@ -2097,7 +2103,8 @@ def time_rh_uv_tmp_vvel(data_source='cassandra', data_name='ecmwf', init_time=No
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain= get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 
@@ -2160,7 +2167,8 @@ def time_rh_uv_tmp_vvel_rain(data_source='cassandra', data_name='ecmwf', init_ti
                 psfc = psfc.stda.mean_area(extent=extent, set_point_lon=points['lon'][0], set_point_lat=points['lat'][0])
             _, pressure = xr.broadcast(v, v['level'])
             terrain= get_terrian(psfc, pressure)
-            terrain.attrs['var_units'] = ''
+            if terrain is not None:
+                terrain.attrs['var_units'] = ''
 
     rh = rh.where(rh < 100, 100)  # 大于100的赋值成100
 
