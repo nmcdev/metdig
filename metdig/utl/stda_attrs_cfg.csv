@@ -30,6 +30,7 @@ rain03,3小时降水,mm,3
 rain06,6小时降水,mm,6
 rain12,12小时降水,mm,12
 rain24,24小时降水,mm,24
+rain10m,10分钟降水,mm,10
 rainnc,非对流降水,mm,0
 rainnc01,1小时非对流性降水,mm,1
 rainnc03,3小时非对流性降水,mm,3
