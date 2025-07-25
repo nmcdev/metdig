@@ -30,6 +30,7 @@ rain03,3小时降水,mm,3
 rain06,6小时降水,mm,6
 rain12,12小时降水,mm,12
 rain24,24小时降水,mm,24
+rain10m,10分钟降水,mm,10
 rainnc,非对流降水,mm,0
 rainnc01,1小时非对流性降水,mm,1
 rainnc03,3小时非对流性降水,mm,3
@@ -139,6 +140,10 @@ deg0l,零度高度,m,0
 rain24_08,08-08时降水量,mm,24
 rain24_20,20-20时降水量,mm,24
 cig,云底高度,m,0
+<<<<<<< HEAD
 ssrd,太阳总辐射,J*m**-2,0
 mcdc,中云量,percent,0
 
+=======
+dsrp,太阳直接辐射,W*m-2,0
+>>>>>>> d7ee0d093f5fd5362fa74dbbe327b77c1bb6658e

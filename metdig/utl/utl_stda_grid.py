@@ -357,7 +357,7 @@ def intersect_time_dtime(stda1, stda2):
         stda1, stda2: _description_
     """
     if stda1 is None or stda2 is None:
-        return stda2
+        return stda1, stda2
     # time dtime 维度取交集
     time_dim = list(set(stda1['time'].values.tolist()) & set(stda2['time'].values.tolist()))
     time_dim = pd.Series(pd.to_datetime(time_dim)).to_list()
