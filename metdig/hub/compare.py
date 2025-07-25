@@ -21,7 +21,7 @@ __all__ = [
 
 def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'cma_gfs', 'ncep_gfs', 'cma_meso_3km'],
                    func=None, func_other_args={}, max_workers=6,
-                   output_dir=None, show='tab', tab_size=(30, 18), list_size=(16, 9),
+                   output_dir=None, show='tab', tab_size=(30, 18), list_size=(16, 9),tab_dist=None,
                    is_clean_plt=False):
     '''
 
@@ -64,7 +64,7 @@ def models_compare(init_time=None, fhour=24, data_names=['ecmwf', 'cma_gfs', 'nc
         ret = save_list(all_img_bufs, output_dir, all_png_names, list_size=list_size, is_clean_plt=is_clean_plt)
     elif show == 'tab':
         png_name = 'compare_{}_{}_{:%Y%m%d%H}_{:03d}.png'.format(func.__name__, 'models', init_time, fhour)
-        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, tab_dist=tab_dist,is_clean_plt=is_clean_plt)
 
     if ret:
         return ret

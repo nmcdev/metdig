@@ -143,8 +143,8 @@ ecmwf_hr,rh,high,percent,RHU,相对湿度,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,spfh,high,kg/kg,SHU,比湿,100,any,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,u10m,surface,m/s,10U,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,v10m,surface,m/s,10V,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,u100m,surface,m/s,100U,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,v100m,surface,m/s,100V,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,u100m,surface,m/s,100U_1,东西风风速,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,v100m,surface,m/s,100V_1,南北风风速,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmn3_2m,surface,kelvin,MN2T3,过去3小时最低温度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,t2m,surface,kelvin,TEM,气温,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,psfc,surface,Pa,PRS,气压,1,0,NAFP_ECMF_D1D_FOR,model
@@ -156,6 +156,7 @@ ecmwf_hr,gust10m_3h,surface,m/s,10FG3,过去3小时10米阵风,1,0,NAFP_ECMF_D1D_FOR,mo
 ecmwf_hr,vis,surface,m,VIS,能见度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,albedo,surface,100*percent,FAL,反照率,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,lcdc,surface,100*percent,LCC,低云量,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,mcdc,surface,100*percent,MCC,中云量,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,gust10m_6h,surface,m/s,10FG6,过去6小时10米阵风,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,rainc,surface,m,CPE,对流性降水,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,rainnc,surface,m,LPE,大尺度降水,1,0,NAFP_ECMF_D1D_FOR,model
@@ -166,10 +167,12 @@ ecmwf_hr,tcdc,surface,100*percent,TCC,总云量,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmx6_2m,surface,K,MX2T6,过去6小时2米最高温度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tmn6_2m,surface,K,MN2T6,过去6小时2米最低温度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,pv,high,K*m**2*kg**-1*s**-1,POV,位势涡度,100,any,NAFP_ECMF_D1D_FOR,model
-ecmwf_hr,snow,surface,m,TTSP,降雪量,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,snow,surface,m,TTSP,降雪量,1,0,NAFP_FOR_FTM_HIGH_EC_GLB,model
 ecmwf_hr,snow_density,surface,kg*m**-3,SNDE,雪密度,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,snow_depth,surface,m,SDE,雪深,1,0,NAFP_ECMF_D1D_FOR,model
 ecmwf_hr,tsfc,surface,K,SKTE,表面温度,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,ssrd,surface,J*m**-2,SSRD,太阳总辐射,1,0,NAFP_ECMF_D1D_FOR,model
+ecmwf_hr,sst,surface,K,SST,海表温度,1,0,NAFP_ECMF_D1D_FOR,model
 #,,,,,,,,,
 cldas,t2m,surface,K,TMP,2米温度,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis
 cldas,rain01,surface,mm,PRE,小时降水,999,0,NAFP_CLDAS2.0_RT_HOR_ASI,analysis

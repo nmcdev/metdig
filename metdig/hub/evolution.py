@@ -23,7 +23,7 @@ __all__ = [
 @date_init('init_time')
 def model_evolution(init_time=None, fhours=[ 18, 24, 30, 36], data_name='ecmwf',
                    func=None, func_other_args={}, max_workers=6,fps=2,
-                   output_dir=None, show='tab',tab_size=(27,18), list_size=(16, 9), 
+                   output_dir=None, show='tab',tab_size=(27,18), list_size=(16, 9), tab_dist=None,
                    is_clean_plt=False): 
     '''
     
@@ -73,7 +73,7 @@ def model_evolution(init_time=None, fhours=[ 18, 24, 30, 36], data_name='ecmwf',
 
     elif show == 'tab':
         png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:03d}_{:03d}.png'.format(func.__name__, 'models', init_time, fhours[0], fhours[-1])
-        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size,tab_dist=tab_dist, is_clean_plt=is_clean_plt)
         
     if ret:
         return ret
@@ -81,7 +81,7 @@ def model_evolution(init_time=None, fhours=[ 18, 24, 30, 36], data_name='ecmwf',
 
 def analysis_evolution(init_times=None, data_name='era5',data_source='cds',fhour=0,
                    func=None, func_other_args={}, max_workers=6,fps=2,
-                   output_dir=None, show='list',tab_size=(30, 18), list_size=(16, 9), 
+                   output_dir=None, show='list',tab_size=(30, 18), list_size=(16, 9), tab_dist=None,
                    is_clean_plt=False): 
     '''
     
@@ -132,7 +132,7 @@ def analysis_evolution(init_times=None, data_name='era5',data_source='cds',fhour
 
     elif show == 'tab':
         png_name = 'evolution_{}_{}_{:%Y%m%d%H}_{:%Y%m%d%H}.png'.format(func.__name__, 'models', init_times[0], init_times[-1])
-        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size, is_clean_plt=is_clean_plt)
+        ret = save_tab(all_img_bufs, output_dir, png_name, tab_size=tab_size,tab_dist=tab_dist, is_clean_plt=is_clean_plt)
         
     if ret:
         return ret
