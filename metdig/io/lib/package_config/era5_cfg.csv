@@ -38,3 +38,4 @@ rain01,surface,m,total_precipitation,,0,analysis
 rainc01,surface,m,convective_precipitation,,0,analysis
 rainnc01,surface,m,large_scale_precipitation,,0,analysis
 tsfc,surface,K,skin_temperature,,0,analysis
+cig,surface,m,cloud_base_height,,0,analysis

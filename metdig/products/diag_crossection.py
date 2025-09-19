@@ -11,6 +11,7 @@ from metdig.graphics.contour_method import *
 from metdig.graphics.contourf_method import *
 from metdig.graphics.pcolormesh_method import *
 from metdig.graphics.quiver_method import *
+from metdig.graphics.streamplot_method import *
 from metdig.graphics.other_method import *
 from metdig.graphics.draw_compose import *
 
@@ -532,7 +533,10 @@ def draw_wind_w_theta_spfh(cross_spfh, cross_theta, cross_t, cross_w, cross_terr
     obj.img['spfh'] = cross_spfh_contourf(obj.ax, cross_spfh, xdim='index', levels=np.arange(0, 20, 2), cmap='YlGnBu', kwargs=spfh_contourf_kwargs)
     obj.img['theta'] = cross_theta_contour(obj.ax, cross_theta, xdim='index', kwargs=theta_contour_kwargs)
     # barbs_2d(obj.ax, cross_u, cross_v, xdim='index', ydim='level', color='k', length=7, transform=None, regrid_shape=None, kwargs=uv_barbs_kwargs)
-    obj.img['w'] = uv_quiver(obj.ax, cross_t, cross_w, xdim='index', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
+    # obj.img['w'] = uv_quiver(obj.ax, cross_t, cross_w, xdim='index', ydim='level', color='k', scale=800, transform=None, regrid_shape=None, kwargs=wind_quiver_kwargs)
+    obj.img['w'] = uv_streamplot(obj.ax, cross_t.sortby('level').interp({'level':range(200,1000,50)}), cross_w.sortby('level').interp({'level':range(200,1000,50)}), 
+                                 xdim='index', ydim='level', color='k', transform=None,arrowsize=10, kwargs=wind_quiver_kwargs)
+    
     obj.img['terrain'] = cross_terrain_contourf(obj.ax, cross_terrain, xdim='index', levels=np.arange(0, 500, 1), zorder=100,kwargs=terrain_contourf_kwargs)
     obj.img['hgt'] = cross_section_hgt(obj.ax, hgt, st_point=st_point, ed_point=ed_point, lon_cross=lon_cross, lat_cross=lat_cross, map_extent=map_extent, h_pos=h_pos)
     obj.save()
