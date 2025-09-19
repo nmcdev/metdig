@@ -738,7 +738,7 @@ class __STDADataArrayAccessor(object):
             data = data.sel(lon=lon_slc, lat=lat_slc)
             if data.values.size == 0:
                 # return None # 选取的区域平均范围太小，无法构成二维数据
-                raise Exception(f'数据分辨率为{self.horizontal_resolution}，约为{self.horizontal_resolution*111:.2f}km,，范围太小，无法计算！')
+                raise Exception(f'数据分辨率为{self.horizontal_resolution:.4f}，约为{self.horizontal_resolution*111:.2f}km,，范围太小，无法计算！')
 
             if set_point_lon is None:
                 set_point_lon = (extent[0] + extent[1]) / 2
