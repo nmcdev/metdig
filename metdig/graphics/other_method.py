@@ -38,6 +38,7 @@ def cross_section_hgt(ax, hgt, levels=np.arange(500, 600, 4), cmap='inferno',
     # ax_inset.coastlines()
     utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='coastline', edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())
     utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='province', edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())
+    utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='nation', facecolor='black',  edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())
     # Set the titles and axes labels
     ax_inset.set_title('')
 
@@ -96,6 +97,7 @@ def cross_section_prmsl(ax, prmsl, levels=np.arange(800, 1100, 2.5), cmap='infer
     # ax_inset.coastlines()
     utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='coastline', edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())
     utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='province', edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())
+    utl_plotmap.add_china_map_2cartopy_public(ax_inset, name='nation', facecolor='black',  edgecolor='black', lw=0.8, zorder=105, crs=ccrs.PlateCarree())
     # Set the titles and axes labels
     ax_inset.set_title('')
 

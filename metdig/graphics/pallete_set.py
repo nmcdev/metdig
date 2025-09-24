@@ -138,30 +138,28 @@ def horizontal_pallete(fig=None,ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(),
     # 海岸线，省界，河流等中国边界信息
     if add_coastline:
         if(isinstance(add_coastline,bool)):
-            utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.5, zorder=19, alpha=1,crs=ccrs.PlateCarree())
+            utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=1, zorder=19, alpha=1,crs=ccrs.PlateCarree())
         else:
-            utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=0.5, zorder=19,crs=ccrs.PlateCarree(),kwargs=add_coastline)
-
-    if add_china:
-        if(isinstance(add_china,bool)):
-            utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='gray', lw=1.5, zorder=19,crs=ccrs.PlateCarree())
-        else:
-            utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', edgecolor='gray', lw=1.5, zorder=19,crs=ccrs.PlateCarree(),kwargs=add_china)
+            utl_plotmap.add_china_map_2cartopy_public(ax, name='coastline', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree(),kwargs=add_coastline)
 
     if add_province:
         if(isinstance(add_province,bool)):
             utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree())
         else:
             utl_plotmap.add_china_map_2cartopy_public(ax, name='province', edgecolor='gray', lw=1, zorder=19,crs=ccrs.PlateCarree(),kwargs=add_province)
+            
+    if add_china:
+        if(isinstance(add_china,bool)):
+            utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', facecolor='gray', edgecolor='gray', lw=1.5, zorder=19,crs=ccrs.PlateCarree())
+        else:
+            utl_plotmap.add_china_map_2cartopy_public(ax, name='nation', facecolor='gray', edgecolor='gray', lw=1.5, zorder=19,crs=ccrs.PlateCarree(),kwargs=add_china)
+
 
     
     if add_river:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='river', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
-        # add_china_map_2basemap(ax, name="province", edgecolor='gray', lw=0.5, encoding='gbk', zorder=0) 
-        # add_china_map_2basemap(ax, name="nation", edgecolor='black', lw=0.8, encoding='gbk', zorder=0) 
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='river', facecolor='#74b9ff', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
     if add_county:
         add_china_map_2basemap(ax, name="county", edgecolor='#D9D9D9', lw=0.7, encoding='gbk',zorder=19) 
-        # add_china_map_2basemap(ax, name="river", edgecolor='#74b9ff', lw=0.8, encoding='gbk', zorder=1) 
         pass
 
     # 城市名称

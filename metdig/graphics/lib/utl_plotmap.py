@@ -404,8 +404,9 @@ def forcast_info(ax, x=0.1 ,y=0.99 ,info=None ,transform=None , size=12, va='top
     ax.text(x, y, info, transform=ax.transAxes, size=size, va=va, ha=ha, bbox=bbox,zorder=zorder) 
 
 @kwargs_wrapper
-def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
-                                  edgecolor='c', lw=2,crs=ccrs.PlateCarree(), **kwargs):
+def add_china_map_2cartopy_public(ax, name='province', linestyle='-',
+                                  facecolor='none', edgecolor='c', lw=2,
+                                  crs=ccrs.PlateCarree(), **kwargs):
     """
     Draw china boundary on cartopy map.
     :param ax: matplotlib axes instance.
@@ -416,23 +417,36 @@ def add_china_map_2cartopy_public(ax, name='province', facecolor='none',
     :return: None
     """
 
-    # map name
     names = {
-            'world':'worldmap',
-            'nation': "NationalBorder", 
-             'province': "Province",
-            #  'county': "County",  # 无资源，暂时注释
-             'river': "hyd1_4l",
-             'river_high': "hyd2_4l",
-             'coastline': 'ne_10m_coastline'}
+            'world':['world/BOUL_G', 'world/BOUL_GWD', 'world/BOUL_M', 'world/BOUL_R', 'world/BOUL_C'],
+            'nation': ['china/COLORMAP', 'china/HAX'], 
+            'province': ['china/BOUL_G', 'china/BOUL_S', 'china/BOUL_S2', 'china/HAX'],
+            'river': ['china/HYDL', 'china/HYDA'],
+            'coastline': ['world/DYAX', 'world/HAX'],
+        }
 
     # get shape filename
-    shpfile = pkg_resources.resource_filename(pkg_name, "resources/shapefile/" + names[name] + ".shp")
-
-    # add map
-    ax.add_geometries(
-        Reader(shpfile).geometries(), 
-        facecolor=facecolor, edgecolor=edgecolor, lw=lw,crs=crs, **kwargs)
+    for shpname in names[name]:
+        shpfile = pkg_resources.resource_filename(pkg_name, 'resources/shapefile/' + shpname + '.shp')
+        # print(shpname)
+        if shpname == 'china/HAX': # 海岸线
+            facecolor = 'none'
+        elif shpname == 'china/HYDL': # 河流线
+            facecolor = 'none'
+        elif shpname == 'china/HYDA': # 河流、湖泊
+            facecolor = edgecolor
+        elif shpname == 'world/BOUL_GWD':
+            linestyle = '--'
+        elif shpname == 'world/BOUL_M':
+            linestyle = ':'
+        elif shpname == 'world/BOUL_R':
+            linestyle = '--'
+        elif shpname == 'world/BOUL_C':
+            linestyle = '-.'
+        # add map
+        ax.add_geometries(
+            Reader(shpfile).geometries(), linestyle=linestyle,
+            facecolor=facecolor, edgecolor=edgecolor, lw=lw,crs=crs, **kwargs)
 
 
 def adjust_map_ratio(ax, map_extent=None, datacrs=None):
