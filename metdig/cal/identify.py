@@ -234,18 +234,29 @@ def vortex_trace_from_vortex(vortexs):
         vortexs (pd.DataFrame): ['time', 'dtime', 'lon', 'lat', 'area']
 
     Returns:
-        pd.DataFrame: ["time","dtime","id","lon","lat","ob_time","area"]
+        pd.DataFrame: ["time","dtime","id","lon","lat","ob_time","value","area","strength"]
     """
 
     trace_list = []
     id = 0
     last_ob_time = None
+    
+    # add by hj 20251013
+    if 'value' in vortexs.columns:
+        pass
+    else:
+        vortexs['value'] = 0
+    if 'strength' in vortexs.columns:
+        pass
+    else:
+        vortexs['strength'] = 0
+
     for fo_time in vortexs['time'].drop_duplicates().sort_values():
         for dtime in vortexs['dtime'].drop_duplicates().sort_values():
             ob_time = fo_time + timedelta(hours=dtime)
             graphy = vortexs[(vortexs['time']==fo_time) & (vortexs['dtime']==dtime)]
             if len(graphy) == 0:
-                continuecontinue
+                continue
             # print(graphy)
 
             cent_list = []
@@ -256,6 +267,8 @@ def vortex_trace_from_vortex(vortexs):
                 cent["lon"] = row['lon']
                 cent["lat"] = row['lat']
                 cent["area"] = row['area']
+                cent["value"] = row['value']
+                cent["strength"] = row['strength']
                 cent["ob_time"] = ob_time
                 cent_list.append(cent)
 
@@ -309,7 +322,7 @@ def vortex_trace_from_vortex(vortexs):
     for trace in trace_list:
         trace_all.extend(trace)
     df = pd.DataFrame(trace_all)
-    df1 = df[["time","dtime","id","lon","lat","ob_time","area"]]
+    df1 = df[["time","dtime","id","lon","lat","ob_time","value","area","strength"]]
     df1.sort_values(by=["id","time","dtime"],inplace=True)
     return df1
 
@@ -344,6 +357,7 @@ def vortex_trace(u, v):
                 cent["time"] = fo_time
                 cent["dtime"] = dtime
                 cent["area"] = graphy["features"][key]["region"]["area"]
+                cent["strength"] = graphy["features"][key]["region"]["strength"]
                 cent["ob_time"] = ob_time
                 cent_list.append(cent)
             vortexs.extend(cent_list)
@@ -353,7 +367,7 @@ def vortex_trace(u, v):
         return
     
     vortexs = pd.DataFrame(vortexs)
-    vortexs = vortexs[['time', 'dtime', 'lon', 'lat', 'area']]
+    vortexs = vortexs[['time', 'dtime', 'lon', 'lat', 'value', 'area', 'strength']]
     
     return vortex_trace_from_vortex(vortexs)
 
