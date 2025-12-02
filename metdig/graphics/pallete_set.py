@@ -157,7 +157,7 @@ def horizontal_pallete(fig=None,ax=None,figsize=(16, 9), crs=ccrs.PlateCarree(),
 
     
     if add_river:
-        utl_plotmap.add_china_map_2cartopy_public(ax, name='river', facecolor='#74b9ff', edgecolor='#74b9ff', lw=0.8, zorder=0, alpha=0.5,crs=ccrs.PlateCarree())
+        utl_plotmap.add_china_map_2cartopy_public(ax, name='river', facecolor='#74b9ff', edgecolor='#74b9ff', lw=0.8, zorder=19, alpha=1,crs=ccrs.PlateCarree())
     if add_county:
         add_china_map_2basemap(ax, name="county", edgecolor='#D9D9D9', lw=0.7, encoding='gbk',zorder=19) 
         pass
