@@ -119,7 +119,9 @@ def get_model_grid(init_time=None, fhour=None, data_name=None, var_name=None, le
     # 待测试。。。
     stda_data = mdgstda.xrda_to_gridstda(data[list(data.keys())[0]],
                                          member_dim='number', level_dim='level', time_dim='time', lat_dim='lat', lon_dim='lon',
-                                         member=member, level=[cmadaas_level], time=[init_time], dtime=[fhour],
+                                         member=member, 
+                                         level=[0 if cmadaas_level == '-' else cmadaas_level], # add by wzj 2025.12.9 兼容天擎level_type为'-'的情况，stda的level就默认为0了
+                                         time=[init_time], dtime=[fhour],
                                          var_name=var_name, np_input_units=cmadaas_units,
                                          data_source='cmadaas', level_type=level_type)
     return stda_data

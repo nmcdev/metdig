@@ -62,6 +62,8 @@ class cmadaas_model_cfg(metaclass=SingletonMetaClass):
 
         if models_level == 'any':
             return level
+        elif models_level == '-': # add by wzj 2025.12.9 兼容天擎level_type为'-'的情况
+            return '-'
         else:
             return int(models_level)
     
